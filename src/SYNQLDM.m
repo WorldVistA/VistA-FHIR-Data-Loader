@@ -1,5 +1,5 @@
 SYNQLDM	; GPL - QRDA loader entry routines ; 2/19/18 6:02am
-	;;0.1;QRDA LOADER;nopatch;noreleasedate;Build 10
+	;;0.1;QRDA LOADER;nopatch;noreleasedate;Build 2
 	;
 	; Authored by George P. Lilly 2016-2018
 	;

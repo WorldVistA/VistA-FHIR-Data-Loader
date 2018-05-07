@@ -1,5 +1,5 @@
 SYNFAPT	;ven/gpl - fhir loader utilities ; 2/20/18 4:11am
-	;;1.0;fhirloader;;oct 19, 2017;Build 10
+	;;1.0;fhirloader;;oct 19, 2017;Build 2
 	;
 	; Authored by George P. Lilly 2017-2018
 	;
@@ -217,24 +217,24 @@ testone(reslt,doload)	; run the appointment import on imported patient
 	. s done=1
 	q
 	;
-getRandomApt(ary) ; make a web service call to get random appointments
- n srvr
- s srvr="http://postfhir.vistaplex.org:9080/"
- i srvr["postfhir.vistaplex.org" s srvr="http://138.197.70.229:9080/"
- i $g(^%WURL)["http://postfhir.vistaplex.org:9080" d  q  ;
- . s srvr="localhost:9080/"
- . n url
- . s url=srvr_"randomappointment"
- . n ok,r1
- . s ok=$$%^%WC(.r1,"GET",url)
- . i '$d(r1) q  ;
- . d DECODE^VPRJSON("r1","ary")
- n url
- s url=srvr_"randomAllergy"
- n ret,json,jtmp
- s ret=$$GETURL^XTHC10(url,,"jtmp")
- d assemble^SYNFPUL("jtmp","json")
- i '$d(json) q  ;
- d DECODE^VPRJSON("json","ary")
- q
- ;
+getRandomApt(ary)	; make a web service call to get random appointments
+	n srvr
+	s srvr="http://postfhir.vistaplex.org:9080/"
+	i srvr["postfhir.vistaplex.org" s srvr="http://138.197.70.229:9080/"
+	i $g(^%WURL)["http://postfhir.vistaplex.org:9080" d  q  ;
+	. s srvr="localhost:9080/"
+	. n url
+	. s url=srvr_"randomappointment"
+	. n ok,r1
+	. s ok=$$%^%WC(.r1,"GET",url)
+	. i '$d(r1) q  ;
+	. d DECODE^VPRJSON("r1","ary")
+	n url
+	s url=srvr_"randomAllergy"
+	n ret,json,jtmp
+	s ret=$$GETURL^XTHC10(url,,"jtmp")
+	d assemble^SYNFPUL("jtmp","json")
+	i '$d(json) q  ;
+	d DECODE^VPRJSON("json","ary")
+	q
+	;

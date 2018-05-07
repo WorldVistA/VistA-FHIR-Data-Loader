@@ -1,5 +1,5 @@
 SYNFALG	;ven/gpl - fhir loader utilities ; 2/20/18 4:11am
-	;;1.0;fhirloader;;oct 19, 2017;Build 10
+	;;1.0;fhirloader;;oct 19, 2017;Build 2
 	;
 	; Authored by George P. Lilly 2017-2018
 	;
@@ -245,49 +245,49 @@ testone(reslt,doload)	; run the allergy import on one imported patient
 	. s done=1
 	q
 	;
-getRandomAllergy(ary) ; make a web service call to get random allergies
- n srvr
- s srvr="http://postfhir.vistaplex.org:9080/"
- i srvr["postfhir.vistaplex.org" s srvr="http://138.197.70.229:9080/"
- i $g(^%WURL)["http://postfhir.vistaplex.org:9080" d  q  ;
- . s srvr="localhost:9080/"
- . n url
- . s url=srvr_"randomAllergy"
- . n ok,r1
- . s ok=$$%^%WC(.r1,"GET",url)
- . i '$d(r1) q  ;
- . d DECODE^VPRJSON("r1","ary")
- n url
- s url=srvr_"randomAllergy"
- n ret,json,jtmp
- s ret=$$GETURL^XTHC10(url,,"jtmp")
- d assemble^SYNFPUL("jtmp","json")
- i '$d(json) q  ;
- d DECODE^VPRJSON("json","ary")
- q
- ;
-ISGMR(CDE) ; extrinsic return the ien and allergy name in GMR ALLERGIES if any
- ; CDE is a snomed code. returns -1 if not found
- N VUID
- S VUID=$$MAP^SYNQLDM(CDE)
- W !,CDE," VUID:",VUID
- I VUID="" Q -1
- N IEN
- S IEN=$O(^GMRD(120.82,"AVUID",VUID,""))
- I IEN="" Q -1
- N R1 S R1=IEN_"^"_$$GET1^DIQ(120.82,IEN_",",.01)
- Q R1
- ;
-QADDALGY(ALGY,ADATE,ien) ; adds an allergy to the queue to be processed
- ; used by Problems processing include allergies in VistA allergies
- ; ALGY is the name of the allergy. ADATE is the date of the allergy
- ; ien is the patient being processed
- i '$d(ien) q  ;
- n root s root=$$setroot^%wd("fhir-intake")
- n groot s groot=$na(@root@(ien,"load","ALLERGY2ADD"))
- n aien s aien=$o(@groot@(" "),-1)+1
- s @groot@(aien,"allergy")=$g(ALGY)
- s @groot@(aien,"date")=$g(ADATE)
- q
- ;
-
+getRandomAllergy(ary)	; make a web service call to get random allergies
+	n srvr
+	s srvr="http://postfhir.vistaplex.org:9080/"
+	i srvr["postfhir.vistaplex.org" s srvr="http://138.197.70.229:9080/"
+	i $g(^%WURL)["http://postfhir.vistaplex.org:9080" d  q  ;
+	. s srvr="localhost:9080/"
+	. n url
+	. s url=srvr_"randomAllergy"
+	. n ok,r1
+	. s ok=$$%^%WC(.r1,"GET",url)
+	. i '$d(r1) q  ;
+	. d DECODE^VPRJSON("r1","ary")
+	n url
+	s url=srvr_"randomAllergy"
+	n ret,json,jtmp
+	s ret=$$GETURL^XTHC10(url,,"jtmp")
+	d assemble^SYNFPUL("jtmp","json")
+	i '$d(json) q  ;
+	d DECODE^VPRJSON("json","ary")
+	q
+	;
+ISGMR(CDE)	; extrinsic return the ien and allergy name in GMR ALLERGIES if any
+	; CDE is a snomed code. returns -1 if not found
+	N VUID
+	S VUID=$$MAP^SYNQLDM(CDE)
+	W !,CDE," VUID:",VUID
+	I VUID="" Q -1
+	N IEN
+	S IEN=$O(^GMRD(120.82,"AVUID",VUID,""))
+	I IEN="" Q -1
+	N R1 S R1=IEN_"^"_$$GET1^DIQ(120.82,IEN_",",.01)
+	Q R1
+	;
+QADDALGY(ALGY,ADATE,ien)	; adds an allergy to the queue to be processed
+	; used by Problems processing include allergies in VistA allergies
+	; ALGY is the name of the allergy. ADATE is the date of the allergy
+	; ien is the patient being processed
+	i '$d(ien) q  ;
+	n root s root=$$setroot^%wd("fhir-intake")
+	n groot s groot=$na(@root@(ien,"load","ALLERGY2ADD"))
+	n aien s aien=$o(@groot@(" "),-1)+1
+	s @groot@(aien,"allergy")=$g(ALGY)
+	s @groot@(aien,"date")=$g(ADATE)
+	q
+	;
+	
