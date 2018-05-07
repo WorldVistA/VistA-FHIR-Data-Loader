@@ -1,0 +1,316 @@
+mash routines for graph storage
+GT.M 18-DEC-2017 22:30:20
+%sfv2g
+%sfv2g  ;ven/gpl - mash conversion utilities ; 9/24/17 4:33pm
+ ;;1.0;norelease;;feb 27, 2017;build 2
+ ;
+ ;
+ q
+ ;
+fmrec(file,ien) ; extrinsic which returns the json version of the fmx return
+ n %g,%gj
+ d fmx("%g",file,ien)
+ d ENCODE^VPRJSON("%g","%gj")
+ q %gj
+ ;
+fmx(rtn,file,ien,camel) ; return an array of a fileman record for external 
+ ; use in rtn, which is passed by name. 
+ ;
+ k @rtn
+ n trec,filenm
+ d GETS^DIQ(file,ien_",","**","ENR","trec")
+ s filenm=$o(^DD(file,0,"NM",""))
+ s filenm=$tr(filenm," ","_")
+ ;zwr trec
+ i $g(debug)=1 b
+ n % s %=$q(trec(""))
+ f  d  q:%=""  ;
+ . n fnum,fname,iens,field,val
+ . s fnum=$qs(%,1)
+ . i $d(^DD(fnum,0,"NM")) d  ;
+ . . s fname=$o(^DD(fnum,0,"NM",""))
+ . . s fname=$tr(fname," ","_")
+ . e  s fname=fnum
+ . s iens=$qs(%,2)
+ . s field=$qs(%,3)
+ . s field=$tr(field," ","_")
+ . s val=@%
+ . i fnum=file d  ; not a subfile
+ . . s @rtn@(fname,ien,field)=val
+ . . s @rtn@(fname,"ien")=$p(iens,",",1)
+ . e  d  ;
+ . . n i2 s i2=$o(@rtn@(fname,""),-1)+1
+ . . s @rtn@(fname,$p(iens,","),field)=val
+ . . ;s @rtn@(fname,i2,field)=val
+ . . ;s @rtn@(fname,i2,"iens")=iens
+ . w:$g(debug)=1 !,%,"=",@%
+ . s %=$q(@%)
+ q
+ ;example
+ ;g("bsts_concept","codeset")=36
+ ;g("bsts_concept","concept_id")=370206005
+ ;g("bsts_concept","counter")=75
+ ;g("bsts_concept","dts_id")=370206
+ ;g("bsts_concept","fully_specified_name")="asthma limits walking on the flat (finding)"
+ ;g("bsts_concept","last_modified")="may 11, 2015"
+ ;g("bsts_concept","out_of_date")="no"
+ ;g("bsts_concept","partial_entry")="non-patial (full entry)"
+ ;g("bsts_concept","revision_in")="mar 01, 2012"
+ ;g("bsts_concept","revision_out")="jan 01, 2050"
+ ;g("bsts_concept","version")=20140901
+ ;g("bsts_concept","ien")="75"
+ ;g("is_a_relationship",1,"is_a_relationship")=2
+ ;g("subsets",1,"subsets")="ehr ipl asthma dxs"
+ ;g("subsets",2,"subsets")="srch cardiology"
+ ;g("subsets",3,"subsets")="ihs problem list"
+ ;
+
+%wd
+%wd     ;ven/gpl - mash graph utilities ; 9/24/17 4:33pm
+ ;;1.0;norelease;;feb 27, 2017;build 2
+ ;
+ ;
+ q
+ ;
+ ; All the public entry points for handling in mash data are in this routine
+ ;
+ ; 
+ ; graph handling routines
+ ;
+setroot(graph) ; root of working storage
+ quit $$setroot^%wdgraph(graph)
+ ;
+rootOf(graph) ; return the root of graph named graph
+ quit $$rootOf^%wdgraph(graph)
+ ;
+addgraph(graph) ; makes a place in the graph file for a new graph
+ do addgraph^%wdgraph(graph)
+ quit
+ ;
+purgegraph(graph) ; delete a graph
+ do purgegraph^%wdgraph(graph)
+ quit
+ ;
+insert2graph(ary,graph,replace) ; insert a new entry to a graph
+ do insert2graph^%wdgraph(.ary,graph,replace)
+ quit
+ ;
+nameThis(altname) ; returns the id to be used for altname
+ ; this will eventually use the context graph and the 
+ ; local variable context to query the altname and obtain an id
+ quit $$nameThis^%wdgraph(altname)
+ ;
+getThis(rary,fn,nocache) ; find a file and read it into rary array  
+ do getThis^%wdgraph(rary,fn,$get(nocache))
+ quit
+ ;
+queryContext(context,locator,property) ; look up project specific 
+ ; names and values from the context graph
+ ; tbd
+ quit $$queryContext^%wdgraph(context,locator,property)
+ ;
+queryTag(rtn,tag) ; returns a json/mumps array of tagged items
+ do queryTag^%wdgraph(rtn,tag)
+ quit
+ ;
+fromCache(rary,name,graph) ; return a file from the cache
+ do fromCache(rary,name,graph)
+ quit
+ ;
+toCache(arry,name,graph) ; put a file in the cache
+ do toCache^%wdgraph(arry,name,graph)
+ quit
+ ;
+beautify(inary,outary) ; pretty print a line of json
+ do beautify^%wdgraph(inary,outary)
+ quit
+ ;
+ary2file(ary,dir,file) ;
+ do ary2file^%wdgraph(.ary,dir,file)
+ quit
+ ;
+file2ary(ary,dir,file)
+ do file2ary^%wdgraph(.ary,dir,file)
+ quit
+ ;
+ ;
+ ;
+ ; csv handling routines
+ ;
+csv2graph(source,graph) ; import a csv file to a graph
+ ; graph is optional, will default to csvGraph
+ ; source is either a filename which will be found in seeGraph
+ ; or a global passed by name usually loaded with FTG^%ZISH
+ ;
+ d csv2graph^%wdcsv(source,$get(graph))
+ quit
+ ;
+prune(txt) ; extrinsic removes extra quotes
+ quit $$prune^%wdcsv(txt)
+ ;
+delim(ary) ; figures out the cvs delimiter
+ ; return -1 if there not found
+ ; ary is passed by reference
+ ; returns the delimiter
+ quit $$delim^%wdcsv(.ary)
+ ;
+wellformed(ary,delim) ; extrinsic returns 1 if ary is well formed
+ ; checks to see that the count of the delimiter is the same
+ ; on every line
+ ; ary is passed by reference
+ ;
+ quit $$wellformed^%wdcsv(.ary,delim)
+ ;
+
+%wdgraph
+%wdgraph        ;ven/gpl - mash graph utilities ; 9/24/17 4:33pm
+ ;;1.0;norelease;;feb 27, 2017;build 2
+ ;
+ ;
+ q
+ ;
+ ; All the public entry points for these routines are found in %wd
+ ;
+setroot(graph) ; root of working storage
+ new %y set %y=$order(^%wd(17.040801,"B",graph,""))
+ if %y="" set %y=$$addgraph(graph) ; if graph is not present, add it
+ quit $name(^%wd(17.040801,%y)) ; root for graph
+ ;
+rootOf(graph) ; return the root of graph named graph
+ new %x1 set %x1=$order(^%wd(17.040801,"B",graph,""))
+ if %x1="" quit -1
+ quit $name(^%wd(17.040801,%x1,"graph"))
+ ;
+addgraph(graph) ; makes a place in the graph file for a new graph
+ new fda set fda(17.040801,"?+1,",.01)=graph
+ new %yerr
+ do UPDATE^DIE("","fda","","%yerr")
+ new %y set %y=$order(^%wd(17.040801,"B",graph,""))
+ quit %y
+ ;
+purgegraph(graph) ; delete a graph
+ new %y set %y=$order(^%wd(17.040801,"B",graph,""))
+ if %y="" quit 0
+ new fda set fda(17.040801,%y_",",.01)="@"
+ new %yerr
+ do UPDATE^DIE("","fda","","%yerr")
+ if '$data(%yerr) quit 1
+ zwr %yerr
+ quit 0 
+ ;
+insert2graph(ary,graph,replace) ; insert a new entry to a graph
+ ; ary is passed by name, graph is the name of the graph
+ ; if replace=1 the graph will be killed first before merge
+ new root set root=$$setroot(graph)
+ new groot set groot=$name(@root@("graph"))
+ new id set id=$order(@ary@(""))
+ if replace=1 kill @groot@(id) 
+ merge @groot=@ary
+ quit
+ ;
+nameThis(altname) ; returns the id to be used for altname
+ ; this will eventually use the context graph and the 
+ ; local variable context to query the altname and obtain an id
+ new result
+ if $data(context) set result=$$queryContext(context,"id",altname) q result
+ if altname="background-dd-map" set result="sbform" quit result
+ quit altname
+ ;
+getThis(rary,fn,nocache) ; find a file and read it into rary array  
+ new ary
+ if '$g(nocache) do fromCache("ary",fn)
+ if $d(ary) do  quit  ;
+ . merge @rary=ary
+ do queryTag("ary",fn)
+ if '$d(ary) do  quit  ;
+ . write !,"error retrieving array ",fn
+ new file set file=$order(ary(1,"file",""))
+ new dir set dir=$order(ary(1,"localdir",""))_"/"
+ new tmp set tmp=$name(^TMP("yottawrk",$J))
+ kill @tmp
+ new tmp1 set tmp1=$name(@tmp@(1))
+ new ok set ok=$$FTG^%ZISH(dir,file,tmp1,3)
+ if 'ok do  quit  ;
+ . write !,"error loading file ",dir_file
+ if '$g(nocache) do toCache(tmp,fn,"html-cache")
+ merge @rary=@tmp
+ kill @tmp
+ quit
+ ;
+queryContext(context,pred,obj) ; look up project specific 
+ ; names and values from the context graph
+ ; tbd
+ quit obj
+ ;
+queryTag(rtn,tag) ; returns a json/mumps array of tagged items
+ new graph set graph="seeGraph"
+ kill @rtn
+ new root set root=$$setroot(graph)
+ new groot set groot=$na(@root@("graph"))
+ if '$d(@groot@("pos","tag",tag)) quit
+ new x1,y1 set (x1,y1)=""
+ new cnt set cnt=0
+ for  set x1=$order(@groot@("pos","tag",tag,x1)) quit:x1=""  do  ;
+ . for  set y1=$order(@groot@("pos","tag",tag,x1,y1)) quit:y1=""  do  ;
+ . . set cnt=cnt+1
+ . . merge @rtn@(cnt)=@groot@(x1,y1)
+ quit
+ ;
+fromCache(rary,name,graph) ; return a file from the cache
+ if '$d(graph) set graph="html-cache"
+ new zgn set zgn=$$setroot(graph)
+ quit:'$data(@zgn@("graph","B",name))
+ new zien set zien=$order(@zgn@("graph","B",name,""))
+ quit:zien=""
+ merge @rary=@zgn@("graph",zien)
+ quit
+ ;
+toCache(arry,name,graph) ; put a file in the cache
+ if '$d(graph) set graph="html-cache"
+ new zgn set zgn=$$setroot(graph)
+ new zien
+ if $data(@zgn@("graph","B",name)) do  ;
+ . set zien=$order(@zgn@("graph","B",name,""))
+ . kill @zgn@("graph",zien)
+ . kill @zgn@("graph","B",name,zien)
+ if $get(zien)="" do  ;
+ . set zien=$order(@zgn@("graph"," "),-1)+1
+ merge @zgn@("graph",zien)=@arry
+ set @zgn@("graph","B",name,zien)=""
+ quit
+ ;
+beautify(inary,outary) ; pretty print a line of json
+ new zg,zi set (zg,zi)=""
+ for  set zi=$order(@inary@(zi)) quit:zi=""  set zg=zg_@inary@(zi)
+ do ary2file("zg",^%WHOME,"json.json")
+ zsy "python -m json.tool "_^%WHOME_"json.json > "_^%WHOME_"pretty-json.json"
+ do file2ary(outary,^%WHOME,"pretty-json.json")
+ q
+ ;
+ary2file(ary,dir,file) ;
+ new tmp set tmp=$name(^TMP("yottawrk",$J))
+ kill @tmp
+ if '$data(@ary@(1)) do  ; not really an array
+ . if $get(@ary)="" quit ; not a string either
+ . merge @tmp@(1)=@ary ; input was a string
+ else   merge @tmp=@ary
+ new tmp1 set tmp1=$name(@tmp@(1))
+ new ok set ok=$$GTF^%ZISH(tmp1,3,dir,file)
+ if 'ok do  quit  ;
+ . write !,"error saving file ",dir_file
+ quit
+ ;
+file2ary(ary,dir,file)
+ new tmp set tmp=$name(^TMP("yottawrk",$J))
+ kill @tmp
+ new tmp1 set tmp1=$name(@tmp@(1))
+ new ok set ok=$$FTG^%ZISH(dir,file,tmp1,3)
+ if 'ok do  quit  ;
+ . write !,"error loading file ",dir_file
+ merge @ary=@tmp
+ kill @tmp
+ quit
+ ;
+
+
+
