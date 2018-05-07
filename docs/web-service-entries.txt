@@ -1,0 +1,34 @@
+WEB SERVICE URL HANDLER List                                                                             DEC 19, 2017@01:19   PAGE 1
+------------------------------------------------------------------------------------------------------------------------------------
+
+
+NUMBER: 1                               HTTP VERB: GET                          URI: xml
+  EXECUTION ENDPOINT: XML^VPRJRSP
+
+NUMBER: 2                               HTTP VERB: GET                          URI: r/{routine?.1"%25".32AN}
+  EXECUTION ENDPOINT: R^%W0
+
+NUMBER: 3                               HTTP VERB: GET                          URI: filesystem/*
+  EXECUTION ENDPOINT: FILESYS^%W0       AUTHENTICATION REQUIRED?: YES
+
+NUMBER: 4                               HTTP VERB: POST                         URI: addpatient/*
+  EXECUTION ENDPOINT: wsPostFHIR^KBAIFHIR
+
+NUMBER: 5                               HTTP VERB: GET                          URI: showfhir/*
+  EXECUTION ENDPOINT: wsShow^KBAIFHIR
+
+NUMBER: 6                               HTTP VERB: GET                          URI: vpr/*
+  EXECUTION ENDPOINT: wsVPR^KBAIVPR
+
+NUMBER: 7                               HTTP VERB: GET                          URI: global/{root}
+  EXECUTION ENDPOINT: wsGLOBAL^KBAIVPR
+
+NUMBER: 8                               HTTP VERB: POST                         URI: addvitals/*
+  EXECUTION ENDPOINT: wsIntakeVitals^KBAIFVIT
+
+NUMBER: 9                               HTTP VERB: POST                         URI: addencounter
+  EXECUTION ENDPOINT: wsIntakeEncounters^KBAIFENC
+
+NUMBER: 10                              HTTP VERB: POST                         URI: addcondition
+  EXECUTION ENDPOINT: wsIntakeConditions^KBAIFCON
+
