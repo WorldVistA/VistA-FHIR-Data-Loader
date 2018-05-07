@@ -1,5 +1,5 @@
 SYNVPR	; GPL - VPR viewing routines ; 2/24/18 4:39am
-	;;0.1;QRDA LOADER;nopatch;noreleasedate;Build 10
+	;;0.1;QRDA LOADER;nopatch;noreleasedate;Build 2
 	;
 	; Authored by George P. Lilly 2013-2018
 	;
