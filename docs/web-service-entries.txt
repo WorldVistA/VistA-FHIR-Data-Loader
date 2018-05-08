@@ -12,23 +12,23 @@ NUMBER: 3                               HTTP VERB: GET                          
   EXECUTION ENDPOINT: FILESYS^%W0       AUTHENTICATION REQUIRED?: YES
 
 NUMBER: 4                               HTTP VERB: POST                         URI: addpatient/*
-  EXECUTION ENDPOINT: wsPostFHIR^KBAIFHIR
+  EXECUTION ENDPOINT: wsPostFHIR^SYNFHIR
 
 NUMBER: 5                               HTTP VERB: GET                          URI: showfhir/*
-  EXECUTION ENDPOINT: wsShow^KBAIFHIR
+  EXECUTION ENDPOINT: wsShow^SYNFHIR
 
 NUMBER: 6                               HTTP VERB: GET                          URI: vpr/*
-  EXECUTION ENDPOINT: wsVPR^KBAIVPR
+  EXECUTION ENDPOINT: wsVPR^SYNVPR
 
 NUMBER: 7                               HTTP VERB: GET                          URI: global/{root}
-  EXECUTION ENDPOINT: wsGLOBAL^KBAIVPR
+  EXECUTION ENDPOINT: wsGLOBAL^SYNVPR
 
 NUMBER: 8                               HTTP VERB: POST                         URI: addvitals/*
-  EXECUTION ENDPOINT: wsIntakeVitals^KBAIFVIT
+  EXECUTION ENDPOINT: wsIntakeVitals^SYNFVIT
 
 NUMBER: 9                               HTTP VERB: POST                         URI: addencounter
-  EXECUTION ENDPOINT: wsIntakeEncounters^KBAIFENC
+  EXECUTION ENDPOINT: wsIntakeEncounters^SYNFENC
 
 NUMBER: 10                              HTTP VERB: POST                         URI: addcondition
-  EXECUTION ENDPOINT: wsIntakeConditions^KBAIFCON
+  EXECUTION ENDPOINT: wsIntakeConditions^SYNFCON
 
