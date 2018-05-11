@@ -100,6 +100,7 @@ wsIntakeAllergy(args,body,result,ien)	; web service entry (post)
 	. do log(jlog,"onsetDateTime is: "_onsetdate)
 	. set eval("allergy",zi,"vars","onsetDateTime")=onsetdate
 	. new fmOnsetDateTime s fmOnsetDateTime=$$fhirTfm^SYNFUTL(onsetdate)
+	. i $l(fmOnsetDateTime)=14 s fmOnsetDateTime=$e(fmOnsetDateTime,1,12)
 	. d log(jlog,"fileman onsetDateTime is: "_fmOnsetDateTime)
 	. set eval("allergy",zi,"vars","fmOnsetDateTime")=fmOnsetDateTime ;
 	. new hl7OnsetDateTime s hl7OnsetDateTime=$$fhirThl7^SYNFUTL(onsetdate)
