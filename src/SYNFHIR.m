@@ -1,5 +1,5 @@
 SYNFHIR	;ven/gpl - fhir loader utilities ; 2/24/18 8:23pm
-	;;1.0;fhirloader;;oct 19, 2017;Build 2
+	;;1.0;fhirloader;;oct 19, 2017;Build 12
 	;
 	; Authored by George P. Lilly 2017-2018
 	;
@@ -40,7 +40,9 @@ wsPostFHIR(ARGS,BODY,RESULT)	; recieve from addpatient
 	. do importVitals^SYNFVIT(.return,ien,.ARGS)
 	. do importEncounters^SYNFENC(.return,ien,.ARGS)
 	. do importImmu^SYNFIMM(.return,ien,.ARGS)
-	. do importConditions^SYNFPR2(.return,ien,.ARGS)
+	. do importConditions^SYNFPRB(.return,ien,.ARGS)
+	. do importAllergies^SYNFALG(.return,ien,.ARGS)
+	. do importAppointments^SYNFAPT(.return,ien,.ARGS)
 	;
 	do ENCODE^VPRJSON("return","RESULT")
 	set HTTPRSP("mime")="application/json"
@@ -237,3 +239,9 @@ fhir2graph(in,out)	; transforms fhir to a graph
 	. merge @out@(rname,cnt)=@rootj@(i,"resource")
 	quit
 	;
+getEntry(ary,ien,rien) ; returns one entry in ary, passed by name
+ n root s root=$$setroot^%wd("fhir-intake")
+ i '$d(@root@(ien,"json","entry",rien)) q  ;
+ m @ary@("entry",rien)=@root@(ien,"json","entry",rien)
+ q
+ ;
