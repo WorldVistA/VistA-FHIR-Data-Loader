@@ -84,24 +84,6 @@ MATCHV1(VUID) ; [Public] Match a single VUID to a set of drugs.
  N MEDS S MEDS=$$VAP2MED^C0CRXNLK(VAP)
  QUIT MEDS
  ;
-TEST D EN^%ut($T(+0),3) QUIT
-T1 ; @TEST Test get VUIDs
- W $$RXN2VUI^C0CRXNAD(1014675),!
- W $$RXN2VUI^C0CRXNAD(197379),!
- QUIT
- ;
-T2 ; @TEST Get Local Matches for VUID
- W $$MATCHV1(4004876),!
- W $$MATCHV1(4033365),!
- W $$MATCHV1(4014051),!
- QUIT
- ;
-T3 ; @TEST Get Local Matches for RxNorm
- W $$RXN2MEDS(1014675),! ; Ceterizine capsule
- W $$RXN2MEDS(197379),! ; Atenolol 100
- W $$RXN2MEDS(1085640),! ;  Triamcinolone Acetonide 0.005 MG/MG Topical Ointment
- QUIT
- ;
 ADDDRUG(RXN,NDC,BARCODE) ; Public Proc; Add Drug to Drug File
  ; Input: RXN - RxNorm Semantic Clinical Drug CUI by Value. Required.
  ; Input: NDC - Drug NDC by Value. Optional. Pass in 11 digit format without dashes.
@@ -263,4 +245,82 @@ GET(RETURN,URL) ; [Public] Get a URL
  ;
  ; Check status code to be 200.
  I "^200^302^"'[HEADERS("STATUS") S %XOBWERR=HEADERS("STATUS"),$EC=",UXOBWHTTP,"
+ QUIT
+ ;
+WRITERX(PSODFN,DRUG,RXDATE) ; [Public] Create a new prescription for a patient
+ ; Little by little we will work this out!
+ ; Assumptions right now:
+ ; - Site in 59 is created
+ ; - DUZ has "PSORPH" key
+ ; TODO: Now just files rx into 52. Provider is missing; and pharmacist doesn't get passed.
+ ; Check global ^ORYX("ORERR" for more information.
+ ; In ORM: S ORDUZ=+$P(ORC,"|",11),ORNP=+$P(ORC,"|",13),OREASON=$P(ORC,"|",17)
+ ;
+ ; Drug Array we will pass by reference
+ N PSONEW
+ ; 
+ ; Call to get drug demographics
+ N PSOY
+ S PSOY=DRUG
+ S PSOY(0)=^PSDRUG(DRUG,0)
+ N PSODRUG
+ D SET^PSODRG
+ M PSONEW=PSODRUG
+ ;
+ ; Days and refills
+ S PSONEW("ISSUE DATE")=RXDATE
+ S PSONEW("FILL DATE")=RXDATE
+ S PSONEW("DAYS SUPPLY")=30
+ S PSONEW("# OF REFILLS")=1
+ ;
+ ; Pharmacist here!
+ S PSONEW("VERIFY")=1
+ S PSONEW("PHARMACIST")=DUZ
+ ;
+ ; Get Prescription Number
+ N PSOSITE S PSOSITE=$O(^PS(59,0))
+ I PSOSITE="" S PSOSITE=1 ; XXX I am not sure if that's a good idea! Maybe create the outpatient site?
+ D AUTO^PSONRXN
+ ;
+ ; Dosage
+ S PSONEW("ENT")=1
+ S PSONEW("DOSE",PSONEW("ENT"))="ONE TABLET DAILY"
+ ;
+ ; Copay
+ N PSOSCP S PSOSCP=""
+ ;
+ ; Counseling
+ N PSOCOU,PSOCOUU
+ S PSOCOU=1,PSOCOUU=1
+ ;
+ ; Nature of order
+ N PSONOOR S PSONOOR="W"
+ ;
+ ; File in 52
+ D EN^PSON52(.PSONEW)
+ ;
+ ; HL7 to OE/RR to update the Order File
+ D EOJ^PSONEW
+ QUIT
+ ;
+TEST D EN^%ut($T(+0),3) QUIT
+T1 ; #TEST Test get VUIDs
+ W $$RXN2VUI(1014675),!
+ W $$RXN2VUI(197379),!
+ QUIT
+ ;
+T2 ; #TEST Get Local Matches for VUID
+ W $$MATCHV1(4004876),!
+ W $$MATCHV1(4033365),!
+ W $$MATCHV1(4014051),!
+ QUIT
+ ;
+T3 ; #TEST Get Local Matches for RxNorm
+ W $$RXN2MEDS(1014675),! ; Ceterizine capsule
+ W $$RXN2MEDS(197379),! ; Atenolol 100
+ W $$RXN2MEDS(1085640),! ;  Triamcinolone Acetonide 0.005 MG/MG Topical Ointment
+ QUIT
+ ;
+T4 ; @TEST Write Rx
+ D WRITERX(1,1,DT)
  QUIT
