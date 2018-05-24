@@ -250,11 +250,7 @@ GET(RETURN,URL) ; [Public] Get a URL
 WRITERX(PSODFN,DRUG,RXDATE) ; [Public] Create a new prescription for a patient
  ; Little by little we will work this out!
  ; Assumptions right now:
- ; - Site in 59 is created
- ; - DUZ has "PSORPH" key
- ; TODO: Now just files rx into 52. Provider is missing; and pharmacist doesn't get passed.
- ; Check global ^ORYX("ORERR" for more information.
- ; In ORM: S ORDUZ=+$P(ORC,"|",11),ORNP=+$P(ORC,"|",13),OREASON=$P(ORC,"|",17)
+ ; XXX: Site in 59 is created
  ;
  ; Drug Array we will pass by reference
  N PSONEW
@@ -275,7 +271,14 @@ WRITERX(PSODFN,DRUG,RXDATE) ; [Public] Create a new prescription for a patient
  ;
  ; Pharmacist here!
  S PSONEW("VERIFY")=1
- S PSONEW("PHARMACIST")=DUZ
+ S PSONEW("PHARMACIST")=$$PHARM^SYNINIT()
+ S PSONEW("CLERK CODE")=PSONEW("PHARMACIST") ; Needed for CPRS for "Entered By" field.
+ ;
+ ; Provider
+ S PSONEW("PROVIDER")=$$PROV^SYNINIT()
+ ;
+ ; Clinic
+ S PSONEW("CLINIC")=$$HL^SYNINIT()
  ;
  ; Get Prescription Number
  N PSOSITE S PSOSITE=$O(^PS(59,0))
@@ -292,6 +295,7 @@ WRITERX(PSODFN,DRUG,RXDATE) ; [Public] Create a new prescription for a patient
  ; Counseling
  N PSOCOU,PSOCOUU
  S PSOCOU=1,PSOCOUU=1
+ ;
  ;
  ; Nature of order
  N PSONOOR S PSONOOR="W"
@@ -322,5 +326,13 @@ T3 ; #TEST Get Local Matches for RxNorm
  QUIT
  ;
 T4 ; @TEST Write Rx
+ ; DELETE ALL RX FOR PATIENT ONE
+ N DA,DIK
+ S DFN=1
+ N PSOI F PSOI=0:0 S PSOI=$O(^PS(55,DFN,"P",PSOI)) Q:'PSOI  D
+ . N RXIEN S RXIEN=^PS(55,DFN,"P",PSOI,0)
+ . I $D(^PSRX(RXIEN,"OR1")) N ORNUM S ORNUM=$P(^("OR1"),U,2) S DA=ORNUM,DIK="^OR(100," D ^DIK
+ . S DIK="^PSRX(",DA=RXIEN D ^DIK
+ S DA=DFN,DIK="^PS(55," D ^DIK
  D WRITERX(1,1,DT)
  QUIT
