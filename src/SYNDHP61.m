@@ -152,7 +152,7 @@ PROBFDA ; build FDA array for Problems
  ;.;S DHPSCDES=""
  ;.S DHPSCDES=$P($G(LEX("P")),U,3)
  N LEX
- S LEX=$$CODE^LEXTRAN(DHPSCT,"SCT",,,1,1)
+ S LEX=$$CODE^LEXTRAN(DHPSCT,"SCT",,,,1,1)
  S DHPSCDES=$P($G(LEX("P")),U,3)
  S LEXIEN=$P(LEX("P"),U,2)
  S EXPRSN=$P(LEX("P"),U)
