@@ -256,3 +256,23 @@ testall ; run the labs import on all imported patients
  . d wsIntakeLabs(.filter,,.reslt,ien)
  q
  ;
+labsum ; summary of lab tests for patient ien pien
+ n root s root=$$setroot^%wd("fhir-intake")
+ n table
+ n zzi s zzi=0
+ f  s zzi=$o(@root@(zzi)) q:+zzi=0  d  ;
+ . n labs
+ . d getIntakeFhir^SYNFHIR("labs",,"Observation",zzi,1)
+ . n zi s zi=0
+ . f  s zi=$o(labs("entry",zi)) q:+zi=0  d  ;
+ . . n groot s groot=$na(labs("entry",zi,"resource"))
+ . . i $g(@groot@("category",1,"coding",1,"code"))'="laboratory" q  ;
+ . . n loinc
+ . . s loinc=$g(@groot@("code","coding",1,"code"))
+ . . q:loinc=""
+ . . n text s text=$g(@groot@("code","coding",1,"display"))
+ . . i $d(table(loinc_" "_text)) s table(loinc_" "_text)=table(loinc_" "_text)+1
+ . . e  s table(loinc_" "_text)=1
+ zwr table
+ q
+ ;
