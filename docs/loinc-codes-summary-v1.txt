@@ -1,0 +1,33 @@
+OSEHRA>d labsum^SYNFLAB
+table("14959-1 Microalbumin Creatine Ratio")=150
+table("18262-6 Low Density Lipoprotein Cholesterol")=921
+table("20565-8 Carbon Dioxide")=1109
+table("2069-3 Chloride")=1109
+table("2085-9 High Density Lipoprotein Cholesterol")=921
+table("2093-3 Total Cholesterol")=921
+table("2339-0 Glucose")=1109
+table("2571-8 Triglycerides")=921
+table("2947-0 Sodium")=1109
+table("33914-3 Estimated Glomerular Filtration Rate")=907
+table("38483-4 Creatinine")=1109
+table("4548-4 Hemoglobin A1c/Hemoglobin.total in Blood")=2218
+table("49765-1 Calcium")=1109
+table("57905-2 Hemoglobin.gastrointestinal [Presence] in Stool by Immunologic me
+thod")=30
+table("6075-6 Cladosporium herbarum IgE Ab in Serum")=48
+table("6082-2 Codfish IgE Ab in Serum")=48
+table("6085-5 Common Ragweed IgE Ab in Serum")=48
+table("6095-4 American house dust mite IgE Ab in Serum")=48
+table("6106-9 Egg white IgE Ab in Serum")=48
+table("6158-0 Latex IgE Ab in Serum")=48
+table("6189-5 White oak IgE Ab in Serum")=48
+table("6206-7 Peanut IgE Ab in Serum")=48
+table("6246-3 Shrimp IgE Ab in Serum")=48
+table("6248-9 Soybean IgE Ab in Serum")=48
+table("6273-7 Walnut IgE Ab in Serum")=48
+table("6276-0 Wheat IgE Ab in Serum")=48
+table("6298-4 Potassium")=1109
+table("6299-2 Urea Nitrogen")=1109
+table("6833-8 Cat dander IgE Ab in Serum")=48
+table("6844-5 Honey bee IgE Ab in Serum")=48
+table("7258-7 Cow milk IgE Ab in Serum")=48
