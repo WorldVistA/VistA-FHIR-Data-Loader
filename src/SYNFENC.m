@@ -257,7 +257,7 @@ LOADALL(count) ; count is how many to do. default is 1000
 	n root s groot=$$setroot^%wd("fhir-intake")
 	n cnt s cnt=0
 	n %1 s %1=0
-	f  s %1=$o(@groot@(%1)) q:+%1=0  q:cnt>count  d  ;
+	f  s %1=$o(@groot@(%1)) q:+%1=0  q:cnt=count  d  ;
 	. n eroot s eroot=$na(@groot@(%1,"load","encounters"))
 	. q:$d(@eroot)
 	. q:%1=33
@@ -271,7 +271,7 @@ LOADALL(count) ; count is how many to do. default is 1000
 	. n rtn
 	. d importEncounters^SYNFENC(.rtn,%1,.filter)
 	. d importImmu^SYNFIMM(.rtn,%1,.filter)
-	. d importConditions^SYNFPR2(.rtn,%1,.filter)
+	. d importConditions^SYNFPRB(.rtn,%1,.filter)
 	q
 	;
 NEXT(start) ; extrinsic which returns the next patient for encounter loading	

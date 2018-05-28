@@ -270,9 +270,15 @@ labsum ; summary of lab tests for patient ien pien
  . . n loinc
  . . s loinc=$g(@groot@("code","coding",1,"code"))
  . . q:loinc=""
+ . . ;i loinc="6082-2" b  ;
  . . n text s text=$g(@groot@("code","coding",1,"display"))
- . . i $d(table(loinc_" "_text)) s table(loinc_" "_text)=table(loinc_" "_text)+1
- . . e  s table(loinc_" "_text)=1
+ . . i $d(table(loinc_" "_text)) d  ;
+ . . . s table(loinc_" "_text)=table(loinc_" "_text)+1
+ . . e  d  ;
+ . . . s table(loinc_" "_text)=1
+ . . . w !,"patient= "_zzi_" entry= "_zi,!
+ . . . n rptary m rptary=@root@(zzi,"json","entry",zi,"resource")
+ . . . zwr rptary
  zwr table
  q
  ;
