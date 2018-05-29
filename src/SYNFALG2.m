@@ -4,7 +4,7 @@ SYNFALG2 ;ven/gpl - fhir loader utilities ; 2/20/18 4:11am
  ; Authored by George P. Lilly 2017-2018
  ; (c) Sam Habiel 2018
  ;
- q
+ QUIT
  ;
 MEDALGY(dfn,root,json,zi,eval,jlog,args) ; allergy is rxnorm
  ;
@@ -84,39 +84,30 @@ ADDMEDADR(SYNDFN,SYNRXN,SYNDF,SYNPA,SYNDUZ,SYNSS,SYNDATE,SYNCOMM) ; [Public] Add
  ; - 0^note to sign (if any) or -1^error message
  ; 
  ; Translate RXN to VUID
- new numVUID set numVUID=+$$RXN2OUT^ETSRXN(SYNRXN)
- if 'numVUID quit:$quit "-1^vuid-not-found" quit
+ ; get VUIDs
+ ; Output like this: 50.6~4030995
+ ; or -1^message
+ n fileVUIDs s fileVUIDs=$$ETSRXN2VUID^SYNFMED(SYNRXN)
+ i fileVUIDs<0 quit fileVUIDs
  ;
- ; loop through VUIDs, and grab a good one (CD or IN)
- ; ^TMP("ETSOUT",69531,831533,"VUID",1,0)="296833^831533^VANDF^AB^4031994^N"
- ; ^TMP("ETSOUT",69531,831533,"VUID",1,1)="ERRIN 0.35MG TAB,28"
- new done s done=0
- new vuid
- new drugName
- new type
- new i for i=0:0 set i=$o(^TMP("ETSOUT",$J,SYNRXN,"VUID",i)) quit:'i  do  quit:done
- . new node0 set node0=^TMP("ETSOUT",$J,SYNRXN,"VUID",i,0)
- . new node1 set node1=^TMP("ETSOUT",$J,SYNRXN,"VUID",i,1)
- . set type=$p(node0,U,4)
- . if "^CD^IN^"'[(U_type_U) quit
- . ;
- . ; We have a preliminary match; we are done with the finding
- . set vuid=$p(node0,U,5)
- . set drugName=node1
- . set done=1
+ ; Get the first one
+ n firstFileVUID s firstFileVUID=$P(fileVUIDs,U)
  ;
- if 'done quit:$quit "-2^no-suitable-vuid-term-was-CD-or-IN" quit
+ ; Error if not found
+ if firstFileVUID="" quit:$quit "-2^no-suitable-vuid-term-was-CD-or-IN" quit
  ;
  kill ^TMP("SYN",$J) ; we put all the reactant info here
  ;
  ; find variable pointer
  new synvuid ; For Searching Compound Index
- set synvuid(1)=vuid
+ set synvuid(1)=$p(firstFileVUID,"~",2)
  set synvuid(2)=1
- new file set file=$select(type="IN":50.6,type="CD":50.68,1:0)
+ set file=$p(firstFileVUID,"~",1)
  if 'file set $ec=",u-no-supposed-to-happen,"
  new ien set ien=$$FIND1^DIC(file,"","XQ",.synvuid,"AMASTERVUID")
  if 'ien quit:$quit "-3^VUID-not-found. Is your NDF up to date?" quit
+ ;
+ new drugName set drugName=$$GET1^DIQ(file,ien,.01)
  ;
  ; load the data into the global for the API
  set ^TMP("SYN",$J,"GMRAGNT")=drugName_U_ien_";"_$piece($$ROOT^DILFD(file),U,2) ; variable pointer syntax
@@ -127,7 +118,7 @@ ADDMEDADR(SYNDFN,SYNRXN,SYNDF,SYNPA,SYNDUZ,SYNSS,SYNDATE,SYNCOMM) ; [Public] Add
  new ssErr set ssErr=0
  if $get(SYNSS)]"" do
  . set ^TMP("SYN",$J,"GMRASYMP",0)=$L(SYNSS,";") ; Signs and symptoms need to be entered by IENs
- . new i for i=1:1:$l(SYNSS,";") do  q:ssErr ; put signs and symptoms in 1,2,3 etc
+ . new i for i=1:1:$l(SYNSS,";") do  q:ssErr  ; put signs and symptoms in 1,2,3 etc
  .. new ssIEN set ssIEN=$$FIND1^DIC(120.83,,"QX",$piece(SYNSS,";",i),"B")
  .. if 'ssIEN set ssErr=1
  .. set ^TMP("SYN",$J,"GMRASYMP",i)=ssIEN_U_$piece(SYNSS,";",i)
@@ -149,6 +140,7 @@ ADDMEDADR(SYNDFN,SYNRXN,SYNDF,SYNPA,SYNDUZ,SYNSS,SYNDATE,SYNCOMM) ; [Public] Add
 TEST D EN^%ut($T(+0),3) quit
 STARTUP ; M-UNIT STARTUP
  ; Delete all traces of patients allergies from DFN 1
+ ; ZEXCEPT: DFN
  S DFN=1
  N DIK,DA
  S DIK=$$ROOT^DILFD(120.86),DA=DFN D ^DIK
@@ -158,45 +150,53 @@ STARTUP ; M-UNIT STARTUP
  QUIT
  ;
 TADDMEDADR1 ; @TEST Simple allergen NOS - Contraceptive CD.
+ ; ZEXCEPT: DFN
  N % S %=$$ADDMEDADR(DFN,831533)
  D CHKTF^%ut(+%=0)
  quit
  ;
 TADDMEDADR2 ; @TEST Allergen as "food" (really penicillin IN)
+ ; ZEXCEPT: DFN
  N % S %=$$ADDMEDADR(DFN,70618,"F")
  D CHKTF^%ut(+%=0)
  quit
  ;
 TADDMEDADR3 ; @TEST Pharmacological or Allergic (Simvastatin CD)
+ ; ZEXCEPT: DFN
  N % S %=$$ADDMEDADR(DFN,198211,"D","P")
  D CHKTF^%ut(+%=0)
  quit
  ;
 TADDMEDADR4 ; @TEST Different Originator (Tamoxifen CD)
+ ; ZEXCEPT: DFN
  N ORIG S ORIG=$O(^XUSEC("PROVIDER",""))
  N % S %=$$ADDMEDADR(DFN,313195,"D","P",ORIG)
  D CHKTF^%ut(+%=0)
  quit
  ;
 TADDMEDADR5 ; @TEST Different Origination date (Aliskiren/Amlodipine IN)
+ ; ZEXCEPT: DFN
  N ORIG S ORIG=$O(^XUSEC("PROVIDER",""))
  N % S %=$$ADDMEDADR(DFN,1009219,"D","P",ORIG,,$$FMADD^XLFDT(DT,-120))
  D CHKTF^%ut(+%=0)
  quit
  ;
 TADDMEDADR6 ; @TEST Signs and symptoms singular (Cephalexin CD)
+ ; ZEXCEPT: DFN
  N ORIG S ORIG=$O(^XUSEC("PROVIDER",""))
  N % S %=$$ADDMEDADR(DFN,309110,"D","A",ORIG,"HIVES",$$FMADD^XLFDT(DT,-120))
  D CHKTF^%ut(+%=0)
  quit
  ;
 TADDMEDADR7 ; @TEST Signs and symptoms plural (Cephalexin IN)
+ ; ZEXCEPT: DFN
  N ORIG S ORIG=$O(^XUSEC("PROVIDER",""))
  N % S %=$$ADDMEDADR(DFN,2231,"D","A",ORIG,"HIVES;RHINITIS;WHEEZING",$$FMADD^XLFDT(DT,-120))
  D CHKTF^%ut(+%=0)
  quit
  ;
 TADDMEDADR8 ; @TEST Comments (Levothyroxine IN)
+ ; ZEXCEPT: DFN
  N ORIG S ORIG=$O(^XUSEC("PROVIDER",""))
  N COMM S COMM(1)="This seems to only happen with specific forumlations of Synthroid"
  S COMM(2)="I think it's just the 125mcg (pink one)"
@@ -205,28 +205,34 @@ TADDMEDADR8 ; @TEST Comments (Levothyroxine IN)
  quit
  ;
 TADDMEDERR1 ; @TEST Test error messages: -1 Bad Rxn
+ ; ZEXCEPT: DFN
  N % S %=$$ADDMEDADR(DFN,83153328978194871234)
  D CHKTF^%ut(+%=-1)
  quit
 TADDMEDERR2 ; @TEST Test error messages: -2 No VUID for Rxn - too hard
+ ; ZEXCEPT: DFN
  quit
  ;
 TADDMEDERR3 ; @TEST Test error messages: -3 NDF product cannot be found - too hard
+ ; ZEXCEPT: DFN
  quit
  ;
 TADDMEDERR4 ; @TEST Test error messages: -4 Bad S/S
+ ; ZEXCEPT: DFN
  N ORIG S ORIG=$O(^XUSEC("PROVIDER",""))
  N % S %=$$ADDMEDADR(DFN,309110,"D","A",ORIG,"OIUSLDFKJLSKDJF",$$FMADD^XLFDT(DT,-120))
  D CHKTF^%ut(+%=-4)
  quit
  ;
 TADDMEDERR5 ; @TEST Test error message: -5 API error
+ ; ZEXCEPT: DFN
  N ORIG S ORIG=$O(^XUSEC("PROVIDER",""))
  N % S %=$$ADDMEDADR(DFN,2231,"D","A",ORIG,"HIVES;RHINITIS;WHEEZING",$$FMADD^XLFDT(DT,-120))
  D CHKTF^%ut(+%=-5)
  quit
  ;
 SHUTDOWN ; M-UNIT SHUTDOWN
+ ; ZEXCEPT: DFN
  K DFN
  QUIT
  ;
