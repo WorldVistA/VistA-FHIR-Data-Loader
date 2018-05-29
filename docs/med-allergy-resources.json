@@ -1,0 +1,129 @@
+{
+  "type": "collection",
+  "entry": [
+{
+  "resource": {
+    "meta": {
+      "profile": [
+        "http://standardhealthrecord.org/fhir/StructureDefinition/shr-allergy-AllergyIntolerance"
+      ]
+    },
+    "modifierExtension": [
+      {
+        "extension": [
+          {
+            "url": "http://standardhealthrecord.org/fhir/StructureDefinition/primitive-boolean-extension",
+            "valueBoolean": false
+          }
+        ],
+        "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-base-NonOccurrenceModifier-extension"
+      }
+    ],
+    "clinicalStatus": "active",
+    "verificationStatus": "confirmed",
+    "type": "allergy",
+    "category": [
+      "medication"
+    ],
+    "criticality": "high",
+    "code": {
+      "coding": [
+        {
+          "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+          "code": "70618",
+          "display": "PENICILLIN G SODIUM"
+        }
+      ]
+    },
+    "patient": {
+      "reference": "urn:uuid:51719656-c836-4251-9419-06b6b9585a78"
+    },
+    "assertedDate": "1966-12-18T23:38:38-05:00",
+    "resourceType": "AllergyIntolerance"
+  }
+},
+{
+  "resource": {
+    "meta": {
+      "profile": [
+        "http://standardhealthrecord.org/fhir/StructureDefinition/shr-allergy-AllergyIntolerance"
+      ]
+    },
+    "modifierExtension": [
+      {
+        "extension": [
+          {
+            "url": "http://standardhealthrecord.org/fhir/StructureDefinition/primitive-boolean-extension",
+            "valueBoolean": false
+          }
+        ],
+        "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-base-NonOccurrenceModifier-extension"
+      }
+    ],
+    "clinicalStatus": "active",
+    "verificationStatus": "confirmed",
+    "type": "allergy",
+    "category": [
+      "medication"
+    ],
+    "criticality": "low",
+    "code": {
+      "coding": [
+        {
+          "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+          "code": "5640",
+          "display": "IBUPROFEN"
+        }
+      ]
+    },
+    "patient": {
+      "reference": "urn:uuid:51719656-c836-4251-9419-06b6b9585a78"
+    },
+    "assertedDate": "1966-12-18T23:38:38-05:00",
+    "resourceType": "AllergyIntolerance"
+  }
+},
+{
+  "resource": {
+    "meta": {
+      "profile": [
+        "http://standardhealthrecord.org/fhir/StructureDefinition/shr-allergy-AllergyIntolerance"
+      ]
+    },
+    "modifierExtension": [
+      {
+        "extension": [
+          {
+            "url": "http://standardhealthrecord.org/fhir/StructureDefinition/primitive-boolean-extension",
+            "valueBoolean": false
+          }
+        ],
+        "url": "http://standardhealthrecord.org/fhir/StructureDefinition/shr-base-NonOccurrenceModifier-extension"
+      }
+    ],
+    "clinicalStatus": "active",
+    "verificationStatus": "confirmed",
+    "type": "allergy",
+    "category": [
+      "medication"
+    ],
+    "criticality": "low",
+    "code": {
+      "coding": [
+        {
+          "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+          "code": "198211",
+          "display": "Simvastatin CD"
+        }
+      ]
+    },
+    "patient": {
+      "reference": "urn:uuid:51719656-c836-4251-9419-06b6b9585a78"
+    },
+    "assertedDate": "1966-12-18T23:38:38-05:00",
+    "resourceType": "AllergyIntolerance"
+  }
+}
+],
+"resourceType": "Bundle"
+}
