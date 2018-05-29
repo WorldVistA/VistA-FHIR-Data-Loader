@@ -54,8 +54,19 @@ RXN2MED(RXN) ; [Public] Get or Create a drug for a specific RxNorm code
 RXN2MEDS(RXN) ; [Public] Get Drugs that are associated with an RxNorm
  Q $$MATCHVM($$RXN2VUI(RXN))
  ;
-RXN2VUI(RXN) ; [Public] Get VUIDs for an RxNorm
+RXN2VUI(RXN) ; [Public] Get ^ delimited VUIDs for an RxNorm
  N VUIDS S VUIDS=""
+ n file
+ I $T(^ETSRXN)]"" d  quit VUIDS
+ . n fileVUIDs s fileVUIDs=$$ETSRXN2VUID(RXN)
+ . n i f i=1:1:$l(fileVUIDs,U) do
+ .. s file=$p(fileVUIDs,"~")
+ .. i file'=50.68 quit
+ .. n vuid s vuid=$p(fileVUIDs,"~",2)
+ .. s VUIDS=VUIDS_vuid_U
+ . i $e(VUIDS,$l(VUIDS))=U S $E(VUIDS,$L(VUIDS))=""
+ ;
+ ; TODO: Rest is not implemented yet.
  N URL S URL="https://rxnav.nlm.nih.gov/REST/rxcui/{RXN}/property.json?propName=VUID"
  N % S %("{RXN}")=RXN
  S URL=$$REPLACE^XLFSTR(URL,.%)
@@ -68,6 +79,35 @@ RXN2VUI(RXN) ; [Public] Get VUIDs for an RxNorm
  S $E(VUIDS,$L(VUIDS))="" ; rm trailing ^
  QUIT VUIDS
  ;
+ETSRXN2VUID(RXN) ; [Public] Return delimited list of file~VUID^file~VUID based on ETS
+ ; Input: RxNorm Number for IN or CD TTY
+ ; Output: file~VUID^file~VUID..., where file is 50.6 or 50.68.
+ ;         or -1^vuid-not-found
+ ; 
+ ; Translate RXN to VUID
+ new numVUID set numVUID=+$$RXN2OUT^ETSRXN(RXN)
+ if 'numVUID quit:$quit "-1^vuid-not-found" quit
+ ;
+ ; loop through VUIDs, and grab a good one (CD or IN)
+ ; ^TMP("ETSOUT",69531,831533,"VUID",1,0)="296833^831533^VANDF^AB^4031994^N"
+ ; ^TMP("ETSOUT",69531,831533,"VUID",1,1)="ERRIN 0.35MG TAB,28"
+ new done s done=0
+ new out
+ new vuid,name
+ new type,file
+ new i for i=0:0 set i=$o(^TMP("ETSOUT",$J,RXN,"VUID",i)) quit:'i  do  quit:done
+ . new node0 set node0=^TMP("ETSOUT",$J,RXN,"VUID",i,0)
+ . new node1 set node1=^TMP("ETSOUT",$J,RXN,"VUID",i,1)
+ . set type=$p(node0,U,4)
+ . if "^CD^IN^"'[(U_type_U) quit
+ . ;
+ . set vuid=$p(node0,U,5)
+ . set file=$s(type="CD":50.68,type="IN":50.6,1:1/0) ; any other type is invalid!
+ . set name=node1
+ . set out=file_"~"_vuid_"~"_name_U
+ if $extract(out,$length(out))=U set $extract(out,$length(out))=""
+ quit out
+ ;
 MATCHVM(VUIDS) ; [Public] Match delimited list of VUIDs to delimited set of drugs (not one to one)
  N MATCHES S MATCHES=""
  N I,VUID
@@ -79,12 +119,38 @@ MATCHVM(VUIDS) ; [Public] Match delimited list of VUIDs to delimited set of drug
  ;
  ;
 MATCHV1(VUID) ; [Public] Match a single VUID to a set of drugs.
- N VAP S VAP=$$VUI2VAP^C0CRXNLK(VUID) ; says it's supposed to be plural, but that's not possible??
+ N VAP S VAP=$$VUI2VAP(VUID) ; says it's supposed to be plural, but that's not possible??
  I 'VAP S $EC=",U-VUID-SHOULD-NOT-BE-MISSING,"
- N MEDS S MEDS=$$VAP2MED^C0CRXNLK(VAP)
+ N MEDS S MEDS=$$VAP2MED(VAP)
  QUIT MEDS
  ;
-ADDDRUG(RXN,NDC,BARCODE) ; Public Proc; Add Drug to Drug File
+VUI2VAP(VUID) ; $$ Public - Get VA Product IEN(s) from VUID
+ ; Input VUID by Value
+ ; Output: Extrinsic
+ D FIND^DIC(50.68,,"@","QP",VUID,,"AVUID") ; Find all in VUID index
+ N O S O="" ; Output
+ N I F I=0:0 S I=$O(^TMP("DILIST",$J,I)) Q:'I  S O=O_^(I,0)_U ; Concat results together
+ S O=$E(O,1,$L(O)-1) ; remove trailing ^
+ Q O
+ ;
+VAP2MED(VAPROD) ; $$ Public - Get Drug(s) using VA Product IEN
+ ; Un-Unit-testable: Drug files differ between sites.
+ ; Input: VA Product IEN By Value
+ ; OUtput: Caret delimited extrinsic
+ ; This code inspired from PSNAPIs
+ ; WHY THE HELL WOULD I USE A TEXT INDEX?
+ ; It's my only option. Creating new xrefs on the drug file doesn't help
+ ; as they are not filled out when adding a drug (IX[ALL]^DIK isn't called).
+ N MEDS S MEDS="" ; result
+ N PN,PN1 ; Product Name, abbreviated product name.
+ S PN=$P(^PSNDF(50.68,VAPROD,0),"^"),PN1=$E(PN,1,30)
+ N P50 S P50=0 ; looper through VAPN index which is DRUG file entry
+ F  S P50=$O(^PSDRUG("VAPN",PN1,P50)) Q:'P50  D  ; for each text match
+ . I $P(^PSDRUG(P50,"ND"),"^",3)=VAPROD S MEDS=$G(MEDS)_P50_U  ; check that the VA PRODUCT pointer is the same as ours.
+ S:MEDS MEDS=$E(MEDS,1,$L(MEDS)-1) ; remove trailing ^
+ Q MEDS
+ ;
+ADDDRUG(RXN,NDC,BARCODE) ; [Public] Add Drug to Drug File
  ; Input: RXN - RxNorm Semantic Clinical Drug CUI by Value. Required.
  ; Input: NDC - Drug NDC by Value. Optional. Pass in 11 digit format without dashes.
  ; Input: BARCODE - Wand Barcode. Optional. Pass exactly as wand reads minus control characters.
@@ -94,15 +160,12 @@ ADDDRUG(RXN,NDC,BARCODE) ; Public Proc; Add Drug to Drug File
  I '$G(RXN) S $EC=",U1," ; Required
  I $L($G(NDC)),$L(NDC)'=11 S $EC=",U1,"
  ;
- ; If RXN refers to a brand drug, get the generic instead.
- I $$ISBRAND^C0CRXNLK(RXN) S RXN=$$BR2GEN^C0CRXNLK(RXN)
- W !,"(debug) RxNorm is "_RXN,!
- ;
  ; Get first VUID for this RxNorm drug
- N VUID S VUID=+$$RXN2VUI^C0CRXNLK(RXN)
+ N VUID S VUID=+$$RXN2VUI(RXN)
  Q:'VUID
  G NEXT
 ADDDRUG2(RXN,VUID) ;
+ ; ZEXCEPT: NDC,BARCODE
 NEXT ;
  N PSSZ S PSSZ=1    ; Needed for the drug file to let me in!
  ;
@@ -115,6 +178,10 @@ NEXT ;
  N F5068IEN S F5068IEN=$$FIND1^DIC(50.68,"","XQ",.C0XVUID,"AMASTERVUID")
  Q:'F5068IEN
  W "F 50.68 IEN (debug): "_F5068IEN,!
+ ;
+ ; Guard against adding the drug back in again.
+ N EXISTING S EXISTING=$$VAP2MED(F5068IEN)
+ I EXISTING Q EXISTING
  ;
  ; FDA Array
  N C0XFDA
@@ -161,7 +228,7 @@ NEXT ;
  S C0XFDA(50,"+1,",22)="`"_F5068IEN
  ;
  ; DEA, SPECIAL HDLG (string)
- D  ; From ^PSNMRG
+ D  ; From ^PSNMRG ; ZEXCEPT: n
  . N CS S CS=$$GET1^DIQ(50.68,F5068IEN,"CS FEDERAL SCHEDULE","I")
  . S CS=$S(CS?1(1"2n",1"3n"):+CS_"C",+CS=2!(+CS=3)&(CS'["C"):+CS_"A",1:CS)
  . S C0XFDA(50,"+1,",3)=CS
@@ -223,11 +290,7 @@ NEXT ;
  D FILE^DIE("",$NA(C0XFDA),$NA(C0XERR))
  S:$D(C0XERR) $EC=",U1,"
  ;
- ; Next two statements: See FIN^PSSPOIM1 and MF^PSSDEE.
- I FLAGNEWOI D
- . D EN^PSSPOIDT(OI) ; Update Indexes; activations, etc.
- . D EN2^PSSHL1(OI,"MUP") ; Send HL7 message to CPRS
- ;
+ ; Previously, we did the CPRS message here; but we don't need to anymore.
  ;
 EX QUIT C0XIEN(1)
  ;
@@ -247,7 +310,12 @@ GET(RETURN,URL) ; [Public] Get a URL
  I "^200^302^"'[HEADERS("STATUS") S %XOBWERR=HEADERS("STATUS"),$EC=",UXOBWHTTP,"
  QUIT
  ;
-WRITERX(PSODFN,DRUG,RXDATE) ; [Public] Create a new prescription for a patient
+WRITERXRXN(PSODFN,RXNCDCUI,RXDATE) ; [Public] Create a new prescription for a patient using RxNorm SCD CUI
+ N DRUG S DRUG=$$ADDDRUG(RXNCDCUI)
+ D WRITERXPS(PSODFN,DRUG,RXDATE)
+ QUIT
+ ; 
+WRITERXPS(PSODFN,DRUG,RXDATE) ; [Public] Create a new prescription for a patient using drug IEN
  ; Little by little we will work this out!
  ; Assumptions right now:
  ; XXX: Site in 59 is created
@@ -292,6 +360,9 @@ WRITERX(PSODFN,DRUG,RXDATE) ; [Public] Create a new prescription for a patient
  ; Copay
  N PSOSCP S PSOSCP=""
  ;
+ ; Quantity
+ S PSONEW("QTY")=30 ; Non-sense number
+ ;
  ; Counseling
  N PSOCOU,PSOCOUU
  S PSOCOU=1,PSOCOUU=1
@@ -308,31 +379,85 @@ WRITERX(PSODFN,DRUG,RXDATE) ; [Public] Create a new prescription for a patient
  QUIT
  ;
 TEST D EN^%ut($T(+0),3) QUIT
-T1 ; #TEST Test get VUIDs
- W $$RXN2VUI(1014675),!
- W $$RXN2VUI(197379),!
+ ;
+T0 ; @TEST Test $$ETSRXN2VUID^SYNFMED API
+ D CHKEQ^%ut($$ETSRXN2VUID^SYNFMED(831533),"50.68~4031994~ERRIN 0.35MG TAB,28")
+ D CHKEQ^%ut($$ETSRXN2VUID^SYNFMED(70618),"50.6~4019880~PENICILLIN")
+ D CHKEQ^%ut($$ETSRXN2VUID^SYNFMED(198211),"50.68~4016607~SIMVASTATIN 40MG TAB,UD")
+ D CHKEQ^%ut($$ETSRXN2VUID^SYNFMED(313195),"50.68~4004891~TAMOXIFEN CITRATE 20MG TAB")
+ D CHKEQ^%ut($$ETSRXN2VUID^SYNFMED(1009219),"50.6~4030995~ALISKIREN/AMLODIPINE")
+ D CHKEQ^%ut($$ETSRXN2VUID^SYNFMED(309110),"50.68~4007024~CEPHALEXIN 125MG/5ML SUSP")
+ D CHKEQ^%ut($$ETSRXN2VUID^SYNFMED(2231),"50.6~4018891~CEPHALEXIN")
+ D CHKEQ^%ut($$ETSRXN2VUID^SYNFMED(10582),"50.6~4022126~LEVOTHYROXINE")
  QUIT
  ;
-T2 ; #TEST Get Local Matches for VUID
- W $$MATCHV1(4004876),!
- W $$MATCHV1(4033365),!
- W $$MATCHV1(4014051),!
+T1 ; @TEST Test get VUIDs
+ D CHKEQ^%ut($$RXN2VUI(1014675),4033356)
+ D CHKEQ^%ut($$RXN2VUI(197379),4014051)
  QUIT
  ;
-T3 ; #TEST Get Local Matches for RxNorm
- W $$RXN2MEDS(1014675),! ; Ceterizine capsule
- W $$RXN2MEDS(197379),! ; Atenolol 100
- W $$RXN2MEDS(1085640),! ;  Triamcinolone Acetonide 0.005 MG/MG Topical Ointment
+T2 ; @TEST Get Local Matches for VUID (no accurate tests as drug file is local)
+ W " "
+ W $$MATCHV1(4004876)," "
+ W $$MATCHV1(4033365)," "
+ W $$MATCHV1(4014051)," "
+ D SUCCEED^%ut
  QUIT
  ;
-T4 ; @TEST Write Rx
+T3 ; @TEST Get Local Matches for RxNorm (no accurate tests as drug file is local)
+ W $$RXN2MEDS(1014675)," " ; Ceterizine capsule
+ W $$RXN2MEDS(197379)," "  ; Atenolol 100
+ W $$RXN2MEDS(1085640)," " ;  Triamcinolone Acetonide 0.005 MG/MG Topical Ointment
+ D SUCCEED^%ut
+ QUIT
+ ;
+T4 ; @TEST Write Rx Using Drug IEN
  ; DELETE ALL RX FOR PATIENT ONE
  N DA,DIK
- S DFN=1
+ N DFN S DFN=1
  N PSOI F PSOI=0:0 S PSOI=$O(^PS(55,DFN,"P",PSOI)) Q:'PSOI  D
  . N RXIEN S RXIEN=^PS(55,DFN,"P",PSOI,0)
  . I $D(^PSRX(RXIEN,"OR1")) N ORNUM S ORNUM=$P(^("OR1"),U,2) S DA=ORNUM,DIK="^OR(100," D ^DIK
  . S DIK="^PSRX(",DA=RXIEN D ^DIK
  S DA=DFN,DIK="^PS(55," D ^DIK
- D WRITERX(1,1,DT)
+ D WRITERXPS(1,10,DT)
+ N RX0 S RX0=^PSRX(1,0)
+ N PAT S PAT=$P(RX0,U,2)
+ N DRG S DRG=$P(RX0,U,6)
+ D CHKEQ^%ut(PAT,1)
+ D CHKEQ^%ut(DRG,10)
  QUIT
+ ;
+T5 ; @TEST Write Rx Using Drug RxNorm SCD
+ ; DELETE ALL RX FOR PATIENT ONE
+ N DA,DIK
+ N DFN S DFN=1
+ N PSOI F PSOI=0:0 S PSOI=$O(^PS(55,DFN,"P",PSOI)) Q:'PSOI  D
+ . N RXIEN S RXIEN=^PS(55,DFN,"P",PSOI,0)
+ . I $D(^PSRX(RXIEN,"OR1")) N ORNUM S ORNUM=$P(^("OR1"),U,2) S DA=ORNUM,DIK="^OR(100," D ^DIK
+ . S DIK="^PSRX(",DA=RXIEN D ^DIK
+ S DA=DFN,DIK="^PS(55," D ^DIK
+ D WRITERXRXN(1,313195,DT) ; Tamoxifen Citrate 20mg tab
+ N RX0 S RX0=^PSRX(1,0)
+ N PAT S PAT=$P(RX0,U,2)
+ N DRG S DRG=$P(RX0,U,6)
+ N DRGNM S DRGNM=$P(^PSDRUG(DRG,0),U)
+ D CHKEQ^%ut(PAT,1)
+ D CHKTF^%ut(DRGNM["TAMOXIFEN")
+ QUIT
+ ;
+VUI2VAPT ; @TEST Get VA Product IEN from VUID
+ N L F L=1:1 N LN S LN=$T(VUI2VAPD+L) Q:LN["<<END>>"  Q:LN=""  D
+ . N VUID S VUID=$P(LN,";",3)
+ . N VAP S VAP=$P(LN,";",4)
+ . D CHKEQ^%ut($$VUI2VAP(VUID),VAP,"Translation from VUID to VA PRODUCT failed")
+ QUIT
+ ;
+VUI2VAPD ; @DATA - Data for above test
+ ;;4006455;5932
+ ;;4002369;1784
+ ;;4000874;252
+ ;;4003335;2756
+ ;;4002469;1884
+ ;;4009488;9046^10090
+ ;;<<END>>
