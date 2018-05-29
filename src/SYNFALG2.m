@@ -34,6 +34,7 @@ MEDALGY(dfn,root,json,zi,eval,jlog,args) ; allergy is rxnorm
  s eval("allergy",zi,"status","loadstatus")="readyToLoad"
  ;
  if $g(args("load"))=1 d  ; only load if told to
+ . n ien s ien=$$dfn2ien^SYNFUTL(dfn) ;
  . if $g(ien)'="" if $$loadStatus^SYNFALG("allergy",zi,ien)=1 do  quit  ;
  . . d log(jlog,"Allergy already loaded, skipping")
  . d log(jlog,"Calling ADDMEDADR^SYNFALG2 to add allergy")
