@@ -288,7 +288,7 @@ ISGMR(CDE) ; extrinsic return the ien and allergy name in GMR ALLERGIES if any
  ; CDE is a snomed code. returns -1 if not found
  N VUID
  S VUID=$$MAP^SYNQLDM(CDE)
- W !,CDE," VUID:",VUID
+ ;W !,CDE," VUID:",VUID
  I VUID="" Q -1
  N IEN
  S IEN=$O(^GMRD(120.82,"AVUID",VUID,""))
