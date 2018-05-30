@@ -1,55 +1,13 @@
 SYNFMED ;OSE/SMH - Add Medications to Patient Record;May 23, 2018
  ;;1.0;SYNTHETIC PATIENTS LOADER;
- ; (C) 2016 Sam Habiel
+ ; (C) 2018 Sam Habiel
+ ; See accompanying license for terms of use.
  ;
-RXN2MED(RXN) ; [Public] Get or Create a drug for a specific RxNorm code
- N VUIDS S VUIDS=$$RXN2VUI(RXN)
- I VUIDS="" S $EC=",U-INVESTIGATE-PLEASE,"
- N MEDS S MEDS=$$MATCHVM(VUIDS)
- ;
- I MEDS="" N NEWMED S NEWMED="" D  QUIT NEWMED
- . N OKVUIDS
- . N I,VUID F I=1:1:$L(VUIDS) S VUID=$P(VUIDS,U,I) Q:VUID=""  D
- .. N C0XVUID ; For Searching Compound Index
- .. S C0XVUID(1)=VUID
- .. S C0XVUID(2)=1
- .. N F5068IEN S F5068IEN=$$FIND1^DIC(50.68,"","XQ",.C0XVUID,"AMASTERVUID")
- .. I 'F5068IEN QUIT  ; Try next one if this one isn't master
- .. N NAME S NAME=$P(^PSNDF(50.68,F5068IEN,0),U)
- .. S OKVUIDS(VUID)=NAME[",UD"
- . ;
- . N C S C=0
- . N V S V=""
- . F  S V=$O(OKVUIDS(V)) Q:'V  S C=C+1
- . ;
- . N VUID2USE
- . I C=1 S VUID2USE=$O(OKVUIDS("")) S NEWMED=$$ADDDRUG2(RXN,VUID2USE) QUIT
- . E  N DONE S DONE=0,V="" F  S V=$O(OKVUIDS(V)) Q:'V  D  Q:DONE
- .. I OKVUIDS(V)=1 QUIT
- .. E  S NEWMED=$$ADDDRUG2(RXN,V),DONE=1
- . ;
- . I NEWMED QUIT
- . ;
- . S VUID2USE=$O(OKVUIDS(""))
- . S NEWMED=$$ADDDRUG2(RXN,VUID2USE)
- ;
- I $L(MEDS,U)=1 QUIT MEDS ;
- ;
- ; $L(MEDS,U)>1 ...
- N MED2USE S MED2USE=""
- N I F I=1:1:$L(MEDS,U) D  Q:MED2USE
- . N MED S MED=$P(MEDS,U,I)
- . N NAME S NAME=$P(^PSDRUG(MED,0),U)
- . N INACTIVE S INACTIVE=+$G(^PSDRUG(MED,"I"))
- . I INACTIVE QUIT
- . I NAME["UD" QUIT
- . S MED2USE=MED
- ;
- I MED2USE Q MED2USE
- ;
- S MED2USE=$P(MEDS,U) Q MED2USE
- ;
- QUIT
+ ; TODO list
+ ; - Implement Web Services lookup
+ ; - Auto create site parameters for outpatient pharmacy
+ ; - Set-up Patient Characteristics in 55
+ ; - release Rx to signify the patient has it in its pocket
  ;
 RXN2MEDS(RXN) ; [Public] Get Drugs that are associated with an RxNorm
  Q $$MATCHVM($$RXN2VUI(RXN))
@@ -60,9 +18,10 @@ RXN2VUI(RXN) ; [Public] Get ^ delimited VUIDs for an RxNorm
  I $T(^ETSRXN)]"" d  quit VUIDS
  . n fileVUIDs s fileVUIDs=$$ETSRXN2VUID(RXN)
  . n i f i=1:1:$l(fileVUIDs,U) do
- .. s file=$p(fileVUIDs,"~")
+ .. n fileVUID s fileVUID=$p(fileVUIDs,U,i)
+ .. s file=$p(fileVUID,"~")
  .. i file'=50.68 quit
- .. n vuid s vuid=$p(fileVUIDs,"~",2)
+ .. n vuid s vuid=$p(fileVUID,"~",2)
  .. s VUIDS=VUIDS_vuid_U
  . i $e(VUIDS,$l(VUIDS))=U S $E(VUIDS,$L(VUIDS))=""
  ;
@@ -79,9 +38,14 @@ RXN2VUI(RXN) ; [Public] Get ^ delimited VUIDs for an RxNorm
  S $E(VUIDS,$L(VUIDS))="" ; rm trailing ^
  QUIT VUIDS
  ;
-ETSRXN2VUID(RXN) ; [Public] Return delimited list of file~VUID^file~VUID based on ETS
+RXN2NDC(RXN) ; [Public] Get ^ delimited NDCs for an RxNorm SCD
+ I $T(^ETSRXN)]"" Q $$ETSRXN2NDC(RXN)
+ ; TODO: Implement web service
+ QUIT
+ ;
+ETSRXN2VUID(RXN) ; [Private] Return delimited list of file~VUID^file~VUID based on ETS
  ; Input: RxNorm Number for IN or CD TTY
- ; Output: file~VUID^file~VUID..., where file is 50.6 or 50.68.
+ ; Output: file~VUID~name^file~VUID~name..., where file is 50.6 or 50.68.
  ;         or -1^vuid-not-found
  ; 
  ; Translate RXN to VUID
@@ -92,7 +56,7 @@ ETSRXN2VUID(RXN) ; [Public] Return delimited list of file~VUID^file~VUID based o
  ; ^TMP("ETSOUT",69531,831533,"VUID",1,0)="296833^831533^VANDF^AB^4031994^N"
  ; ^TMP("ETSOUT",69531,831533,"VUID",1,1)="ERRIN 0.35MG TAB,28"
  new done s done=0
- new out
+ new out set out=""
  new vuid,name
  new type,file
  new i for i=0:0 set i=$o(^TMP("ETSOUT",$J,RXN,"VUID",i)) quit:'i  do  quit:done
@@ -104,8 +68,39 @@ ETSRXN2VUID(RXN) ; [Public] Return delimited list of file~VUID^file~VUID based o
  . set vuid=$p(node0,U,5)
  . set file=$s(type="CD":50.68,type="IN":50.6,1:1/0) ; any other type is invalid!
  . set name=node1
- . set out=file_"~"_vuid_"~"_name_U
+ . set out=out_file_"~"_vuid_"~"_name_U
  if $extract(out,$length(out))=U set $extract(out,$length(out))=""
+ K ^TMP("ETSOUT",$J)
+ quit out
+ ;
+ETSRXN2NDC(RXN) ; [Private] Return delimited list of NDCs from RxNorm (only active ones)
+ ; Translate RXN to VUID
+ new numNDC set numNDC=$P($$RXN2OUT^ETSRXN(RXN),U,2)
+ if 'numNDC quit:$quit "-1^rxncui-not-found" quit
+ ;
+ ; loop through NDCs, and grab good ones 
+ ; ^TMP("ETSOUT",2199,831533,"NDC")=6
+ ; ^TMP("ETSOUT",2199,831533,"NDC",1,0)="600680^831533^831533^RXNORM^N"
+ ; ^TMP("ETSOUT",2199,831533,"NDC",1,1)="NDC"
+ ; ^TMP("ETSOUT",2199,831533,"NDC",1,2)="00555034458"
+ ; ^TMP("ETSOUT",2199,831533,"NDC",2,0)="600681^831533^831533^RXNORM^N"
+ ; ^TMP("ETSOUT",2199,831533,"NDC",2,1)="NDC"
+ ; ^TMP("ETSOUT",2199,831533,"NDC",2,2)="00555034479"
+ new out set out=""
+ new type,supp
+ new i for i=0:0 set i=$o(^TMP("ETSOUT",$J,RXN,"NDC",i)) quit:'i  do
+ . new node0 set node0=^TMP("ETSOUT",$J,RXN,"NDC",i,0)
+ . new ndc set ndc=^TMP("ETSOUT",$J,RXN,"NDC",i,2)
+ . set type=$p(node0,U,4)
+ . set supp=$p(node0,U,5)
+ . ;
+ . ; We want RxNorm NDCs that are not suppressed.
+ . i type'="RXNORM" quit
+ . i supp'="N" quit
+ . ;
+ . set out=out_ndc_U
+ if $extract(out,$length(out))=U set $extract(out,$length(out))=""
+ K ^TMP("ETSOUT",$J)
  quit out
  ;
 MATCHVM(VUIDS) ; [Public] Match delimited list of VUIDs to delimited set of drugs (not one to one)
@@ -150,15 +145,10 @@ VAP2MED(VAPROD) ; $$ Public - Get Drug(s) using VA Product IEN
  S:MEDS MEDS=$E(MEDS,1,$L(MEDS)-1) ; remove trailing ^
  Q MEDS
  ;
-ADDDRUG(RXN,NDC,BARCODE) ; [Public] Add Drug to Drug File
+ADDDRUG(RXN,BARCODE) ; [Public] Add Drug to Drug File
  ; Input: RXN - RxNorm Semantic Clinical Drug CUI by Value. Required.
- ; Input: NDC - Drug NDC by Value. Optional. Pass in 11 digit format without dashes.
  ; Input: BARCODE - Wand Barcode. Optional. Pass exactly as wand reads minus control characters.
  ; Output: Internal Entry Number
- ;
- ; Prelim Checks
- I '$G(RXN) S $EC=",U1," ; Required
- I $L($G(NDC)),$L(NDC)'=11 S $EC=",U1,"
  ;
  ; Get first VUID for this RxNorm drug
  N VUID S VUID=+$$RXN2VUI(RXN)
@@ -168,8 +158,8 @@ ADDDRUG2(RXN,VUID) ;
  ; ZEXCEPT: NDC,BARCODE
 NEXT ;
  N PSSZ S PSSZ=1    ; Needed for the drug file to let me in!
- ;
- W "(debug) VUID for RxNorm CUI "_RXN_" is "_VUID,!
+ ; 
+ ; W "(debug) VUID for RxNorm CUI "_RXN_" is "_VUID,!
  ;
  ; IEN in 50.68
  N C0XVUID ; For Searching Compound Index
@@ -177,7 +167,8 @@ NEXT ;
  S C0XVUID(2)=1
  N F5068IEN S F5068IEN=$$FIND1^DIC(50.68,"","XQ",.C0XVUID,"AMASTERVUID")
  Q:'F5068IEN
- W "F 50.68 IEN (debug): "_F5068IEN,!
+ ; 
+ ; W "F 50.68 IEN (debug): "_F5068IEN,!
  ;
  ; Guard against adding the drug back in again.
  N EXISTING S EXISTING=$$VAP2MED(F5068IEN)
@@ -193,6 +184,19 @@ NEXT ;
  I $L($G(BARCODE)) D
  . S C0XFDA(50.1,"+2,+1,",.01)=BARCODE
  . S C0XFDA(50.1,"+2,+1,",1)="Q"
+ ;
+ N NDCS S NDCS=$$RXN2NDC^SYNFMED(RXN)
+ N NDC S NDC=$P(NDCS,U,1)
+ ;
+ ; NDC field
+ I $G(NDC) S C0XFDA(50,"+1,",31)=$E(NDC,1,5)_"-"_$E(NDC,6,9)_"-"_$E(NDC,10,11)
+ ;
+ ; NDCs to synonyms
+ N C0XI F C0XI=1:1:$L(NDCS,U) D
+ . S NDC=$P(NDCS,U,C0XI)
+ . S C0XFDA(50.1,"+"_(C0XI+10)_",+1,",.01)=NDC
+ . S C0XFDA(50.1,"+"_(C0XI+10)_",+1,",1)="Q"
+ . S C0XFDA(50.1,"+"_(C0XI+10)_",+1,",2)=NDC
  ;
  ; Brand Names & NDCs
  ; N NDCS
@@ -212,8 +216,6 @@ NEXT ;
  ; . S C0XFDA(50.1,"+"_IENS_",+1,",.01)=$$UP^XLFSTR($E($P(BNS,U,I),1,40))
  ; . S C0XFDA(50.1,"+"_IENS_",+1,",1)="T"
  ;
- ; NDC (string)
- I $G(NDC) S C0XFDA(50,"+1,",31)=$E(NDC,1,5)_"-"_$E(NDC,6,9)_"-"_$E(NDC,10,11)
  ;
  ; Dispense Unit (string)
  S C0XFDA(50,"+1,",14.5)=$$GET1^DIQ(50.68,F5068IEN,"VA DISPENSE UNIT")
@@ -288,9 +290,12 @@ NEXT ;
  ; Add the orderable Item to the drug file.
  N C0XFDA,C0XERR S C0XFDA(50,C0XIEN(1)_",",2.1)=OI ; Orderable Item
  D FILE^DIE("",$NA(C0XFDA),$NA(C0XERR))
- S:$D(C0XERR) $EC=",U1,"
  ;
- ; Previously, we did the CPRS message here; but we don't need to anymore.
+ ; Mailman throws an error into DIERR, which ANNOYS me! So we won't check for errors here.
+ ; S:$D(C0XERR) $EC=",U1,"
+ ; Special $ZSTEP to find the problem: zp @$zpos b:($g(olddierr)'=$g(DIERR))  s olddierr=$g(DIERR) zstep into
+ ;
+ ; Previously, we did the CPRS HL7 message here; but we don't need to anymore. The OI xref does it for us.
  ;
 EX QUIT C0XIEN(1)
  ;
@@ -380,23 +385,46 @@ WRITERXPS(PSODFN,DRUG,RXDATE) ; [Public] Create a new prescription for a patient
  ;
 TEST D EN^%ut($T(+0),3) QUIT
  ;
+STARTUP ; M-Unit Startup
+ ; ZEXCEPT: DFN,DRGRXN
+ N DA,DIK
+ S DRGRXN=313195
+ S DFN=1
+ N DRG S DRG=$$ADDDRUG(DRGRXN) ; This finds it and also creates it; but normally it will be there from previous test runs
+ D KILLONEDRUG(DRG)
+ ;
+ ; Delete patient rx data
+ N PSOI F PSOI=0:0 S PSOI=$O(^PS(55,DFN,"P",PSOI)) Q:'PSOI  D
+ . N RXIEN S RXIEN=^PS(55,DFN,"P",PSOI,0)
+ . I $D(^PSRX(RXIEN,"OR1")) N ORNUM S ORNUM=$P(^("OR1"),U,2) S DA=ORNUM,DIK="^OR(100," D ^DIK
+ . S DIK="^PSRX(",DA=RXIEN D ^DIK
+ S DA=DFN,DIK="^PS(55," D ^DIK
+ ;
+ QUIT
+ ;
+SHUTDOWN ; M-Unit Shutdown
+ ; ZEXCEPT: DFN,DRGRXN
+ K DFN
+ K DRGRXN
+ QUIT
+ ;
 T0 ; @TEST Test $$ETSRXN2VUID^SYNFMED API
- D CHKEQ^%ut($$ETSRXN2VUID^SYNFMED(831533),"50.68~4031994~ERRIN 0.35MG TAB,28")
- D CHKEQ^%ut($$ETSRXN2VUID^SYNFMED(70618),"50.6~4019880~PENICILLIN")
- D CHKEQ^%ut($$ETSRXN2VUID^SYNFMED(198211),"50.68~4016607~SIMVASTATIN 40MG TAB,UD")
- D CHKEQ^%ut($$ETSRXN2VUID^SYNFMED(313195),"50.68~4004891~TAMOXIFEN CITRATE 20MG TAB")
- D CHKEQ^%ut($$ETSRXN2VUID^SYNFMED(1009219),"50.6~4030995~ALISKIREN/AMLODIPINE")
- D CHKEQ^%ut($$ETSRXN2VUID^SYNFMED(309110),"50.68~4007024~CEPHALEXIN 125MG/5ML SUSP")
- D CHKEQ^%ut($$ETSRXN2VUID^SYNFMED(2231),"50.6~4018891~CEPHALEXIN")
- D CHKEQ^%ut($$ETSRXN2VUID^SYNFMED(10582),"50.6~4022126~LEVOTHYROXINE")
+ D CHKTF^%ut($$ETSRXN2VUID^SYNFMED(831533)["50.68~4031994~ERRIN 0.35MG TAB,28")
+ D CHKTF^%ut($$ETSRXN2VUID^SYNFMED(70618)["50.6~4019880~PENICILLIN")
+ D CHKTF^%ut($$ETSRXN2VUID^SYNFMED(198211)["50.68~4016607~SIMVASTATIN 40MG TAB,UD")
+ D CHKTF^%ut($$ETSRXN2VUID^SYNFMED(313195)["50.68~4004891~TAMOXIFEN CITRATE 20MG TAB")
+ D CHKTF^%ut($$ETSRXN2VUID^SYNFMED(1009219)["50.6~4030995~ALISKIREN/AMLODIPINE")
+ D CHKTF^%ut($$ETSRXN2VUID^SYNFMED(309110)["50.68~4007024~CEPHALEXIN 125MG/5ML SUSP")
+ D CHKTF^%ut($$ETSRXN2VUID^SYNFMED(2231)["50.6~4018891~CEPHALEXIN")
+ D CHKTF^%ut($$ETSRXN2VUID^SYNFMED(10582)["50.6~4022126~LEVOTHYROXINE")
  QUIT
  ;
 T1 ; @TEST Test get VUIDs
- D CHKEQ^%ut($$RXN2VUI(1014675),4033356)
- D CHKEQ^%ut($$RXN2VUI(197379),4014051)
+ D CHKTF^%ut($$RXN2VUI^SYNFMED(1014675)[4033356)
+ D CHKTF^%ut($$RXN2VUI^SYNFMED(197379)[4014051)
  QUIT
  ;
-T2 ; @TEST Get Local Matches for VUID (no accurate tests as drug file is local)
+T2 ; @TEST Get Local Matches for VUID (no actual tests as drug file is local)
  W " "
  W $$MATCHV1(4004876)," "
  W $$MATCHV1(4033365)," "
@@ -404,7 +432,7 @@ T2 ; @TEST Get Local Matches for VUID (no accurate tests as drug file is local)
  D SUCCEED^%ut
  QUIT
  ;
-T3 ; @TEST Get Local Matches for RxNorm (no accurate tests as drug file is local)
+T3 ; @TEST Get Local Matches for RxNorm (no actual tests as drug file is local)
  W $$RXN2MEDS(1014675)," " ; Ceterizine capsule
  W $$RXN2MEDS(197379)," "  ; Atenolol 100
  W $$RXN2MEDS(1085640)," " ;  Triamcinolone Acetonide 0.005 MG/MG Topical Ointment
@@ -412,32 +440,20 @@ T3 ; @TEST Get Local Matches for RxNorm (no accurate tests as drug file is local
  QUIT
  ;
 T4 ; @TEST Write Rx Using Drug IEN
- ; DELETE ALL RX FOR PATIENT ONE
+ ; ZEXCEPT: DFN,DRGRXN
  N DA,DIK
- N DFN S DFN=1
- N PSOI F PSOI=0:0 S PSOI=$O(^PS(55,DFN,"P",PSOI)) Q:'PSOI  D
- . N RXIEN S RXIEN=^PS(55,DFN,"P",PSOI,0)
- . I $D(^PSRX(RXIEN,"OR1")) N ORNUM S ORNUM=$P(^("OR1"),U,2) S DA=ORNUM,DIK="^OR(100," D ^DIK
- . S DIK="^PSRX(",DA=RXIEN D ^DIK
- S DA=DFN,DIK="^PS(55," D ^DIK
- D WRITERXPS(1,10,DT)
+ N DRUG S DRUG=$$ADDDRUG(DRGRXN)
+ D WRITERXPS(DFN,DRUG,DT)
  N RX0 S RX0=^PSRX(1,0)
  N PAT S PAT=$P(RX0,U,2)
  N DRG S DRG=$P(RX0,U,6)
  D CHKEQ^%ut(PAT,1)
- D CHKEQ^%ut(DRG,10)
+ D CHKEQ^%ut(DRG,DRUG)
  QUIT
  ;
 T5 ; @TEST Write Rx Using Drug RxNorm SCD
- ; DELETE ALL RX FOR PATIENT ONE
- N DA,DIK
- N DFN S DFN=1
- N PSOI F PSOI=0:0 S PSOI=$O(^PS(55,DFN,"P",PSOI)) Q:'PSOI  D
- . N RXIEN S RXIEN=^PS(55,DFN,"P",PSOI,0)
- . I $D(^PSRX(RXIEN,"OR1")) N ORNUM S ORNUM=$P(^("OR1"),U,2) S DA=ORNUM,DIK="^OR(100," D ^DIK
- . S DIK="^PSRX(",DA=RXIEN D ^DIK
- S DA=DFN,DIK="^PS(55," D ^DIK
- D WRITERXRXN(1,313195,DT) ; Tamoxifen Citrate 20mg tab
+ ; ZEXCEPT: DFN,DRGRXN
+ D WRITERXRXN(DFN,DRGRXN,DT) ; Tamoxifen Citrate 20mg tab
  N RX0 S RX0=^PSRX(1,0)
  N PAT S PAT=$P(RX0,U,2)
  N DRG S DRG=$P(RX0,U,6)
@@ -461,3 +477,128 @@ VUI2VAPD ; @DATA - Data for above test
  ;;4002469;1884
  ;;4009488;9046^10090
  ;;<<END>>
+ ;
+T6 ; @TEST Get NDCs for a drug
+ D CHKTF^%ut($$RXN2NDC^SYNFMED(198211)["16252050890")
+ QUIT
+ ;
+KILLDRUG ; [Public] Remove all Drug Data
+ ; WARNING: DO NOT CALL THIS UNLESS YOU ARE ON A BRAND NEW SYSTEM AND ARE TESTING.
+ D DT^DICRW ; Min FM Vars
+ D MES^XPDUTL("Killing Drug (50)") D DRUG
+ D MES^XPDUTL("Killing Pharmacy Orderable Item (OI) (50.7)") D PO
+ D MES^XPDUTL("Killing Drug Text (51.7)") D DRUGTEXT
+ D MES^XPDUTL("Killing IV Additives (52.6)") D IVADD
+ D MES^XPDUTL("Killing IV Solutions (52.7)") D IVSOL
+ D MES^XPDUTL("Killing Drug Electrolytes (50.4)") D DRUGELEC
+ D MES^XPDUTL("Removing Pharmacy OIs from the Orderable Item (101.43)") D O
+ D MES^XPDUTL("Syncing the Order Quick View (101.44)") D CPRS
+ QUIT
+ ;
+KILLONEDRUG(DRG) ; [Public] Kill just one drug
+ ; Called by the Unit Test
+ ; 
+ ; Get OI
+ N DIK,DA
+ N OI S OI=+^PSDRUG(DRG,2)
+ ;
+ ; Delete drug
+ S DA=DRG,DIK="^PSDRUG(" D ^DIK
+ I 'OI QUIT
+ ;
+ ; Delete OI
+ S DA=OI,DIK="^PS(50.7," D ^DIK
+ ;
+ ; Delete CPRS synced version of OI
+ N OERROI S OERROI=$O(^ORD(101.43,"ID",OI_";99PSP",""))
+ I OERROI S DIK="^ORD(101.43,",DA=OERROI D ^DIK
+ ;
+ ; Update CPRS view of pharmacy OIs
+ D CPRS
+ QUIT 
+ ;
+RESTOCK ; [Public] Restock CPRS Orderable Items from new Drug & Pharmacy Orderable Item 
+ ; File. Public Entry Point. 
+ ; Call this after repopulating the drug file (50) and the pharmacy orderable 
+ ; item file (50.7)
+ N PSOIEN ; Looper variable
+ D DT^DICRW ; Establish FM Basic Variables
+ ; 
+ ; Loop through Orderable Item file and call 
+ ; 1. The Active/Inactive Updater for the Orderable Item
+ ; 2. the protocol file updater to CPRS Files
+ S PSOIEN=0 F  S PSOIEN=$O(^PS(50.7,PSOIEN)) Q:'PSOIEN  D 
+ . D MES^XPDUTL("Syncing Pharamcy Orderable Item "_PSOIEN)
+ . D EN^PSSPOIDT(PSOIEN),EN2^PSSHL1(PSOIEN,"MUP")
+ D CPRS ; Update Orderable Item View files 
+ QUIT
+ ;
+ ; -- END Public Entry Points --
+ ; 
+ ; -- The rest is private --
+DRUG ; Kill Drug File; Private
+ N DA,DIK
+ S DIK="^PSDRUG("
+ F DA=0:0 S DA=$O(^PSDRUG(DA)) Q:'DA  D ^DIK
+ S $P(^PSDRUG(0),U,3,4)=""
+ K ^DIA(50)
+ QUIT
+ ;
+PO ; Kill Pharmacy Orderable Items; Private
+ N %1 S %1=^PS(50.7,0)
+ K ^PS(50.7)
+ S ^PS(50.7,0)=%1
+ S $P(^PS(50.7,0),"^",3,4)=""
+ QUIT
+ ;
+DRUGTEXT ; Kill Drug Text Entries ; Private
+ N %1 S %1=^PS(51.7,0)
+ K ^PS(51.7)
+ S ^PS(51.7,0)=%1
+ S $P(^PS(51.7,0),"^",3,4)=""
+ QUIT
+ ;
+IVADD ; Kill IV Additives ; Private
+ N %1 S %1=^PS(52.6,0)
+ K ^PS(52.6)
+ S ^PS(52.6,0)=%1
+ S $P(^PS(52.6,0),"^",3,4)=""
+ QUIT
+ ;
+IVSOL ; Kill IV Solutions ; Private
+ N %1 S %1=^PS(52.7,0)
+ K ^PS(52.7)
+ S ^PS(52.7,0)=%1
+ S $P(^PS(52.7,0),"^",3,4)=""
+ QUIT
+ ;
+DRUGELEC ; Kill Drug Electrolytes ; Private
+ N %1 S %1=^PS(50.4,0)
+ K ^PS(50.4)
+ S ^PS(50.4,0)=%1
+ S $P(^PS(50.4,0),"^",3,4)=""
+ QUIT
+ ;
+O ; Kill off Pharamcy Order Items (Only!) in the Orderable Item file; Private
+ N DA ; Used in For loop below
+ N DIK S DIK="^ORD(101.43,"
+ N I S I=0
+ FOR  S I=$O(^ORD(101.43,"ID",I)) QUIT:I=""  DO
+ . I I["PSP" S DA=$O(^ORD(101.43,"ID",I,"")) D ^DIK
+ QUIT
+ ;
+CPRS ; Now, update the CPRS lists (sync with Orderable Item file) - 
+ ; Uses a CPRS API to do this; Private
+ ; Next 3 variables are required as inputs
+ N ATTEMPT S ATTEMPT=0 ; Attempt to Update
+ N UPDTIME S UPDTIME=$HOROLOG ; Update Time
+ N DGNM ; Dialog Name
+ ; IVA RX -> Additives; IVB RX -> Solutions
+ ; IVM RX -> Inpatient Meds for Outpatients
+ ; NV RX -> Non-VA Meds ; O RX -> Outpatient
+ ; UD RX -> Unit Dose
+ FOR DGNM="IVA RX","IVB RX","IVM RX","NV RX","O RX","UD RX" DO
+ . D MES^XPDUTL(" --> Rebuilding "_DGNM)
+ . D FVBLD^ORWUL
+ QUIT
+ ;
