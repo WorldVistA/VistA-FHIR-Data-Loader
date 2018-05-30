@@ -252,15 +252,18 @@ IMPORT(rtn,ien)	; encounters, immunizations, problems for patient ien
 	q
 	;
 	;
-LOADALL	
+LOADALL(count) ; count is how many to do. default is 1000
+	i '$d(count) s count=1000
 	n root s groot=$$setroot^%wd("fhir-intake")
+	n cnt s cnt=0
 	n %1 s %1=0
-	f  s %1=$o(@groot@(%1)) q:+%1=0  d  ;
+	f  s %1=$o(@groot@(%1)) q:+%1=0  q:cnt=count  d  ;
 	. n eroot s eroot=$na(@groot@(%1,"load","encounters"))
 	. q:$d(@eroot)
 	. q:%1=33
 	. q:%1=82
 	. q:$g(@eroot@("loadstatus"))="started"
+	. s cnt=cnt+1
 	. s @eroot@("loadstatus")="started"
 	. n filter
 	. s filter("load")=1
@@ -268,6 +271,21 @@ LOADALL
 	. n rtn
 	. d importEncounters^SYNFENC(.rtn,%1,.filter)
 	. d importImmu^SYNFIMM(.rtn,%1,.filter)
-	. d importConditions^SYNFPR2(.rtn,%1,.filter)
+	. d importConditions^SYNFPRB(.rtn,%1,.filter)
 	q
+	;
+NEXT(start) ; extrinsic which returns the next patient for encounter loading	
+	    ; start is the dfn to start looking, default is zerro
+	i '$d(start) s start=0
+	n root s groot=$$setroot^%wd("fhir-intake")
+	n %1 s %1=start
+	n returnien s returnien=0
+	f  s %1=$o(@groot@(%1)) q:+%1=0  q:+returnien>0  d  ;
+	. n eroot s eroot=$na(@groot@(%1,"load","encounters"))
+	. q:$d(@eroot)
+	. q:%1=33
+	. q:%1=82
+	. q:$g(@eroot@("loadstatus"))="started"
+	. s returnien=%1
+	q returnien
 	;
