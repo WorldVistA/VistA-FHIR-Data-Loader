@@ -8,6 +8,8 @@ SYNFHIR	;ven/gpl - fhir loader utilities ; 2/24/18 8:23pm
 wsPostFHIR(ARGS,BODY,RESULT)	; recieve from addpatient
 	;
 	s U="^"
+	S DUZ=1
+	S DUZ("AG")="V"
 	;
 	new json,ien,root,gr,id,return
 	set root=$$setroot^%wd("fhir-intake")
@@ -41,8 +43,8 @@ wsPostFHIR(ARGS,BODY,RESULT)	; recieve from addpatient
 	. do importEncounters^SYNFENC(.return,ien,.ARGS)
 	. do importImmu^SYNFIMM(.return,ien,.ARGS)
 	. do importConditions^SYNFPRB(.return,ien,.ARGS)
-	. do importAllergies^SYNFALG(.return,ien,.ARGS)
-	. do importAppointments^SYNFAPT(.return,ien,.ARGS)
+	. do importAllergy^SYNFALG(.return,ien,.ARGS)
+	. do importAppointment^SYNFAPT(.return,ien,.ARGS)
 	;
 	do ENCODE^VPRJSON("return","RESULT")
 	set HTTPRSP("mime")="application/json"
