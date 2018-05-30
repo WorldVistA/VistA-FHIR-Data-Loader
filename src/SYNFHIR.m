@@ -8,6 +8,8 @@ SYNFHIR	;ven/gpl - fhir loader utilities ; 2/24/18 8:23pm
 wsPostFHIR(ARGS,BODY,RESULT)	; recieve from addpatient
 	;
 	s U="^"
+	S DUZ=1
+	S DUZ("AG")="V"
 	;
 	new json,ien,root,gr,id,return
 	set root=$$setroot^%wd("fhir-intake")
@@ -41,8 +43,8 @@ wsPostFHIR(ARGS,BODY,RESULT)	; recieve from addpatient
 	. do importEncounters^SYNFENC(.return,ien,.ARGS)
 	. do importImmu^SYNFIMM(.return,ien,.ARGS)
 	. do importConditions^SYNFPRB(.return,ien,.ARGS)
-	. do importAllergies^SYNFALG(.return,ien,.ARGS)
-	. do importAppointments^SYNFAPT(.return,ien,.ARGS)
+	. do importAllergy^SYNFALG(.return,ien,.ARGS)
+	. do importAppointment^SYNFAPT(.return,ien,.ARGS)
 	;
 	do ENCODE^VPRJSON("return","RESULT")
 	set HTTPRSP("mime")="application/json"
@@ -243,5 +245,35 @@ getEntry(ary,ien,rien) ; returns one entry in ary, passed by name
  n root s root=$$setroot^%wd("fhir-intake")
  i '$d(@root@(ien,"json","entry",rien)) q  ;
  m @ary@("entry",rien)=@root@(ien,"json","entry",rien)
+ q
+ ;
+loadStatus(ary,ien,rien) ; returns the "load" section of the patient graph
+ ; if rien is not specified, all entries are included
+ n root s root=$$setroot^%wd("fhir-intake")
+ i '$d(@root@(ien)) q  
+ i $g(rien)="" d  q  ;
+ . k @ary
+ . m @ary@(ien)=@root@(ien,"load")
+ n zi s zi=""
+ f  s zi=$o(@root@(ien,"load",zi)) q:$d(@root@(ien,"load",zi,rien))
+ k @ary
+ m @ary@(ien,rien)=@root@(ien,"load",zi,rien)
+ q
+ ;
+wsLoadStatus(rtn,filter) ; displays the load status 
+ ; filter must have ien or dfn to specify the patient
+ ; optionally, entry number (rien) for a single entry
+ ; if ien and dfn are both specified, dfn is used
+ n root s root=$$setroot^%wd("fhir-intake")
+ n ien s ien=$g(filter("ien"))
+ n dfn s dfn=$g(filter("dfn"))
+ i dfn'="" s ien=$$dfn2ien^SYNFUTL(dfn)
+ n rien s rien=$g(filter("rien"))
+ q:ien=""
+ n load
+ d loadStatus("load",ien,rien)
+ s filter("root")="load"
+ s filter("local")=1
+ d wsGLOBAL^SYNVPR(.rtn,.filter)
  q
  ;

@@ -157,11 +157,11 @@ wsIntakeConditions(args,body,result,ien)	; web service entry (post)
 	. s DHPONS=hl7OnsetDateTime
 	. s eval("conditions",zi,"parms","DHPONS")=DHPONS
 	. ;
-	. s DHPPROV=$$MAP^SYNQLDM("OP","provider") ; map should return the NPI number
+	. s DHPROV=$$MAP^SYNQLDM("OP","provider") ; map should return the NPI number
 	. ;n DHPPROVIEN s DHPPROVIEN=$o(^VA(200,"B",IMMPROV,""))
 	. ;if DHPPROVIEN="" S DHPPROVIEN=3
-	. s eval("conditions",zi,"parms","DHPPROV")=DHPPROV
-	. d log(jlog,"Provider NPI for outpatient is: "_DHPPROV)
+	. s eval("conditions",zi,"parms","DHPROV")=DHPROV
+	. d log(jlog,"Provider NPI for outpatient is: "_DHPROV)
 	. ;
 	. ;s DHPLOC=$$MAP^SYNQLDM("OP","location")
 	. ;n DHPLOCIEN s DHPLOCIEN=$o(^SC("B",DHPLOC,""))
