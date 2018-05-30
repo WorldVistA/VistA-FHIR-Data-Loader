@@ -1,4 +1,4 @@
-SYNDHP62 ;DHP/ART -  Write Problems, Appointments To VistA ;5/4/18  10:44
+SYNDHP62 ;DHP/ART -  Write Problems, Appointments To VistA ;05/29/2018
  ;;1.0;DHP;**1**;Jan 17, 2017;Build 5
  ;;Original routine authored by Andrew Thompson & Ferdinand Frankson of DXC Technology 2017-2018
  ;
@@ -29,9 +29,11 @@ PRBUPDT(RETSTA,DHPPAT,DHPVST,DHPROV,DHPONS,DHPABT,DHPCLNST,DHPSCT) ;Problem/Cond
  N PACKAGE,SOURCE,USER,ERRDISP,ZZERR,PPEDIT,ZZERDESC,ACCOUNT
  N PROBDATA,PRBPRIEN,STATII,MAPVUID,P,DHPICD,DHPCS
  ;
- S PACKAGE=507 ;PCE PATIENT CARE ENCOUNTER
+ ;S PACKAGE=507 ;PCE PATIENT CARE ENCOUNTER
+ S PACKAGE=$$FIND1^DIC(9.4,,"","PCE")
  S SOURCE="DHP DATA INGEST"
- S USER=DUZ
+ ;S USER=DUZ
+ S USER=$G(DUZ,1),DUZ("AG")="V"
  S ERRDISP=1 ;for testing only, set to null otherwise  <<<<<<<<<<<<<<<<<<<<<<<
  S PPEDIT=""
  S ACCOUNT=""
@@ -54,11 +56,14 @@ PRBUPDT(RETSTA,DHPPAT,DHPVST,DHPROV,DHPONS,DHPABT,DHPCLNST,DHPSCT) ;Problem/Cond
  ;S PROBDATA("DX/PL",1,"DIAGNOSIS")=DHPICD
  ;S PROBDATA("DX/PL",1,"DIAGNOSIS")=DHPSCT
  I $G(DHPSCT)'="" D
- . S DHPICD=$$MAP^SYNDHPMP("sct2icd",DHPSCT)
- . I +DHPICD=-1 S RETSTA="-1^SNOMED CT CODE "_DHPSCT_" not mapped" Q
- . S DHPCS=$S(DHPONS>3150930:30,1:1)
- . S DHPICD=+$$ICDDX^ICDEX($P(DHPICD,U,2),DHPCS)
- . S PROBDATA("DX/PL",1,"DIAGNOSIS")=DHPICD
+ .S DHPICD=$$MAP^SYNDHPMP("sct2icd",DHPSCT)
+ .I +DHPICD=-1 S RETSTA="-1^SNOMED CT CODE "_DHPSCT_" not mapped" Q
+ .S DHPCS=$S(DHPONS>3150930:30,1:1)
+ .S DHPICD=+$$ICDDX^ICDEX($P(DHPICD,U,2),DHPCS)
+ .S PROBDATA("DX/PL",1,"DIAGNOSIS")=DHPICD
+ .S DHPDXF=$$PRMDX(DHPVST,DHPICD)
+ .I DHPDXF=-1 S RETSTA="-1^Problem with DX code "_DHPICD_" already exists for visit "_DHPVST Q
+ .S PROBDATA("DX/PL",1,"PRIMARY")=DHPDXF
  ;
  I $G(DHPROV)'="" D
  . S PRBPRIEN=$O(^VA(200,"ANPI",DHPROV,""))
@@ -73,6 +78,7 @@ PRBUPDT(RETSTA,DHPPAT,DHPVST,DHPROV,DHPONS,DHPABT,DHPCLNST,DHPSCT) ;Problem/Cond
  S RETSTA=RETSTA_"^"_$G(DHPVST)
  I $D(ZZERDESC) M RETSTA("ZZERDESC")=ZZERDESC
  I $D(ZZERR) M RETSTA("ZZERR")=ZZERR
+ M RETSTA("PROBDATA")=PROBDATA
  ;
  ; $$DATA2PCE Output:   
  ;+   1  if no errors and processed completely
@@ -80,6 +86,25 @@ PRBUPDT(RETSTA,DHPPAT,DHPVST,DHPROV,DHPONS,DHPABT,DHPCLNST,DHPSCT) ;Problem/Cond
  ;+  -2  if could not get a visit
  ;+  -3  if called incorrectly
  QUIT
+ ;
+PRMDX(X,D) ; Check if primary diagnosis
+ ; Input:
+ ;   X - visit IEN
+ ;   D - DX code IEN
+ ; Output
+ ;   1 if code D can be filed as primary DX
+ ;   0 if code D can be filed as secondary DX
+ ;  -1 if there is already a problem with DX code D files for the visit
+ ;
+ N IND,PRMDX,DIAG
+ S IND=0
+ F  S IND=$O(^AUPNVPOV("AD",X,IND)) Q:IND=""  D
+ .I $P(^AUPNVPOV(IND,0),U,12)="P" D
+ ..S DIAG=$P(^AUPNVPOV(IND,0),U,1)
+ ..S PRMDX(DIAG)=""
+ I '$D(PRMDX) Q 1  ; D is the primary DX
+ I '$D(PRMDX(D)) Q 0  ; D is a secondary DX
+ Q -1  ; problem with DX D already exists for visit
  ;
  ; -------- Appointment create
  ;
@@ -496,4 +521,8 @@ CHECKCO(COERRMSG,PATDFN,APPTDT)	;
 TEST ;
 T1 D PRBUPDT(.ZXC,"5482156687V807096",2,9990006675,,"A","5OO_EXT",267036007)
  Q
- ;
+ ;"PAT":"5482156687V807096","VST":"17004","ROV":"9990006675","ONS":"20130117","ABT":"20131021","CLNST":"I","SCT":"267036007"
+T2 D PRBUPDT(.ZXC,"11004V412157",17004,9990006675,20160117,20161021,"I",1657008)
+ Q
+T3 D PRBUPDT(.ZXC,"11004V412157",,9990006675,20160117,20161021,"I",1657008)
+ Q
