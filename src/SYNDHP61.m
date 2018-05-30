@@ -2,6 +2,8 @@ SYNDHP61 ; Write To VistA ;5/4/18  10:43
  ;;1.0;DHP;**1**;Jan 17, 2017;Build 5
  ;;Original routine authored by Andrew Thompson & Ferdinand Frankson of DXC Technology 2017-2018
  ;
+ QUIT
+ ;
  ; vitals update
 VITUPD(RETSTA,DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPROV,DHPLOC) ; vitals update
  ;
@@ -10,9 +12,9 @@ VITUPD(RETSTA,DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPROV,DHPLOC) ; vitals update
  ;  DHPSCT  - SNOMED CT code        (mandatory)
  ;  DHPOBS  - Observation Value     (mandatory)
  ;  DHPUNT  - Observation units     (mandatory)
- ;  DHPDTM  - Observation Date/Time (mandatory)
- ;  DHPROV  - provider              (mandatory)
- ;  DHPLOC  - location              (mandatory) 
+ ;  DHPDTM  - Observation Date/Time (mandatory) HL7 format
+ ;  DHPROV  - provider              (mandatory) NPI#
+ ;  DHPLOC  - location              (mandatory) name
  ; Output:   
  ;  1 - success
  ; -1 - failure
@@ -56,21 +58,26 @@ VITSCT ; set up recognised SCT codes for VITALS
  ;
 VITFDA ; build FDA array for Vitals
  K FDA,ZZERR,ORIEN
+ N PATIEN,PRVIEN,LOCIEN
  S FN=120.5
- S DHPLOC=$G(DHPLOC,10000000286)
- S DHPROV=$G(DHPROV,101)
+ ;S DHPLOC=$G(DHPLOC,10000000286)
+ ;S DHPROV=$G(DHPROV,101)
  S DHPOBS=$$SI2IMP(DHPSCT,DHPOBS)
  S ORIEN(1)=$$NEXTIEN()
  S PATIEN=$O(^DPT("AFICN",DHPPAT,""))
- S FDA(FN,"+1,",.01)=$$HL7TFM^XLFDT(DHPDTM)
- S FDA(FN,"+1,",.02)=PATIEN
- S FDA(FN,"+1,",.03)=+SCTA(DHPSCT)
- S FDA(FN,"+1,",.04)=$$HL7TFM^XLFDT(DHPDTM)
- S FDA(FN,"+1,",.05)=DHPLOC ;
- ;S PRVIEN="" I DHPROV'="" S PRVIEN=$O(^VA(200,"ANPI",DHPROV,"")) apply this fix
- ;S FDA(FN,"+1,",.06)=PRVIEN
- S FDA(FN,"+1,",.06)=DHPROV ; 
- S FDA(FN,"+1,",1.2)=DHPOBS
+ S PRVIEN=0
+ I $G(DHPROV)'="" S PRVIEN=$O(^VA(200,"ANPI",DHPROV,""))
+ I 'PRVIEN S PRVIEN=$O(^XUSEC("PROVIDER",0))
+ I 'PRVIEN S $EC=",U-SET-UP-A-BLOODY-PROVIDER,"
+ S LOCIEN=$O(^SC("B",DHPLOC,""))
+ ;
+ S FDA(FN,"+1,",.01)=$$HL7TFM^XLFDT(DHPDTM) ;date/time vitals taken
+ S FDA(FN,"+1,",.02)=PATIEN ;patient
+ S FDA(FN,"+1,",.03)=+SCTA(DHPSCT) ;vital type
+ S FDA(FN,"+1,",.04)=$$HL7TFM^XLFDT(DHPDTM) ;date/time vitals entered
+ S FDA(FN,"+1,",.05)=DHPLOC ;hospital location
+ S FDA(FN,"+1,",.06)=PRVIEN ;entered by
+ S FDA(FN,"+1,",1.2)=DHPOBS ;rate
  Q
  ;
 NEXTIEN() ; 
@@ -152,7 +159,7 @@ PROBFDA ; build FDA array for Problems
  ;.;S DHPSCDES=""
  ;.S DHPSCDES=$P($G(LEX("P")),U,3)
  N LEX
- S LEX=$$CODE^LEXTRAN(DHPSCT,"SCT",,,1,1)
+ S LEX=$$CODE^LEXTRAN(DHPSCT,"SCT",,,,1,1)
  S DHPSCDES=$P($G(LEX("P")),U,3)
  S LEXIEN=$P(LEX("P"),U,2)
  S EXPRSN=$P(LEX("P"),U)
@@ -224,14 +231,17 @@ IMMUNUPD(RETSTA,DHPPAT,VISIT,IMMUNIZ,ANATLOC,ADMINRT,DOSE,EVENTDT,IMMPROV) ;Immu
  QUIT:RETSTA=-1
  ;
  S RETSTA=$$DATA2PCE^PXAI("IMMDATA",PACKAGE,SOURCE,.VISIT,USER,$G(ERRDISP),.ZZERR,$G(PPEDIT),.ZZERDESC,.ACCOUNT)
- I $D(ZZERR) ZW ZZERR
+ ;I $D(ZZERR) ZW ZZERR
+ I $D(ZZERDESC) M RETSTA("ZZERDESC")=ZZERDESC
+ I $D(ZZERR) M RETSTA("ZZERR")=ZZERR
+ M RESTSTA("IMMDATA")=IMMDATA
+ QUIT
+ ;
  ; $$DATA2PCE Output:   
  ;+   1  if no errors and processed completely
  ;+  -1  if errors occurred but processed completely as possible
  ;+  -2  if could not get a visit
  ;+  -3  if called incorrectly
- QUIT
- ;
  ;
 SETUP ; set data for $$DATA2PCE call
  ;
@@ -324,6 +334,7 @@ ENCTUPD(RETSTA,DHPPAT,STARTDT,ENDDT,ENCPROV,CLINIC,SCTDX,SCTCPT) ;Encounter upda
  S RETSTA=RETSTA_"^"_$G(VISIT)
  I $D(ZZERDESC) M RETSTA("ZZERDESC")=ZZERDESC
  I $D(ZZERR) M RETSTA("ZZERR")=ZZERR
+ M RETSTA("ENCDATA")=ENCDATA
  ;
  ;change APPTDATE back to HL7 format for these next calls
  S APPTDATE=$$FMTHL7^XLFDT(APPTDATE)
