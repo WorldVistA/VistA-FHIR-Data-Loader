@@ -1,4 +1,4 @@
-SYNDHP63 ;DHP/ART -  Write Lab Tests to VistA ;05/15/2018
+SYNDHP63 ;DHP/ART -  Write Lab Tests to VistA ;05/30/2018
  ;;1.0;DHP;**1**;Jan 17, 2017;
  ;;Original routine authored by Andrew Thompson & Ferdinand Frankson of DXC Technology 2017-2018
  ;
@@ -6,24 +6,26 @@ SYNDHP63 ;DHP/ART -  Write Lab Tests to VistA ;05/15/2018
  ;
  ; -------- Create lab test for a patient
  ;
-LABADD(RETSTA,DHPPAT,DHPLOC,DHPTEST,DHPRSLT,DHPRSDT) ;Create lab test
+LABADD(RETSTA,DHPPAT,DHPLOC,DHPTEST,DHPRSLT,DHPRSDT,DHPLOINC) ;Create lab test
+ ; This is a wrapper to setup a call to the ISI Lab Import processing
  ;
  ; Input:
  ;   DHPPAT  - Patient ICN (required)
  ;   DHPLOC  - Location Name (required)
- ;   DHPTEST - Test name (required)
+ ;   DHPTEST - Test name (required if no valid LOINC code passed)
  ;   DHPRSLT - Test result value (required)
  ;   DHPRSDT - Test result date (required, HL7 format)
+ ;   DHPLOINC - LOINC code
  ;
  ; Output:   RETSTA
  ;  1 - success
  ; -1 - failure -1^message
  ;
- N PATDFN,PATSSN,LABARRAY,RC,DHPRC
+ N PATDFN,PATSSN,LABARRAY,RC,DHPRC,LOINCIEN,TESTIEN,LABTEST
  ;
  I $G(DHPPAT)="" S RETSTA="-1^Missing patient identifier." QUIT
  I $G(DHPLOC)="" S RETSTA="-1^Missing location." QUIT
- I $G(DHPTEST)="" S RETSTA="-1^Missing lab test name." QUIT
+ I $G(DHPLOINC)="",$G(DHPTEST)="" S RETSTA="-1^Missing lab test name." QUIT
  I $G(DHPRSLT)="" S RETSTA="-1^Missing lab test result value." QUIT
  I $G(DHPRSDT)="" S RETSTA="-1^Missing lab test result date/time." QUIT
  ;
@@ -38,16 +40,26 @@ LABADD(RETSTA,DHPPAT,DHPLOC,DHPTEST,DHPRSLT,DHPRSDT) ;Create lab test
  ;chop off seconds
  S LABTM=$E($P(LABDTTM,".",2),1,4)
  S $P(LABDTTM,".",2)=LABTM
- S LABDTTM=$$HL7TFM^XLFDT($$FMTHL7^XLFDT(LABDTTM))
+ S LABDTTM=$$HL7TFM^XLFDT($$FMTHL7^XLFDT(LABDTTM)) ;drop any trailing 0's in time
+ ;
+ ;Get lab test name for LOINC code
+ I $G(DHPLOINC)'="" D
+ . S LOINCIEN=$O(^LAB(95.3,"B",$P(DHPLOINC,"-",1),""))
+ . QUIT:LOINCIEN=""
+ . S TESTIEN=$O(^LAB(60,"AF",LOINCIEN,""))
+ . QUIT:TESTIEN=""
+ . S LABTEST=$$GET1^DIQ(60,TESTIEN_",",.01)
+ I $G(LABTEST)="" S LABTEST=$$UP^XLFSTR(DHPTEST)
  ;
  S LABARRAY("PAT_SSN")=PATSSN
- S LABARRAY("LAB_TEST")=DHPTEST
+ S LABARRAY("LAB_TEST")=LABTEST
  S LABARRAY("RESULT_DT")=LABDTTM
  S LABARRAY("RESULT_VAL")=DHPRSLT
  S LABARRAY("LOCATION")=DHPLOC
  ;
  W "SSN:      ",LABARRAY("PAT_SSN"),!
  W "LOCATION: ",LABARRAY("LOCATION"),!
+ W "LOINC:    ",DHPLOINC,!
  W "TEST:     ",LABARRAY("LAB_TEST"),!
  W "RESULT:   ",LABARRAY("RESULT_VAL"),!
  W "DATE:     ",LABARRAY("RESULT_DT"),!
