@@ -1,4 +1,4 @@
-SYNDHP62 ;DHP/ART -  Write Problems, Appointments To VistA ;2018-06-04  2:41 PM
+SYNDHP62 ;DHP/ART -  Write Problems, Appointments To VistA ;2018-06-12  11:54 AM
  ;;1.0;DHP;**1**;Jan 17, 2017;Build 5
  ;;Original routine authored by Andrew Thompson & Ferdinand Frankson of DXC Technology 2017-2018
  ;
@@ -533,4 +533,3 @@ T3 ;
  S ERRDISP=1
  D PRBUPDT(.ZXC,"11004V412157",,9990006675,20160117,20161021,"I",1657008)
  Q
->>>>>>> ea4936c... synching
