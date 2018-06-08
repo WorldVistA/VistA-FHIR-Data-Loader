@@ -29,8 +29,6 @@ wsIntakeAppointment(args,body,result,ien)	; web service entry (post)
 	; args include patientId
 	; ien is specified for internal calls, where the json is already in a graph
 	n jtmp,json,jrslt,eval
-	;i $g(ien)'="" if $$loadStatus("appointment","",ien)=1 d  q  ;
-	;. s result("appointmenttatus","status")="alreadyLoaded"
 	i $g(ien)'="" d  ; internal call
 	. d getIntakeFhir^SYNFHIR("json",,"Appointment",ien,1)
 	e  d  ; 

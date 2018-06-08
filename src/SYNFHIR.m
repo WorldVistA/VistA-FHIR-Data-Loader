@@ -264,8 +264,11 @@ wsLoadStatus(rtn,filter) ; displays the load status
  ; filter must have ien or dfn to specify the patient
  ; optionally, entry number (rien) for a single entry
  ; if ien and dfn are both specified, dfn is used
+ ; now supports latest=1 to show the load status of the lastest added patient
  n root s root=$$setroot^%wd("fhir-intake")
  n ien s ien=$g(filter("ien"))
+ i $g(filter("latest"))=1 d  ;
+ . set ien=$o(@root@(" "),-1)
  n dfn s dfn=$g(filter("dfn"))
  i dfn'="" s ien=$$dfn2ien^SYNFUTL(dfn)
  n rien s rien=$g(filter("rien"))

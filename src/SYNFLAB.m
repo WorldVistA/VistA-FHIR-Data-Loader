@@ -69,7 +69,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . . do log(jlog,"Resource type not Observation, skipping entry")
  . set eval("labs",zi,"vars","resourceType")=type
  . ;
- . ; determine the Observation category and quit if not vital-signs
+ . ; determine the Observation category and quit if not labs
  . ;
  . new obstype set obstype=$get(json("entry",zi,"resource","category",1,"coding",1,"code"))
  . if obstype="" do  ; category is missing, try mapping the code
@@ -139,18 +139,23 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . ;
  . ; set up to call the data loader
  . ;
- . n RETSTA,DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPPROV,DHPLOC
+ . n RETSTA,DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPPROV,DHPLOC,DHPLOINC
  . ;
  . s DHPPAT=$$dfn2icn^SYNFUTL(dfn)
  . s eval("labs",zi,"parms","DHPPAT")=DHPPAT
  . ;
- . n vistalab s vistalab=$$MAP^SYNQLDM(obscode)
+ . ;n vistalab s vistalab=$$MAP^SYNQLDM(obscode)
+ . s DHPLOINC=obscode
+ . n vistalab s vistalab=$$graphmap^SYNGRAPH("loinc-code-map",obscode)
+ . i +vistalab=-1 s vistalab=$$graphmap^SYNGRAPH("loinc-code-map"," "_obscode)
+ . if +vistalab=-1 s vistalab=labtype
+ . s vistalab=$$trim^%ts(vistalab) ; get rid of trailing blanks
  . ;n sct s sct=$$loinc2sct(obscode) ; find the snomed code
- . i vistalab="" d  quit
- . . d log(jlog,"VistA lab not found for loinc code: "_obscode_" "_labtype_" -- skipping")
- . . s eval("labs",zi,"status","loadstatus")="cannotLoad"
- . . s eval("labs",zi,"status","issue")="VistA lab not found for loinc code: "_obscode_" "_labtype_" -- skipping"
- . . s eval("status","errors")=$g(eval("status","errors"))+1
+ . ;i vistalab="" d  quit
+ . ;. d log(jlog,"VistA lab not found for loinc code: "_obscode_" "_labtype_" -- skipping")
+ . ;. s eval("labs",zi,"status","loadstatus")="cannotLoad"
+ . ;. s eval("labs",zi,"status","issue")="VistA lab not found for loinc code: "_obscode_" "_labtype_" -- skipping"
+ . ;. s eval("status","errors")=$g(eval("status","errors"))+1
  . s eval("labs",zi,"parms","DHPLAB")=vistalab
  . d log(jlog,"VistA Lab is: "_vistalab)
  . s DHPLAB=vistalab
@@ -186,8 +191,9 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . . . d log(jlog,"Lab already loaded, skipping")
  . . d log(jlog,"Calling LABADD^SYNDHP63 to add lab")
  . . ;LABADD(RETSTA,DHPPAT,DHPLOC,DHPTEST,DHPRSLT,DHPRSDT) ;Create lab test
- . . D LABADD^SYNDHP63(.RETSTA,DHPPAT,DHPLOC,DHPLAB,DHPOBS,DHPDTM)	; labs update
+ . . D LABADD^SYNDHP63(.RETSTA,DHPPAT,DHPLOC,DHPLAB,DHPOBS,DHPDTM,DHPLOINC)	; labs update
  . . d log(jlog,"Return from LABADD^ZZDHP63 was: "_$g(RETSTA))
+ . . i $g(DEBUG)=1 ZWR RETSTA
  . . if +$g(RETSTA)=1 do  ;
  . . . s eval("status","loaded")=$g(eval("status","loaded"))+1
  . . . s eval("labs",zi,"status","loadstatus")="loaded"
@@ -211,6 +217,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  ;
 log(ary,txt) ; adds a text line to @ary@("log")
  s @ary@("log",$o(@ary@("log",""),-1)+1)=$g(txt)
+ w:$G(DEBUG) !,"      ",$G(txt)
  q
  ;
 loadStatus(typ,zx,zien) ; extrinsic return 1 if resource was loaded

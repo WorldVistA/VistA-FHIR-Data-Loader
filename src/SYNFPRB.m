@@ -86,6 +86,13 @@ wsIntakeConditions(args,body,result,ien)	; web service entry (post)
 	. new sctcode set sctcode=$get(json("entry",zi,"resource","code","coding",1,"code"))
 	. do log(jlog,"code is: "_sctcode)
 	. set eval("conditions",zi,"vars","code")=sctcode
+	. n icdcode,notmapped
+	. s notmapped=0
+	. s icdcode=$$MAP^SYNDHPMP("scd2icd",sctcode)
+	. i +icdcode=-1 s notmapped=1
+	. do log(jlog,"icd mapping is: "_icdcode)
+	. do:notmapped log(jlog,"snomed code "_sctcode_"is not mapped")
+	. set eval("conditions",zi,"vars","mappedIcdCode")=icdcode
 	. ;
 	. ;
 	. new codesystem set codesystem=$get(json("entry",zi,"resource","code","coding",1,"system"))
@@ -174,9 +181,16 @@ wsIntakeConditions(args,body,result,ien)	; web service entry (post)
 	. if $g(args("load"))=1 d  ; only load if told to
 	. . if $g(ien)'="" if $$loadStatus("conditions",zi,ien)=1 do  quit  ;
 	. . . d log(jlog,"Condition already loaded, skipping")
-	. . d log(jlog,"Calling PRBUPD^SYNDHP62 to add condition")
-	. . D PRBUPDT^SYNDHP62(.RETSTA,DHPPAT,DHPVST,DHPROV,DHPONS,DHPABT,DHPCLNST,DHPSCT)	;Problem/Condition update
+	. . i notmapped d  ; snomed code does not map to icd code, can't use DATA2PCE
+        . . . d log(jlog,"Calling PROBUPD^SYNDHP61 to add condition")
+	. . . n DHPSDES,DHPRID,DHPDTM S (DHPSDES,DHPRID)=""
+	. . . s DHPDTM=DHPONS
+        . . . D PROBUPD^SYNDHP61(.RETSTA,DHPPAT,DHPSCT,DHPSDES,DHPROV,DHPDTM,DHPRID) ; update problem list with Snomed code
+	. . i 'notmapped d  ; snomed code does map, use DATA2PCE to add problem to problem list
+	. . . d log(jlog,"Calling PRBUPD^SYNDHP62 to add snomed condition")
+	. . . D PRBUPDT^SYNDHP62(.RETSTA,DHPPAT,DHPVST,DHPROV,DHPONS,DHPABT,DHPCLNST,DHPSCT)	;Problem/Condition update
 	. . m eval("conditions",zi,"status")=RETSTA
+	. . i $g(DEBUG)=1 ZWR RETSTA
 	. . d log(jlog,"Return from data loader was: "_$g(RETSTA))
 	. . if +$g(RETSTA)=1 do  ;
 	. . . s eval("status","loaded")=$g(eval("status","loaded"))+1
@@ -209,6 +223,7 @@ wsIntakeConditions(args,body,result,ien)	; web service entry (post)
 	;
 log(ary,txt)	; adds a text line to @ary@("log")
 	s @ary@("log",$o(@ary@("log",""),-1)+1)=$g(txt)
+	w:$G(DEBUG) !,"      ",$G(txt)
 	q
 	;
 loadStatus(typ,zx,zien)	; extrinsic return 1 if resource was loaded
