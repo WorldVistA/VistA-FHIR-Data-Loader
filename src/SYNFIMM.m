@@ -154,6 +154,7 @@ wsIntakeImmu(args,body,result,ien) ; web service entry (post)
  . . . d log(jlog,"Immunization already loaded, skipping")
  . . d log(jlog,"Calling IMMUNUPD^ZZDHP61 to add immunization")
  . . D IMMUNUPD^SYNDHP61(.RETSTA,DHPPAT,.VISIT,IMMUNIZ,ANATLOC,ADMINRT,DOSE,EVENTDT,IMMPROV) ;Immunization update
+ . . m eval("immunizations",zi,"status")=RETSTA
  . . d log(jlog,"Return from data loader was: "_$g(RETSTA))
  . . if +$g(RETSTA)=1 do  ;
  . . . s eval("status","loaded")=$g(eval("status","loaded"))+1

@@ -169,11 +169,12 @@ wsIntakeEncounters(args,body,result,ien)	; web service entry (post)
 	. . i ien="" q  ;
 	. . if $$loadStatus("encounters",zi,ien)=1 do  quit  ;
 	. . . d log(jlog,"Encounter already loaded, skipping")
-	. . d log(jlog,"Calling data loader to add encounter")
+	. . d log(jlog,"Calling ENCTUPD^SYNDHP61 data loader to add encounter")
 	. . d ENCTUPD^SYNDHP61(.RETSTA,DHPPAT,STARTDT,ENDDT,ENCPROV,CLINIC,SCTDX,SCTCPT)	;Encounter update
 	. . d log(jlog,"Return from data loader was: "_$g(RETSTA))
 	. . ;
 	. . m eval("encounters",zi,"status","return")=RETSTA
+	. . i $g(DEBUG)=1 ZWR RETSTA
 	. . n root s root=$$setroot^%wd("fhir-intake")
 	. . n visitIen s visitIen=$p(RETSTA,"^",2) ; returned visit ien
 	. . i +visitIen>0 d
@@ -210,6 +211,7 @@ wsIntakeEncounters(args,body,result,ien)	; web service entry (post)
 	;
 log(ary,txt)	; adds a text line to @ary@("log")
 	s @ary@("log",$o(@ary@("log",""),-1)+1)=$g(txt)
+	w:$G(DEBUG) !,"      ",$G(txt)
 	q
 	;
 loadStatus(typ,zx,zien)	; extrinsic return 1 if resource was loaded
@@ -267,7 +269,9 @@ LOADALL(count) ; count is how many to do. default is 1000
 	. s @eroot@("loadstatus")="started"
 	. n filter
 	. s filter("load")=1
+	. n g s $p(g,"+",80)="" w !,g
 	. w !,"loading "_%1_" "_$$FMTE^XLFDT($$NOW^XLFDT)
+	. w !,g
 	. n rtn
 	. d importEncounters^SYNFENC(.rtn,%1,.filter)
 	. d importImmu^SYNFIMM(.rtn,%1,.filter)

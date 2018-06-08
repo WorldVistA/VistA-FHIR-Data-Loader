@@ -32,13 +32,12 @@ wsIntakeMeds(args,body,result,ien)	; web service entry (post)
 	;i $g(ien)'="" if $$loadStatus("meds","",ien)=1 d  q  ;
 	;. s result("medstatus","status")="alreadyLoaded"
 	i $g(ien)'="" d  ; internal call
-	. d getIntakeFhir^SYNFHIR("json",,"MedsIntolerance",ien,1)
+	. d getIntakeFhir^SYNFHIR("json",,"MedicationRequest",ien,1)
 	e  d  ; 
-	. s args("load")=0
 	. merge jtmp=BODY
 	. do DECODE^VPRJSON("jtmp","json")
 	;
-	i '$d(json) d getRandomMeds(.json)
+	;i '$d(json) d getRandomMeds(.json)
 	;
 	i '$d(json) q  ;
 	m ^gpl("gjson")=json
@@ -66,9 +65,9 @@ wsIntakeMeds(args,body,result,ien)	; web service entry (post)
 	. ; insure that the resourceType is MedsIntolerance
 	. ;
 	. new type set type=$get(json("entry",zi,"resource","resourceType"))
-	. if type'="MedsIntolerance" do  quit  ;
+	. if type'="MedicationRequest" do  quit  ;
 	. . set eval("meds",zi,"vars","resourceType")=type
-	. . do log(jlog,"Resource type not MedsIntolerance, skipping entry")
+	. . do log(jlog,"Resource type not MedicationReference, skipping entry")
 	. set eval("meds",zi,"vars","resourceType")=type
 	. ;
 	. ; see if this resource has already been loaded. if so, skip it
@@ -76,35 +75,38 @@ wsIntakeMeds(args,body,result,ien)	; web service entry (post)
 	. if $g(ien)'="" if $$loadStatus("meds",zi,ien)=1 do  quit  ;
 	. . d log(jlog,"Meds already loaded, skipping")
 	. ;
-	. ; determine Meds snomed code, coding system, and display text
+	. ; determine Meds rxnorm code, coding system, and display text
+	. ;
+	. n med,rxnorm,codesystem,drugname
+	. d getEntry^SYNFHIR("med",ien,zi-1) ; meds are in the previous entry
+	. n gmed s gmed=$na(med("entry",zi-1,"resource"))
+	. q:$g(@gmed@("resourceType"))'="Medication"
+	. s rxnorm=$g(@gmed@("code","coding",1,"code"))
+	. q:rxnorm=""
+	. s drugname=$g(@gmed@("code","coding",1,"display"))
+	. s codesystem=$g(@gmed@("code","coding",1,"system"))
+	. s codesystem=$re($p($re(codesystem),"/"))
+	. ;
+	. do log(jlog,"rxnorm code is: "_rxnorm)
+	. set eval("meds",zi,"vars","rxnorm")=rxnorm
+	. do log(jlog,"drug name is: "_drugname)
+	. set eval("meds",zi,"vars","drugname")=drugname
 	. ;
 	. ;
-	. ; determine the id of the resource
-	. ;
-	. ;new id set id=$get(json("entry",zi,"resource","id"))
-	. ;set eval("meds",zi,"vars","id")=id
-	. ;d log(jlog,"ID is: "_id)
-	. ;
-	. new sctcode set sctcode=$get(json("entry",zi,"resource","code","coding",1,"code"))
-	. do log(jlog,"code is: "_sctcode)
-	. set eval("meds",zi,"vars","code")=sctcode
-	. ;
-	. ;
-	. new codesystem set codesystem=$get(json("entry",zi,"resource","code","coding",1,"system"))
 	. do log(jlog,"code system is: "_codesystem)
 	. set eval("meds",zi,"vars","codeSystem")=codesystem
 	. ;
-	. ; determine the onset date and time
+	. ; determine the order date and time
 	. ;
-	. new onsetdate set onsetdate=$get(json("entry",zi,"resource","assertedDate"))
-	. do log(jlog,"onsetDateTime is: "_onsetdate)
-	. set eval("meds",zi,"vars","onsetDateTime")=onsetdate
-	. new fmOnsetDateTime s fmOnsetDateTime=$$fhirTfm^SYNFUTL(onsetdate)
-	. d log(jlog,"fileman onsetDateTime is: "_fmOnsetDateTime)
-	. set eval("meds",zi,"vars","fmOnsetDateTime")=fmOnsetDateTime ;
-	. new hl7OnsetDateTime s hl7OnsetDateTime=$$fhirThl7^SYNFUTL(onsetdate)
-	. d log(jlog,"hl7 onsetDateTime is: "_hl7OnsetDateTime)
-	. set eval("meds",zi,"vars","hl7OnsetDateTime")=hl7OnsetDateTime ;
+	. new orderdate set orderdate=$get(json("entry",zi,"resource","authoredOn"))
+	. do log(jlog,"orderdateTime is: "_orderdate)
+	. set eval("meds",zi,"vars","orderdateTime")=orderdate
+	. new fmOrderDateTime s fmOrderDateTime=$$fhirTfm^SYNFUTL(orderdate)
+	. d log(jlog,"fileman orderdateTime is: "_fmOrderDateTime)
+	. set eval("meds",zi,"vars","fmOrderdateTime")=fmOrderDateTime ;
+	. new hl7OrderdateTime s hl7OrderdateTime=$$fhirThl7^SYNFUTL(orderdate)
+	. d log(jlog,"hl7 orderdateTime is: "_hl7OrderdateTime)
+	. set eval("meds",zi,"vars","hl7OrderdateTime")=hl7OrderdateTime ;
 	. ;
 	. ; determine clinical status (active vs inactive)
 	. ;
@@ -113,74 +115,21 @@ wsIntakeMeds(args,body,result,ien)	; web service entry (post)
 	. ;
 	. ; set up to call the data loader
 	. ;
-	. ;MEDS^ISIIMP10(ISIRESUL,ISIMISC)          
-	.;;NAME             |TYPE       |FILE,FIELD |DESC
-	.;;-----------------------------------------------------------------------
-	.;;ALLERGEN         |FIELD      |120.82,.01 |
-	.;;SYMPTOM          |MULTIPLE   |120.83,.01 |Multiple,"|" (bar) delimited, working off #120.83
-	.;;PAT_SSN          |FIELD      |120.86,.01 |PATIENT (#2, .09) pointer
-	.;;ORIG_DATE        |FIELD      |120.8,4    |
-	.;;ORIGINTR         |FIELD      |120.8,5    |PERSON (#200)
-	.;;HISTORIC         |BOOLEEN    |           |1=HISTORICAL, 0=OBSERVED
-	.;;OBSRV_DT         |FIELD      |           |Observation Date (if HISTORIC=0)
-	.;
-	. n RESTA,ISIMISC
-	. ;
-	. s ISIMISC("ALLERGEN")=$get(json("entry",zi,"resource","code","coding",1,"display"))
-	. ;n algy s algy=$$ISGMR(sctcode)
-	. ;i algy'=-1 s ISIMISC("ALLERGEN")=$p(algy,"^",2)
-	. s eval("meds",zi,"parms","ALLERGEN")=ISIMISC("ALLERGEN")
-	. ;
-	. s ISIMISC("SYMPTOM")=$get(json("entry",zi,"resource","reaction",1,"description"))
-	. s eval("meds",zi,"parms","SYMPTOM")=ISIMISC("SYMPTOM")
-	. ;
-	. s ISIMISC("ORIGINTR")="USER,THREE"
-	. s eval("meds",zi,"parms","ORIGINTR")=ISIMISC("ORIGINTR")
-	. ;
-	. s DHPPAT=$$dfn2icn^SYNFUTL(dfn)
-	. s eval("meds",zi,"parms","DHPPAT")=DHPPAT
-	. s ISIMISC("PAT_SSN")=$$GET1^DIQ(2,dfn_",",.09)
-	. s eval("meds",zi,"parms","PAT_SSN")=ISIMISC("PAT_SSN")
-	. ;
-	. s DHPSCT=sctcode
-	. s eval("meds",zi,"parms","DHPSCT")=DHPSCT
-	. ;
-	. s DHPCLNST=$S(clinicalstatus="Active":"A",1:"I")
-	. s eval("meds",zi,"parms","DHPCLNST")=DHPCLNST
-	. ;
-	. s DHPONS=hl7OnsetDateTime
-	. s eval("meds",zi,"parms","DHPONS")=DHPONS
-	. s ISIMISC("ORIG_DATE")=fmOnsetDateTime
-	. s eval("meds",zi,"parms","ORIG_DATE")=ISIMISC("ORIG_DATE")
-	. s ISIMISC("HISTORIC")=1
-	. s eval("meds",zi,"parms","HISTORIC")=ISIMISC("HISTORIC")
-	. ;
-	. s DHPPROV=$$MAP^SYNQLDM("OP","provider") ; map should return the NPI number
-	. s eval("meds",zi,"parms","DHPPROV")=DHPPROV
-	. d log(jlog,"Provider NPI for outpatient is: "_DHPPROV)
-	. ;
-	. ;s DHPLOC=$$MAP^SYNQLDM("OP","location")
-	. ;n DHPLOCIEN s DHPLOCIEN=$o(^SC("B",DHPLOC,""))
-	. ;if DHPLOCIEN="" S DHPLOCIEN=4
-	. ;s eval("meds",zi,"parms","DHPLOC")=DHPLOCIEN
-	. ;d log(jlog,"Location for outpatient is: #"_DHPLOCIEN_" "_DHPLOC)
-	. ;
-	. s eval("meds",zi,"status","loadstatus")="readyToLoad"
 	. ;
 	. if $g(args("load"))=1 d  ; only load if told to
 	. . if $g(ien)'="" if $$loadStatus("meds",zi,ien)=1 do  quit  ;
 	. . . d log(jlog,"Meds already loaded, skipping")
-	. . d log(jlog,"Calling MEDS^ISIIMP10 to add meds")
-	. . D MEDS^ISIIMP10(.RETSTA,.ISIMISC)
-	. . m eval("meds",zi,"status")=RESTA
-	. . d log(jlog,"Return from data loader was: "_$g(ISIRC))
-	. . if +$g(RETSTA)=1 do  ;
+	. . d log(jlog,"Calling WRITERXRXN^SYNFMED to add meds")
+	. . D WRITERXRXN^SYNFMED(dfn,rxnorm,fmOrderDateTime)
+	. . ;m eval("meds",zi,"status")=RESTA
+	. . d log(jlog,"Medication loaded: "_rxnorm_" "_drugname)
+	. . do  ;
 	. . . s eval("status","loaded")=$g(eval("status","loaded"))+1
 	. . . s eval("meds",zi,"status","loadstatus")="loaded"
-	. . else  d  ;
-	. . . s eval("status","errors")=$g(eval("status","errors"))+1
-	. . . s eval("meds",zi,"status","loadstatus")="notLoaded"
-	. . . s eval("meds",zi,"status","loadMessage")=$g(RETSTA)
+	. . ;else  d  ;
+	. . ;. s eval("status","errors")=$g(eval("status","errors"))+1
+	. . ;. s eval("meds",zi,"status","loadstatus")="notLoaded"
+	. . ;. s eval("meds",zi,"status","loadMessage")=$g(RETSTA)
 	. . n root s root=$$setroot^%wd("fhir-intake")
 	. . k @root@(ien,"load","meds",zi)
 	. . m @root@(ien,"load","meds",zi)=eval("meds",zi)
@@ -205,6 +154,7 @@ wsIntakeMeds(args,body,result,ien)	; web service entry (post)
 	;
 log(ary,txt)	; adds a text line to @ary@("log")
 	s @ary@("log",$o(@ary@("log",""),-1)+1)=$g(txt)
+	w:$G(DEBUG) !,"      ",$G(txt)
 	q
 	;
 loadStatus(typ,zx,zien)	; extrinsic return 1 if resource was loaded

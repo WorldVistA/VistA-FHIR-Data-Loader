@@ -185,6 +185,10 @@ INITMAPS	; initialize maps
 	S @G@(MAP,"CODE","99381","OP")=""
 	; VCPT - SNOMED
 	S MAP="sct2cpt"
+	S @G@(MAP,"CODE","394701000","99241")=""
+	S @G@(MAP,"CODE","371883000","99201")=""
+	S @G@(MAP,"CODE","185347001","99201")=""
+	S @G@(MAP,"CODE","183478001","99381")=""
 	S @G@(MAP,"CODE","308646001","99238")=""
 	S @G@(MAP,"CODE","424441002","59426")=""
 	S @G@(MAP,"CODE","183460006","99218")=""
