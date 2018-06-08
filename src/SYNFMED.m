@@ -152,7 +152,7 @@ ADDDRUG(RXN,BARCODE) ; [Public] Add Drug to Drug File
  ;
  ; Get first VUID for this RxNorm drug
  N VUID S VUID=+$$RXN2VUI(RXN)
- Q:'VUID
+ Q:'VUID ""
  G NEXT
 ADDDRUG2(RXN,VUID) ;
  ; ZEXCEPT: NDC,BARCODE
@@ -166,7 +166,7 @@ NEXT ;
  S C0XVUID(1)=VUID
  S C0XVUID(2)=1
  N F5068IEN S F5068IEN=$$FIND1^DIC(50.68,"","XQ",.C0XVUID,"AMASTERVUID")
- Q:'F5068IEN
+ Q:'F5068IEN ""
  ; 
  ; W "F 50.68 IEN (debug): "_F5068IEN,!
  ;
@@ -315,12 +315,25 @@ GET(RETURN,URL) ; [Public] Get a URL
  I "^200^302^"'[HEADERS("STATUS") S %XOBWERR=HEADERS("STATUS"),$EC=",UXOBWHTTP,"
  QUIT
  ;
-WRITERXRXN(PSODFN,RXNCDCUI,RXDATE) ; [Public] Create a new prescription for a patient using RxNorm SCD CUI
+WRITERXRXN(PSODFN,RXNCDCUI,RXDATE) ; [$$/D Public] Create a new prescription for a patient using RxNorm SCD CUI
+ ; Input: PSODFN = DFN
+ ; Input: RXNCDCUI = RxNorm SCD CUI. ONLY SCDs!!! No other RxNorm type is resolvable.
+ ; Input: RXDATE = Prescription Date
+ ;
+ ; $$ Output: Prescription Number (not IEN) or -1^error message
+ ;
  N DRUG S DRUG=$$ADDDRUG(RXNCDCUI)
+ I 'DRUG Q -1_U_"RxNorm CUI "_RXNCDCUI_" could not be resolved into a drug."
+ I $QUIT QUIT $$WRITERXPS(PSODFN,DRUG,RXDATE)
  D WRITERXPS(PSODFN,DRUG,RXDATE)
  QUIT
  ; 
-WRITERXPS(PSODFN,DRUG,RXDATE) ; [Public] Create a new prescription for a patient using drug IEN
+WRITERXPS(PSODFN,DRUG,RXDATE) ; [$$/D Public] Create a new prescription for a patient using drug IEN
+ ; Input: PSODFN = DFN
+ ; Input: DRUG = Drug (file 50) IEN
+ ; Input: RXDATE = Prescription Date
+ ; $$ Output: Prescription Number (not IEN) or -1^error message
+ ;
  ; Little by little we will work this out!
  ; Assumptions right now:
  ; XXX: Site in 59 is created
@@ -355,8 +368,10 @@ WRITERXPS(PSODFN,DRUG,RXDATE) ; [Public] Create a new prescription for a patient
  ;
  ; Get Prescription Number
  N PSOSITE S PSOSITE=$O(^PS(59,0))
- I PSOSITE="" S PSOSITE=1 ; XXX I am not sure if that's a good idea! Maybe create the outpatient site?
+ I PSOSITE="" S $EC=",U-SITE-NOT-SET-UP," ; XXX I am not sure if that's a good idea! Maybe create the outpatient site?
  D AUTO^PSONRXN
+ ;
+ N SYNRXN S SYNRXN=PSONEW("RX #")
  ;
  ; Dosage
  S PSONEW("ENT")=1
@@ -381,7 +396,7 @@ WRITERXPS(PSODFN,DRUG,RXDATE) ; [Public] Create a new prescription for a patient
  ;
  ; HL7 to OE/RR to update the Order File
  D EOJ^PSONEW
- QUIT
+ QUIT:$QUIT SYNRXN QUIT
  ;
 TEST D EN^%ut($T(+0),3) QUIT
  ;
@@ -443,8 +458,9 @@ T4 ; @TEST Write Rx Using Drug IEN
  ; ZEXCEPT: DFN,DRGRXN
  N DA,DIK
  N DRUG S DRUG=$$ADDDRUG(DRGRXN)
- D WRITERXPS(DFN,DRUG,DT)
- N RX0 S RX0=^PSRX(1,0)
+ N RXN S RXN=$$WRITERXPS(DFN,DRUG,DT)
+ N RXIEN S RXIEN=$$FIND1^DIC(52,,"QX",RXN,"B")
+ N RX0 S RX0=^PSRX(RXIEN,0)
  N PAT S PAT=$P(RX0,U,2)
  N DRG S DRG=$P(RX0,U,6)
  D CHKEQ^%ut(PAT,1)
@@ -453,13 +469,19 @@ T4 ; @TEST Write Rx Using Drug IEN
  ;
 T5 ; @TEST Write Rx Using Drug RxNorm SCD
  ; ZEXCEPT: DFN,DRGRXN
- D WRITERXRXN(DFN,DRGRXN,DT) ; Tamoxifen Citrate 20mg tab
- N RX0 S RX0=^PSRX(1,0)
+ N RXN S RXN=$$WRITERXRXN(DFN,DRGRXN,DT) ; Tamoxifen Citrate 20mg tab
+ N RXIEN S RXIEN=$$FIND1^DIC(52,,"QX",RXN,"B")
+ N RX0 S RX0=^PSRX(RXIEN,0)
  N PAT S PAT=$P(RX0,U,2)
  N DRG S DRG=$P(RX0,U,6)
  N DRGNM S DRGNM=$P(^PSDRUG(DRG,0),U)
  D CHKEQ^%ut(PAT,1)
  D CHKTF^%ut(DRGNM["TAMOXIFEN")
+ QUIT
+ ;
+T55 ; @TEST Write an Rx with a bad Rxnorm number
+ N RXN S RXN=$$WRITERXRXN(DFN,989892842342,DT) ; Tamoxifen Citrate 20mg tab
+ D CHKTF^%ut(RXN<0)
  QUIT
  ;
 VUI2VAPT ; @TEST Get VA Product IEN from VUID
