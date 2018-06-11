@@ -120,16 +120,18 @@ wsIntakeMeds(args,body,result,ien)	; web service entry (post)
 	. . if $g(ien)'="" if $$loadStatus("meds",zi,ien)=1 do  quit  ;
 	. . . d log(jlog,"Meds already loaded, skipping")
 	. . d log(jlog,"Calling WRITERXRXN^SYNFMED to add meds")
-	. . D WRITERXRXN^SYNFMED(dfn,rxnorm,fmOrderDateTime)
-	. . ;m eval("meds",zi,"status")=RESTA
+	. . n RESTA
+	. . S RESTA=$$WRITERXRXN^SYNFMED(dfn,rxnorm,fmOrderDateTime)
+	. . m eval("meds",zi,"status")=RESTA
+	. . d log(jlog,"Response from WRITERXRXN^SYNFMED is: "_RESTA)
 	. . d log(jlog,"Medication loaded: "_rxnorm_" "_drugname)
-	. . do  ;
+	. . if RESTA>1 d  ; success
 	. . . s eval("status","loaded")=$g(eval("status","loaded"))+1
 	. . . s eval("meds",zi,"status","loadstatus")="loaded"
-	. . ;else  d  ;
-	. . ;. s eval("status","errors")=$g(eval("status","errors"))+1
-	. . ;. s eval("meds",zi,"status","loadstatus")="notLoaded"
-	. . ;. s eval("meds",zi,"status","loadMessage")=$g(RETSTA)
+	. . else  d  ;
+	. . . s eval("status","errors")=$g(eval("status","errors"))+1
+	. . . s eval("meds",zi,"status","loadstatus")="notLoaded"
+	. . . s eval("meds",zi,"status","loadMessage")=$g(RETSTA)
 	. . n root s root=$$setroot^%wd("fhir-intake")
 	. . k @root@(ien,"load","meds",zi)
 	. . m @root@(ien,"load","meds",zi)=eval("meds",zi)
