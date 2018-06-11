@@ -1,8 +1,11 @@
 SYNINIT ;OSEHRA/SMH - Initilization Code for Synthetic Data Loader;May 23 2018
  ;;1.0;Synthetic Data Loader;
-; 
-; NUMBER: 10                              HTTP VERB: POST                         URI: addcondition
-; EXECUTION ENDPOINT: wsIntakeConditions^SYNFCON
+ ; 
+ ; (c) Sam Habiel 2018
+ ; Licensed under Apache 2.0.
+ ; 
+ ; NUMBER: 10                              HTTP VERB: POST                         URI: addcondition
+ ; EXECUTION ENDPOINT: wsIntakeConditions^SYNFCON
  ;
 LOADHAND ; [Public] Load URL handlers
  W !!,"LOADING URL HANDLERS",!
@@ -177,6 +180,52 @@ PHARM() ;[Public $$] Create Generic Provider for Synthetic Patients
  ;
  Q C0XIEN(1) ;Provider IEN
  ;
+MEDSS() ; [Public $$] Create Medical Service/Section
+ N NAME S NAME="MEDICINE"
+ Q:$O(^DIC(49,"B",NAME,0)) $O(^(0))
+ ;
+ N FDA,IEN,DIERR
+ S FDA(49,"?+1,",.01)=NAME
+ S FDA(49,"?+1,",1)="MED"
+ S FDA(49,"?+1,",1.5)="MED"
+ S FDA(49,"?+1,",1.7)="PATIENT CARE"
+ S FDA(49,"?+1,",2)="`"_$$PROV()
+ D UPDATE^DIE("E",$NA(FDA),$NA(IEN))
+ I $D(DIERR) S $EC=",U1,"
+ QUIT IEN(1)
+ ;
+PHRSS() ; [Public $$] Create Pharmacy Service/Section
+ N NAME S NAME="PHARMACY"
+ Q:$O(^DIC(49,"B",NAME,0)) $O(^(0))
+ ; 
+ N FDA,IEN,DIERR
+ S FDA(49,"?+1,",.01)=NAME
+ S FDA(49,"?+1,",1)="PHR"
+ S FDA(49,"?+1,",1.5)="PHR"
+ S FDA(49,"?+1,",1.6)="`"_$$MEDSS()
+ S FDA(49,"?+1,",1.7)="PATIENT CARE"
+ S FDA(49,"?+1,",2)="`"_$$PHARM()
+ D UPDATE^DIE("E",$NA(FDA),$NA(IEN))
+ I $D(DIERR) S $EC=",U1,"
+ QUIT IEN(1)
+ ;
+IBACTION ; [Public] Fix IB ACTION TYPE file (350.1) PSO entries to point to PHARMACY service/section
+ ; Required in order to be able to set-up pharmacy site parameters
+ ;
+ N FDA,IEN
+ ;
+ ; Get Pharmacy SS entry
+ N PHRSS S PHRSS=$$PHRSS()
+ ;
+ ; Get PSO entries
+ D FIND^DIC(350.1,,"@","PQE","PSO","*","B")
+ ;
+ ; Create FDA and file
+ N SYNI F SYNI=0:0 S SYNI=$O(^TMP("DILIST",$J,SYNI)) Q:'SYNI  S IEN=^(SYNI,0) S FDA(350.1,IEN_",",.04)=PHRSS
+ D FILE^DIE("",$NA(FDA)) 
+ ;
+ QUIT
+ ;
 HL() ; [Public $$] Generic Hospital Location Entry
  N NAME S NAME="GENERAL MEDICINE" ; Constant
  Q:$O(^SC("B",NAME,0)) $O(^(0)) ; Quit if the entry exists with the entry
@@ -196,10 +245,44 @@ HL() ; [Public $$] Generic Hospital Location Entry
 AMIE ; [Public] Fix "AMIE LINK OUT OF ORDER" message
  N IEN S IEN=$$FIND1^DIC(101,,"QX","DVBA C&P SCHD EVENT","B")
  Q:'IEN
- N FDA
+ N FDA,DIERR
  S FDA(101,IEN_",",2)="@" ; DISABLE field
  D FILE^DIE("",$NA(FDA))
+ I $D(DIERR) S $EC=",U1,"
  QUIT
+ ;
+PSOSITE() ; [Public $$] Add a default pharmacy site
+ N NAME S NAME="SYNTHETIC PATIENTS"
+ I $O(^PS(59,"B",NAME,0)) Q $O(^(0))
+ ;
+ N SITENUMBER
+ N SITEIEN
+ N % S %=$$SITE^VASITE()
+ S SITEIEN=$P(%,U)
+ S SITENUMBER=$P(%,U,3)
+ ;
+ N FDA,DIERR,IEN
+ S FDA(59,"?+1,",.01)=NAME
+ S FDA(59,"?+1,",.02)="1934 OLD GALLOWS ROAD" ; MAILING FRANK STREET ADDRESS
+ S FDA(59,"?+1,",.03)=571 ; AREA CODE
+ S FDA(59,"?+1,",.04)="999-9999" ; PHONE NUMBER
+ S FDA(59,"?+1,",.05)=22182 ; Zip code
+ S FDA(59,"?+1,",.06)=SITENUMBER ; Site Number
+ S FDA(59,"?+1,",.07)="VIENNA" ; CITY
+ S FDA(59,"?+1,",.17)=1 ; SHALL COMPUTER ASSIGN RX #S
+ S FDA(59,"?+1,",4)=1   ; NEW LABEL STOCK
+ S FDA(59,"?+1,",100)="`"_SITEIEN ; RELATED INSTITUTION
+ S FDA(59,"?+1,",101)="`"_SITEIEN ; NPI INSTITUTION
+ S FDA(59,"?+1,",1000)=0 ; NARCOTICS NUMBERED DIFFERENTLY
+ S FDA(59,"?+1,",1001)=1 ; NARCOTIC LOWER BOUND
+ S FDA(59,"?+1,",1002)=1 ; NARCOTIC UPPER BOUND
+ S FDA(59,"?+1,",1003)="`"_$$PHRSS() ; IB SERVICE/SECTION
+ S FDA(59,"?+1,",2001)=100000000 ; PRESCRIPTION # LOWER BOUND
+ S FDA(59,"?+1,",2002)=999999999 ; PRESCRIPTION # UPPER BOUND
+ S FDA(59.08,"?+2,?+1,",.01)="`"_SITEIEN ; CPRS ORDERING INSTITUTION
+ D UPDATE^DIE("E",$NA(FDA),$NA(IEN))
+ I $D(DIERR) S $EC=",U1,"
+ Q IEN(1)
  ;
 TEST D EN^%ut($T(+0),3) QUIT
  ;
@@ -279,3 +362,20 @@ TESTAMIE ; @TEST AMIE
  D AMIE
  D CHKTF^%ut($P(^ORD(101,IEN,0),U,3)="")
  QUIT
+ ;
+TESTIBACT ; @TEST IB Action Fix
+ D IBACTION 
+ N PHRSS S PHRSS=$$PHRSS()
+ ;
+ ; We confirm through the index that we have six entries pointing to pharmacy
+ N CNT S CNT=0
+ N I F I=0:0 S I=$O(^IBE(350.1,"C",PHRSS,I)) Q:'I  S CNT=CNT+1
+ D CHKTF^%ut(CNT=6)
+ QUIT
+ ;
+TESTPSOSITE ; @TEST Adding Outpatient Site
+ N DA,DIK S DA=1,DIK="^PS(59," D ^DIK
+ N % S %=$$PSOSITE()
+ D CHKTF^%ut(%=1)
+ QUIT
+ ;
