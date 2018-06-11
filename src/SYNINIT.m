@@ -55,7 +55,7 @@ LH ;; START
  ;;^%W(17.6001,0)="WEB SERVICE URL HANDLER^17.6001S^"_IEN_"^"_IEN
  ;;
  ;
-PROV() ;[Public] Create Generic Provider for Synthetic Patients
+PROV() ;[Public $$] Create Generic Provider for Synthetic Patients
  ; ASSUMPTION: DUZ MUST HAVE XUMGR OTHERWISE FILEMAN WILL BLOCK YOU!
  N NAME S NAME="PROVIDER,UNKNOWN SYNTHEA" ; Constant
  Q:$O(^VA(200,"B",NAME,0)) $O(^(0)) ; Quit if the entry exists with entry
@@ -118,7 +118,7 @@ PROV() ;[Public] Create Generic Provider for Synthetic Patients
  ;
  Q C0XIEN(1) ;Provider IEN
  ;
-PHARM() ;[Public] Create Generic Provider for Synthetic Patients
+PHARM() ;[Public $$] Create Generic Provider for Synthetic Patients
  ; ASSUMPTION: DUZ MUST HAVE XUMGR OTHERWISE FILEMAN WILL BLOCK YOU!
  N NAME S NAME="PHARMACIST,UNKNOWN SYNTHEA" ; Constant
  Q:$O(^VA(200,"B",NAME,0)) $O(^(0)) ; Quit if the entry exists with entry
@@ -177,7 +177,7 @@ PHARM() ;[Public] Create Generic Provider for Synthetic Patients
  ;
  Q C0XIEN(1) ;Provider IEN
  ;
-HL() ; [Public] Generic Hospital Location Entry
+HL() ; [Public $$] Generic Hospital Location Entry
  N NAME S NAME="GENERAL MEDICINE" ; Constant
  Q:$O(^SC("B",NAME,0)) $O(^(0)) ; Quit if the entry exists with the entry
  ;
@@ -192,6 +192,14 @@ HL() ; [Public] Generic Hospital Location Entry
  D UPDATE^DIE("",$NA(C0XFDA),$NA(C0XIEN),$NA(C0XERR))
  I $D(DIERR) S $EC=",U1,"
  Q C0XIEN(1) ; HL IEN
+ ;
+AMIE ; [Public] Fix "AMIE LINK OUT OF ORDER" message
+ N IEN S IEN=$$FIND1^DIC(101,,"QX","DVBA C&P SCHD EVENT","B")
+ Q:'IEN
+ N FDA
+ S FDA(101,IEN_",",2)="@" ; DISABLE field
+ D FILE^DIE("",$NA(FDA))
+ QUIT
  ;
 TEST D EN^%ut($T(+0),3) QUIT
  ;
@@ -220,7 +228,7 @@ TESTHL ; @TEST Test adding a clinic
  QUIT
  ;
 TESTLH ; @Test Load Handlers
- ; SO MANY NAKED PEOPLE!
+ ; WARNING: NAKED REFERENCES ALL OVER HERE!
  N IEN
  S IEN=$O(^%W(17.6001,"B","POST","addpatient/*","wsPostFHIR^SYNFHIR",""))
  K ^(IEN),^%W(17.6001,IEN)
@@ -236,6 +244,8 @@ TESTLH ; @Test Load Handlers
  K ^(IEN),^%W(17.6001,IEN)
  S IEN=$O(^%W(17.6001,"B","POST","addcondition","wsIntakeConditions^SYNFCON",""))
  K ^(IEN),^%W(17.6001,IEN)
+ ; /WARNING: NAKED REFERENCES ALL OVER HERE!
+ ;
  D LOADHAND
  K IEN
  S IEN=$O(^%W(17.6001,"B","POST","addpatient/*","wsPostFHIR^SYNFHIR",""))
@@ -259,4 +269,13 @@ TESTLH ; @Test Load Handlers
  S IEN=$O(^%W(17.6001,"B","POST","addcondition","wsIntakeConditions^SYNFCON",""))
  D CHKTF^%ut(IEN)
  K IEN
+ QUIT
+ ;
+TESTAMIE ; @TEST AMIE
+ N IEN S IEN=$$FIND1^DIC(101,,"QX","DVBA C&P SCHD EVENT","B")
+ N FDA
+ S FDA(101,IEN_",",2)="AMIE LINK OUT OF ORDER" ; DISABLE field
+ D FILE^DIE("",$NA(FDA))
+ D AMIE
+ D CHKTF^%ut($P(^ORD(101,IEN,0),U,3)="")
  QUIT
