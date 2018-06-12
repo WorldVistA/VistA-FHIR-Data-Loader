@@ -5,9 +5,7 @@ SYNFMED ;OSE/SMH - Add Medications to Patient Record;May 23, 2018
  ;
  ; TODO list
  ; - Implement Web Services lookup
- ; - Auto create site parameters for outpatient pharmacy
  ; - Set-up Patient Characteristics in 55
- ; - release Rx to signify the patient has it in its pocket
  ;
 RXN2MEDS(RXN) ; [Public] Get Drugs that are associated with an RxNorm
  Q $$MATCHVM($$RXN2VUI(RXN))
@@ -335,10 +333,13 @@ WRITERXPS(PSODFN,DRUG,RXDATE) ; [$$/D Public] Create a new prescription for a pa
  ; Input: RXDATE = Prescription Date
  ; $$ Output: Prescription Number (not IEN) or -1^error message
  ;
- ; Little by little we will work this out!
- ; Assumptions right now:
- ; XXX: Site in 59 is created
+ ; Site Parameters (see PSOLSET)
+ N PSOSITE S PSOSITE=$$PSOSITE^SYNINIT()
+ N PSOPAR,PSOPAR7,PSOSYS,PSODTCUT,PSOPRPAS
+ S PSOPAR=$G(^PS(59,PSOSITE,1)),PSOPAR7=$G(^PS(59,PSOSITE,"IB")),PSOSYS=$G(^PS(59.7,1,40.1)) D CUTDATE^PSOFUNC
  ;
+ ; Pharmacist (we use the value multiple times)
+ N SYNPHARM S SYNPHARM=$$PHARM^SYNINIT()
  ; Drug Array we will pass by reference
  N PSONEW
  ; 
@@ -358,8 +359,8 @@ WRITERXPS(PSODFN,DRUG,RXDATE) ; [$$/D Public] Create a new prescription for a pa
  ;
  ; Pharmacist here!
  S PSONEW("VERIFY")=1
- S PSONEW("PHARMACIST")=$$PHARM^SYNINIT()
- S PSONEW("CLERK CODE")=PSONEW("PHARMACIST") ; Needed for CPRS for "Entered By" field.
+ S PSONEW("PHARMACIST")=SYNPHARM
+ S PSONEW("CLERK CODE")=SYNPHARM ; Needed for CPRS for "Entered By" field.
  ;
  ; Provider
  S PSONEW("PROVIDER")=$$PROV^SYNINIT()
@@ -368,7 +369,6 @@ WRITERXPS(PSODFN,DRUG,RXDATE) ; [$$/D Public] Create a new prescription for a pa
  S PSONEW("CLINIC")=$$HL^SYNINIT()
  ;
  ; Get Prescription Number
- N PSOSITE S PSOSITE=$$PSOSITE^SYNINIT()
  D AUTO^PSONRXN
  ;
  N SYNRXN S SYNRXN=PSONEW("RX #")
@@ -387,15 +387,37 @@ WRITERXPS(PSODFN,DRUG,RXDATE) ; [$$/D Public] Create a new prescription for a pa
  N PSOCOU,PSOCOUU
  S PSOCOU=1,PSOCOUU=1
  ;
- ;
  ; Nature of order
  N PSONOOR S PSONOOR="W"
  ;
  ; File in 52
  D EN^PSON52(.PSONEW)
  ;
+ ; Needed for release later (see PSODISP)
+ N PSIN S PSIN=+$P($G(^PS(59.7,1,49.99)),"^",2)
+ N SYNRXIEN S SYNRXIEN=PSONEW("IRXN")
+ ;
  ; HL7 to OE/RR to update the Order File
  D EOJ^PSONEW
+ ;
+ ; Print Prescription (required for releasing)
+ N IOP,POP,%ZIS
+ S IOP="NULL" D ^%ZIS
+ I POP S $EC=",U-NULL-NOT-CONFIGURED,"
+ U IO
+ N PPL S PPL=SYNRXIEN_","
+ N PDUZ S PDUZ=SYNPHARM
+ D DQ^PSOLBL
+ D ^%ZISC
+ ;
+ ; Release Prescription
+ N POERR S POERR=1
+ N RXP S RXP=SYNRXIEN
+ N PSRH S PSRH=SYNPHARM
+ S IOP="NULL" D ^%ZIS U IO  ; This is just to hide the output!
+ D BATCH^PSODISP
+ D ^%ZISC
+ ;
  QUIT:$QUIT SYNRXN QUIT
  ;
 TEST D EN^%ut("SYNFMEDT",2) QUIT
