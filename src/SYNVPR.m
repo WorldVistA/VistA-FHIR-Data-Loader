@@ -335,7 +335,7 @@ wsGLOBAL(OUT,FILTER)	; dump a global to the browser as an html page
 	K @OUT
 	N ROOT S ROOT=$G(FILTER("root"))
 	Q:ROOT=""
-	S ROOT="^"_ROOT
+	I $G(FILTER("local"))'=1 S ROOT="^"_ROOT
 	N ORIG,OL S ORIG=ROOT,OL=$QL(ROOT) ; Orig, Orig Length
 	F  S ROOT=$Q(@ROOT) Q:$G(ROOT)=""  Q:$NA(@ROOT,OL)'=$NA(@ORIG,OL)  D
 	. S @OUT@($O(@OUT@(""),-1)+1)=ROOT_"="_$$CLEAN(@ROOT)
