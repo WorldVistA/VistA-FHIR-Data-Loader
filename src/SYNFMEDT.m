@@ -67,8 +67,10 @@ T4 ; @TEST Write Rx Using Drug IEN
  N RX0 S RX0=^PSRX(RXIEN,0)
  N PAT S PAT=$P(RX0,U,2)
  N DRG S DRG=$P(RX0,U,6)
- D CHKEQ^%ut(PAT,1)
- D CHKEQ^%ut(DRG,DRUG)
+ D CHKEQ^%ut(PAT,1,"Patient is not correct")
+ D CHKEQ^%ut(DRG,DRUG,"Drug is not correct")
+ D CHKTF^%ut($O(^PSRX(RXIEN,"L",0)),"Label does not exist")
+ D CHKTF^%ut($$GET1^DIQ(52,RXIEN,"RELEASED DATE/TIME","I"),"Release date/time doesn't exist")
  QUIT
  ;
 T5 ; @TEST Write Rx Using Drug RxNorm SCD
@@ -79,8 +81,10 @@ T5 ; @TEST Write Rx Using Drug RxNorm SCD
  N PAT S PAT=$P(RX0,U,2)
  N DRG S DRG=$P(RX0,U,6)
  N DRGNM S DRGNM=$P(^PSDRUG(DRG,0),U)
- D CHKEQ^%ut(PAT,1)
- D CHKTF^%ut(DRGNM["TAMOXIFEN")
+ D CHKEQ^%ut(PAT,1,"Patient is not correct")
+ D CHKTF^%ut(DRGNM["TAMOXIFEN","Drug is not correct")
+ D CHKTF^%ut($O(^PSRX(RXIEN,"L",0)),"Label does not exist")
+ D CHKTF^%ut($$GET1^DIQ(52,RXIEN,"RELEASED DATE/TIME","I"),"Release date/time doesn't exist")
  QUIT
  ;
 T55 ; @TEST Write an Rx with a bad Rxnorm number
