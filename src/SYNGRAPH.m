@@ -100,3 +100,38 @@ getGraph(url,gname) ; get a graph from a web service
  d index(rindx)
  q
  ;
+wsGetGraph(RTN,FILTER) ; web service returns the requested graph FILTER("graph")="graph"
+ ; this is the server side of getGraph above
+ n graph s graph=$g(FILTER("graph"))
+ i graph="" d  q  ;
+ . s RTN="-1^please specify a graph"
+ n root s root=$$rootOf^%wd(graph)
+ i +root=-1 d  q  ;
+ . s RTN="-1^graph not found"
+ ;
+ n json
+ s json=$$rootOf^%wd(graph_"-json")
+ i +json'=-1 s RTN=json q  ;
+ s json=$$setroot^%wd(graph_"-json")
+ S RTN=json
+ K @RTN
+ d ENCODE^VPRJSON(root,RTN)
+ q
+ ;
+loincMap() ; create the lonic-lab-map
+ n root s root=$$setroot^%wd("loinc-lab-map")
+ k @root
+ n src s src=$$rootOf^%wd("loinc-code-map")
+ s src=$na(@src@("loinc-codes-map-1.csv"))
+ n zi s zi=0
+ f  s zi=$o(@src@(zi)) q:+zi=0  d  ;
+ . n zj s zj=""
+ . f  s zj=$o(@src@(zi,zj)) q:zj=""  d  ;
+ . . n zt s zt=$$trim^%ts(@src@(zi,zj))
+ . . q:zt=""
+ . . s @root@("graph","map",zi,zj)=zt
+ s rindx=$na(@root@("graph","map"))
+ s @root@("index","root")=rindx
+ d index(rindx)
+ q
+ ;
