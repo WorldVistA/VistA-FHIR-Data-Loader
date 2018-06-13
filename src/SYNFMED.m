@@ -5,7 +5,6 @@ SYNFMED ;OSE/SMH - Add Medications to Patient Record;May 23, 2018
  ;
  ; TODO list
  ; - Implement Web Services lookup
- ; - Set-up Patient Characteristics in 55
  ;
 RXN2MEDS(RXN) ; [Public] Get Drugs that are associated with an RxNorm
  Q $$MATCHVM($$RXN2VUI(RXN))
@@ -338,6 +337,14 @@ WRITERXPS(PSODFN,DRUG,RXDATE) ; [$$/D Public] Create a new prescription for a pa
  N PSOPAR,PSOPAR7,PSOSYS,PSODTCUT,PSOPRPAS
  S PSOPAR=$G(^PS(59,PSOSITE,1)),PSOPAR7=$G(^PS(59,PSOSITE,"IB")),PSOSYS=$G(^PS(59.7,1,40.1)) D CUTDATE^PSOFUNC
  ;
+ ; Add Patient to File 55 DINUMMED to 2
+ N FDA,IEN,DIERR
+ S FDA(55,"?+1,",.01)="`"_PSODFN
+ S IEN(1)=PSODFN
+ S FDA(55,"?+1,",3)="OPC" ; A convenient Patient Status
+ D UPDATE^DIE("E","FDA","IEN")
+ I $D(DIERR) S $EC=",U-UPDATE-FAILED,"
+ ;
  ; Pharmacist (we use the value multiple times)
  N SYNPHARM S SYNPHARM=$$PHARM^SYNINIT()
  ; Drug Array we will pass by reference
@@ -390,6 +397,9 @@ WRITERXPS(PSODFN,DRUG,RXDATE) ; [$$/D Public] Create a new prescription for a pa
  ; Nature of order
  N PSONOOR S PSONOOR="W"
  ;
+ ; Mail/Window - defaults to mail; override to Window
+ S PSONEW("MAIL/WINDOW")="W"
+ ;
  ; File in 52
  D EN^PSON52(.PSONEW)
  ;
@@ -420,4 +430,4 @@ WRITERXPS(PSODFN,DRUG,RXDATE) ; [$$/D Public] Create a new prescription for a pa
  ;
  QUIT:$QUIT SYNRXN QUIT
  ;
-TEST D EN^%ut("SYNFMEDT",2) QUIT
+TEST D EN^%ut("SYNFMEDT",3) QUIT
