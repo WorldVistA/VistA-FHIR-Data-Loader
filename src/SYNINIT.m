@@ -237,7 +237,7 @@ HL() ; [Public $$] Generic Hospital Location Entry
  S C0XFDA(44,"?+1,",3)=+$$SITE^VASITE() ; Institution - Default institution
  S C0XFDA(44,"?+1,",8)=295 ; STOP CODE NUMBER - Primary Care
  S C0XFDA(44,"?+1,",9)="M" ; SERVICE
- S C0XFDA(44,"?+1,",2502)="Y" ; NON-COUNT CLINIC
+ S C0XFDA(44,"?+1,",2502)="N" ; NON-COUNT CLINIC
  D UPDATE^DIE("",$NA(C0XFDA),$NA(C0XIEN),$NA(C0XERR))
  I $D(DIERR) S $EC=",U1,"
  Q C0XIEN(1) ; HL IEN
