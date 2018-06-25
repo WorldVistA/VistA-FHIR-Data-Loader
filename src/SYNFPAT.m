@@ -136,7 +136,7 @@ importPatient(rtn,ien) ; register and import a fhir patient (demographics only)
  ;
  ; load successful
  ;
- new icn set icn=$$newIcn(zdfn)
+ new icn set icn=$$newIcn2(zdfn,pid)
  if icn'=-1 s @PLD("status")@("ICN")=icn
  s @PLD("status")@("DFN")=zdfn
  s @PLD("status")@("loadStatus")="loaded"
@@ -351,6 +351,41 @@ icn(dfn) ; extrinsic returns the ICN of the patient
  ;
  quit zicn_"V"_$$CHECKDG^MPIFSPC(zicn)
  ;
+newIcn2(dfn,pid) ; extrinsic which creates a new ICN for the patient based on the Synthea patient id (pid)
+ ; returns the ICN
+ ;
+ i $g(pid)="" d  ; pid not provided.. go find it
+ . n fien s fien=$$dfn2ien^SYNFUTL(dfn)
+ . s pid=$$ien2pid^SYNFUTL(fien)
+ i $g(pid)="" q -1
+ new tmpicn
+ ;
+ s tmpicn=$$pid2icn^SYNFUTL(pid) ; generate the icn from the pid
+ ;
+ ;991.01    INTEGRATION CONTROL NUMBER (NJ12,0Xa), [MPI;1]          
+ ;991.02    ICN CHECKSUM (Fa), [MPI;2]
+ ;991.1     FULL ICN (FXa), [MPI;10]
+ ;
+ new fda,tchk,err
+ set tchk=$$CHECKDG^MPIFSPC(tmpicn)
+ i +dfn=0 b
+ set fda(2,dfn_",",991.01)=tmpicn
+ set fda(2,dfn_",",991.02)=tchk
+ set fda(2,dfn_",",991.1)=tmpicn_"V"_tchk
+ do UPDATE^DIE("","fda",,"err")
+ if $data(err) do  quit -1
+ . D ^ZTER
+ . zwrite err
+ ;
+ new ficn s ficn=tmpicn_"V"_tchk
+ S ^DPT("AFICN",ficn,dfn)=""
+ S ^DPT("ARFICN",dfn,ficn)=""
+ ;
+ n ien s ien=$$dfn2ien^SYNFUTL(dfn)
+ if ien'="" do setIndex^SYNFUTL(ien,"ICN",ficn)
+ ;
+ quit ficn
+ ;
 fixindex1 ; create the ICN and DFN indexes
  d clearIndexes^SYNFUTL ; blow away the indexes
  n gn,zi
@@ -359,7 +394,7 @@ fixindex1 ; create the ICN and DFN indexes
  f  s zi=$o(@gn@(zi)) q:+zi=0  d  ;
  . n gn2,dfn,icn
  . s gn2=$na(@gn@(zi,"load","Patient","status"))
- . w !,gn2," ",$g(@gn2@("DFN"))
+ . ;w !,gn2," ",$g(@gn2@("DFN"))
  . s dfn=$g(@gn2@("DFN"))
  . q:dfn=""
  . ;s icn=$g(@gn2@("ICN"))
@@ -375,7 +410,7 @@ fixindex1 ; create the ICN and DFN indexes
 fixicn1 ; fix all DPT ICN indexes
  k ^DPT("AICN")
  K ^DPT("AFICN")
- K ^DPT("AFRICN")
+ K ^DPT("ARFICN")
  n zi s zi=0
  f  s zi=$o(^DPT(zi)) q:+zi=0  d  ;
  . n icn,icnck
@@ -387,5 +422,20 @@ fixicn1 ; fix all DPT ICN indexes
  . s ^DPT("AICN",icn,zi)=""
  . s ^DPT("AFICN",ficn,zi)=""
  . s ^DPT("ARFICN",zi,ficn)=""
+ q
+ ;
+genAllIcns ; regenerates all ICNs; insterts in PATIENT file and regenerates indexes
+ n root s root=$$setroot^%wd("fhir-intake")
+ n zi s zi=0
+ f  s zi=$o(@root@(zi)) q:+zi=0  d  ;
+ . n pid,dfn,icn
+ . s pid=$$ien2pid^SYNFUTL(zi)
+ . s dfn=$$ien2dfn^SYNFUTL(zi)
+ . i dfn<1 q
+ . i pid="" q
+ . s icn=$$newIcn2^SYNFPAT(dfn,pid)
+ . w !,"fien: "_zi_" dfn: "_dfn_" pid: "_pid_" icn: "_icn
+ d fixicn1 ; fix ^DPT indexes
+ d fixindex1 ; fix graph indexes
  q
  ;

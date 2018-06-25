@@ -175,4 +175,31 @@ replace(ln,cur,repl)	; replace current with replacment in line ln
 	set ln=$extract(ln,1,where-$length(cur)-1)_repl_$extract(ln,where,$length(ln))
 	quit
 	;
-	
+hex2dec(hex) ; extrinsic returns the decimal conversion of hex number hex
+ n ii,dec,dig
+ s dec=0
+ s hex=$tr(hex,"ABCDEF","abcdef")
+ f ii=1:1:$l(hex) s dig=$f("0123456789abcdef",$e(hex,ii)) q:'dig  s dec=(dec*16)+(dig-2)
+ q dec
+ ;
+ien2pid(fien) ; extrinsic returns the patient id from the fhir-intake graph ien=fien
+ n root s root=$$setroot^%wd("fhir-intake")
+ n pid
+ set pid=$o(@root@(fien,"POS","type","Patient",""))
+ q pid
+ ;
+pid2icn(pid) ; generate an ICN from a pid
+ ; example of a pid: urn:uuid:0a01efae-0662-41ae-a20d-4646ce42b687
+ n hpid s hpid=$p(pid,"-",5)
+ q:hpid="" -1
+ n dpid
+ s dpid=$$hex2dec(hpid)
+ s dpid=$e(dpid,1,8) ; icn is the first 9 decimal digits
+ q dpid
+ ;
+testIcnGen(fien) ; extrinsic generates an ICN for fhir patient fien
+ n pid s pid=$$ien2pid(fien)
+ n icn s icn=$$pid2icn(pid)
+ n chk s chk=$$CHECKDG^MPIFSPC(icn)
+ q icn_"V"_chk
+ ;
