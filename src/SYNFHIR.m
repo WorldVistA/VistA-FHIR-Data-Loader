@@ -10,6 +10,7 @@ wsPostFHIR(ARGS,BODY,RESULT)	; recieve from addpatient
 	s U="^"
 	S DUZ=1
 	S DUZ("AG")="V"
+	S DUZ(2)=1
 	;
 	new json,ien,root,gr,id,return
 	set root=$$setroot^%wd("fhir-intake")
@@ -43,8 +44,9 @@ wsPostFHIR(ARGS,BODY,RESULT)	; recieve from addpatient
 	. do importEncounters^SYNFENC(.return,ien,.ARGS)
 	. do importImmu^SYNFIMM(.return,ien,.ARGS)
 	. do importConditions^SYNFPRB(.return,ien,.ARGS)
-	. do importAllergy^SYNFALG(.return,ien,.ARGS)
-	. do importAppointment^SYNFAPT(.return,ien,.ARGS)
+	. ;do importAllergy^SYNFALG(.return,ien,.ARGS)
+	. ;do importAppointment^SYNFAPT(.return,ien,.ARGS)
+	. do importMeds^SYNFMED2(.return,ien,.ARGS)
 	;
 	do ENCODE^VPRJSON("return","RESULT")
 	set HTTPRSP("mime")="application/json"
@@ -234,7 +236,7 @@ fhir2graph(in,out)	; transforms fhir to a graph
 	. set rname=$get(@rootj@(i,"resource","resourceType"))
 	. if rname="" do  quit  ;
 	. . w !,"error no resourceType in entry: ",i
-	. . zwr @rootj@(i,*)
+	. . zwrite @rootj@(i,*)
 	. . b
 	. if '$data(@out@(rname)) set cnt=1
 	. else  set cnt=$order(@out@(rname,""),-1)+1

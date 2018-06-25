@@ -88,7 +88,7 @@ wsIntakeConditions(args,body,result,ien)	; web service entry (post)
 	. set eval("conditions",zi,"vars","code")=sctcode
 	. n icdcode,notmapped
 	. s notmapped=0
-	. s icdcode=$$MAP^SYNDHPMP("scd2icd",sctcode)
+	. s icdcode=$$MAP^SYNDHPMP("sct2icd",sctcode)
 	. i +icdcode=-1 s notmapped=1
 	. do log(jlog,"icd mapping is: "_icdcode)
 	. do:notmapped log(jlog,"snomed code "_sctcode_"is not mapped")

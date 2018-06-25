@@ -39,7 +39,7 @@ wsIntakeAllergy(args,body,result,ien) ; web service entry (post)
  . merge jtmp=BODY
  . do DECODE^VPRJSON("jtmp","json")
  ;
- i '$d(json) d getRandomAllergy(.json)
+ ;i '$d(json) d getRandomAllergy(.json)
  ;
  i '$d(json) q  ;
  m ^gpl("gjson")=json
