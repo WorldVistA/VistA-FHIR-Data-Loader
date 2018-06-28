@@ -13,6 +13,7 @@ STARTUP ; M-Unit Startup
  D KILLONEDRUG(DRG)
  ;
  ; Delete patient rx data
+ N DIU S DIU(0)="" ; Tell the pharmacy package that we are Fileman doing dirty cleanup work.
  N PSOI F PSOI=0:0 S PSOI=$O(^PS(55,DFN,"P",PSOI)) Q:'PSOI  D
  . N RXIEN S RXIEN=^PS(55,DFN,"P",PSOI,0)
  . I $D(^PSRX(RXIEN,"OR1")) N ORNUM S ORNUM=$P(^("OR1"),U,2) S DA=ORNUM,DIK="^OR(100," D ^DIK
