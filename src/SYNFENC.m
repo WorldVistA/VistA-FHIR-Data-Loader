@@ -276,6 +276,8 @@ LOADALL(count) ; count is how many to do. default is 1000
 	. d importEncounters^SYNFENC(.rtn,%1,.filter)
 	. d importImmu^SYNFIMM(.rtn,%1,.filter)
 	. d importConditions^SYNFPRB(.rtn,%1,.filter)
+	. ;do importAppointment^SYNFAPT(.return,%1,.filter)
+	. ;do importMeds^SYNFMED2(.return,%1,.filter)
 	q
 	;
 NEXT(start) ; extrinsic which returns the next patient for encounter loading	

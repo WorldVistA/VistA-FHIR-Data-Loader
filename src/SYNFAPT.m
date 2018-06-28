@@ -35,8 +35,8 @@ wsIntakeAppointment(args,body,result,ien)	; web service entry (post)
 	. s args("load")=0
 	. merge jtmp=BODY
 	. do DECODE^VPRJSON("jtmp","json")
-	if '$d(json) d  ; if no appointment, get a random set of appointments
-	. d getRandomApt(.json) ; get a random set of appointments
+	;if '$d(json) d  ; if no appointment, get a random set of appointments
+	;. d getRandomApt(.json) ; get a random set of appointments
 	i '$d(json) q  ;
 	m ^gpl("gjson")=json
 	;b

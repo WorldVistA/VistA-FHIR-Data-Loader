@@ -31,6 +31,7 @@ graphmap(graph,code,otype,itype) ; extrinsic mapping function using a graph
  i $e(graph,1,1)'="^" d  ;
  . n root s root=$$setroot^%wd(graph)
  . s graph=$g(@root@("index","root"))
+ i $g(graph)="" q "-1^Error, can't find graph"
  i '$d(@graph@("pos")) q "-1^Error, can't find index"
  n gien,ipred,opred
  s ipred=$g(itype)
@@ -39,7 +40,7 @@ graphmap(graph,code,otype,itype) ; extrinsic mapping function using a graph
  i ipred="" q "-1^Code not found"
  s gien=$o(@graph@("ops",code,ipred,""))
  ;w !,"gien= "_gien,!
- ;zwr @graph@(gien,*) 
+ ;zwrite @graph@(gien,*) 
  ;w !,graph
  s opred=$g(otype)
  i opred="" s opred=$o(@graph@(gien,ipred))
@@ -105,15 +106,16 @@ wsGetGraph(RTN,FILTER) ; web service returns the requested graph FILTER("graph")
  n graph s graph=$g(FILTER("graph"))
  i graph="" d  q  ;
  . s RTN="-1^please specify a graph"
- n root s root=$$rootOf^%wd(graph)
+ ;n root s root=$$rootOf^%wd(graph)
+ n root s root=$$setroot^%wd(graph)
  i +root=-1 d  q  ;
  . s RTN="-1^graph not found"
  ;
- n json
- s json=$$rootOf^%wd(graph_"-json")
- i +json'=-1 s RTN=json q  ;
- s json=$$setroot^%wd(graph_"-json")
- S RTN=json
+ ;n json
+ ;s json=$$setroot^%wd(graph_"-json")
+ ;i +json'=-1 s RTN=json q  ;
+ ;s json=$$setroot^%wd(graph_"-json")
+ S RTN=$na(^TMP("SYNOUT",$J))
  K @RTN
  d ENCODE^VPRJSON(root,RTN)
  q
