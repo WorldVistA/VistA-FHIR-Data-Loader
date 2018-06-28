@@ -26,7 +26,7 @@ wsPull(rtn,filter)	; pull web service. assumes url to list is passed as filter("
 	d assemble("jtmp","json")
 	;s ret=$$%^%WC(.json,"GET",listurl)
 	w !,"return is: ",ret,!
-	;zwr json
+	;zwrite json
 	;
 	n lien,jary
 	s lien=$o(@groot@("B",listname,""))
@@ -41,7 +41,7 @@ wsPull(rtn,filter)	; pull web service. assumes url to list is passed as filter("
 	s rtn("listien")=lien
 	;
 	w !
-	;zwr @gr@(*)
+	;zwrite @gr@(*)
 	;
 	q
 	;
@@ -78,7 +78,7 @@ wsLol(rtn,filter)	; list of list web service
 	;d assemble("jtmp","json")
 	s zret=$$%^%WC(.json,"GET",listurl)
 	;w !,"return is: ",zret,!
-	;zwr json
+	;zwrite json
 	;
 	n lien,jary
 	s lien=$o(@groot@("B",listname,""))
@@ -119,7 +119,7 @@ wsLol2(rtn,filter)	; list of list web service
 	;d assemble("jtmp","json")
 	s zret=$$%^%WC(.json,"GET",listurl)
 	;w !,"return is: ",zret,!
-	;zwr json
+	;zwrite json
 	;
 	;n lien,jary
 	;s lien=$o(@groot@("B",listname,""))
@@ -170,7 +170,7 @@ getlol	; get list of lists
 	s zret=$$GETURL^XTHC10(listurl,,"jtmp")
 	d assemble("jtmp","json")
 	w !,"return is: ",zret,!
-	;zwr json
+	;zwrite json
 	;
 	n lien,jary
 	s lien=$o(@groot@("B",listname,""))
@@ -326,8 +326,12 @@ wsLoadPat(zrtn,zfilter)	; load one patient from a URL
 	if rdfn'="" do  ; patient creation was successful
 	. if $g(ARGS("load"))="" s ARGS("load")=1
 	. do importVitals^SYNFVIT(.return,ien,.ARGS)
-	. ;do importEncounters^SYNFENC(.return,ien,.ARGS)
-	. ;do importImmu^SYNFIMM(.return,ien,.ARGS)
+	. do importEncounters^SYNFENC(.return,ien,.ARGS)
+	. do importImmu^SYNFIMM(.return,ien,.ARGS)
+	. do importConditions^SYNFPRB(.return,ien,.ARGS)
+	. do importAllergy^SYNFALG(.return,ien,.ARGS)
+	. ;do importAppointment^SYNFAPT(.return,ien,.ARGS)
+	. do importMeds^SYNFMED2(.return,ien,.ARGS)
 	;
 	;do ENCODE^VPRJSON("return","RESULT")
 	;do ENCODE^VPRJSON("return","zrtn")

@@ -193,7 +193,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . . ;LABADD(RETSTA,DHPPAT,DHPLOC,DHPTEST,DHPRSLT,DHPRSDT) ;Create lab test
  . . D LABADD^SYNDHP63(.RETSTA,DHPPAT,DHPLOC,DHPLAB,DHPOBS,DHPDTM,DHPLOINC)	; labs update
  . . d log(jlog,"Return from LABADD^ZZDHP63 was: "_$g(RETSTA))
- . . i $g(DEBUG)=1 ZWR RETSTA
+ . . i $g(DEBUG)=1 ZWRITE RETSTA
  . . if +$g(RETSTA)=1 do  ;
  . . . s eval("status","loaded")=$g(eval("status","loaded"))+1
  . . . s eval("labs",zi,"status","loadstatus")="loaded"
@@ -285,7 +285,7 @@ labsum ; summary of lab tests for patient ien pien
  . . . s table(loinc_" "_text)=1
  . . . w !,"patient= "_zzi_" entry= "_zi,!
  . . . n rptary m rptary=@root@(zzi,"json","entry",zi,"resource")
- . . . zwr rptary
- zwr table
+ . . . zwrite rptary
+ zwrite table
  q
  ;

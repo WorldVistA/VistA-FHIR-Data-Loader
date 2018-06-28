@@ -240,6 +240,6 @@ medsum ; search all loaded patients and catelog the procedure codes
  . . s txt=txt_" - "_sys
  . . i '$d(table(cde_" "_txt)) s table(cde_" "_txt)=1 q  ;
  . . s table(cde_" "_txt)=$g(table(cde_" "_txt))+1
- zwr table
+ zwrite table
  q
  ;
