@@ -94,6 +94,12 @@ T55 ; @TEST Write an Rx with a bad Rxnorm number
  D CHKTF^%ut(RXN<0)
  QUIT
  ;
+T56 ; @TEST Write an Rx with no NDCs on the market
+ ; ZEXCEPT: DFN,DRGRXN
+ N RXN S RXN=$$WRITERXRXN^SYNFMED(DFN,282464,DT) ; Acetaminophen 160 MG Oral Tablet
+ D CHKTF^%ut(RXN>0)
+ QUIT
+ ;
 VUI2VAPT ; @TEST Get VA Product IEN from VUID
  N L F L=1:1 N LN S LN=$T(VUI2VAPD+L) Q:LN["<<END>>"  Q:LN=""  D
  . N VUID S VUID=$P(LN,";",3)

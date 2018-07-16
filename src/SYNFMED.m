@@ -186,10 +186,10 @@ NEXT ;
  N NDC S NDC=$P(NDCS,U,1)
  ;
  ; NDC field
- I $G(NDC) S C0XFDA(50,"+1,",31)=$E(NDC,1,5)_"-"_$E(NDC,6,9)_"-"_$E(NDC,10,11)
+ I NDC S C0XFDA(50,"+1,",31)=$E(NDC,1,5)_"-"_$E(NDC,6,9)_"-"_$E(NDC,10,11)
  ;
  ; NDCs to synonyms
- N C0XI F C0XI=1:1:$L(NDCS,U) D
+ I NDCS]"" N C0XI F C0XI=1:1:$L(NDCS,U) D
  . S NDC=$P(NDCS,U,C0XI)
  . S C0XFDA(50.1,"+"_(C0XI+10)_",+1,",.01)=NDC
  . S C0XFDA(50.1,"+"_(C0XI+10)_",+1,",1)="Q"
@@ -399,6 +399,9 @@ WRITERXPS(PSODFN,DRUG,RXDATE) ; [$$/D Public] Create a new prescription for a pa
  ;
  ; Mail/Window - defaults to mail; override to Window
  S PSONEW("MAIL/WINDOW")="W"
+ ;
+ ; Patient Status
+ S PSONEW("PATIENT STATUS")=$$FIND1^DIC(53,,"QX","OPC")
  ;
  ; File in 52
  D EN^PSON52(.PSONEW)
