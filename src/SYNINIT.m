@@ -99,7 +99,7 @@ PROV() ;[Public $$] Create Generic Provider for Synthetic Patients
  S C0XFDA(200.010113,"?+6,?+1,",.02)="T-1"
  ;
  ; Service/Section
- S C0XFDA(200,"?+1,",29)="`1"
+ S C0XFDA(200,"?+1,",29)="`"_$$MEDSS()
  ;
  ; NPI - Ferdi made this one up.
  S C0XFDA(200,"?+1,",41.99)="9990000348"
@@ -161,7 +161,7 @@ PHARM() ;[Public $$] Create Generic Provider for Synthetic Patients
  S C0XFDA(200.010113,"?+6,?+1,",.02)="T-1"
  ;
  ; Service/Section
- S C0XFDA(200,"?+1,",29)="`1"
+ S C0XFDA(200,"?+1,",29)="`"_$$PHRSS()
  ;
  N DIC S DIC(0)="" ; An XREF in File 200 requires this.
  D UPDATE^DIE("E",$NA(C0XFDA),$NA(C0XIEN),$NA(C0XERR)) ; Typical UPDATE
