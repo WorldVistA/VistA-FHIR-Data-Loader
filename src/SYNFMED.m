@@ -100,6 +100,71 @@ ETSRXN2NDC(RXN) ; [Private] Return delimited list of NDCs from RxNorm (only acti
  K ^TMP("ETSOUT",$J)
  quit out
  ;
+ETSCONV(RXN) ; [Private] Convert RxNorm CUI for non SCD to SCD drug
+ N SUC S SUC=$$GETDATA^ETSRXN(RXN)
+ I 'SUC Q "0^drug does not exist in RxNorm"
+ ;
+ ; Is this a semantic clinical drug? If so, just quit, returning this drug.
+ N SCD S SCD=$$ETSISSCD(RXN)
+ I SCD Q RXN
+ ;
+ ; Okay it isn't an SCD. Now we need to find out what type it is.
+ N TYPE S TYPE=$$ETSTYPE(RXN)
+ ;
+ ; Now convert the type (SBDC, SBD, SCDC to SCD)
+ ; zwrite ^TMP("ETSDATA",$J,RXN,*)
+ I TYPE="SBDC" S SCD=$$ETSCONVSBDC(RXN)
+ I TYPE="SBD"  S SCD=$$ETSCONVSBD(RXN)
+ I TYPE="SCDC" S SCD=$$ETSCONVSCDC(RXN)
+ ;
+ ; Must have an SCD at this point
+ I 'SCD S $EC=",U-SAM-NEEDS-TO-INVESTIGATE,"
+ ;
+ QUIT SCD
+ ;
+ETSISSCD(RXN) ; [Private] Is RXN an SCD?
+ N RESULT S RESULT=0
+ N I,Z F I=0:0 S I=$O(^TMP("ETSDATA",$J,RXN,"RXCONSO",I)) Q:'I  S Z=^(I,0) D  Q:RESULT
+ . I $P(Z,U,4)="SCD" S RESULT=1
+ Q RESULT
+ ;
+ETSTYPE(RXN) ; [Private] What's the type of this RXN? (called only when not SCD)
+ N RESULT S RESULT=""
+ N I,Z F I=0:0 S I=$O(^TMP("ETSDATA",$J,RXN,"RXCONSO",I)) Q:'I  S Z=^(I,0) D  Q:RESULT]""
+ . I $P(Z,U,3)="RXNORM" D 
+ .. N TYPE S TYPE=$P(Z,U,4)
+ .. I TYPE="SBDC" S RESULT=TYPE
+ .. I TYPE="SBD"  S RESULT=TYPE
+ .. I TYPE="SCDC" S RESULT=TYPE
+ I "^SBDC^SBD^SCDC^"'[U_RESULT_U S $EC=",U-UNANTICIPATED-RXN-TYPE,"
+ Q RESULT
+ ;
+ ; For the below, everything looks sorta like this.
+ ; ^TMP("ETSDATA",1356,1111011,"RXNREL",1,0)="958970^1111011^RB^389221^has_tradename^RXNORM^^4096"
+ ; The 4096 we check for means the drug is currently prescribable. This prevents us from reaching
+ ; dead ends where the realtionship leads us to a drug not the market and thus may not be a drug
+ ; we can write for in VistA.
+ ;
+ETSCONVSBDC(RXN) ; [Private] Convert RxnCUI SBDC -> SCD
+ ; Convert to SCDC first and then to SCD
+ N RESULT S RESULT=0
+ N I,Z F I=0:0 S I=$O(^TMP("ETSDATA",$J,RXN,"RXNREL",I)) Q:'I  S Z=^(I,0) D  Q:RESULT
+ . I $P(Z,U,5)="consists_of",$P(Z,U,8)=4096 S RESULT=$P(Z,U,4)
+ N % S %=$$GETDATA^ETSRXN(RESULT) ; **WARNING: CONTEXT CHANGE**
+ Q $$ETSCONVSBD(RESULT)
+ ;
+ETSCONVSBD(RXN)  ; [Private] Convert RxnCUI SBD -> SCD
+ N RESULT S RESULT=0
+ N I,Z F I=0:0 S I=$O(^TMP("ETSDATA",$J,RXN,"RXNREL",I)) Q:'I  S Z=^(I,0) D  Q:RESULT
+ . I $P(Z,U,5)="has_tradename",$P(Z,U,8)=4096 S RESULT=$P(Z,U,4)
+ Q RESULT
+ ;
+ETSCONVSCDC(RXN) ; [Private] Convert RxnCUI SCDC -> SCD
+ N RESULT S RESULT=0
+ N I,Z F I=0:0 S I=$O(^TMP("ETSDATA",$J,RXN,"RXNREL",I)) Q:'I  S Z=^(I,0) D  Q:RESULT
+ . I $P(Z,U,5)="consists_of",$P(Z,U,8)=4096 S RESULT=$P(Z,U,4)
+ Q RESULT
+ ; 
 MATCHVM(VUIDS) ; [Public] Match delimited list of VUIDs to delimited set of drugs (not one to one)
  N MATCHES S MATCHES=""
  N I,VUID
@@ -313,12 +378,16 @@ GET(RETURN,URL) ; [Public] Get a URL
  I "^200^302^"'[HEADERS("STATUS") S %XOBWERR=HEADERS("STATUS"),$EC=",UXOBWHTTP,"
  QUIT
  ;
-WRITERXRXN(PSODFN,RXNCDCUI,RXDATE) ; [$$/D Public] Create a new prescription for a patient using RxNorm SCD CUI
+WRITERXRXN(PSODFN,RXNCUI,RXDATE) ; [$$/D Public] Create a new prescription for a patient using RxNorm SCD CUI
  ; Input: PSODFN = DFN
- ; Input: RXNCDCUI = RxNorm SCD CUI. ONLY SCDs!!! No other RxNorm type is resolvable.
+ ; Input: RXNCUI = RxNorm CUI. ONLY SCD, SCDC, SBDC, or SBD types only
  ; Input: RXDATE = Prescription Date
  ;
- ; $$ Output: Prescription Number (not IEN) or -1^error message
+ ; $$ Output: Prescription Number (not IEN) or -1^error message or -2^error message
+ ;
+ ; Convert RXNCUI to SCD
+ N RXNCDCUI S RXNCDCUI=$$ETSCONV(RXNCUI)
+ I 'RXNCDCUI Q -2_U_"RxNorm CUI "_RXNCUI_" is not a valid RxNorm. Please check using RxNav or similar"
  ;
  N DRUG S DRUG=$$ADDDRUG(RXNCDCUI)
  I 'DRUG Q -1_U_"RxNorm CUI "_RXNCDCUI_" could not be resolved into a drug."

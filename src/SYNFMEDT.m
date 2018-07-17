@@ -108,6 +108,7 @@ T57 ; @TEST Write an Rx with mulitple matches for drug
  QUIT
  ;
 T58 ; @TEST Write an Rx with Lirugatide (RXN # 897122)
+ ; ZEXCEPT: DFN,DRGRXN
  N RXN S RXN=$$WRITERXRXN^SYNFMED(DFN,897122,DT) ; Acetaminophen 325 MG Oral Tablet
  D CHKTF^%ut(RXN>0)
  QUIT
@@ -129,6 +130,65 @@ VUI2VAPD ; @DATA - Data for above test
  ;
 T6 ; @TEST Get NDCs for a drug
  D CHKTF^%ut($$RXN2NDC^SYNFMED(198211)["16252050890")
+ QUIT
+ ;
+T7 ; @TEST Analysis of meds that don't load
+ N I,T F I=1:1 S T=$T(T7L+I),T=$P(T,";;",2) Q:T=""  D
+ . N SCD S SCD=$$ETSCONV^SYNFMED(T)
+ . I 'SCD QUIT
+ . N % S %=$$GETDATA^ETSRXN(SCD)
+ . D CHKTF^%ut(%)
+ . D CHKTF^%ut($$ETSISSCD^SYNFMED(SCD))
+ QUIT
+ ;
+T7L ; @DATA
+ ;;239981
+ ;;308056
+ ;;389128
+ ;;392151
+ ;;564666
+ ;;568530
+ ;;573839
+ ;;575020
+ ;;575971
+ ;;596927
+ ;;602735
+ ;;607015
+ ;;608680
+ ;;617944
+ ;;646250
+ ;;727316
+ ;;727374
+ ;;824184
+ ;;834060
+ ;;834101
+ ;;849437
+ ;;849727
+ ;;896188
+ ;;904420
+ ;;996741
+ ;;997221
+ ;;1000128
+ ;;1000158
+ ;;1020137
+ ;;1049544
+ ;;1049639
+ ;;1091166
+ ;;1094108
+ ;;1111011
+ ;;1366342
+ ;;1536586
+ ;;1602593
+ ;;1648767
+ ;;1803932
+ ;;
+T8 ; @TEST Add drugs for patients from T7L
+ ; ZEXCEPT: DFN,DRGRXN
+ N SYNI,SYNT F SYNI=1:1 S SYNT=$T(T7L+SYNI),SYNT=$P(SYNT,";;",2) Q:SYNT=""  D
+ . ; W SYNT," "
+ . N RXN S RXN=$$WRITERXRXN^SYNFMED(DFN,SYNT,DT)
+ . ; W RXN,!
+ . D CHKTF^%ut(RXN>0)
  QUIT
  ;
 KILLDRUG ; [Public] Remove all Drug Data
