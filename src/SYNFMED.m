@@ -73,7 +73,7 @@ ETSRXN2VUID(RXN) ; [Private] Return delimited list of file~VUID^file~VUID based 
 ETSRXN2NDC(RXN) ; [Private] Return delimited list of NDCs from RxNorm (only active ones)
  ; Translate RXN to VUID
  new numNDC set numNDC=$P($$RXN2OUT^ETSRXN(RXN),U,2)
- if 'numNDC quit:$quit "-1^rxncui-not-found" quit
+ if 'numNDC quit:$quit "" quit
  ;
  ; loop through NDCs, and grab good ones 
  ; ^TMP("ETSOUT",2199,831533,"NDC")=6
@@ -322,6 +322,7 @@ WRITERXRXN(PSODFN,RXNCDCUI,RXDATE) ; [$$/D Public] Create a new prescription for
  ;
  N DRUG S DRUG=$$ADDDRUG(RXNCDCUI)
  I 'DRUG Q -1_U_"RxNorm CUI "_RXNCDCUI_" could not be resolved into a drug."
+ S DRUG=$P(DRUG,U) ; in case we get multiple drugs back; reported by George.
  I $QUIT QUIT $$WRITERXPS(PSODFN,DRUG,RXDATE)
  D WRITERXPS(PSODFN,DRUG,RXDATE)
  QUIT

@@ -100,6 +100,17 @@ T56 ; @TEST Write an Rx with no NDCs on the market
  D CHKTF^%ut(RXN>0)
  QUIT
  ;
+T57 ; @TEST Write an Rx with mulitple matches for drug
+ ; doesn't cause a crash on my system, but here for George and company to test
+ ; ZEXCEPT: DFN,DRGRXN
+ N RXN S RXN=$$WRITERXRXN^SYNFMED(DFN,313782,DT) ; Acetaminophen 325 MG Oral Tablet
+ D CHKTF^%ut(RXN>0)
+ QUIT
+ ;
+T58 ; @TEST Write an Rx with Lirugatide (RXN # 897122)
+ N RXN S RXN=$$WRITERXRXN^SYNFMED(DFN,897122,DT) ; Acetaminophen 325 MG Oral Tablet
+ D CHKTF^%ut(RXN>0)
+ QUIT
 VUI2VAPT ; @TEST Get VA Product IEN from VUID
  N L F L=1:1 N LN S LN=$T(VUI2VAPD+L) Q:LN["<<END>>"  Q:LN=""  D
  . N VUID S VUID=$P(LN,";",3)
