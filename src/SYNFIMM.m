@@ -117,7 +117,7 @@ wsIntakeImmu(args,body,result,ien) ; web service entry (post)
  . ;
  . ; set up to call the data loader
  . ;
- . ;IMMUNUPD(RETSTA,DHPPAT,VISIT,IMMUNIZ,ANATLOC,ADMINRT,DOSE,EVENTDT,IMMPROV)	;Immunization update
+ . ;IMMUNUPD(RETSTA,DHPPAT,VISIT,IMMUNIZ,ANATLOC,ADMINRT,DOSE,EVENTDT,IMMPROV)  ;Immunization update
  . n RETSTA,DHPPAT,VISIT,IMMUNIZ,ANATLOC,ADMINRT,DOSE,EVENTDT,IMMPROV      ;Immunization update
  . s (DHPPAT,VISIT,IMMUNIZ,ANATLOC,ADMINRT,DOSE,EVENTDT,IMMPROV)=""      ;Immunization update
  . ;
