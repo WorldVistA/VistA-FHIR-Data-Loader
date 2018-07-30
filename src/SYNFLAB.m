@@ -161,8 +161,22 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . s DHPLAB=vistalab
  . ;
  . s DHPOBS=value
- . s eval("labs",zi,"parms","DHPOBS")=value
- . d log(jlog,"Value is: "_value)
+ . s recien=$o(^LAB(60,"B",DHPLAB,""))
+ . n xform s xform=$$GET1^DIQ(60,recien_",",410)
+ . n dec s dec=0
+ . i xform["S Q9=" d
+ . . s dec=+$p($p(xform,"""",2),",",3)
+ . i $l($p(DHPOBS,".",2))>1 d
+ . . s DHPOBS=$s(dec<4:$j(DHPOBS,1,dec),dec>3:$j(DHPOBS,1,3),1:$j(DHPOBS,1,0)) ; fix results with too many decimal places
+ . s eval("labs",zi,"parms","DHPOBS")=DHPOBS
+ . d log(jlog,"Value is: "_DHPOBS)
+ . ;
+ . ;i DHPLOINC="2093-3" s DHPOBS=$J(DHPOBS,1,0) ;Total Cholesterol
+ . ;i DHPLOINC="33914-3" s DHPOBS=$J(DHPOBS,1,0) ;Estimated Glomerular Filtration Rate
+ . ;i DHPLOINC="18262-6" s DHPOBS=$J(DHPOBS,1,0) ;Low Density Cholesterol
+ . ;i DHPLOINC="2085-9" s DHPOBS=$J(DHPOBS,1,0) ;High Density Cholesterol
+ . ;i DHPLOINC="2571-8" s DHPOBS=$J(DHPOBS,1,0) ;Tryglycerides
+ . ;i DHPLOINC="2339-0" s DHPOBS=$J(DHPOBS,1,0) ;Glucose
  . ;
  . s DHPUNT=unit
  . s eval("labs",zi,"parms","DHPUNT")=unit
@@ -191,7 +205,8 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . . . d log(jlog,"Lab already loaded, skipping")
  . . d log(jlog,"Calling LABADD^SYNDHP63 to add lab")
  . . ;LABADD(RETSTA,DHPPAT,DHPLOC,DHPTEST,DHPRSLT,DHPRSDT) ;Create lab test
- . . D LABADD^SYNDHP63(.RETSTA,DHPPAT,DHPLOC,DHPLAB,DHPOBS,DHPDTM,DHPLOINC)	; labs update
+ . . D LABADD^SYNDHP63(.RETSTA,DHPPAT,DHPLOC,DHPLAB,DHPOBS,DHPDTM,DHPLOINC)     ; labs update
+ . . S ^ZZLABLOG(ien)=$G(RETSTA)
  . . d log(jlog,"Return from LABADD^ZZDHP63 was: "_$g(RETSTA))
  . . i $g(DEBUG)=1 ZWRITE RETSTA
  . . if +$g(RETSTA)=1 do  ;
