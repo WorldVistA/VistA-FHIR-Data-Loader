@@ -60,10 +60,10 @@ ETSRXN2VUID(RXN) ; [Private] Return delimited list of file~VUID^file~VUID based 
  . new node0 set node0=^TMP("ETSOUT",$J,RXN,"VUID",i,0)
  . new node1 set node1=^TMP("ETSOUT",$J,RXN,"VUID",i,1)
  . set type=$p(node0,U,4)
- . if "^CD^IN^"'[(U_type_U) quit
+ . if type'["CD"&(type'["IN") quit
  . ;
  . set vuid=$p(node0,U,5)
- . set file=$s(type="CD":50.68,type="IN":50.6,1:1/0) ; any other type is invalid!
+ . set file=$s(type["CD":50.68,type["IN":50.6,1:1/0) ; any other type is invalid!
  . set name=node1
  . set out=out_file_"~"_vuid_"~"_name_U
  if $extract(out,$length(out))=U set $extract(out,$length(out))=""
@@ -100,7 +100,49 @@ ETSRXN2NDC(RXN) ; [Private] Return delimited list of NDCs from RxNorm (only acti
  K ^TMP("ETSOUT",$J)
  quit out
  ;
-ETSCONV(RXN) ; [Private] Convert RxNorm CUI for non SCD to SCD drug
+RXNCONV(RXN) ; [Private] Convert RxNorm CUI for non SCD to SCD drug
+ N FIXED S FIXED=$$RXNBAD(RXN)
+ I FIXED Q FIXED
+ ;
+ I $T(^ETSRXN)]"" Q $$ETSCONV(RXN)
+ S $EC=",U-UNIMPLEMENTED,"
+ ;
+RXNBAD(RXN) ; [Private] Synthea Bad RxNorm Codes Translation
+ N RXNBADDATA
+ N I,T F I=1:1 S T=$P($T(RXNBADDATA+I),";;",2) Q:T=""  S RXNBADDATA($P(T,";",1))=$P(T,";",2)
+ I $D(RXNBADDATA(RXN)) Q RXNBADDATA(RXN)
+ Q ""
+ ;
+RXNBADDATA ;;
+ ;;239981;477045
+ ;;389128;1363309
+ ;;308056;1804799
+ ;;727374;1660014
+ ;;564666;705129
+ ;;568530;311989
+ ;;573839;197319
+ ;;575020;105586
+ ;;575971;1736776
+ ;;596927;596926
+ ;;602735;310436
+ ;;607015;483438
+ ;;608680;313782
+ ;;617944;608139
+ ;;824184;562251
+ ;;849437;198014
+ ;;849727;849574
+ ;;896188;896209
+ ;;904420;904419
+ ;;996741;996740
+ ;;997221;997223
+ ;;1049544;1860154
+ ;;1049639;1049221
+ ;;1091166;1091392
+ ;;1094108;1094107
+ ;;1602593;1599803
+ ;;1648767;311995
+ ;;
+ETSCONV(RXN) ; [Private] Convert RxNorm CUI for non SCD to SCD drug using ETS
  N SUC S SUC=$$GETDATA^ETSRXN(RXN)
  I 'SUC Q "0^drug does not exist in RxNorm"
  ;
@@ -136,6 +178,7 @@ ETSTYPE(RXN) ; [Private] What's the type of this RXN? (called only when not SCD)
  .. I TYPE="SBDC" S RESULT=TYPE
  .. I TYPE="SBD"  S RESULT=TYPE
  .. I TYPE="SCDC" S RESULT=TYPE
+ .. I TYPE="SCD"  S RESULT=TYPE
  I "^SBDC^SBD^SCDC^"'[U_RESULT_U S $EC=",U-UNANTICIPATED-RXN-TYPE,"
  Q RESULT
  ;
@@ -386,7 +429,7 @@ WRITERXRXN(PSODFN,RXNCUI,RXDATE) ; [$$/D Public] Create a new prescription for a
  ; $$ Output: Prescription Number (not IEN) or -1^error message or -2^error message
  ;
  ; Convert RXNCUI to SCD
- N RXNCDCUI S RXNCDCUI=$$ETSCONV(RXNCUI)
+ N RXNCDCUI S RXNCDCUI=$$RXNCONV(RXNCUI)
  I 'RXNCDCUI Q -2_U_"RxNorm CUI "_RXNCUI_" is not a valid RxNorm. Please check using RxNav or similar"
  ;
  N DRUG S DRUG=$$ADDDRUG(RXNCDCUI)
