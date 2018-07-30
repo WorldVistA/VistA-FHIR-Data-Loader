@@ -1,10 +1,10 @@
-SYNFGRAPH	;ven/gpl - fhir loader utilities ; 2/20/18 4:11am
-	;;1.0;fhirloader;;oct 19, 2017;Build 2
-	;
-	; Authored by George P. Lilly 2017-2018
-	;
-	q
-	;
+SYNFGRAPH       ;ven/gpl - fhir loader utilities ; 2/20/18 4:11am
+        ;;1.0;fhirloader;;oct 19, 2017;Build 2
+        ;
+        ; Authored by George P. Lilly 2017-2018
+        ;
+        q
+        ;
 index(graph) ; will create a pos and ops index at the place pointed to by graph
  ; graph is passed by name
  ; 

@@ -1,4 +1,4 @@
-SYNDHP62 ;DHP/ART -  Write Problems, Appointments To VistA ;2018-06-12  11:54 AM
+SYNDHP62 ;DHP/ART -  Write Problems, Appointments To VistA ;05/29/2018
  ;;1.0;DHP;**1**;Jan 17, 2017;Build 5
  ;;Original routine authored by Andrew Thompson & Ferdinand Frankson of DXC Technology 2017-2018
  ;
@@ -32,8 +32,9 @@ PRBUPDT(RETSTA,DHPPAT,DHPVST,DHPROV,DHPONS,DHPABT,DHPCLNST,DHPSCT) ;Problem/Cond
  ;
  S PACKAGE=$$FIND1^DIC(9.4,,"","PCE")
  S SOURCE="DHP DATA INGEST"
- S USER=$G(DUZ,1),DUZ("AG")="V"
- ;S ERRDISP=1 ;for testing only, set to null otherwise  <<<<<<<<<<<<<<<<<<<<<<<
+ S USER=$$DUZ^SYNDHP69
+ S ERRDISP=""
+ I $G(DEBUG)=1 S ERRDISP=1
  S PPEDIT=""
  S ACCOUNT=""
  S P="|"
@@ -64,6 +65,9 @@ PRBUPDT(RETSTA,DHPPAT,DHPVST,DHPROV,DHPONS,DHPABT,DHPCLNST,DHPSCT) ;Problem/Cond
  S DHPDXNR=$P(ICDTX,U,4)
  S PROBDATA("DX/PL",1,"DIAGNOSIS")=DHPICD
  S PROBDATA("DX/PL",1,"NARRATIVE")=DHPDXNR
+ N SERCAT
+ S SERCAT=$S(DHPONS\1<$$DT^XLFDT:"E",1:"A")
+ S PROBDATA("DX/PL",1,"SERVICE CATEGORY")=SERCAT ; A for current E for historical
  S DHPDXF=$$PRMDX(DHPVST,DHPICD)
  I DHPDXF=-1 S RETSTA="-1^Problem with DX code "_DHPICD_" already exists for visit "_DHPVST Q
  S PROBDATA("DX/PL",1,"PRIMARY")=DHPDXF
@@ -77,7 +81,7 @@ PRBUPDT(RETSTA,DHPPAT,DHPVST,DHPROV,DHPONS,DHPABT,DHPCLNST,DHPSCT) ;Problem/Cond
  S:$G(DHPCLNST)'="" PROBDATA("DX/PL",1,"PL ACTIVE")=$S(STATII[(P_$G(DHPCLNST)_P):DHPCLNST,1:"A")
  ;
  S RETSTA=$$DATA2PCE^PXAI("PROBDATA",PACKAGE,SOURCE,.DHPVST,USER,$G(ERRDISP),.ZZERR,$G(PPEDIT),.ZZERDESC,.ACCOUNT)
- ;I $D(ZZERR) ZW ZZERR
+ ;I $D(ZZERR) ZWRITE ZZERR
  S RETSTA=RETSTA_"^"_$G(DHPVST)
  I $D(ZZERDESC) M RETSTA("ZZERDESC")=ZZERDESC
  I $D(ZZERR) M RETSTA("ZZERR")=ZZERR
@@ -146,6 +150,8 @@ APPTADD(RETSTA,DHPPAT,DHPCLIN,DHPAPTDT,DHPLEN) ;Create appointment
  D CHK^DIE(2.98,.001,"",EXDATE,.RESULT,.MSG)
  I RESULT="^" S RETSTA("APPT")="-1^Invalid appt date/time." QUIT
  ;
+ S USER=$$DUZ^SYNDHP69
+ ;
  S:$G(DHPLEN)="" APPTLEN=15 ;default appointment length
  ;
  ; -- Check Clinic --
@@ -161,9 +167,11 @@ APPTADD(RETSTA,DHPPAT,DHPCLIN,DHPAPTDT,DHPLEN) ;Create appointment
  I $$GET1^DIQ(44,CLINIEN_",",8)="" D  QUIT
  . S RETSTA("APPT")="-1^Clinic missing STOP CODE NUMBER (#44,8)."
  ;
- ;W "ICN: ",DHPPAT,"   DFN: ",PATDFN,!
- ;W "CLINIC: ",DHPCLIN,"   IEN: ",CLINIEN,!
- ;W "APPT D/T: ",DHPAPTDT,"   ",APPTDT,!
+ I $G(DEBUG)=1 D
+ . W "Create Appointment  APPTADD^SYNDHP62",!
+ . W "ICN: ",DHPPAT,"   DFN: ",PATDFN,!
+ . W "CLINIC: ",DHPCLIN,"   IEN: ",CLINIEN,!
+ . W "APPT D/T: ",DHPAPTDT,"   ",APPTDT,!
  ;
  I $D(^DPT(PATDFN,"S",APPTDT,0)),$P($G(^DPT(PATDFN,"S",APPTDT,0)),U,2)'="C" D  QUIT
  . S RETSTA("APPT")="-1^Duplicate Appointment"
@@ -203,7 +211,7 @@ APPTADD(RETSTA,DHPPAT,DHPCLIN,DHPAPTDT,DHPLEN) ;Create appointment
  . I $D(ERRMSG) D  QUIT
  . . S RETSTA("APPT")="-1^Problem saving clinic appointment date (#44.001) - "_$G(ERRMSG("DIERR",1,"TEXT",1))
  . . S ERROR=1
- ;ZW IENS
+ ;ZWRITE IENS
  QUIT:ERROR
  S APPTDT=$G(IENS(2))
  N FDA,IENS,ERRMSG
@@ -213,7 +221,7 @@ APPTADD(RETSTA,DHPPAT,DHPCLIN,DHPAPTDT,DHPLEN) ;Create appointment
  S FDA(44.003,IENS,7)=DUZ ;data entry clerk
  S FDA(44.003,IENS,8)=$P($$NOW^XLFDT,".",1) ;date appointment made
  D UPDATE^DIE("","FDA","IENS","ERRMSG")
- ;ZW IENS
+ ;ZWRITE IENS
  I $D(ERRMSG) D  QUIT
  . S RETSTA("APPT")="-1^Problem saving clinic appointment (#44.003) - "_$G(ERRMSG("DIERR",1,"TEXT",1))
  ;
@@ -285,11 +293,13 @@ APPTCKIN(RETSTA,DHPPAT,DHPCLIN,DHPAPTDT,DHPCIDT) ;Check-in appointment
  I 'HIT D  QUIT
  . S RETSTA("CKIN")="-1^Clinic Appointment record was not found"
  ;
- ;W "ICN:             ",DHPPAT,"   DFN: ",PATDFN,!
- ;W "CLINIC:          ",DHPCLIN,"   IEN: ",CLINIEN,!
- ;W "CLINIC,APPT,IEN: ",CLAPTIEN,!
- ;W "APPT D/T:        ",DHPAPTDT,"   ",APPTDT,!
- ;W "CHK-IN D/T:      ",DHPCIDT,"   ",CHKINDT,!
+ I $G(DEBUG)=1 D
+ . W "Appointment Check-in  APPTCKIN^SYNDHP62",!
+ . W "ICN:             ",DHPPAT,"   DFN: ",PATDFN,!
+ . W "CLINIC:          ",DHPCLIN,"   IEN: ",CLINIEN,!
+ . W "CLINIC,APPT,IEN: ",CLAPTIEN,!
+ . W "APPT D/T:        ",DHPAPTDT,"   ",APPTDT,!
+ . W "CHK-IN D/T:      ",DHPCIDT,"   ",CHKINDT,!
  ;
  ; -- appointment check-in updates --
  ;
@@ -401,12 +411,14 @@ APTCKOUT(RETSTA,DHPPAT,DHPCLIN,DHPAPTDT,DHPCODT) ;Check-out appointment
  . F  S IDX=$O(COERRMSG(IDX)) QUIT:IDX=""  D
  . . S RETSTA("CKOUT")=RETSTA("CKOUT")_"^"_COERRMSG(IDX)
  ;
- ;W "ICN:             ",DHPPAT,"   DFN: ",PATDFN,!
- ;W "CLINIC:          ",DHPCLIN,"   IEN: ",CLINIEN,!
- ;W "CLINIC,APPT,IEN: ",CLAPTIEN,!
- ;W "APPT D/T:        ",DHPAPTDT,"   ",APPTDT,!
- ;W "CHK-IN D/T:      ",CHKINDT,!
- ;W "CHK-OUT D/T:     ",DHPCODT,"   ",CHKOUTDT,!
+ I $G(DEBUG)=1 D
+ . W "Appointment Check-in  APTCKOUT^SYNDHP62",!
+ . W "ICN:             ",DHPPAT,"   DFN: ",PATDFN,!
+ . W "CLINIC:          ",DHPCLIN,"   IEN: ",CLINIEN,!
+ . W "CLINIC,APPT,IEN: ",CLAPTIEN,!
+ . W "APPT D/T:        ",DHPAPTDT,"   ",APPTDT,!
+ . W "CHK-IN D/T:      ",CHKINDT,!
+ . W "CHK-OUT D/T:     ",DHPCODT,"   ",CHKOUTDT,!
  ;
  ; -- appointment check-out updates --
  ;

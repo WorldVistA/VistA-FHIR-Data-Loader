@@ -219,7 +219,7 @@ wsIntakeVitals(args,body,result,ien) ; web service entry (post)
  . . if $g(ien)'="" if $$loadStatus("vitals",zi,ien)=1 do  quit  ;
  . . . d log(jlog,"Vital sign already loaded, skipping")
  . . d log(jlog,"Calling VITUPD^SYNDHP61 to add vital")
- . . D VITUPD^SYNDHP61(.RETSTA,DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPPROV,DHPLOC)	; vitals update
+ . . D VITUPD^SYNDHP61(.RETSTA,DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPPROV,DHPLOC)       ; vitals update
  . . d log(jlog,"Return from VITUPD^ZZDHP61 was: "_$g(RETSTA))
  . . if +$g(RETSTA)=1 do  ;
  . . . s eval("status","loaded")=$g(eval("status","loaded"))+1
