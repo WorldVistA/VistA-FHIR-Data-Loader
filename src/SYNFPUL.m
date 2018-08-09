@@ -163,7 +163,7 @@ getlol  ; get list of lists
         s listname=listurl
         i listname["?" s listname=$p(listname,"?",1)
         ;
-        q:$d(@groot@("B",listname)) ; list already loaded
+        q:$d(@groot@("B",listname))  ; list already loaded
         ;
         n zret,json,jtmp
         ;s zret=$$%^%WC(.json,"GET",listurl)
@@ -293,7 +293,7 @@ wsLoadPat(zrtn,zfilter) ; load one patient from a URL
         n jtmp
         s ret=$$GETURL^XTHC10(purl,,"jtmp")
         d assemble("jtmp","json")
-        i +ret=-1 d  b
+        i +ret=-1 d  s $ec=",u-error,"
         . w !,ret," ",purl
         ;
         ;

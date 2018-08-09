@@ -103,7 +103,7 @@ ADDMEDADR(SYNDFN,SYNRXN,SYNDF,SYNPA,SYNDUZ,SYNSS,SYNDATE,SYNCOMM) ; [Public] Add
  new synvuid ; For Searching Compound Index
  set synvuid(1)=$p(firstFileVUID,"~",2)
  set synvuid(2)=1
- set file=$p(firstFileVUID,"~",1)
+ new file set file=$p(firstFileVUID,"~",1)
  if 'file set $ec=",u-no-supposed-to-happen,"
  new ien set ien=$$FIND1^DIC(file,"","XQ",.synvuid,"AMASTERVUID")
  if 'ien quit:$quit "-3^VUID-not-found. Is your NDF up to date?" quit
@@ -147,7 +147,7 @@ STARTUP ; M-UNIT STARTUP
  S DIK=$$ROOT^DILFD(120.86),DA=DFN D ^DIK
  S DIK="^GMR(120.8,"
  S DA=0
- F  S DA=$O(^GMR(120.8,"B",1,DA)) Q:'DA  D ^DIK 
+ F  S DA=$O(^GMR(120.8,"B",1,DA)) Q:'DA  D ^DIK
  QUIT
  ;
 TADDMEDADR1 ; @TEST Simple allergen NOS - Contraceptive CD.

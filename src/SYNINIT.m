@@ -109,7 +109,7 @@ PROV() ;[Public $$] Create Generic Provider for Synthetic Patients
  I $D(DIERR) S $EC=",U1,"
  ;
  ; Fix verify code change date to the far future
- N FDA 
+ N FDA
  S FDA(200,C0XIEN(1)_",",11.2)=$$FMTH^XLFDT($$FMADD^XLFDT(DT,3000))
  ;
  ; Signature block. Do this as internal values to prevent name check in 20.2.
@@ -168,7 +168,7 @@ PHARM() ;[Public $$] Create Generic Provider for Synthetic Patients
  I $D(DIERR) S $EC=",U1,"
  ;
  ; Fix verify code change date to the far future
- N FDA 
+ N FDA
  S FDA(200,C0XIEN(1)_",",11.2)=$$FMTH^XLFDT($$FMADD^XLFDT(DT,3000))
  ;
  ; Signature block. Do this as internal values to prevent name check in 20.2.
@@ -364,7 +364,7 @@ TESTAMIE ; @TEST AMIE
  QUIT
  ;
 TESTIBACT ; @TEST IB Action Fix
- D IBACTION 
+ D IBACTION
  N PHRSS S PHRSS=$$PHRSS()
  ;
  ; We confirm through the index that we have six entries pointing to pharmacy
