@@ -121,13 +121,7 @@ output/
 output//fhir
 output//fhir/hospitalInformation1534183758506.json
 output//fhir/King743_Eichmann909_c7f8935d-1099-4ce3-81da-3256f02a2956.json
-saichiko:synthea sam$ find output/ -iname '\*.json'
-output//fhir/hospitalInformation1534183758506.json
-output//fhir/King743_Eichmann909_c7f8935d-1099-4ce3-81da-3256f02a2956.json
-saichiko:synthea sam$ find output/ -name '\*.json'
-output//fhir/hospitalInformation1534183758506.json
-output//fhir/King743_Eichmann909_c7f8935d-1099-4ce3-81da-3256f02a2956.json
-saichiko:synthea sam$ find output -name '\*.json'
+saichiko:synthea sam$ find output -name '*.json*'
 output/fhir/hospitalInformation1534183758506.json
 output/fhir/King743_Eichmann909_c7f8935d-1099-4ce3-81da-3256f02a2956.json
 saichiko:synthea sam$ curl -H "Content-Type: application/json" localhost:9080/addpatient --data @output/fhir/King743_Eichmann909_c7f8935d-1099-4ce3-81da-3256f02a2956.json
