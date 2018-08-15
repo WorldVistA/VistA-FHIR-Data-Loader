@@ -129,7 +129,7 @@ loincMap() ; create the lonic-lab-map
  f  s zi=$o(@src@(zi)) q:+zi=0  d  ;
  . n zj s zj=""
  . f  s zj=$o(@src@(zi,zj)) q:zj=""  d  ;
- . . n zt s zt=$$trim^%ts(@src@(zi,zj))
+ . . n zt s zt=$$TRIM^XLFSTR(@src@(zi,zj))
  . . q:zt=""
  . . s @root@("graph","map",zi,zj)=zt
  s rindx=$na(@root@("graph","map"))
