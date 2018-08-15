@@ -3,6 +3,18 @@ SYNINIT ;OSEHRA/SMH - Initilization Code for Synthetic Data Loader;May 23 2018
  ; 
  ; (c) Sam Habiel 2018
  ; Licensed under Apache 2.0.
+ ;
+EN ; [Public; called by KIDS; do everything in this file]
+ D LOADHAND
+ D MES^XPDUTL("")
+ D MES^XPDUTL("Syn Patients Importer Init")
+ D MES^XPDUTL("Provider "_$$PROV())
+ D MES^XPDUTL("Pharmacist "_$$PHARM())
+ D MES^XPDUTL("Hospital Location "_$$HL())
+ D MES^XPDUTL("Fixing AMIE thingy") D AMIE
+ D MES^XPDUTL("Fixing IB ACTION TYPE file") D IBACTION
+ D MES^XPDUTL("Setting up Outpatient Pharmacy "_$$PHRSS())
+ QUIT
  ; 
  ; NUMBER: 10                              HTTP VERB: POST                         URI: addcondition
  ; EXECUTION ENDPOINT: wsIntakeConditions^SYNFCON
