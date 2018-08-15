@@ -149,7 +149,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . n vistalab s vistalab=$$graphmap^SYNGRAPH("loinc-code-map",obscode)
  . i +vistalab=-1 s vistalab=$$graphmap^SYNGRAPH("loinc-code-map"," "_obscode)
  . if +vistalab=-1 s vistalab=labtype
- . s vistalab=$$trim^%ts(vistalab) ; get rid of trailing blanks
+ . s vistalab=$$TRIM^XLFSTR(vistalab) ; get rid of trailing blanks
  . ;n sct s sct=$$loinc2sct(obscode) ; find the snomed code
  . ;i vistalab="" d  quit
  . ;. d log(jlog,"VistA lab not found for loinc code: "_obscode_" "_labtype_" -- skipping")
