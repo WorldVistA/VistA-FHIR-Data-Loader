@@ -1,4 +1,4 @@
-SYNKIDS ; OSE/SMH - Synthea Installer ;2018-08-03  11:24 AM
+SYNKIDS ; OSE/SMH - Synthea Installer ; 8/16/18 5:02pm
  ;;1.0;fhirloader;;oct 19, 2017;Build 2
  ;
  ; WARNING: THIS ROUTINE IS A BAD EXAMPLE FOR ANYBODY TRYING TO WRITE GOOD CODE.
@@ -82,8 +82,9 @@ INSTALLRO(URL) ; [Private] Download and Install RO files
  D CD(PWD)
  ;
  ; Silently install RSA -- fur GT.M pass the GTM directory in case we need it.
- I $$CACHE DO RICACHE(TMPDIR_"MWS.RSA")
- I $$GTM DO RIGTM(TMPDIR_"MWS.RSA",,PWD)
+ new filename set filename=$p(URL,"/",$l(URL,"/"))
+ I $$CACHE DO RICACHE(TMPDIR_filename)
+ I $$GTM DO RIGTM(TMPDIR_filename,,PWD)
  QUIT
  ;
 PWD() ; $$ - Get current directory
@@ -94,7 +95,7 @@ PWD() ; $$ - Get current directory
  ;
 CDTMPDIR ; Proc - Change to temporary directory
  I $$GTM S $ZD="/tmp/" QUIT  ; GT.M
- I $$CACHE S %=$ZU(168,$SYSTEM.System.TempDirectory()) QUIT  ; Cache
+ I $$CACHE S %=$ZU(168,^%SYS("TempDir")) QUIT  ; Cache
  S $EC=",U-NOT-IMPLEMENTED,"
  QUIT
  ;
@@ -147,7 +148,7 @@ CACHETLS ; Create a client SSL/TLS config on Cache
  I $$GTM QUIT
  ;
  ; Create the configuration
- N NMSP S NMSP="%SYS"
+ N $NAMESPACE S $NAMESPACE="%SYS"
  n config,status
  n % s %=##class(Security.SSLConfigs).Exists("encrypt_only",.config,.status) ; check if config exists
  i '% d
@@ -160,7 +161,7 @@ CACHETLS ; Create a client SSL/TLS config on Cache
  ; Test it by connecting to encrypted.google.com
  n rtn
  d config.TestConnection("encrypted.google.com",443,.rtn)
- i rtn w "TLS/SSL client configured on Cache as config name 'client'",!
+ i rtn w "TLS/SSL client configured on Cache as config name 'encrypt_only'",!
  e  w "Cannot configure TLS/SSL on Cache",! s $ec=",u-cache-error,"
  QUIT
  ;
@@ -174,7 +175,7 @@ DOWNCACH(URL) ; Download for Cache
  set httprequest=##class(%Net.HttpRequest).%New()
  if $e(URL,1,5)="https" do
  . set httprequest.Https=1
- . set httprequest.SSLConfiguration="client"
+ . set httprequest.SSLConfiguration="encrypt_only"
  new server set server=$p(URL,"://",2),server=$p(server,"/")
  new port set port=$p(server,":",2)
  new filepath set filepath=$p(URL,"://",2),filepath=$p(filepath,"/",2,99)
