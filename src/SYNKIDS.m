@@ -46,8 +46,8 @@ POSTRO ; [Private] Download and Import RO Files
  D MES^XPDUTL("Downloading MASH...")
  D INSTALLRO("https://cdn.rawgit.com/OSEHRA/VistA-FHIR-Data-Loader/master/mash/mash-1-v0.ro")
  D MES^XPDUTL("Downloading MWS...")
- D INSTALLRO("https://cdn.rawgit.com/shabiel/M-Web-Server/0.1.3/dist/WWWINIT.RSA")
- D INSTALLRO("https://cdn.rawgit.com/shabiel/M-Web-Server/0.1.3/dist/MWS.RSA")
+ D INSTALLRO("https://cdn.rawgit.com/shabiel/M-Web-Server/0.1.4/dist/WWWINIT.RSA")
+ D INSTALLRO("https://cdn.rawgit.com/shabiel/M-Web-Server/0.1.4/dist/MWS.RSA")
  QUIT
  ;
 POSTWWW ; [Private] Initialize MWS
