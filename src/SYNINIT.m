@@ -1,6 +1,6 @@
 SYNINIT ;OSEHRA/SMH - Initilization Code for Synthetic Data Loader;May 23 2018
- ;;1.0;Synthetic Data Loader;
- ; 
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018
+ ;
  ; (c) Sam Habiel 2018
  ; Licensed under Apache 2.0.
  ;
@@ -15,7 +15,7 @@ EN ; [Public; called by KIDS; do everything in this file]
  D MES^XPDUTL("Fixing IB ACTION TYPE file") D IBACTION
  D MES^XPDUTL("Setting up Outpatient Pharmacy "_$$PHRSS())
  QUIT
- ; 
+ ;
  ; NUMBER: 10                              HTTP VERB: POST                         URI: addcondition
  ; EXECUTION ENDPOINT: wsIntakeConditions^SYNFCON
  ;
@@ -209,7 +209,7 @@ MEDSS() ; [Public $$] Create Medical Service/Section
 PHRSS() ; [Public $$] Create Pharmacy Service/Section
  N NAME S NAME="PHARMACY"
  Q:$O(^DIC(49,"B",NAME,0)) $O(^(0))
- ; 
+ ;
  N FDA,IEN,DIERR
  S FDA(49,"?+1,",.01)=NAME
  S FDA(49,"?+1,",1)="PHR"
@@ -234,7 +234,7 @@ IBACTION ; [Public] Fix IB ACTION TYPE file (350.1) PSO entries to point to PHAR
  ;
  ; Create FDA and file
  N SYNI F SYNI=0:0 S SYNI=$O(^TMP("DILIST",$J,SYNI)) Q:'SYNI  S IEN=^(SYNI,0) S FDA(350.1,IEN_",",.04)=PHRSS
- D FILE^DIE("",$NA(FDA)) 
+ D FILE^DIE("",$NA(FDA))
  ;
  QUIT
  ;

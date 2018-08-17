@@ -1,5 +1,5 @@
 SYNFALG2 ;ven/gpl - fhir loader utilities ; 2/20/18 4:11am
- ;;1.0;fhirloader;;oct 19, 2017;Build 2
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 2
  ;
  ; Authored by George P. Lilly 2017-2018
  ; (c) Sam Habiel 2018
@@ -39,7 +39,7 @@ MEDALGY(dfn,root,json,zi,eval,jlog,args) ; allergy is rxnorm
  . . d log(jlog,"Allergy already loaded, skipping")
  . d log(jlog,"Calling ADDMEDADR^SYNFALG2 to add allergy")
  . n ok
- . s ok=$$ADDMEDADR(SYNDFN,SYNRXN,,,SYNDUZ,,SYNDATE) ; 
+ . s ok=$$ADDMEDADR(SYNDFN,SYNRXN,,,SYNDUZ,,SYNDATE) ;
  . m eval("allergy",zi,"status")=ok
  . d log(jlog,"Return from data loader was: "_ok)
  . if +$g(ok)=1 do  ;
@@ -83,7 +83,7 @@ ADDMEDADR(SYNDFN,SYNRXN,SYNDF,SYNPA,SYNDUZ,SYNSS,SYNDATE,SYNCOMM) ; [Public] Add
  ; - Can be called as a routine; but you won't get any error information
  ; - with $$, you will get:
  ; - 0^note to sign (if any) or -1^error message
- ; 
+ ;
  ; Translate RXN to VUID
  ; get VUIDs
  ; Output like this: 50.6~4030995

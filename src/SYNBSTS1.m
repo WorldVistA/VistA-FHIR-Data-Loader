@@ -1,10 +1,10 @@
-SYNTEST       ;ven/gpl - fhir loader utilities ; 2/20/18 4:11am
-        ;;1.0;fhirloader;;oct 19, 2017;Build 2
-        ;
-        ; Authored by George P. Lilly 2017-2018
-        ;
-        q
-        ;
+SYNBSTS1 ;ven/gpl - fhir loader utilities ;2018-08-17  3:22 PM
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 2
+ ;
+ ; Authored by George P. Lilly 2017-2018
+ ;
+ q
+ ;
 ICD9ROOT() ; returns the root of the snomed to icd9 graph
  n root s root=$$setroot^%wd("icd9tosnomed")
  q:root=""

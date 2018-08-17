@@ -1,5 +1,5 @@
 SYNFMED ;OSE/SMH - Add Medications to Patient Record;May 23, 2018
- ;;1.0;SYNTHETIC PATIENTS LOADER;
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018
  ; (C) 2018 Sam Habiel
  ; See accompanying license for terms of use.
  ;

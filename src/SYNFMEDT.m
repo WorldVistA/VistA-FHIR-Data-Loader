@@ -1,5 +1,5 @@
 SYNFMEDT ;OSE/SMH - Unit Tests for Synthetic Medications;Jun 11 2018
- ;;1.0;SYNTHETIC PATIENTS INGESTION;
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018
  ;
  D EN^%ut($T(+0),2)
  QUIT

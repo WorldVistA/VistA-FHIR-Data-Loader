@@ -1,13 +1,13 @@
-SYNFGRAPH       ;ven/gpl - fhir loader utilities ; 2/20/18 4:11am
-        ;;1.0;fhirloader;;oct 19, 2017;Build 2
-        ;
-        ; Authored by George P. Lilly 2017-2018
-        ;
-        q
-        ;
+SYNFGRAPH       ;ven/gpl - fhir loader utilities ;2018-08-17  3:26 PM
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 2
+ ;
+ ; Authored by George P. Lilly 2017-2018
+ ;
+ q
+ ;
 index(graph) ; will create a pos and ops index at the place pointed to by graph
  ; graph is passed by name
- ; 
+ ;
  i $d(@graph@("pos")) k @graph@("pos")
  i $d(@graph@("ops")) k @graph@("ops")
  n zi s zi=0
@@ -40,7 +40,7 @@ graphmap(graph,code,otype,itype) ; extrinsic mapping function using a graph
  i ipred="" q "-1^Code not found"
  s gien=$o(@graph@("ops",code,ipred,""))
  ;w !,"gien= "_gien,!
- ;zwrite @graph@(gien,*) 
+ ;zwrite @graph@(gien,*)
  ;w !,graph
  s opred=$g(otype)
  i opred="" s opred=$o(@graph@(gien,ipred))
@@ -48,9 +48,9 @@ graphmap(graph,code,otype,itype) ; extrinsic mapping function using a graph
  ;w !,"opred= "_opred
  q $g(@graph@(gien,opred))
  ;
- s gien=$o(@graph@("ops")) 
+ s gien=$o(@graph@("ops"))
  n ugraph s ugraph=""
- i '$d(@graph@("pos")) d  ; fix the pointer 
+ i '$d(@graph@("pos")) d  ; fix the pointer
  . i $d(@graph@("graph","pos")) s ugraph=$na(@graph@("graph"))
  . n graphname s graphname=$o(@graph@("graph",""))
  . i graphname="" s ugraph="" q  ; don't understand this graph
@@ -60,7 +60,7 @@ graphmap(graph,code,otype,itype) ; extrinsic mapping function using a graph
 getGraphMap(rtn,graph,ipred,iobj,opred,oobj) ; retrieve a section of the graph
  ; extrinsic return 1 on success and -1 on failure
  ; identified by predicate ipred with object iobj
- ; if opred (output predicate) and/or oobj (output object) are specified, 
+ ; if opred (output predicate) and/or oobj (output object) are specified,
  ;  they are treated and a "and" condition on the retrieval
  ;
  n root s root=$$setroot^%wd(graph)
