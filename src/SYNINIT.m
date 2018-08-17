@@ -201,7 +201,6 @@ MEDSS() ; [Public $$] Create Medical Service/Section
  S FDA(49,"?+1,",1)="MED"
  S FDA(49,"?+1,",1.5)="MED"
  S FDA(49,"?+1,",1.7)="PATIENT CARE"
- S FDA(49,"?+1,",2)="`"_$$PROV()
  D UPDATE^DIE("E",$NA(FDA),$NA(IEN))
  I $D(DIERR) S $EC=",U1,"
  QUIT IEN(1)
@@ -216,7 +215,6 @@ PHRSS() ; [Public $$] Create Pharmacy Service/Section
  S FDA(49,"?+1,",1.5)="PHR"
  S FDA(49,"?+1,",1.6)="`"_$$MEDSS()
  S FDA(49,"?+1,",1.7)="PATIENT CARE"
- S FDA(49,"?+1,",2)="`"_$$PHARM()
  D UPDATE^DIE("E",$NA(FDA),$NA(IEN))
  I $D(DIERR) S $EC=",U1,"
  QUIT IEN(1)
