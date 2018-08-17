@@ -1,5 +1,5 @@
 SYNDHP62 ;DHP/ART -  Write Problems, Appointments To VistA ;05/29/2018
- ;;1.0;DHP;**1**;Jan 17, 2017;Build 5
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 5
  ;;Original routine authored by Andrew Thompson & Ferdinand Frankson of DXC Technology 2017-2018
  ;
  QUIT
@@ -481,7 +481,7 @@ APTCKOUT(RETSTA,DHPPAT,DHPCLIN,DHPAPTDT,DHPCODT) ;Check-out appointment
  ;
  QUIT
  ;
-CHECKCO(COERRMSG,PATDFN,APPTDT)	;
+CHECKCO(COERRMSG,PATDFN,APPTDT) ;
  ;
  N ECNT,SCEIENP,SCEIENS,INVDATE,VIENP,VIENS,VPROV,VPOV,VCPT
  S ECNT=0

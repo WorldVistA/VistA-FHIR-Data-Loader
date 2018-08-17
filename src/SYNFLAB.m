@@ -1,5 +1,5 @@
 SYNFLAB ;ven/gpl - fhir loader utilities ;2018-05-08  4:23 PM
- ;;1.0;fhirloader;;oct 19, 2017;Build 2
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 2
  ;
  ; Authored by George P. Lilly 2017-2018
  ;
@@ -33,7 +33,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  ;. s result("labsStatus","status")="alreadyLoaded"
  i $g(ien)'="" d  ; internal call
  . d getIntakeFhir^SYNFHIR("json",,"Observation",ien,1)
- e  d  ; 
+ e  d  ;
  . ;s args("load")=0
  . merge jtmp=BODY
  . do DECODE^VPRJSON("jtmp","json")
@@ -73,7 +73,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . ;
  . new obstype set obstype=$get(json("entry",zi,"resource","category",1,"coding",1,"code"))
  . if obstype="" do  ; category is missing, try mapping the code
- . . new trycode,trydisp,tryy 
+ . . new trycode,trydisp,tryy
  . . set trycode=$g(json("entry",zi,"resource","code","coding",1,"code"))
  . . set trydisp=$g(json("entry",zi,"resource","code","coding",1,"display"))
  . . s tryy=$$loinc2sct(trycode)
@@ -227,7 +227,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . ;b
  e  d  ;
  . d ENCODE^VPRJSON("jrslt","result")
- . set HTTPRSP("mime")="application/json" 
+ . set HTTPRSP("mime")="application/json"
  q 1
  ;
 log(ary,txt) ; adds a text line to @ary@("log")

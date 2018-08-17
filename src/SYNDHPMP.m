@@ -1,5 +1,5 @@
 SYNDHPMP ; AFHIL/FJF terminology mapping
- ;;1.0;DHP;;Jan 17, 2017
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018
  ;;Original routine authored by Andrew Thompson & Ferdinand Frankson of DXC Technology 2017-2018
  ;
 MAP(MAP,CODE,DIR) ; Return a mapped code for a given code

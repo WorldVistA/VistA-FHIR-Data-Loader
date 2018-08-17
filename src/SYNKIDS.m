@@ -1,11 +1,11 @@
 SYNKIDS ; OSE/SMH - Synthea Installer ; 8/16/18 5:02pm
- ;;1.0;fhirloader;;oct 19, 2017;Build 2
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 2
  ;
  ; WARNING: THIS ROUTINE IS A BAD EXAMPLE FOR ANYBODY TRYING TO WRITE GOOD CODE.
  ; I SHOUDLN'T BE DOING HALF OF THE THINGS HERE, BUT I HAVE NO CHOICE RIGHT NOW.
  ;
  ; --SAM
- ; 
+ ;
 ENV ; [Fallthrough]
  QUIT
  ;
@@ -54,7 +54,7 @@ POSTWWW ; [Private] Initialize MWS
  D ^%WINIT
  D LOADHAND^WWWINIT
  N PORT F PORT=9080:1 Q:$$PORTOK^WWWINIT(PORT)
- D JOB^VPRJREQ(PORT) 
+ D JOB^VPRJREQ(PORT)
  N SERVER S SERVER="http://localhost:"_PORT_"/"
  D MES^XPDUTL("")
  D MES^XPDUTL("Mumps Web Services is now listening to port "_PORT)

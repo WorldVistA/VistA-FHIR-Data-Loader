@@ -1,5 +1,5 @@
 SYNFALG ;ven/gpl - fhir loader utilities ; 2/20/18 4:11am
- ;;1.0;fhirloader;;oct 19, 2017;Build 2
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 2
  ;
  ; Authored by George P. Lilly 2017-2018
  ; (c) Sam Habiel 2018
