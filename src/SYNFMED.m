@@ -171,8 +171,11 @@ ETSCONV(RXN) ; [Private] Convert RxNorm CUI for non SCD to SCD drug using ETS
  ; Now convert the type (SBDC, SBD, SCDC to SCD)
  ; zwrite ^TMP("ETSDATA",$J,RXN,*)
  I TYPE="SBDC" S SCD=$$ETSCONVSBDC(RXN)
- I TYPE="SBD"  S SCD=$$ETSCONVSBD(RXN)
  I TYPE="SCDC" S SCD=$$ETSCONVSCDC(RXN)
+ I TYPE="SBD"!(TYPE="BPCK") D
+ . N VUID S VUID=$$RXN2VUI(RXN)
+ . I VUID S SCD=RXN
+ . E  S SCD=$$ETSCONVSBD(RXN)
  ;
  ; Must have an SCD at this point
  I 'SCD S $EC=",U-SAM-NEEDS-TO-INVESTIGATE,"
@@ -185,11 +188,18 @@ ETSISSCD(RXN) ; [Private] Is RXN an SCD?
  . I $P(Z,U,4)="SCD" S RESULT=1
  Q RESULT
  ;
+ETSISBPCK(RXN) ; [Private] Is RXN a BPCK?
+ N RESULT S RESULT=0
+ N I,Z F I=0:0 S I=$O(^TMP("ETSDATA",$J,RXN,"RXCONSO",I)) Q:'I  S Z=^(I,0) D  Q:RESULT
+ . I $P(Z,U,4)="BPCK" S RESULT=1
+ Q RESULT
+ ;
 ETSTYPE(RXN) ; [Private] What's the type of this RXN? (called only when not SCD)
  N RESULT S RESULT=""
  N I,Z F I=0:0 S I=$O(^TMP("ETSDATA",$J,RXN,"RXCONSO",I)) Q:'I  S Z=^(I,0) D  Q:RESULT]""
  . I $P(Z,U,3)="RXNORM" D 
  .. N TYPE S TYPE=$P(Z,U,4)
+ .. I TYPE="BPCK" S RESULT=TYPE
  .. I TYPE="SBDC" S RESULT=TYPE
  .. I TYPE="SBD"  S RESULT=TYPE
  .. I TYPE="SCDC" S RESULT=TYPE

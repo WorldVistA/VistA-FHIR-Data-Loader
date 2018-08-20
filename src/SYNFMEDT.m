@@ -1,7 +1,7 @@
 SYNFMEDT ;OSE/SMH - Unit Tests for Synthetic Medications;Jun 11 2018
  ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018
  ;
- D EN^%ut($T(+0),2)
+ D EN^%ut($T(+0),2,1)
  QUIT
  ;
 STARTUP ; M-Unit Startup
@@ -138,7 +138,7 @@ T7 ; @TEST Analysis of meds that don't load
  . I 'SCD QUIT
  . N % S %=$$GETDATA^ETSRXN(SCD)
  . D CHKTF^%ut(%)
- . D CHKTF^%ut($$ETSISSCD^SYNFMED(SCD))
+ . D CHKTF^%ut($$ETSISSCD^SYNFMED(SCD)!$$ETSISBPCK^SYNFMED(SCD))
  QUIT
  ;
 T7L ; @DATA
@@ -160,6 +160,7 @@ T7L ; @DATA
  ;;727316
  ;;727374
  ;;824184
+ ;;831533
  ;;834060
  ;;834101
  ;;849437
@@ -176,6 +177,7 @@ T7L ; @DATA
  ;;1091166
  ;;1094108
  ;;1111011
+ ;;1359133
  ;;1366342
  ;;1536586
  ;;1602593
