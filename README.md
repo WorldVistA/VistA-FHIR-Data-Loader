@@ -4,17 +4,177 @@ into VistA to produce high quality synthetic patient data for development and te
 Other FHIR data sources are supportable; but are not supported at this time.
 
 # Installation
-This project is at an early stage. These install instructions are mainly intended for the
-developers.
+As of Aug 20th 2018, the official way to install this project is to use the latest
+KIDS build in [releases](https://github.com/OSEHRA/VistA-FHIR-Data-Loader/releases/latest).
 
- * Load all routines into Instance (on Cache, can use GFT's % routine)
- * Install ISI data loader (http://pages.jh.edu/~vista4edu/DataLoader2/VISTA_DATALOADER_2_5.KID)
- * Unzip maps/SYN_MAPS_v1.zip and load .go file into instance with %GI.
- * Load with %RI mash/mash-1-v0.ro
- * Install kids/SYN-graph.kid
- * Install Mumps Web Server (see https://github.com/shabiel/M-Web-Server/blob/master/INSTALL.md)
- * Run D ^SYNINIT to setup all the web services
- * Using D ^SDB (menu option SDBUILD), create a clinic called "GENERAL MEDICINE"
+The KIDS build needs to be unzipped first and then installed. The installer must have the key
+XUMGR in order to be able to add users to the systems.
+
+Here's a sample install transcript:
+
+```
+[root@c3e7f9a9d95d vista]# mumps -dir
+
+FOIA>S DUZ=1
+
+FOIA>D ^XUP
+
+Setting up programmer environment
+This is a TEST account.
+
+Terminal Type set to: C-VT220
+
+Select OPTION NAME:
+FOIA>D ^XPDIL,^XPDI
+
+Enter a Host File: /opt/vista/VISTA_SYNTHETIC_DATA_LOADER_BUNDLE_0P1T3.KID
+
+KIDS Distribution saved on Aug 17, 2018@17:06:42
+Comment: T3
+
+This Distribution contains Transport Globals for the following Package(s):
+   ISI_DATA_LOADER 2.5
+   VISTA SYNTHETIC DATA LOADER 0.1
+Distribution OK!
+
+Want to Continue with Load? YES//
+Loading Distribution...
+
+   ISI_DATA_LOADER 2.5
+Build VISTA SYNTHETIC DATA LOADER 0.1 has an Environmental Check Routine
+Want to RUN the Environment Check Routine? YES//
+
+   VISTA SYNTHETIC DATA LOADER 0.1
+Will first run the Environment Check Routine, SYNKIDS
+Use INSTALL NAME: ISI_DATA_LOADER 2.5 to install this Distribution.
+
+Select INSTALL NAME: ISI_DATA_LOADER 2.5       Loaded from Distribution    8/20/
+18@13:51:20
+     => T3   ;Created on Aug 17, 2018@17:06:42
+
+This Distribution was loaded on Aug 20, 2018@13:51:20 with header of
+   T3   ;Created on Aug 17, 2018@17:06:42
+   It consisted of the following Install(s):
+ISI_DATA_LOADER 2.5VISTA SYNTHETIC DATA LOADER 0.1
+Checking Install for Package ISI_DATA_LOADER 2.5
+
+Install Questions for ISI_DATA_LOADER 2.5
+
+Incoming Files:
+
+
+   9001      ISI PT IMPORT TEMPLATE  (including data)
+
+Want KIDS to Rebuild Menu Trees Upon Completion of Install? NO//
+
+Checking Install for Package VISTA SYNTHETIC DATA LOADER 0.1
+
+Install Questions for VISTA SYNTHETIC DATA LOADER 0.1
+
+Incoming Files:
+
+
+   17.040801 graph
+
+
+Want KIDS to INHIBIT LOGONs during the install? NO//
+Want to DISABLE Scheduled Options, Menu Options, and Protocols? NO//
+
+Enter the Device you want to print the Install messages.
+You can queue the install by enter a 'Q' at the device prompt.
+Enter a '^' to abort the install.
+
+DEVICE: HOME// ;P-OTHER;  TELNET
+
+
+ Install Started for ISI_DATA_LOADER 2.5 :
+               Aug 20, 2018@13:51:40
+
+Build Distribution Date: Aug 17, 2018
+
+ Installing Routines:..........................................................
+               Aug 20, 2018@13:51:41
+
+ Installing Data Dictionaries: ..
+               Aug 20, 2018@13:51:41
+
+ Installing Data:
+               Aug 20, 2018@13:51:41
+
+ Installing PACKAGE COMPONENTS:
+
+ Installing REMOTE PROCEDURE........................
+
+ Installing OPTION..
+               Aug 20, 2018@13:51:41
+
+ Updating Routine file......
+
+ Updating KIDS files.....
+
+ ISI_DATA_LOADER 2.5 Installed.
+               Aug 20, 2018@13:51:41
+
+ No link to PACKAGE file
+
+ NO Install Message sent
+
+ Install Started for VISTA SYNTHETIC DATA LOADER 0.1 :
+               Aug 20, 2018@13:51:41
+
+Build Distribution Date: Aug 17, 2018
+
+ Installing Routines:
+               Aug 20, 2018@13:51:41
+
+ Running Pre-Install Routine: PRE^SYNKIDS.
+
+ Installing Data Dictionaries: ..
+               Aug 20, 2018@13:51:41
+
+ Running Post-Install Routine: POST^SYNKIDS.
+Downloading MASH...
+Downloading MWS...
+This version (#0.2) of '%WINIT' was created on 22-NOV-2013
+         (at Vista-Office EHR, by VA FILEMAN 22.0)
+
+I AM GOING TO SET UP THE FOLLOWING FILES:
+
+   17.6001   WEB SERVICE URL HANDLER
+
+
+...SORRY, I'M WORKING AS FAST AS I CAN........
+OK, I'M DONE.
+NOTE THAT FILE SECURITY-CODE PROTECTION HAS BEEN MADE
+
+Mumps Web Services is now listening to port 9080
+Visit http://localhost:9080/ to see the home page.
+Also, try the sample web services...
+ - http://localhost:9080/xml
+ - http://localhost:9080/ping
+
+LOADING URL HANDLERS
+
+
+Syn Patients Importer Init
+Provider 66
+Pharmacist 67
+Hospital Location 12
+Fixing AMIE thingy
+Fixing IB ACTION TYPE file
+Setting up Outpatient Pharmacy 3
+
+ Updating Routine file......
+
+ Updating KIDS files.......
+
+ VISTA SYNTHETIC DATA LOADER 0.1 Installed.
+               Aug 20, 2018@13:51:45
+
+ Not a VA primary domain
+
+ NO Install Message sent
+```
 
 # Loading Synthetic Patients
 To pull EXISTING (previously created) synthetic patients, run: `D LOADALL^SYNFPUL`. This will load 1000 patients into VistA.
