@@ -2,9 +2,18 @@ SYNDHP69 ;AFHIL-DHP/fjf - Commin Utility Functions
  ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018
  Q
 DUZ() ; issues/set DUZ
- ;
  I '$D(DT) S DT=$$DT^XLFDT
- S SITE=$P($$SITE^VASITE,"^",3)
+ N VASITE S VASITE=$$SITE^VASITE
+ N SITE S SITE=$P(VASITE,"^",3)
  S DUZ=$S(+$G(DUZ)=0:1,1:DUZ)
- S DUZ("AG")="V",DUZ(2)=SITE
+ S DUZ("AG")="V",DUZ(2)=+VASITE
  Q DUZ
+ ;
+TEST D EN^%ut($T(+0),1) QUIT
+T1 ; @TEST HASHINFO^ORDEA previously crashed due to bad DUZ(2)
+ K DUZ
+ S DUZ=$$DUZ()
+ N ORY
+ D HASHINFO^ORDEA(.ORY,1,$$PROV^SYNINIT)
+ D SUCCEED^%ut
+ QUIT
