@@ -1,5 +1,5 @@
 SYNFENC ;ven/gpl - fhir loader utilities ;2018-08-17  3:28 PM
- ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 2
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 13
  ;
  ; Authored by George P. Lilly 2017-2018
  ;
@@ -150,6 +150,25 @@ wsIntakeEncounters(args,body,result,ien)        ; web service entry (post)
  . s eval("encounters",zi,"parms","ENDDT")=ENDDT
  . d log(jlog,"HL7 End DateTime is: "_ENDDT)
  . ;
+ . ; reason code
+ . s SCTDX=reasoncode
+ . n icdcode,icdcodetype,notmapped,sctcode
+ . s icdcode=""
+ . s sctcode=reasoncode
+ . s notmapped=0
+ . ;i sctcode'="" q:'$d(^BSTS)  d
+ . i sctcode'=""  d  ;
+ . . i fmtime<3151001 s icdcodetype="icd9"
+ . . e  s icdcodetype="icd10"
+ . . d log(jlog,"icd code type is: "_icdcodetype)
+ . . i icdcodetype="icd9" s icdcode=$$MAP^SYNDHPMP("sct2icdnine",sctcode)
+ . . e  s icdcode=$$MAP^SYNDHPMP("sct2icd",sctcode)
+ . . i +icdcode=-1 s notmapped=1
+ . . do log(jlog,"icd mapping is: "_icdcode)
+ . . do:notmapped log(jlog,"snomed code "_sctcode_" is not mapped")
+ . . set eval("conditions",zi,"vars","mappedIcdCode")=icdcode
+ . s eval("encounters",zi,"parms","SCTDX")=SCTDX
+ . ;
  . s ENCPROV=$$MAP^SYNQLDM("OP","provider") ; map should return the NPI number
  . ;n DHPPROVIEN s DHPPROVIEN=$o(^VA(200,"B",ENCPROV,"")) ; this has to be the NPI number
  . ;if DHPPROVIEN="" S DHPPROVIEN=3
@@ -273,12 +292,12 @@ LOADALL(count) ; count is how many to do. default is 1000
  . w !,"loading "_%1_" "_$$FMTE^XLFDT($$NOW^XLFDT)
  . w !,g
  . n rtn
- . d taskLabs^SYNFHIR(.rtn,%1,.filter)
+ . ;d taskLabs^SYNFHIR(.rtn,%1,.filter)
  . d importEncounters^SYNFENC(.rtn,%1,.filter)
  . d importImmu^SYNFIMM(.rtn,%1,.filter)
- . d importConditions^SYNFPR2(.rtn,%1,.filter)
- . ;do importAppointment^SYNFAPT(.return,%1,.filter)
- . ;do importMeds^SYNFMED2(.return,%1,.filter)
+ . d importConditions^SYNFPRB(.rtn,%1,.filter)
+ . do importAppointment^SYNFAPT(.return,%1,.filter)
+ . do importMeds^SYNFMED2(.return,%1,.filter)
  q
  ;
 NEXT(start) ; extrinsic which returns the next patient for encounter loading    

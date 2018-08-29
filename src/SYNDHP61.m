@@ -1,5 +1,5 @@
 SYNDHP61 ; Write To VistA ;5/4/18  10:43
- ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 5
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 13
  ;;Original routine authored by Andrew Thompson & Ferdinand Frankson of DXC Technology 2017-2018
  ;
  QUIT
@@ -310,9 +310,11 @@ ENCTUPD(RETSTA,DHPPAT,STARTDT,ENDDT,ENCPROV,CLINIC,SCTDX,SCTCPT) ;Encounter upda
  ;I DHPICD="" S DHPICD="R69."
  ;S DHPICD=+$$ICDDX^ICDEX(DHPICD,30)
  I $G(SCTDX)'="" D  ;
- . S DHPICD=$$MAP^SYNDHPMP("sct2icd",SCTDX)
- . I +DHPICD=-1 S RETSTA="-1^SNOMED CT CODE "_SCTDX_" not mapped" Q
- . S DHPICD=+$$ICDDX^ICDEX($P(DHPICD,U,2),30)
+ .S MAPPING=$S(APPTDATE>20150930:"sct2icd",1:"sct2icdnine")
+ .;S DHPICD=$$MAP^SYNDHPMP(MAPPING,DHPSCT)
+ .S DHPICD=$$MAP^SYNDHPMP(MAPPING,SCTDX)
+ .I +DHPICD=-1 S RETSTA="-1^SNOMED CT CODE "_SCTDX_" not mapped" Q
+ .S DHPICD=+$$ICDDX^ICDEX($P(DHPICD,U,2),30)
  ;
  ; map SNOMED CT code in SCTCPT to CPT
  ;S DHPCPT=$S($$MAP^SYNQLDM(SCTCPT)'="":$$MAP^SYNQLDM(SCTCPT),1:92002)
@@ -387,4 +389,3 @@ T3 S IDT=20170115154546
  .W !!,"___________________________________________________",!!
  .ZW ZZERR
  Q
-.

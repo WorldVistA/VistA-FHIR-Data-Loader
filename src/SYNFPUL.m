@@ -1,5 +1,5 @@
 SYNFPUL ;ven/gpl - fhir loader utilities ;2018-08-17  3:26 PM
- ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 2
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 13
  ;
  ; Authored by George P. Lilly 2017-2018
  ;
@@ -330,7 +330,7 @@ wsLoadPat(zrtn,zfilter) ; load one patient from a URL
  . do importImmu^SYNFIMM(.return,ien,.ARGS)
  . do importConditions^SYNFPRB(.return,ien,.ARGS)
  . do importAllergy^SYNFALG(.return,ien,.ARGS)
- . ;do importAppointment^SYNFAPT(.return,ien,.ARGS)
+ . do importAppointment^SYNFAPT(.return,ien,.ARGS)
  . do importMeds^SYNFMED2(.return,ien,.ARGS)
  ;
  ;do ENCODE^VPRJSON("return","RESULT")
