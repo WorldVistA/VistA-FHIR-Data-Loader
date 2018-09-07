@@ -27,6 +27,7 @@ POST ; [KIDS] - Post Install
  DO POSTRO
  DO POSTWWW
  DO POSTSYN
+ DO POSTINTRO
  QUIT
  ;
 POSTSYN ; [Private] Restore SYN global
@@ -46,8 +47,8 @@ POSTRO ; [Private] Download and Import RO Files
  D MES^XPDUTL("Downloading MASH...")
  D INSTALLRO("https://cdn.rawgit.com/OSEHRA/VistA-FHIR-Data-Loader/master/mash/mash-1-v0.ro")
  D MES^XPDUTL("Downloading MWS...")
- D INSTALLRO("https://cdn.rawgit.com/shabiel/M-Web-Server/0.1.4/dist/WWWINIT.RSA")
- D INSTALLRO("https://cdn.rawgit.com/shabiel/M-Web-Server/0.1.4/dist/MWS.RSA")
+ D INSTALLRO("https://cdn.rawgit.com/shabiel/M-Web-Server/0.1.5/dist/WWWINIT.RSA")
+ D INSTALLRO("https://cdn.rawgit.com/shabiel/M-Web-Server/0.1.5/dist/MWS.RSA")
  QUIT
  ;
 POSTWWW ; [Private] Initialize MWS
@@ -64,6 +65,21 @@ POSTWWW ; [Private] Initialize MWS
  D MES^XPDUTL(" - "_SERVER_"ping")
  QUIT
  ;
+POSTINTRO ; [Private] Append Users to Intro Text
+ N L S L=$O(^XTV(8989.3,1,"INTRO"," "),-1)+1
+ S ^XTV(8989.3,1,"INTRO",L,0)=" "
+ S L=L+1
+ S ^XTV(8989.3,1,"INTRO",L,0)=" SYN USER      ACCESS CODE       VERIFY CODE         ELECTRONIC SIGNATURE"
+ S L=L+1
+ S ^XTV(8989.3,1,"INTRO",L,0)=" --------      -----------       -----------         --------------------"
+ S L=L+1
+ S ^XTV(8989.3,1,"INTRO",L,0)=" PROVIDER,UNK  SYNPROV123        SYNPROV123!!        123456"
+ S L=L+1
+ S ^XTV(8989.3,1,"INTRO",L,0)=" PHARMACIST,U  SYNPHARM123       SYNPHARM123!!       123456"
+ ;
+ S $P(^XTV(8989.3,1,"INTRO",0),U,3,4)=L_U_L
+ ;
+ QUIT
  ;
 INSTALLRO(URL) ; [Private] Download and Install RO files
  ; Get current directory (GT.M may need it to write routines later)
