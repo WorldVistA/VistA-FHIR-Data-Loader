@@ -554,8 +554,9 @@ WRITERXPS(PSODFN,DRUG,RXDATE) ; [$$/D Public] Create a new prescription for a pa
  ; Print Prescription (required for releasing)
  ; NB: We are not checking for POP
  N IOP S IOP="NULL"
+ D ^%ZIS U IO
+ ; Ignore POP as we don't care if we can't write to device. We want IOST specs.
  I $D(%WNULL) S IO=%WNULL U %WNULL
- E  D ^%ZIS U IO
  N PPL S PPL=SYNRXIEN_","
  N PDUZ S PDUZ=SYNPHARM
  D DQ^PSOLBL
