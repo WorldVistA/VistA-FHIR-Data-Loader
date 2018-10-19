@@ -1,5 +1,5 @@
 SYNFMED ;OSE/SMH - Add Medications to Patient Record;May 23, 2018
- ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 13
  ; (C) 2018 Sam Habiel
  ; See accompanying license for terms of use.
  ;
@@ -44,7 +44,7 @@ ETSRXN2VUID(RXN) ; [Private] Return delimited list of file~VUID^file~VUID based 
  ; Input: RxNorm Number for IN or CD TTY
  ; Output: file~VUID~name^file~VUID~name..., where file is 50.6 or 50.68.
  ;         or -1^vuid-not-found
- ; 
+ ;
  ; Translate RXN to VUID
  new numVUID set numVUID=+$$RXN2OUT^ETSRXN(RXN)
  if 'numVUID quit:$quit "-1^vuid-not-found" quit
@@ -75,7 +75,7 @@ ETSRXN2NDC(RXN) ; [Private] Return delimited list of NDCs from RxNorm (only acti
  new numNDC set numNDC=$P($$RXN2OUT^ETSRXN(RXN),U,2)
  if 'numNDC quit:$quit "" quit
  ;
- ; loop through NDCs, and grab good ones 
+ ; loop through NDCs, and grab good ones
  ; ^TMP("ETSOUT",2199,831533,"NDC")=6
  ; ^TMP("ETSOUT",2199,831533,"NDC",1,0)="600680^831533^831533^RXNORM^N"
  ; ^TMP("ETSOUT",2199,831533,"NDC",1,1)="NDC"
@@ -197,7 +197,7 @@ ETSISBPCK(RXN) ; [Private] Is RXN a BPCK?
 ETSTYPE(RXN) ; [Private] What's the type of this RXN? (called only when not SCD)
  N RESULT S RESULT=""
  N I,Z F I=0:0 S I=$O(^TMP("ETSDATA",$J,RXN,"RXCONSO",I)) Q:'I  S Z=^(I,0) D  Q:RESULT]""
- . I $P(Z,U,3)="RXNORM" D 
+ . I $P(Z,U,3)="RXNORM" D
  .. N TYPE S TYPE=$P(Z,U,4)
  .. I TYPE="BPCK" S RESULT=TYPE
  .. I TYPE="SBDC" S RESULT=TYPE
@@ -232,7 +232,7 @@ ETSCONVSCDC(RXN) ; [Private] Convert RxnCUI SCDC -> SCD
  N I,Z F I=0:0 S I=$O(^TMP("ETSDATA",$J,RXN,"RXNREL",I)) Q:'I  S Z=^(I,0) D  Q:RESULT
  . I $P(Z,U,5)="consists_of",$P(Z,U,8)=4096 S RESULT=$P(Z,U,4)
  Q RESULT
- ; 
+ ;
 MATCHVM(VUIDS) ; [Public] Match delimited list of VUIDs to delimited set of drugs (not one to one)
  N MATCHES S MATCHES=""
  N I,VUID
@@ -288,7 +288,7 @@ ADDDRUG2(RXN,VUID) ;
  ; ZEXCEPT: NDC,BARCODE
 NEXT ;
  N PSSZ S PSSZ=1    ; Needed for the drug file to let me in!
- ; 
+ ;
  ; W "(debug) VUID for RxNorm CUI "_RXN_" is "_VUID,!
  ;
  ; IEN in 50.68
@@ -297,7 +297,7 @@ NEXT ;
  S C0XVUID(2)=1
  N F5068IEN S F5068IEN=$$FIND1^DIC(50.68,"","XQ",.C0XVUID,"AMASTERVUID")
  Q:'F5068IEN ""
- ; 
+ ;
  ; W "F 50.68 IEN (debug): "_F5068IEN,!
  ;
  ; Guard against adding the drug back in again.
@@ -463,7 +463,7 @@ WRITERXRXN(PSODFN,RXNCUI,RXDATE) ; [$$/D Public] Create a new prescription for a
  I $QUIT QUIT $$WRITERXPS(PSODFN,DRUG,RXDATE)
  D WRITERXPS(PSODFN,DRUG,RXDATE)
  QUIT
- ; 
+ ;
 WRITERXPS(PSODFN,DRUG,RXDATE) ; [$$/D Public] Create a new prescription for a patient using drug IEN
  ; Input: PSODFN = DFN
  ; Input: DRUG = Drug (file 50) IEN
@@ -487,7 +487,7 @@ WRITERXPS(PSODFN,DRUG,RXDATE) ; [$$/D Public] Create a new prescription for a pa
  N SYNPHARM S SYNPHARM=$$PHARM^SYNINIT()
  ; Drug Array we will pass by reference
  N PSONEW
- ; 
+ ;
  ; Call to get drug demographics
  N PSOY
  S PSOY=DRUG
@@ -552,22 +552,20 @@ WRITERXPS(PSODFN,DRUG,RXDATE) ; [$$/D Public] Create a new prescription for a pa
  D EOJ^PSONEW
  ;
  ; Print Prescription (required for releasing)
- N IOP,POP,%ZIS
- S IOP="NULL" D ^%ZIS
- I POP S $EC=",U-NULL-NOT-CONFIGURED,"
- U IO
+ ; NB: We are not checking for POP
+ N IOP S IOP="NULL"
+ I $D(%WNULL) S IO=%WNULL U %WNULL
+ E  D ^%ZIS U IO
  N PPL S PPL=SYNRXIEN_","
  N PDUZ S PDUZ=SYNPHARM
  D DQ^PSOLBL
- D ^%ZISC
  ;
  ; Release Prescription
  N POERR S POERR=1
  N RXP S RXP=SYNRXIEN
  N PSRH S PSRH=SYNPHARM
- S IOP="NULL" D ^%ZIS U IO  ; This is just to hide the output!
  D BATCH^PSODISP
- D ^%ZISC
+ I '$D(%WNULL) D ^%ZISC
  ;
  QUIT:$QUIT SYNRXN QUIT
  ;
