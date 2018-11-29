@@ -1,5 +1,5 @@
 SYNFMEDT ;OSE/SMH - Unit Tests for Synthetic Medications;Jun 11 2018
- ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 13
  ;
  D EN^%ut($T(+0),2,1)
  QUIT
@@ -208,7 +208,7 @@ KILLDRUG ; [Public] Remove all Drug Data
  ;
 KILLONEDRUG(DRG) ; [Public] Kill just one drug
  ; Called by the Unit Test
- ; 
+ ;
  ; Get OI
  N DIK,DA
  N OI S OI=+^PSDRUG(DRG,2)
@@ -226,26 +226,26 @@ KILLONEDRUG(DRG) ; [Public] Kill just one drug
  ;
  ; Update CPRS view of pharmacy OIs
  D CPRS
- QUIT 
+ QUIT
  ;
-RESTOCK ; [Public] Restock CPRS Orderable Items from new Drug & Pharmacy Orderable Item 
- ; File. Public Entry Point. 
- ; Call this after repopulating the drug file (50) and the pharmacy orderable 
+RESTOCK ; [Public] Restock CPRS Orderable Items from new Drug & Pharmacy Orderable Item
+ ; File. Public Entry Point.
+ ; Call this after repopulating the drug file (50) and the pharmacy orderable
  ; item file (50.7)
  N PSOIEN ; Looper variable
  D DT^DICRW ; Establish FM Basic Variables
- ; 
- ; Loop through Orderable Item file and call 
+ ;
+ ; Loop through Orderable Item file and call
  ; 1. The Active/Inactive Updater for the Orderable Item
  ; 2. the protocol file updater to CPRS Files
- S PSOIEN=0 F  S PSOIEN=$O(^PS(50.7,PSOIEN)) Q:'PSOIEN  D 
+ S PSOIEN=0 F  S PSOIEN=$O(^PS(50.7,PSOIEN)) Q:'PSOIEN  D
  . D MES^XPDUTL("Syncing Pharamcy Orderable Item "_PSOIEN)
  . D EN^PSSPOIDT(PSOIEN),EN2^PSSHL1(PSOIEN,"MUP")
- D CPRS ; Update Orderable Item View files 
+ D CPRS ; Update Orderable Item View files
  QUIT
  ;
  ; -- END Public Entry Points --
- ; 
+ ;
  ; -- The rest is private --
 DRUG ; Kill Drug File; Private
  N DA,DIK
@@ -298,7 +298,7 @@ O ; Kill off Pharamcy Order Items (Only!) in the Orderable Item file; Private
  . I I["PSP" S DA=$O(^ORD(101.43,"ID",I,"")) D ^DIK
  QUIT
  ;
-CPRS ; Now, update the CPRS lists (sync with Orderable Item file) - 
+CPRS ; Now, update the CPRS lists (sync with Orderable Item file) -
  ; Uses a CPRS API to do this; Private
  ; Next 3 variables are required as inputs
  N ATTEMPT S ATTEMPT=0 ; Attempt to Update
