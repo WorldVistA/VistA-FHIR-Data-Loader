@@ -1,5 +1,5 @@
 SYNFUTL ;ven/gpl - fhir loader utilities ;2018-08-17  3:26 PM
- ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 2
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 13
  ;
  ; Authored by George P. Lilly 2017-2018
  ;
@@ -203,3 +203,13 @@ testIcnGen(fien) ; extrinsic generates an ICN for fhir patient fien
  n chk s chk=$$CHECKDG^MPIFSPC(icn)
  q icn_"V"_chk
  ;
+genos5(sct) ; extrinsic which returns a 5 digit identifier based on sct
+ n %shan,%hex,%dec,%rtn
+ s %shan=$$SHAN^XLFSHAN(160,sct)
+ s %hex=$e(%shan,$l(%shan)-5,$l(%shan))
+ s %dec=$$hex2dec^SYNFUTL(%hex)
+ s %rtn=$e(%dec,$l(%dec)-4,$l(%dec))
+ s $e(%rtn,5)=$e("HIJKLMNOPQ",$e(%rtn,5)+1)
+ q %rtn
+ ;
+ 

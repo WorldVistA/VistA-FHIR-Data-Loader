@@ -1,5 +1,5 @@
 SYNFHIR ;ven/gpl - fhir loader utilities ;2018-08-17  3:27 PM
- ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 12
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 13
  ;
  ; Authored by George P. Lilly 2017-2018
  ;
@@ -41,14 +41,16 @@ wsPostFHIR(ARGS,BODY,RESULT)    ; recieve from addpatient
  ;
  if rdfn'="" do  ; patient creation was successful
  . if $g(ARGS("load"))="" s ARGS("load")=1
- . do taskLabs(.return,ien,.ARGS)
+ . ;do taskLabs(.return,ien,.ARGS)
+ . DO importLabs^SYNFLAB(.return,ien,.ARGS)
  . do importVitals^SYNFVIT(.return,ien,.ARGS)
  . do importEncounters^SYNFENC(.return,ien,.ARGS)
  . do importImmu^SYNFIMM(.return,ien,.ARGS)
  . do importConditions^SYNFPR2(.return,ien,.ARGS)
  . do importAllergy^SYNFALG(.return,ien,.ARGS)
- . ;do importAppointment^SYNFAPT(.return,ien,.ARGS)
- . ;do importMeds^SYNFMED2(.return,ien,.ARGS)
+ . do importAppointment^SYNFAPT(.return,ien,.ARGS)
+ . do importMeds^SYNFMED2(.return,ien,.ARGS)
+ . do importProcedures^SYNFPROC(.return,ien,.ARGS)
  ;
  do ENCODE^VPRJSON("return","RESULT")
  set HTTPRSP("mime")="application/json"

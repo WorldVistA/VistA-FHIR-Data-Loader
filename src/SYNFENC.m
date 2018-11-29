@@ -61,7 +61,7 @@ wsIntakeEncounters(args,body,result,ien)        ; web service entry (post)
  . ;
  . new jlog set jlog=$name(eval("encounters",zi))
  . ;
- . ; insure that the resourceType is Observation
+ . ; insure that the resourceType is Encounter
  . ;
  . new type set type=$get(json("entry",zi,"resource","resourceType"))
  . if type'="Encounter" do  quit  ;
@@ -84,6 +84,11 @@ wsIntakeEncounters(args,body,result,ien)        ; web service entry (post)
  . d log(jlog,"ID is: "_id)
  . ;
  . new enccode set enccode=$get(json("entry",zi,"resource","type",1,"coding",1,"code"))
+ . ;n visitcpt s visitcpt=$$MAP^SYNQLDM(enccode)
+ . ;i visitcpt="" d  ;
+ . ;. d MAPERR^SYNQLDM(enccode,"sct2cpt")
+ . ;. d log(jlog,"-1^Encounter code does not map: "_enccode)
+ . i enccode="" s enccode=185349003 ; generic visit
  . do log(jlog,"code is: "_enccode)
  . set eval("encounters",zi,"vars","code")=enccode
  . ;
@@ -164,6 +169,7 @@ wsIntakeEncounters(args,body,result,ien)        ; web service entry (post)
  . . i icdcodetype="icd9" s icdcode=$$MAP^SYNDHPMP("sct2icdnine",sctcode)
  . . e  s icdcode=$$MAP^SYNDHPMP("sct2icd",sctcode)
  . . i +icdcode=-1 s notmapped=1
+ . . d:notmapped MAPERR^SYNQLDM(sctcode,icdcodetype)
  . . do log(jlog,"icd mapping is: "_icdcode)
  . . do:notmapped log(jlog,"snomed code "_sctcode_" is not mapped")
  . . set eval("conditions",zi,"vars","mappedIcdCode")=icdcode
@@ -193,7 +199,7 @@ wsIntakeEncounters(args,body,result,ien)        ; web service entry (post)
  . . d log(jlog,"Return from data loader was: "_$g(RETSTA))
  . . ;
  . . m eval("encounters",zi,"status","return")=RETSTA
- . . i $g(DEBUG)=1 ZWRITE RETSTA
+ . . i $g(DEBUG)=1 ZWR RETSTA
  . . n root s root=$$setroot^%wd("fhir-intake")
  . . n visitIen s visitIen=$p(RETSTA,"^",2) ; returned visit ien
  . . i +visitIen>0 d
@@ -274,6 +280,7 @@ IMPORT(rtn,ien) ; encounters, immunizations, problems for patient ien
  ;
  ;
 LOADALL(count) ; count is how many to do. default is 1000
+ D INITMAPS^SYNQLDM ; make sure map table is loaded
  i '$d(count) s count=1000
  n root s groot=$$setroot^%wd("fhir-intake")
  n cnt s cnt=0
@@ -297,7 +304,8 @@ LOADALL(count) ; count is how many to do. default is 1000
  . d importImmu^SYNFIMM(.rtn,%1,.filter)
  . d importConditions^SYNFPRB(.rtn,%1,.filter)
  . do importAppointment^SYNFAPT(.return,%1,.filter)
- . do importMeds^SYNFMED2(.return,%1,.filter)
+ . ;do importMeds^SYNFMED2(.return,%1,.filter)
+ . do importProcedures^SYNFPROC(.return,%1,.filter)
  q
  ;
 NEXT(start) ; extrinsic which returns the next patient for encounter loading    

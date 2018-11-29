@@ -83,21 +83,42 @@ wsIntakeConditions(args,body,result,ien)        ; web service entry (post)
  . ;set eval("conditions",zi,"vars","id")=id
  . ;d log(jlog,"ID is: "_id)
  . ;
+ . ;
+ . ; determine the encounter visit ien
+ . n encounterId
+ . s encounterId=$g(json("entry",zi,"resource","context","reference"))
+ . i encounterId["urn:uuid:" s encounterId=$p(encounterId,"urn:uuid:",2)
+ . s eval("conditions",zi,"vars","encounterId")=encounterId
+ . d log(jlog,"reference encounter ID is : "_encounterId)
+ . ;
+ . ; determine visit ien
+ . ;
+ . n visitIen s visitIen=$$visitIen^SYNFENC(ien,encounterId)
+ . s eval("conditions",zi,"vars","visitIen")=visitIen
+ . d log(jlog,"visit ien is: "_visitIen)
+ . n visitDate s visitDate=$$GET1^DIQ(9000010,visitIen_",",.01,"I")
+ . i visitDate'=-1 d  ;
+ . . s eval("conditions",zi,"vars","visitDate")=visitDate
+ . . d log(jlog,"visit date is: "_visitDate)
+ . e  d log(jlog,"visit date unknow")
+ . ;
+ . ; determine the code
+ . ; 
  . new sctcode set sctcode=$get(json("entry",zi,"resource","code","coding",1,"code"))
  . do log(jlog,"code is: "_sctcode)
  . set eval("conditions",zi,"vars","code")=sctcode
- . n icdcode,notmapped
+ . n icdcode,notmapped,icdcodetype
  . s notmapped=0
- . s icdcode=$$MAP^SYNDHPMP("sct2icd",sctcode)
+ . i visitDate<3151001 s icdcodetype="icd9"
+ . e  s icdcodetype="icd10"
+ . d log(jlog,"icd code type is: "_icdcodetype)
+ . i icdcodetype="icd9" s icdcode=$$MAP^SYNDHPMP("sct2icdnine",sctcode)
+ . e  s icdcode=$$MAP^SYNDHPMP("sct2icd",sctcode)
  . i +icdcode=-1 s notmapped=1
+ . d:notmapped MAPERR^SYNQLDM(sctcode,icdcodetype)
  . do log(jlog,"icd mapping is: "_icdcode)
- . do:notmapped log(jlog,"snomed code "_sctcode_"is not mapped")
+ . do:notmapped log(jlog,"snomed code "_sctcode_" is not mapped")
  . set eval("conditions",zi,"vars","mappedIcdCode")=icdcode
- . ;
- . ;
- . new codesystem set codesystem=$get(json("entry",zi,"resource","code","coding",1,"system"))
- . do log(jlog,"code system is: "_codesystem)
- . set eval("conditions",zi,"vars","codeSystem")=codesystem
  . ;
  . ; determine the onset date and time
  . ;
@@ -187,7 +208,7 @@ wsIntakeConditions(args,body,result,ien)        ; web service entry (post)
  . . . s DHPDTM=DHPONS
  . . . D PROBUPD^SYNDHP61(.RETSTA,DHPPAT,DHPSCT,DHPSDES,DHPROV,DHPDTM,DHPRID) ; update problem list with Snomed code
  . . i 'notmapped d  ; snomed code does map, use DATA2PCE to add problem to problem list
- . . . d log(jlog,"Calling PRBUPD^SYNDHP62 to add snomed condition")
+ . . . d log(jlog,"Calling PRBUPDT^SYNDHP62 to add snomed condition")
  . . . D PRBUPDT^SYNDHP62(.RETSTA,DHPPAT,DHPVST,DHPROV,DHPONS,DHPABT,DHPCLNST,DHPSCT)    ;Problem/Condition update
  . . m eval("conditions",zi,"status")=RETSTA
  . . i $g(DEBUG)=1 ZWR RETSTA
