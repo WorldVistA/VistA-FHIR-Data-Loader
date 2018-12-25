@@ -1,10 +1,11 @@
-SYNFMED ;OSE/SMH - Add Medications to Patient Record;May 23, 2018
+SYNFMED ;OSE/SMH - Add Medications to Patient Record;Dec 24, 2018@21:29
  ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 13
  ; (C) 2018 Sam Habiel
  ; See accompanying license for terms of use.
  ;
  ; TODO list
  ; - Implement Web Services lookup
+ ; - See if you can add old meds (not on market) to VistA as patient drugs
  ;
 RXN2MEDS(RXN) ; [Public] Get Drugs that are associated with an RxNorm
  Q $$MATCHVM($$RXN2VUI(RXN))
@@ -178,7 +179,7 @@ ETSCONV(RXN) ; [Private] Convert RxNorm CUI for non SCD to SCD drug using ETS
  . E  S SCD=$$ETSCONVSBD(RXN)
  ;
  ; Must have an SCD at this point
- I 'SCD S $EC=",U-SAM-NEEDS-TO-INVESTIGATE,"
+ I 'SCD Q "0^Please send a message for Sam to investigate"
  ;
  QUIT SCD
  ;
@@ -436,8 +437,7 @@ GET(RETURN,URL) ; [Public] Get a URL
  N TO S TO=5
  N HEADERS
  ; Action
- I $T(^%WC)]"" D %^%WC(.RETURN,"GET",URL,,,TO,.HEADERS) I 1
- E  N STATUS S STATUS=$$GETURL^XTHC10(URL,TO,$NA(RETURN)),HEADERS("STATUS")=STATUS
+ N STATUS S STATUS=$$GETURL^XTHC10(URL,TO,$NA(RETURN)),HEADERS("STATUS")=STATUS
  ;
  ; ZWRITE HEADERS
  ; ZWRITE RETURN
@@ -556,6 +556,7 @@ WRITERXPS(PSODFN,DRUG,RXDATE) ; [$$/D Public] Create a new prescription for a pa
  N IOP S IOP="NULL"
  D ^%ZIS U IO
  ; Ignore POP as we don't care if we can't write to device. We want IOST specs.
+ ; ZEXCEPT: %WNULL from the webserver
  I $D(%WNULL) S IO=%WNULL U %WNULL
  N PPL S PPL=SYNRXIEN_","
  N PDUZ S PDUZ=SYNPHARM
