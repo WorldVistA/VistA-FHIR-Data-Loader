@@ -31,13 +31,20 @@ HFACT(CODE,TEXT,CAT) ; returns ien^name for a Care Plan Activity
  s COMMENT="SYN Care Plan Activity Health Factor for: "_CODE_" "_TEXT
  q $$GETHF("ACT",CAT,CODE,TEXT,0,COMMENT,1)
  ;
-HFGOAL(TEXT,CAT,DIAG) ; returns ien^name for a Care Plan Goal
+HFADDR(CODE,TEXT,CAT) ; returns ien^name for a Care Plan Address HF
+ ; in the Care Plan Category CAT (ien)
+ ;
+ n COMMENT
+ s COMMENT="SYN Care Plan Adresses Health Factor for: "_CODE_" "_TEXT
+ q $$GETHF("ADDR",CAT,CODE,TEXT,0,COMMENT,1)
+ ;
+HFGOAL(CODE,CAT,TEXT,DIAG) ; returns ien^name for a Care Plan Goal
  ; in the Care Plan Category CAT (ien) 
  ; DIAG is the diagnosis code^text for the problem the goal addresses (opt)
  ;
  n COMMENT
- s COMMENT="SYN GOAL Health Factor for: "_TEXT_" which addresses: "_$g(DIAG)
- q $$GETHF("GOAL",$g(CAT),"",TEXT,0,COMMENT,1)
+ s COMMENT=TEXT_" which addresses: "_$g(DIAG)
+ q $$GETHF("GOAL",$g(CAT),CODE,TEXT,0,COMMENT,1)
  ;
  ;
 HFPOV(CODE,TEXT) ; returns ien^name for the Purpose of Visit Health Factor
@@ -109,7 +116,8 @@ GETHF(SYNCAT,HFCAT,CODE,TEXT,ISHFCAT,CMT,LAYGO) ;
  s FDA(fn,"?+1,",.08)="Y"
  s FDA(fn,"?+1,",.1)=$s($G(ISHFCAT)=1:"C",1:"F")
  s FDA(fn,"?+1,",100)="L"
- s FDA(fn,"?+1,",200)=pname
+ s FDA(fn,"?+1,",200)=$G(CMT)
+ ;s FDA(fn,"?+1,",201)=$G(CMT) ; WORD PROCESSING FIELD
  I $D(^DD(9999999.64,200)) D  ; this system has the codes subfile
  . q:cdesys=""
  . s FDA(fncode,"?+2,?+1,",.01)=cdesys ; always code system

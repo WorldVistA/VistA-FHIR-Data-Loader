@@ -1,5 +1,5 @@
 SYNDHP63 ;DHP/ART -  Write Lab Tests to VistA ;05/30/2018
- ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 13
  ;;Original routine authored by Andrew Thompson & Ferdinand Frankson of DXC Technology 2017-2018
  ;
  QUIT

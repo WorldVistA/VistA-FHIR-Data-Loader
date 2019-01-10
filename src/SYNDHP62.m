@@ -1,5 +1,5 @@
 SYNDHP62 ;DHP/ART -  Write Problems, Appointments To VistA ;05/29/2018
- ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 13
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 3
  ;;Original routine authored by Andrew Thompson & Ferdinand Frankson of DXC Technology 2017-2018
  ;
  QUIT
@@ -25,6 +25,7 @@ PRBUPDT(RETSTA,DHPPAT,DHPVST,DHPROV,DHPONS,DHPABT,DHPCLNST,DHPSCT) ;Problem/Cond
  ;
  I $G(DHPSCT)="" S RETSTA="-1^SNOMED CT code is required" Q
  I $G(DHPVST)="" S RETSTA="-1^Visit IEN is required" Q
+ I $G(DHPONS)="" S RETSTA="-1^onset date is required" Q
  I '$D(^AUPNVSIT(DHPVST)) S RETSTA="-1^Visit not found" Q
  ;
  N PACKAGE,SOURCE,USER,ERRDISP,ZZERR,PPEDIT,ZZERDESC,ACCOUNT
@@ -42,9 +43,10 @@ PRBUPDT(RETSTA,DHPPAT,DHPVST,DHPROV,DHPONS,DHPABT,DHPCLNST,DHPSCT) ;Problem/Cond
  S RETSTA=1
  ;
  S PROBDATA("DX/PL",1,"PL ADD")=1
- ;
+ S DHPONS=$P($$HL7TFM^XLFDT(DHPONS),".",1)
+ ;20130526110511-0400 
  ;date portion only, active problems can not have a date resolved
- S:$G(DHPONS)'="" PROBDATA("DX/PL",1,"PL ONSET DATE")=$P($$HL7TFM^XLFDT(DHPONS),".",1)
+ S PROBDATA("DX/PL",1,"PL ONSET DATE")=DHPONS
  S:$G(DHPABT)'="" PROBDATA("DX/PL",1,"PL RESOLVED DATE")=$P($$HL7TFM^XLFDT(DHPABT),".",1)
  ;
  ;S MAPVUID=5217693 ; VUID for SNOMED CT to ICD-10-CM mapping 
@@ -57,20 +59,26 @@ PRBUPDT(RETSTA,DHPPAT,DHPVST,DHPROV,DHPONS,DHPABT,DHPCLNST,DHPSCT) ;Problem/Cond
  ;S PROBDATA("DX/PL",1,"DIAGNOSIS")=DHPSCT
  ;
  ; next line determines whether to use ICD10 or ICD9 map
- S MAPPING=$S(DHPONS>20150930:"sct2icd",1:"sct2icdnine")
+ S MAPPING=$S(DHPONS>3150930:"sct2icd",1:"sct2icdnine")
+ ;
+ ;W !!,">>>> DHPONS ",DHPONS
+ ;W !,">>>> MAPPING ",MAPPING,!!
+ ;
  ;
  S DHPICD=$$MAP^SYNDHPMP(MAPPING,DHPSCT)
  I +DHPICD=-1 S RETSTA="-1^SNOMED CT CODE "_DHPSCT_" not mapped" Q
- S DHPCS=$S(DHPONS>20150930:30,1:1)
+ S DHPCS=$S(DHPONS>3150930:30,1:1)
  S DHPICD=$P(DHPICD,U,2) ; DHPICD now contains ICD code from mapping return
  N ICDTX
  S ICDTX=$$ICDDX^ICDEX(DHPICD,DHPCS)
+ ;
  S DHPICD=+ICDTX ; DHPICD now contains ICD code IEN
+ I +DHPICD=-1 S RETSTA="-1^ICD Code "_DHPICD_" not on file" Q
  S DHPDXNR=$P(ICDTX,U,4)
  S PROBDATA("DX/PL",1,"DIAGNOSIS")=DHPICD
  S PROBDATA("DX/PL",1,"NARRATIVE")=DHPDXNR
  N SERCAT
- S SERCAT=$S(DHPONS\1<$$DT^XLFDT:"E",1:"A")
+ S SERCAT="A" ; $S(DHPONS\1<$$DT^XLFDT:"E",1:"A")
  S PROBDATA("DX/PL",1,"SERVICE CATEGORY")=SERCAT ; A for current E for historical
  S DHPDXF=$$PRMDX(DHPVST,DHPICD)
  I DHPDXF=-1 S RETSTA="-1^Problem with DX code "_DHPICD_" already exists for visit "_DHPVST Q

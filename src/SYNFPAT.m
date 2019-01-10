@@ -65,6 +65,7 @@ importPatient(rtn,ien) ; register and import a fhir patient (demographics only)
  ;
  new pid
  set pid=$get(fhir("Patient","entry",zntry,"resource","id"))
+ if pid="" s pid=$get(fhir("Patient","entry",zntry,"resource","identifier",1,"value"))
  if pid="" do log^SYNFUTL("Patient ID is missing")
  else  do  ;
  . set @parms@("ID")=pid

@@ -1,5 +1,5 @@
 SYNVPR  ; GPL - VPR viewing routines ;2018-08-17  3:25 PM
- ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 2
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 13
  ;
  ; Authored by George P. Lilly 2013-2018
  ;
@@ -137,7 +137,8 @@ show(what,docid,zout)     ;
  ; 
 GET(ZRTN,ZDFN,ZTYP)     
  I ZTYP="all" S ZTYP=""
- D GET^VPRD(.ZRTN,ZDFN,ZTYP,2250101,$$NOW^XLFDT)
+ S FILTER("category")="CP;RA;SR"
+ D GET^VPRD(.ZRTN,ZDFN,ZTYP,2250101,$$NOW^XLFDT,,,.FILTER)
  Q
  ;
 GET2(ZRTN,ZDFN,ZTYP)    
@@ -182,6 +183,8 @@ wsVPR(VPR,FILTER)       ; get from web service call
  . S ZDFN=$$ien2dfn^SYNFUTL(IEN)
  I ZDFN="" S ZDFN=2
  S ZTYPE=$G(FILTER("domain"),"all")
+ ; gpl FHIR project 9/15/2018
+ s FILTER("category")="SR;RA;CP"
  D GET(.ZTMP,ZDFN,ZTYPE)
  I $G(FILTER("format"))="xml" D  Q  ;
  . S HTTPRSP("mime")="text/xml"
@@ -344,18 +347,49 @@ wsGLOBAL(OUT,FILTER)    ; dump a global to the browser as an html page
  D ADDCRLF^VPRJRUT(.OUT)
  Q
  ;
-GTREE(ROOT,DEPTH,PREFIX,LVL)    ; show a global in a tree
+GTREE(ROOT,DEPTH,PREFIX,LVL,RSLT)    ; show a global in a tree
+ ; if RSLT, a named reference, is present, the output will be put there
+ ; otherwise, write to the screen
+ ;
  I $G(PREFIX)="" S PREFIX="|--" ; STARTING PREFIX
  I '$D(DEPTH) S DEPTH=1 ; USUALLY THIS IS WHAT WE WANT
  I +$G(LVL)>DEPTH Q  ; ONLY GO THAT DEEP
  N ZGI S ZGI=""
  N ZVAL S ZVAL=$G(@ROOT)
- I $G(LVL)="" W !,ROOT_" "_$G(@ROOT@(0))
+ I $G(LVL)="" D  ;
+ . I $G(RSLT)="" W !,ROOT_" "_$G(@ROOT@(0))
+ . E  S @RSLT@($O(@RSLT@(" "),-1)+1)=ROOT_" "_$G(@ROOT@(0))
  F  S ZGI=$O(@ROOT@(ZGI)) Q:ZGI=""  D  ;
  . I $O(@ROOT@(ZGI,""))'="" D  ;
- . . I $G(@ROOT@(ZGI))'="" W !,PREFIX_ZGI_" ",@ROOT@(ZGI)
- . . E  W !,PREFIX_ZGI_" ",$G(@ROOT@(ZGI,0))
- . E  W !,PREFIX_ZGI_" "_$G(@ROOT@(ZGI))
- . D GTREE($NA(@ROOT@(ZGI)),DEPTH,"|  "_PREFIX,+$G(LVL)+1)
+ . . I $G(@ROOT@(ZGI))'="" D  ;
+ . . . I $G(RSLT)="" W !,PREFIX_ZGI_" ",@ROOT@(ZGI)
+ . . . E  S @RSLT@($O(@RSLT@(" "),-1)+1)=PREFIX_ZGI_" "_@ROOT@(ZGI)
+ . . E  D  ;
+ . . . I $G(RSLT)="" W !,PREFIX_ZGI_" ",$G(@ROOT@(ZGI,0))
+ . . . E  S @RSLT@($O(@RSLT@(" "),-1)+1)=PREFIX_ZGI_" "_$G(@ROOT@(ZGI,0))
+ . E  D  ;
+ . . I $G(RSLT)="" W !,PREFIX_ZGI_" "_$G(@ROOT@(ZGI))
+ . . E  S @RSLT@($O(@RSLT@(" "),-1)+1)=PREFIX_ZGI_" "_$G(@ROOT@(ZGI))
+ . D GTREE($NA(@ROOT@(ZGI)),DEPTH,"|  "_PREFIX,+$G(LVL)+1,$G(RSLT))
+ Q
+ ; 
+wsGtree(OUT,FILTER) ; show an outline form of a global
+ I '$D(DT) N DIQUIET S DIQUIET=1 D DT^DICRW
+ S HTTPRSP("mime")="text/html"
+ S OUT=$NA(^TMP("SYNOUT",$J))
+ K @OUT
+ N ROOT S ROOT=$G(FILTER("root"))
+ Q:ROOT=""
+ N LEVEL S LEVEL=$G(FILTER("level"))
+ I LEVEL'="" S LEVEL=LEVEL-1
+ m ^gpl("gtree")=FILTER
+ m ^gpl("gtree","out")=OUT
+ I $G(FILTER("local"))'=1 S ROOT="^"_ROOT
+ I LEVEL="" D GTREE(ROOT,9,,,OUT)
+ I LEVEL'="" D GTREE(ROOT,LEVEL,,,OUT)
+ m ^gpl("gtree","rslt")=@OUT
+ S @OUT="<!DOCTYPE HTML><html><head></head><body><pre>"
+ S @OUT@($O(@OUT@(""),-1)+1)="</pre></body></html>"
+ D ADDCRLF^VPRJRUT(.OUT)
  Q
  ; 

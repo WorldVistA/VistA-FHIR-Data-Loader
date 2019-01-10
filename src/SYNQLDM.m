@@ -1,5 +1,5 @@
 SYNQLDM ; GPL - QRDA loader entry routines ;2018-08-17  3:25 PM
- ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 2
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 13
  ;
  ; Authored by George P. Lilly 2016-2018
  ;
@@ -186,16 +186,17 @@ INITMAPS        ; initialize maps
  ; VCPT - SNOMED
  S MAP="sct2cpt"
  S @G@(MAP,"CODE","394701000","99241")=""
+ ;S @G@(MAP,"CODE","170258001","99382")=""
  S @G@(MAP,"CODE","371883000","99201")=""
  S @G@(MAP,"CODE","185347001","99201")=""
- S @G@(MAP,"CODE","183478001","99381")=""
- S @G@(MAP,"CODE","308646001","99238")=""
+ ;S @G@(MAP,"COD,E""183478001","99381")=""
+ ;S @G@(MAP,"CODE","308646001","99238")=""
  S @G@(MAP,"CODE","424441002","59426")=""
  S @G@(MAP,"CODE","183460006","99218")=""
  S @G@(MAP,"CODE","698314001","99241")=""
  S @G@(MAP,"CODE","424619006","59425")=""
- S @G@(MAP,"CODE","50849002","99281")=""
- S @G@(MAP,"CODE","185345009","99213")=""
+ ;S @G@(MAP,"CODE","50849002","99281")=""
+ ;S @G@(MAP,"CODE","185345009","99213")=""
  S @G@(MAP,"CODE","170258001","99383")=""
  S @G@(MAP,"CODE","10492003","55810")=""
  S @G@(MAP,"CODE","84755001","77427")=""
@@ -209,11 +210,11 @@ INITMAPS        ; initialize maps
  S @G@(MAP,"CODE","179344006","27447")=""
  S @G@(MAP,"CODE","13767004","65235")=""
  S @G@(MAP,"CODE","108241001","90937")=""
- S @G@(MAP,"CODE","185349003","99202")=""
+ ;S @G@(MAP,"CODE","185349003","99202")=""
  S @G@(MAP,"CODE","442333005","90653")=""
  S @G@(MAP,"CODE","444783004","45378")=""
  S @G@(MAP,"CODE","4525004","99285")=""
- S @G@(MAP,"CODE","185349003","99381")=""
+ ;S @G@(MAP,"CODE","185349003","99381")=""
  ; labs
  S MAP="labs"
  S @G@(MAP,"CODE","2085-9","HDL CHOLESTEROL")=""
@@ -344,4 +345,18 @@ GETMAP(RTN,MAP) ; returns an array of the MAP. if MAP is not specified, it retur
  . . S @RTN@(ZI)=""
  I $D(@GN@(MAP)) M @RTN=@GN@(MAP)
  Q
+ ;
+MAPERR(CDE,MAP,CMT) ; add the map error to the mapping-errors graph
+ n meroot s meroot=$$setroot^%wd("mapping-errors") 
+ q:meroot=""
+ n meien
+ s meien=$o(@meroot@("errors","B",CDE,""))
+ i meien="" d  ;
+ . s meien=$o(@meroot@("errors"," "),-1)+1
+ . s @meroot@("errors",meien,"code")=CDE
+ . s @meroot@("errors","B",CDE,meien)=""
+ s @meroot@("errors",meien,"map")=$g(MAP)
+ i $g(CMT)'="" s @meroot@("errors",meien,"comment")=CMT
+ s @meroot@("errors",meien,"count")=$g(@meroot@("errors",meien,"count"))+1
+ q
  ;
