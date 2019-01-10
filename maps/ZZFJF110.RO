@@ -1,0 +1,55 @@
+Cache for UNIX^INT^^~Format=Cache.S~^RAW
+%RO on 13 Sep 2018  11:33 PM
+ZZFJF110^INT^1^60969,41747^0
+ZZFJF110 ; Create difference file between two UCI's
+CREATE(SYS1,SYS2,FILES) ;
+ ; SYS1 is source namespace/UCI
+ ; SYS2 is target namespace/UCI
+ ; FILES is a ; delimited string of files for which we are building
+ ; the difference file
+ I $G(SYS1)="" S SYS1=$ZU(67,6,$J)
+ I $G(SYS2)="" S SYS2=$ZU(67,6,$J)
+ S CT=0
+ F I=1:1:$L(FILES,";") D
+ .S FILE=$P(FILES,";",I)
+ .S FILE=$$FORMAT(FILE)
+ .D BUILD(FILE)
+ Q
+ ;
+BUILD(FILE)     ;        
+ S SUB=$P($P(FILE,")"),"(",2)
+ S LOCNODE="^"_FILE
+ ; scan local and do setting
+ F  S LOCNODE=$Q(@LOCNODE) Q:LOCNODE=""  D
+ .I SUB'="",$QS(LOCNODE,1)'=SUB Q
+ .;S C=$I(C) W:C#2047=0 C,*13
+ .; If not in remote UCI then create set entry
+ .I @("$D(^["""_SYS2_"""]"_$P(LOCNODE,"^",2,255)_")#10=0") D SET Q
+ .; If in remote but different then create set entry
+ .S REMNODE="^["""_SYS2_"""]"_$P(LOCNODE,"^",2,255)
+ .I @REMNODE'=@LOCNODE D SET Q
+ ; scan remote and do killing
+ S REMNODE="^["""_SYS2_"""]"_FILE
+ F  S REMNODE=$Q(@REMNODE) Q:REMNODE=""  D
+ .I SUB'="",$QS(REMNODE,1)'=SUB Q
+ .;S C=$I(C) W:C#2047=0 C,*13
+ .S LOCNODE="^"_$P(REMNODE,"]",2,255)
+ .I @("$D("_LOCNODE_")=0") D KILL
+ Q
+SET ;
+ S ^ZZLEXM(FILE,$I(CT))="S "_LOCNODE_"="""_@LOCNODE_""""
+ Q
+KILL ;
+ S ^ZZLEXM(FILE,$I(CT))="K "_LOCNODE
+ Q
+UNLOAD ; Scan difference file Xecuting sets and kills
+ S NODE="^ZZLEXM"
+ F  S NODE=$Q(@NODE) Q:NODE=""  D
+ .X @NODE
+ Q
+FORMAT(X)       ;
+ I $E($RE(X))="," S X=$RE($E($RE(X),2,$L(X)))
+ Q X
+
+
+
