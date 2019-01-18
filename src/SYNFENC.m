@@ -251,7 +251,7 @@ visitIen(ien,encId)     ; extrinsic returns the visit ien for the Encounter ID
  i $g(encId)="" q -1
  n root s root=$$setroot^%wd("fhir-intake")
  n useenc s useenc=encId
- i useenc["urn:uuid:" s useenc=$p(useenc,"urn:uuid",2)
+ i useenc["urn:uuid:" s useenc=$p(useenc,"urn:uuid:",2)
  n vrtn
  s vrtn=$o(@root@(ien,"SPO",useenc,"visitIen",""))
  i vrtn="" s vrtn=-1
