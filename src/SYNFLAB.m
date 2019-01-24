@@ -146,8 +146,11 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . ;
  . ;n vistalab s vistalab=$$MAP^SYNQLDM(obscode)
  . s DHPLOINC=obscode
- . n vistalab s vistalab=$$graphmap^SYNGRAPH("loinc-code-map",obscode)
- . i +vistalab=-1 s vistalab=$$graphmap^SYNGRAPH("loinc-code-map"," "_obscode)
+ . d log(jlog,"LOINC code is: "_DHPLOINC)
+ . s eval("labs",zi,"parms","DHPLOINC")=DHPLOINC
+ . ;
+ . n vistalab s vistalab=$$graphmap^SYNGRAPH("loinc-lab-map",obscode)
+ . i +vistalab=-1 s vistalab=$$graphmap^SYNGRAPH("loinc-lab-map"," "_obscode)
  . if +vistalab=-1 s vistalab=labtype
  . s vistalab=$$TRIM^XLFSTR(vistalab) ; get rid of trailing blanks
  . ;n sct s sct=$$loinc2sct(obscode) ; find the snomed code
@@ -195,7 +198,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . s DHPLOC=$$MAP^SYNQLDM("OP","location")
  . n DHPLOCIEN s DHPLOCIEN=$o(^SC("B",DHPLOC,""))
  . if DHPLOCIEN="" S DHPLOCIEN=4
- . s eval("labs",zi,"parms","DHPLOC")=DHPLOCIEN
+ . s eval("labs",zi,"parms","DHPLOC")=DHPLOC
  . d log(jlog,"Location for outpatient is: #"_DHPLOCIEN_" "_DHPLOC)
  . ;
  . s eval("labs",zi,"status","loadstatus")="readyToLoad"

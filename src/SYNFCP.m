@@ -271,7 +271,7 @@ wsIntakeCareplan(args,body,result,ien)        ; web service entry (post)
  . . s goalary(goalien,"system")="SCT"
  . . s goalary(goalien,"status")=$g(@goalroot@("resource","status"))
  . . d TONOTE^SYNFTIU(ien,encounterId,"  "_$g(goalary(goalien,"text")))
- . . d TONOTE^SYNFTIU(ien,encounterId,"    Adresses Condition: "_$p(addcode,"^",2)_" (SCT:"_+addcode_")")
+ . . d TONOTE^SYNFTIU(ien,encounterId,"    Addresses Condition: "_$p(addcode,"^",2)_" (SCT:"_+addcode_")")
  . . d TONOTE^SYNFTIU(ien,encounterId,"    status: "_$g(goalary(goalien,"status")))
  . . s goalary(goalien,"hf")=$$HFGOAL^SYNFHF($g(goalary(goalien,"code")),hfcatien,$g(goalary(goalien,"text")),$tr(addcode,"^","-"))
  . . d log(jlog,"CP Goal HF: "_$g(goalary(goalien,"hf")))
