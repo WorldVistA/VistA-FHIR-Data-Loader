@@ -20,55 +20,26 @@ EN ; [Public; called by KIDS; do everything in this file]
  ; EXECUTION ENDPOINT: wsIntakeConditions^SYNFCON
  ;
 LOADHAND ; [Public] Load URL handlers
- W !!,"LOADING URL HANDLERS",!
- N I,IEN F I=1:1 N LN S LN=$P($T(LH+I),";;",2,99) Q:LN=""  D  ; Read inline
- . N NREF S NREF=$P(LN,"=") ; variable name reference
- . I $E(NREF)="^" S NREF=$NA(@NREF) ; convert IEN to actual value
- . N TESTNODE S TESTNODE="" ; for $DATA testing
- . I $QS(NREF,2)="B" S TESTNODE=$NA(@NREF,5) ; Get all subs b4 IEN
- . I $L(TESTNODE),$D(@TESTNODE) DO  QUIT  ; If node exists in B index
- . . WRITE TESTNODE_" ALREADY INSTALLED",!  ; say so
- . . KILL ^%W(17.6001,IEN) ; and delete the stuff we entered
- . S @LN  ; okay to set.
- QUIT
-LH ;; START
- ;;IEN=$O(^%W(17.6001," "),-1)+1
- ;;^%W(17.6001,IEN,0)="POST"
- ;;^%W(17.6001,IEN,1)="addpatient/*"
- ;;^%W(17.6001,IEN,2)="wsPostFHIR^SYNFHIR"
- ;;^%W(17.6001,"B","POST","addpatient/*","wsPostFHIR^SYNFHIR",IEN)=""
- ;;IEN=IEN+1
- ;;^%W(17.6001,IEN,0)="GET"
- ;;^%W(17.6001,IEN,1)="showfhir/*"
- ;;^%W(17.6001,IEN,2)="wsShow^SYNFHIR"
- ;;^%W(17.6001,"B","GET","showfhir/*","wsShow^SYNFHIR",IEN)=""
- ;;IEN=IEN+1
- ;;^%W(17.6001,IEN,0)="GET"
- ;;^%W(17.6001,IEN,1)="vpr/*"
- ;;^%W(17.6001,IEN,2)="wsVPR^SYNVPR"
- ;;^%W(17.6001,"B","GET","vpr/*","wsVPR^SYNVPR",IEN)=""
- ;;IEN=IEN+1
- ;;^%W(17.6001,IEN,0)="GET"
- ;;^%W(17.6001,IEN,1)="global/{root}"
- ;;^%W(17.6001,IEN,2)="wsGLOBAL^SYNVPR"
- ;;^%W(17.6001,"B","GET","global/{root}","wsGLOBAL^SYNVPR",IEN)=""
- ;;IEN=IEN+1
- ;;^%W(17.6001,IEN,0)="POST"
- ;;^%W(17.6001,IEN,1)="addvitals/*"
- ;;^%W(17.6001,IEN,2)="wsIntakeVitals^SYNFVIT"
- ;;^%W(17.6001,"B","POST","addvitals/*","wsIntakeVitals^SYNFVIT",IEN)=""
- ;;IEN=IEN+1
- ;;^%W(17.6001,IEN,0)="POST"
- ;;^%W(17.6001,IEN,1)="addencounter"
- ;;^%W(17.6001,IEN,2)="wsIntakeEncounters^SYNFENC"
- ;;^%W(17.6001,"B","POST","addencounter","wsIntakeEncounters^SYNFENC",IEN)=""
- ;;IEN=IEN+1
- ;;^%W(17.6001,IEN,0)="POST"
- ;;^%W(17.6001,IEN,1)="addcondition"
- ;;^%W(17.6001,IEN,2)="wsIntakeConditions^SYNFCON"
- ;;^%W(17.6001,"B","POST","addcondition","wsIntakeConditions^SYNFCON",IEN)=""
- ;;^%W(17.6001,0)="WEB SERVICE URL HANDLER^17.6001S^"_IEN_"^"_IEN
- ;;
+ do addService^%webutils("POST","addpatient","wsPostFHIR^SYNFHIR")
+ do addService^%webutils("POST","updatepatient","wsUpdatePatient^SYNFHIRU")
+ do addService^%webutils("GET","loadstatus","wsLoadStatus^SYNFHIR")
+ do addService^%webutils("GET","showfhir","wsShow^SYNFHIR")
+ do addService^%webutils("GET","vpr/{dfn}","wsVPR^SYNVPR")
+ do addService^%webutils("GET","global/{root}","wsGLOBAL^SYNVPR")
+ do addService^%webutils("GET","gtree/{root}","wsGtree^SYNVPR")
+ do addService^%webutils("GET","graph/{graph}","wsGetGraph^SYNGRAPH")
+ quit
+ ;
+DELHAND ; [Public] Delete URL handlers
+ do deleteService^%webutils("POST","addpatient")
+ do deleteService^%webutils("POST","updatepatient")
+ do deleteService^%webutils("GET","loadstatus")
+ do deleteService^%webutils("GET","showfhir")
+ do deleteService^%webutils("GET","vpr/{dfn}")
+ do deleteService^%webutils("GET","global/{root}")
+ do deleteService^%webutils("GET","gtree/{root}")
+ do deleteService^%webutils("GET","graph/{graph}")
+ quit
  ;
 PROV() ;[Public $$] Create Generic Provider for Synthetic Patients
  ; ASSUMPTION: DUZ MUST HAVE XUMGR OTHERWISE FILEMAN WILL BLOCK YOU!
@@ -321,47 +292,21 @@ TESTHL ; @TEST Test adding a clinic
  QUIT
  ;
 TESTLH ; @Test Load Handlers
- ; WARNING: NAKED REFERENCES ALL OVER HERE!
- N IEN
- S IEN=$O(^%W(17.6001,"B","POST","addpatient/*","wsPostFHIR^SYNFHIR",""))
- K ^(IEN),^%W(17.6001,IEN)
- S IEN=$O(^%W(17.6001,"B","GET","showfhir/*","wsShow^SYNFHIR",""))
- K ^(IEN),^%W(17.6001,IEN)
- S IEN=$O(^%W(17.6001,"B","GET","vpr/*","wsVPR^SYNVPR",""))
- K ^(IEN),^%W(17.6001,IEN)
- S IEN=$O(^%W(17.6001,"B","GET","global/{root}","wsGLOBAL^SYNVPR",""))
- K ^(IEN),^%W(17.6001,IEN)
- S IEN=$O(^%W(17.6001,"B","POST","addvitals/*","wsIntakeVitals^SYNFVIT",""))
- K ^(IEN),^%W(17.6001,IEN)
- S IEN=$O(^%W(17.6001,"B","POST","addencounter","wsIntakeEncounters^SYNFENC",""))
- K ^(IEN),^%W(17.6001,IEN)
- S IEN=$O(^%W(17.6001,"B","POST","addcondition","wsIntakeConditions^SYNFCON",""))
- K ^(IEN),^%W(17.6001,IEN)
- ; /WARNING: NAKED REFERENCES ALL OVER HERE!
- ;
+ D DELHAND
  D LOADHAND
- K IEN
- S IEN=$O(^%W(17.6001,"B","POST","addpatient/*","wsPostFHIR^SYNFHIR",""))
+ ;
+ N IEN
+ S IEN=$O(^%web(17.6001,"B","POST","addpatient","wsPostFHIR^SYNFHIR",""))
  D CHKTF^%ut(IEN)
  K IEN
- S IEN=$O(^%W(17.6001,"B","GET","showfhir/*","wsShow^SYNFHIR",""))
+ S IEN=$O(^%web(17.6001,"B","GET","showfhir","wsShow^SYNFHIR",""))
  D CHKTF^%ut(IEN)
  K IEN
- S IEN=$O(^%W(17.6001,"B","GET","vpr/*","wsVPR^SYNVPR",""))
+ S IEN=$O(^%web(17.6001,"B","GET","vpr/{dfn}","wsVPR^SYNVPR",""))
  D CHKTF^%ut(IEN)
  K IEN
- S IEN=$O(^%W(17.6001,"B","GET","global/{root}","wsGLOBAL^SYNVPR",""))
+ S IEN=$O(^%web(17.6001,"B","GET","global/{root}","wsGLOBAL^SYNVPR",""))
  D CHKTF^%ut(IEN)
- K IEN
- S IEN=$O(^%W(17.6001,"B","POST","addvitals/*","wsIntakeVitals^SYNFVIT",""))
- D CHKTF^%ut(IEN)
- K IEN
- S IEN=$O(^%W(17.6001,"B","POST","addencounter","wsIntakeEncounters^SYNFENC",""))
- D CHKTF^%ut(IEN)
- K IEN
- S IEN=$O(^%W(17.6001,"B","POST","addcondition","wsIntakeConditions^SYNFCON",""))
- D CHKTF^%ut(IEN)
- K IEN
  QUIT
  ;
 TESTAMIE ; @TEST AMIE
