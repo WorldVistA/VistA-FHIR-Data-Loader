@@ -197,7 +197,7 @@ wsVPR(VPR,FILTER)       ; get from web service call
  S @VPR="<!DOCTYPE HTML><html><head></head><body><pre>"
  D show(1,DOCID,VPR)
  S @VPR@($O(@VPR@(""),-1)+1)="</pre></body></html>"
- D ADDCRLF^VPRJRUT(.VPR)
+ D ADDCRLF^%webutils(.VPR)
  ;D BROWSE^DDBR(GN,"N","PATIENT "_ZDFN_" "_ZTYPE)
  ;K @GN,^TMP("MXMLDOM",$J),^TMP("VPR",$J),GN
  q
@@ -344,7 +344,7 @@ wsGLOBAL(OUT,FILTER)    ; dump a global to the browser as an html page
  . S @OUT@($O(@OUT@(""),-1)+1)=ROOT_"="_$$CLEAN(@ROOT)
  S @OUT="<!DOCTYPE HTML><html><head></head><body><pre>"
  S @OUT@($O(@OUT@(""),-1)+1)="</pre></body></html>"
- D ADDCRLF^VPRJRUT(.OUT)
+ D ADDCRLF^%webutils(.OUT)
  Q
  ;
 GTREE(ROOT,DEPTH,PREFIX,LVL,RSLT)    ; show a global in a tree
@@ -390,6 +390,6 @@ wsGtree(OUT,FILTER) ; show an outline form of a global
  m ^gpl("gtree","rslt")=@OUT
  S @OUT="<!DOCTYPE HTML><html><head></head><body><pre>"
  S @OUT@($O(@OUT@(""),-1)+1)="</pre></body></html>"
- D ADDCRLF^VPRJRUT(.OUT)
+ D ADDCRLF^%webutils(.OUT)
  Q
  ; 
