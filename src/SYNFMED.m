@@ -554,6 +554,7 @@ WRITERXPS(PSODFN,DRUG,RXDATE) ; [$$/D Public] Create a new prescription for a pa
  ; Print Prescription (required for releasing)
  ; NB: We are not checking for POP
  N IOP S IOP="NULL"
+ N %ZIS S %ZIS=0
  D ^%ZIS U IO
  ; Ignore POP as we don't care if we can't write to device. We want IOST specs.
  ; ZEXCEPT: %WNULL from the webserver
