@@ -15,9 +15,9 @@ importMeds(rtn,ien,args)        ; entry point for loading Medications for a pati
  . k @root@(ien,"load","meds")
  . m @root@(ien,"load","meds")=grtn("meds")
  . if $g(args("debug"))=1 m rtn=grtn
- s rtn("conditionsStatus","status")=$g(grtn("status","status"))
- s rtn("conditionsStatus","loaded")=$g(grtn("status","loaded"))
- s rtn("conditionsStatus","errors")=$g(grtn("status","errors"))
+ s rtn("medsStatus","status")=$g(grtn("status","status"))
+ s rtn("medsStatus","loaded")=$g(grtn("status","loaded"))
+ s rtn("medsStatus","errors")=$g(grtn("status","errors"))
  ;b
  ;
  ;

@@ -16,9 +16,9 @@ importProcedures(rtn,ien,args)  ; entry point for loading Procedures for a patie
  . k @root@(ien,"load","procedures")
  . m @root@(ien,"load","procedures")=grtn("procedures")
  . if $g(args("debug"))=1 m rtn=grtn
- s rtn("conditionsStatus","status")=$g(grtn("status","status"))
- s rtn("conditionsStatus","loaded")=$g(grtn("status","loaded"))
- s rtn("conditionsStatus","errors")=$g(grtn("status","errors"))
+ s rtn("proceduresStatus","status")=$g(grtn("status","status"))
+ s rtn("proceduresStatus","loaded")=$g(grtn("status","loaded"))
+ s rtn("proceduresStatus","errors")=$g(grtn("status","errors"))
  ;b
  ;
  ;
