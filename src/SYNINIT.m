@@ -57,6 +57,8 @@ PROV() ;[Public $$] Create Generic Provider for Synthetic Patients
  ; Security keys
  S C0XFDA(200.051,"?+3,?+1,",.01)="PROVIDER"
  S C0XFDA(200.051,"?+4,?+1,",.01)="ORES"
+ S C0XFDA(200.051,"?+10,?+1,",.01)="LRLAB"
+ S C0XFDA(200.051,"?+11,?+1,",.01)="LRVERIFY"
  ;
  ; Access and Verify Codes so we can log in as the provider if we want to
  ; We must pre-hash them as that's not in the IT
