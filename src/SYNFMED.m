@@ -229,9 +229,15 @@ ETSCONVSBD(RXN)  ; [Private] Convert RxnCUI SBD -> SCD
  Q RESULT
  ;
 ETSCONVSCDC(RXN) ; [Private] Convert RxnCUI SCDC -> SCD
+ K ^TMP("SYNDATA",$J,RXN)
+ M ^TMP("SYNDATA",$J,RXN)=^TMP("ETSDAT",$J,RXN)
  N RESULT S RESULT=0
  N I,Z F I=0:0 S I=$O(^TMP("ETSDATA",$J,RXN,"RXNREL",I)) Q:'I  S Z=^(I,0) D  Q:RESULT
  . I $P(Z,U,5)="consists_of",$P(Z,U,8)=4096 S RESULT=$P(Z,U,4)
+ . N % S %=$$GETDATA^ETSRXN(RESULT) ; delete previous data
+ . N TYPE S TYPE=$$ETSTYPE(RESULT)  ; uses new context
+ . I TYPE'="SCD" S RESULT=0
+ . K ^TMP("ETSDATA",$J,RXN) M ^TMP("ETSDAT",$J,RXN)=^TMP("SYNDATA",$J,RXN) ; restore context
  Q RESULT
  ;
 MATCHVM(VUIDS) ; [Public] Match delimited list of VUIDs to delimited set of drugs (not one to one)
@@ -458,7 +464,7 @@ WRITERXRXN(PSODFN,RXNCUI,RXDATE) ; [$$/D Public] Create a new prescription for a
  I 'RXNCDCUI Q -2_U_"RxNorm CUI "_RXNCUI_" is not a valid RxNorm. Please check using RxNav or similar"
  ;
  N DRUG S DRUG=$$ADDDRUG(RXNCDCUI)
- I 'DRUG Q -1_U_"RxNorm CUI "_RXNCDCUI_" could not be resolved into a drug."
+ I 'DRUG Q -1_U_"RxNorm CUI "_RXNCUI_" could not be resolved into a drug."
  S DRUG=$P(DRUG,U) ; in case we get multiple drugs back; reported by George.
  I $QUIT QUIT $$WRITERXPS(PSODFN,DRUG,RXDATE)
  D WRITERXPS(PSODFN,DRUG,RXDATE)
