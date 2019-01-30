@@ -10,16 +10,20 @@ ENV ; [Fallthrough]
  QUIT
  ;
 CACHE() Q $L($SY,",")'=2
-GTM()   Q +$SY=47
+GTM()   Q $P($SY,",")=47
  ;
 TRAN ; [KIDS] - Transport from source system (BAD! SHOULD BE A FILEMAN FILE)
  M @XPDGREF@("SYN")=^SYN
+ N I F I=200000000-1:0  S I=$O(^ICPT(I)) Q:'I  M @XPDGREF@("OS5",81,I)=^ICPT(I)
+ N LEXF F LEXF=757,757.001,757.01,757.02,757.1,757.21 DO
+ . N I F I=3000000000-1:0 S I=$O(^LEX(LEXF,I)) Q:'I  M @XPDGREF@("OS5",LEXF,I)=^LEX(LEXF,I)
  QUIT
  ;
 PRE ; [KIDS] - Pre Install -- all for Cache
- D CACHEMAP("%w")
- D CACHEMAP("%W")
- D CACHEMAP("%s")
+ D CACHEMAP("%web")
+ D CACHEMAP("%wd")
+ ; TODO: REMOVE THIS. THIS IS NOT BEING USED.
+ D CACHEMAP("%sfv2g")
  D CACHETLS
  QUIT
  ;
@@ -39,6 +43,20 @@ POSTSYN ; [Private] Restore SYN global
  . K ^SYN("2002.030")
  . M ^SYN=@XPDGREF@("SYN")
  ;
+ ; Install OS5 codes
+ I $D(XPDGREF)#2,$D(@XPDGREF@("OS5")) D
+ . N SYNF F SYNF=81,757,757.001,757.01,757.02,757.1,757.21 DO  ; for each file
+ .. N SYNCR S SYNCR=$$ROOT^DILFD(SYNF,,1) ; closed reference
+ .. N SYNOR S SYNOR=$$ROOT^DILFD(SYNF)    ; open reference
+ .. N SYNI F SYNI=0:0 S SYNI=$O(@XPDGREF@("OS5",SYNF,SYNI)) Q:'SYNI  D  ; for each entry
+ ... ;
+ ... ; Delete old data
+ ... N DA,DIK S DA=SYNI,DIK=SYNOR D ^DIK
+ ... ;
+ ... ; Add new data
+ ... M @SYNCR@(SYNI)=@XPDGREF@("OS5",SYNF,SYNI)
+ ... N DA,DIK S DA=SYNI,DIK=SYNOR D IX1^DIK
+ ;
  ; Initialize Synthea
  D ^SYNINIT
  QUIT
@@ -47,15 +65,16 @@ POSTRO ; [Private] Download and Import RO Files
  D MES^XPDUTL("Downloading MASH...")
  D INSTALLRO("https://cdn.rawgit.com/OSEHRA/VistA-FHIR-Data-Loader/master/mash/mash-1-v0.ro")
  D MES^XPDUTL("Downloading MWS...")
- D INSTALLRO("https://cdn.rawgit.com/shabiel/M-Web-Server/0.1.5/dist/WWWINIT.RSA")
- D INSTALLRO("https://cdn.rawgit.com/shabiel/M-Web-Server/0.1.5/dist/MWS.RSA")
+ D INSTALLRO("https://github.com/shabiel/M-Web-Server/releases/download/1.0.0/webinit.rsa")
+ D INSTALLRO("https://github.com/shabiel/M-Web-Server/releases/download/1.0.0/mws.rsa")
  QUIT
  ;
 POSTWWW ; [Private] Initialize MWS
- D ^%WINIT
- D LOADHAND^WWWINIT
- N PORT F PORT=9080:1 Q:$$PORTOK^WWWINIT(PORT)
- D JOB^VPRJREQ(PORT)
+ do ^%webINIT
+ do LOADHAND^webinit
+ D MES^XPDUTL("Trying to open a port for the web server...")
+ N PORT F PORT=9080:1 D MES^XPDUTL("Trying "_PORT) Q:$$PORTOK^webinit(PORT)
+ do job^%webreq(PORT)
  N SERVER S SERVER="http://localhost:"_PORT_"/"
  D MES^XPDUTL("")
  D MES^XPDUTL("Mumps Web Services is now listening to port "_PORT)
