@@ -1,4 +1,4 @@
-SYNVPR  ; GPL - VPR viewing routines ;2018-08-17  3:25 PM
+SYNVPR  ; GPL - VPR viewing routines ;2019-01-31  10:42 AM
  ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 13
  ;
  ; Authored by George P. Lilly 2013-2018
@@ -168,6 +168,8 @@ VPR     ;
 wsVPR(VPR,FILTER)       ; get from web service call
  I '$D(DT) N DIQUIET S DIQUIET=1 D DT^DICRW
  N ZDFN,ZTYPE
+ ;
+ S DUZ=$$DUZ^SYNDHP69
  ;N ZTMP
  S ZDFN=$G(FILTER("patientId"))
  I ZDFN="" S ZDFN=$G(FILTER("patientID"))
