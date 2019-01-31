@@ -36,7 +36,7 @@ wsIntakeConditions(args,body,result,ien)        ; web service entry (post)
  e  d  ; 
  . s args("load")=0
  . merge jtmp=BODY
- . do DECODE^VPRJSON("jtmp","json")
+ . do decode^%webjson("jtmp","json")
  i '$d(json) q  ;
  m ^gpl("gjson")=json
  ;
@@ -238,7 +238,7 @@ wsIntakeConditions(args,body,result,ien)        ; web service entry (post)
  . m result("ien")=ien
  . ;b
  e  d  ;
- . d ENCODE^VPRJSON("jrslt","result")
+ . d encode^%webjson("jrslt","result")
  . set HTTPRSP("mime")="application/json" 
  q
  ;

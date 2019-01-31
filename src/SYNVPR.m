@@ -353,7 +353,7 @@ wsGLOBAL(OUT,FILTER)    ; dump a global to the browser as text
  . N MLIST S MLIST=" JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC"
  . S @OUT@(.2)=$TR($ZDATE($HOROLOG,2,MLIST)," ","-")_" "_$ZTIME($P($HOROLOG,",",2))
  S @OUT@(.2)=$G(@OUT@(.2))_" ZWR"
- D ADDCRLF^VPRJRUT(.OUT)
+ D ADDCRLF^%webutils(.OUT)
  Q
  ;
 GTREE(ROOT,DEPTH,PREFIX,LVL,RSLT)    ; show a global in a tree

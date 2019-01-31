@@ -34,7 +34,7 @@ wsIntakeAppointment(args,body,result,ien)       ; web service entry (post)
  e  d  ; 
  . s args("load")=0
  . merge jtmp=BODY
- . do DECODE^VPRJSON("jtmp","json")
+ . do decode^%webjson("jtmp","json")
  ;if '$d(json) d  ; if no appointment, get a random set of appointments
  ;. d getRandomApt(.json) ; get a random set of appointments
  i '$d(json) q  ;
@@ -167,7 +167,7 @@ wsIntakeAppointment(args,body,result,ien)       ; web service entry (post)
  . m result("ien")=ien
  . ;b
  e  d  ;
- . d ENCODE^VPRJSON("jrslt","result")
+ . d encode^%webjson("jrslt","result")
  . set HTTPRSP("mime")="application/json" 
  q
  ;
@@ -226,13 +226,13 @@ getRandomApt(ary)       ; make a web service call to get random appointments
  . n ok,r1
  . s ok=$$%^%WC(.r1,"GET",url)
  . i '$d(r1) q  ;
- . d DECODE^VPRJSON("r1","ary")
+ . d decode^%webjson("r1","ary")
  n url
  s url=srvr_"randomAllergy"
  n ret,json,jtmp
  s ret=$$GETURL^XTHC10(url,,"jtmp")
  d assemble^SYNFPUL("jtmp","json")
  i '$d(json) q  ;
- d DECODE^VPRJSON("json","ary")
+ d decode^%webjson("json","ary")
  q
  ;

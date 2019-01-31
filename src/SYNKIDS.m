@@ -99,7 +99,7 @@ POSTWWW ; [Private] Initialize MWS
  ;
 POSTINTRO ; [Private] Append Users to Intro Text
  N L S L=$O(^XTV(8989.3,1,"INTRO"," "),-1)+1
- I $G(^XTV(8989.3,1,"INTRO",L-1,0)["SYNPHARM123!!" QUIT  ; don't add again
+ I $G(^XTV(8989.3,1,"INTRO",L-1,0))["SYNPHARM123!!" QUIT  ; don't add again
  S ^XTV(8989.3,1,"INTRO",L,0)=" "
  S L=L+1
  S ^XTV(8989.3,1,"INTRO",L,0)=" SYN USER      ACCESS CODE       VERIFY CODE         ELECTRONIC SIGNATURE"

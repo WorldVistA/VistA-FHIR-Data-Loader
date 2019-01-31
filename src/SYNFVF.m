@@ -28,7 +28,7 @@ wsIcnList(rtn,filter)   ; web service to return a list of ICNs for vista patient
  . . s rtn1("return",zi,zj,"icn")=zj
  . . s rtn1("return",zi,zj,"dfn")=zi
  ;m rtn=rtn1
- d ENCODE^VPRJSON("rtn1","rtn")
+ d encode^%webjson("rtn1","rtn")
  q
  ;
 sortAFICN(ary)  ; sort the AFICN index by dfn
@@ -45,7 +45,7 @@ getVehuIcns     ; get the Dev VEHU ICNs and stores them in a graph
  s root=$$setroot^%wd("vehu-icns")
  s gn="http://wip.vistaplex.org:9080/icnlist?dfnmax=100000"
  s ok=$$%^%WC(.g,"GET",gn)
- d DECODE^VPRJSON("g","g2")
+ d decode^%webjson("g","g2")
  ;
  n zi,zj s (zi,zj)=""
  f  s zi=$o(g2("return",zi)) q:zi=""  d  ;
@@ -110,7 +110,7 @@ getDomain(rtn,domain,icn)       ; pull domain entries for VistA patient ICN
  n url,fhir,r1
  s url=gn2_icn_"/"_domain
  s ok=$$%^%WC(.fhir,"GET",url)
- d DECODE^VPRJSON("fhir","r1")
+ d decode^%webjson("fhir","r1")
  m @rtn@("entry")=r1("entry")
  ;
  q
@@ -144,7 +144,7 @@ wsGetAllergy(rtn,filter)        ; web service to pull a random allergy from
  s r1=$na(@root@(ien))
  i $g(filter("format"))="mumps" d  q  ;
  . m rtn=@r1
- d ENCODE^VPRJSON(r1,"rtn")
+ d encode^%webjson(r1,"rtn")
  q
  ; 
 wsGetAppointment(rtn,filter)    ; web service to pull a random appointments from 
@@ -160,7 +160,7 @@ wsGetAppointment(rtn,filter)    ; web service to pull a random appointments from
  s r1=$na(@root@(ien))
  i $g(filter("format"))="mumps" d  q  ;
  . m rtn=@r1
- d ENCODE^VPRJSON(r1,"rtn")
+ d encode^%webjson(r1,"rtn")
  q
  ; 
 wsGetProcedure(rtn,filter)      ; web service to pull a random procedure from 
@@ -176,6 +176,6 @@ wsGetProcedure(rtn,filter)      ; web service to pull a random procedure from
  s r1=$na(@root@(ien))
  i $g(filter("format"))="mumps" d  q  ;
  . m rtn=@r1
- d ENCODE^VPRJSON(r1,"rtn")
+ d encode^%webjson(r1,"rtn")
  q
  ; 

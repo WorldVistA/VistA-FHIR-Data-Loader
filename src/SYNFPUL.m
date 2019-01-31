@@ -35,7 +35,7 @@ wsPull(rtn,filter)      ; pull web service. assumes url to list is passed as fil
  s @groot@("B",listname,lien)=""
  ;
  set gr=$name(@groot@(lien,"list"))
- do DECODE^VPRJSON("json",gr)
+ do decode^%webjson("json",gr)
  s @gr@("listname")=listname
  do indexList(lien)
  s rtn("listien")=lien
@@ -87,7 +87,7 @@ wsLol(rtn,filter)       ; list of list web service
  s @groot@("B",listname,lien)=""
  ;
  set gr=$name(@groot@(lien,"list"))
- do DECODE^VPRJSON("json",gr)
+ do decode^%webjson("json",gr)
  s @gr@("listname")=listname
  do indexLol(lien)
  k @gr@("listname")
@@ -97,7 +97,7 @@ wsLol(rtn,filter)       ; list of list web service
  n jout m jout=@gr
  k jout("listname")
  ;m @rtn=json
- d ENCODE^VPRJSON("jout",rtn)
+ d encode^%webjson("jout",rtn)
  set HTTPRSP("mime")="application/json"
  q
  ;
@@ -128,7 +128,7 @@ wsLol2(rtn,filter)      ; list of list web service
  ;s @groot@("B",listname,lien)=""
  ;
  ;set gr=$name(@groot@(lien,"list"))
- ;do DECODE^VPRJSON("json",gr)
+ ;do decode^%webjson("json",gr)
  ;s @gr@("listname")=listname
  ;do indexLol(lien)
  ;k @gr@("listname")
@@ -138,7 +138,7 @@ wsLol2(rtn,filter)      ; list of list web service
  ;n jout m jout=@gr
  ;k jout("listname")
  m @rtn=json
- ;d ENCODE^VPRJSON("jout",rtn)
+ ;d encode^%webjson("jout",rtn)
  set HTTPRSP("mime")="application/json"
  q
  ;
@@ -179,7 +179,7 @@ getlol  ; get list of lists
  s @groot@("B",listname,lien)=""
  ;
  set gr=$name(@groot@(lien,"list"))
- do DECODE^VPRJSON("json",gr)
+ do decode^%webjson("json",gr)
  s @gr@("listname")=listname
  do indexLol(lien)
  ;
@@ -303,7 +303,7 @@ wsLoadPat(zrtn,zfilter) ; load one patient from a URL
  ;
  set ien=$order(@root@(" "),-1)+1
  set gr=$name(@root@(ien,"json"))
- do DECODE^VPRJSON("json",gr)
+ do decode^%webjson("json",gr)
  do indexFhir^SYNFHIR(ien)
  W:ien#500=0 !,"Patient # "_ien_" "_$$FMTE^XLFDT($$NOW^XLFDT)
  ;
@@ -335,8 +335,8 @@ wsLoadPat(zrtn,zfilter) ; load one patient from a URL
  . do importProcedures^SYNFPROC(.return,ien,.ARGS)
  . do importCarePlan^SYNFCP(.return,ien,.ARGS)
  ;
- ;do ENCODE^VPRJSON("return","RESULT")
- ;do ENCODE^VPRJSON("return","zrtn")
+ ;do encode^%webjson("return","RESULT")
+ ;do encode^%webjson("return","zrtn")
  set HTTPRSP("mime")="application/json"
  ;
  quit

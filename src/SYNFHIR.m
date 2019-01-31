@@ -20,7 +20,7 @@ wsPostFHIR(ARGS,BODY,RESULT)    ; recieve from addpatient
  set ien=$order(@root@(" "),-1)+1
  set gr=$name(@root@(ien,"json"))
  merge json=BODY
- do DECODE^VPRJSON("json",gr)
+ do decode^%webjson("json",gr)
  do indexFhir(ien)
  ;
  if id'="" do  ;
@@ -53,7 +53,7 @@ wsPostFHIR(ARGS,BODY,RESULT)    ; recieve from addpatient
  . do importProcedures^SYNFPROC(.return,ien,.ARGS)
  . do importCarePlan^SYNFCP(.return,ien,.ARGS)
  ;
- do ENCODE^VPRJSON("return","RESULT")
+ do encode^%webjson("return","RESULT")
  set HTTPRSP("mime")="application/json"
  ;
  quit 1
@@ -188,7 +188,7 @@ wsShow(rtn,filter)      ; web service to show the fhir
  . do getIntakeFhir("jtmp",$g(filter("bundle")),type,ien,1)
  . ;do getIntakeFhir("jtmp",,type,ien,1)
  . set juse="jtmp"
- do ENCODE^VPRJSON(juse,"rtn")
+ do encode^%webjson(juse,"rtn")
  s HTTPRSP("mime")="application/json" 
  quit
  ;
@@ -236,7 +236,7 @@ fhir2graph(in,out)      ; transforms fhir to a graph
  ; detects if json parser has been run and will run it if not
  ;
  new json
- if $ql($q(@in@("")))<2 do DECODE^VPRJSON(in,"json") set in="json"
+ if $ql($q(@in@("")))<2 do decode^%webjson(in,"json") set in="json"
  ;
  new rootj
  set rootj=$na(@in@("entry"))
