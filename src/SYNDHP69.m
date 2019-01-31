@@ -44,7 +44,7 @@ FACPAR(RETSTA,DHPFAC) ; Setup/delete faciltity identification parameter
  I $$CKPRDF=0 S RETSTA=0_"^parameter definition error" Q
  ;
  ; add the parameter if it doesn't exist, or delete for FAC="@"
- K ZZERR
+ N ZZERR
  D EN^XPAR("SYS","SYNDHPFAC",,DHPFAC,.ZZERR)
  S RETSTA='ZZERR
  Q
@@ -63,7 +63,6 @@ CKPRDF() ; Check that parameter definition exists for SYNDHPFAC
  ;
 TEST D EN^%ut($T(+0),1) QUIT
 T1 ; @TEST HASHINFO^ORDEA previously crashed due to bad DUZ(2)
- K DUZ
  S DUZ=$$DUZ()
  N ORY
  D HASHINFO^ORDEA(.ORY,1,$$PROV^SYNINIT)
