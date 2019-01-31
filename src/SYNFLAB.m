@@ -151,6 +151,9 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . ;
  . n vistalab s vistalab=$$graphmap^SYNGRAPH("loinc-lab-map",obscode)
  . i +vistalab=-1 s vistalab=$$graphmap^SYNGRAPH("loinc-lab-map"," "_obscode)
+ . i +vistalab'=-1 d
+ .. d log(jlog,"Lab found in graph: "_vistalab)
+ .. s eval("labs",zi,"parms","vistalab")=vistalab
  . if +vistalab=-1 s vistalab=labtype
  . s vistalab=$$TRIM^XLFSTR(vistalab) ; get rid of trailing blanks
  . ;n sct s sct=$$loinc2sct(obscode) ; find the snomed code
