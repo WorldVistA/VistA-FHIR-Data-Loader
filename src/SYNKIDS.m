@@ -17,6 +17,8 @@ TRAN ; [KIDS] - Transport from source system (BAD! SHOULD BE A FILEMAN FILE)
  N I F I=200000000-1:0  S I=$O(^ICPT(I)) Q:'I  M @XPDGREF@("OS5",81,I)=^ICPT(I)
  N LEXF F LEXF=757,757.001,757.01,757.02,757.1,757.21 DO
  . N I F I=3000000000-1:0 S I=$O(^LEX(LEXF,I)) Q:'I  M @XPDGREF@("OS5",LEXF,I)=^LEX(LEXF,I)
+ n mapRoot s mapRoot=$$setroot^%wd("loinc-lab-map")
+ M @XPDGREF@("loinc-lab-map")=@mapRoot
  QUIT
  ;
 PRE ; [KIDS] - Pre Install -- all for Cache
@@ -32,11 +34,22 @@ POST ; [KIDS] - Post Install
  DO POSTWWW
  DO POSTSYN
  DO POSTINTRO
+ DO POSTMAP
  QUIT
+ ;
+POSTMAP ; [Private] Add loinc-lab-map to the graph store
+ new root set root=$$setroot^%wd("loinc-lab-map")
+ kill @root
+ merge @root=@XPDGREF@("loinc-lab-map")
+ new rindx set rindx=$name(@root@("graph","map"))
+ set @root@("index","root")=rindx
+ do index^SYNGRAPH(rindx)
+ quit
  ;
 POSTSYN ; [Private] Restore SYN global
  ; Resore data from saved global
  ; Next line makes this safe to run in dev mode
+ D MES^XPDUTL("Merging ^SYN global in. This takes time...")
  I $D(XPDGREF)#2,$D(@XPDGREF@("SYN")) D
  . K ^SYN("2002.010")
  . K ^SYN("2002.020")
@@ -86,6 +99,7 @@ POSTWWW ; [Private] Initialize MWS
  ;
 POSTINTRO ; [Private] Append Users to Intro Text
  N L S L=$O(^XTV(8989.3,1,"INTRO"," "),-1)+1
+ I $G(^XTV(8989.3,1,"INTRO",L-1,0)["SYNPHARM123!!" QUIT  ; don't add again
  S ^XTV(8989.3,1,"INTRO",L,0)=" "
  S L=L+1
  S ^XTV(8989.3,1,"INTRO",L,0)=" SYN USER      ACCESS CODE       VERIFY CODE         ELECTRONIC SIGNATURE"
