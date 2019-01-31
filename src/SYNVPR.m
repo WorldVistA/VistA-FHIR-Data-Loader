@@ -333,9 +333,9 @@ VPRM    ;
  K @GN,^TMP("VPR",$J),GN
  q
  ;
-wsGLOBAL(OUT,FILTER)    ; dump a global to the browser as an html page
- I '$D(DT) N DIQUIET S DIQUIET=1 D DT^DICRW
- S HTTPRSP("mime")="text/html"
+wsGLOBAL(OUT,FILTER)    ; dump a global to the browser as text
+ S HTTPRSP("mime")="text/plain"
+ N Q S Q=""""
  S OUT=$NA(^TMP("SYNOUT",$J))
  K @OUT
  N ROOT S ROOT=$G(FILTER("root"))
@@ -343,10 +343,17 @@ wsGLOBAL(OUT,FILTER)    ; dump a global to the browser as an html page
  I $G(FILTER("local"))'=1 S ROOT="^"_ROOT
  N ORIG,OL S ORIG=ROOT,OL=$QL(ROOT) ; Orig, Orig Length
  F  S ROOT=$Q(@ROOT) Q:$G(ROOT)=""  Q:$NA(@ROOT,OL)'=$NA(@ORIG,OL)  D
- . S @OUT@($O(@OUT@(""),-1)+1)=ROOT_"="_$$CLEAN(@ROOT)
- S @OUT="<!DOCTYPE HTML><html><head></head><body><pre>"
- S @OUT@($O(@OUT@(""),-1)+1)="</pre></body></html>"
- D ADDCRLF^%webutils(.OUT)
+ . N %,V S V=$$CLEAN(@ROOT)
+ . I +$P(V,"E")=V ; numeric
+ . E  S V=$NAME(%(V)),V=$E(V,3,$L(V)-1) ; This double quotes internal quotes and also adds quotes on the outside
+ . S @OUT@($O(@OUT@(""),-1)+1)=ROOT_"="_V
+ S @OUT@(.1)="OSEHRA ZGO Export: M Web Server ZWRITE Export"
+ I $P($SY,",")=47 S @OUT@(.2)=$ZDATE($HOROLOG,"DD-MON-YEAR 12:60:SS")
+ I $L($SY,":")=2 D
+ . N MLIST S MLIST=" JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC"
+ . S @OUT@(.2)=$TR($ZDATE($HOROLOG,2,MLIST)," ","-")_" "_$ZTIME($P($HOROLOG,",",2))
+ S @OUT@(.2)=$G(@OUT@(.2))_" ZWR"
+ D ADDCRLF^VPRJRUT(.OUT)
  Q
  ;
 GTREE(ROOT,DEPTH,PREFIX,LVL,RSLT)    ; show a global in a tree
