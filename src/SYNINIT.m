@@ -8,8 +8,8 @@ EN ; [Public; called by KIDS; do everything in this file]
  D LOADHAND
  D MES^XPDUTL("")
  D MES^XPDUTL("Syn Patients Importer Init")
- D MES^XPDUTL("Provider "_$$PROV())
- D MES^XPDUTL("Pharmacist "_$$PHARM())
+ D MES^XPDUTL("Provider "_$$PROV(1))
+ D MES^XPDUTL("Pharmacist "_$$PHARM(1))
  D MES^XPDUTL("Hospital Location "_$$HL())
  D MES^XPDUTL("Fixing AMIE thingy") D AMIE
  D MES^XPDUTL("Fixing IB ACTION TYPE file") D IBACTION
@@ -41,18 +41,26 @@ DELHAND ; [Public] Delete URL handlers
  do deleteService^%webutils("GET","graph/{graph}")
  quit
  ;
-PROV() ;[Public $$] Create Generic Provider for Synthetic Patients
+PROV(rePopulate) ;[Public $$] Create Generic Provider for Synthetic Patients
  ; ASSUMPTION: DUZ MUST HAVE XUMGR OTHERWISE FILEMAN WILL BLOCK YOU!
  N NAME S NAME="PROVIDER,UNKNOWN SYNTHEA" ; Constant
- Q:$O(^VA(200,"B",NAME,0)) $O(^(0)) ; Quit if the entry exists with entry
+ n C0XIEN s C0XIEN=$O(^VA(200,"B",NAME,0))
+ if C0XIEN,'$get(rePopulate) quit C0XIEN
+ if C0XIEN,$get(rePopulate) do
+ . new DA,DIK
+ . set DA=C0XIEN
+ . set DIK="^VA(200,"
+ . do ^DIK
+ . kill C0XIEN
+ . set C0XIEN(1)=DA
  ;
- N C0XFDA,C0XIEN,C0XERR,DIERR
+ N C0XFDA,C0XERR,DIERR
  S C0XFDA(200,"?+1,",.01)=NAME
  S C0XFDA(200,"?+1,",1)="USP" ; Initials
  S C0XFDA(200,"?+1,",28)=100 ; Mail Code
  S C0XFDA(200,"?+1,",53.1)=1 ; Authorized to write meds
  S C0XFDA(200.05,"?+2,?+1,",.01)="`144" ; Person Class - Allopathic docs.
- S C0XFDA(200.05,"?+2,?+1,",2)=2700101 ; Date active
+ S C0XFDA(200.05,"?+2,?+1,",2)=2000101 ; Date active
  ;
  ; Security keys
  S C0XFDA(200.051,"?+3,?+1,",.01)="PROVIDER"
@@ -106,17 +114,25 @@ PROV() ;[Public $$] Create Generic Provider for Synthetic Patients
  ;
  Q C0XIEN(1) ;Provider IEN
  ;
-PHARM() ;[Public $$] Create Generic Provider for Synthetic Patients
+PHARM(rePopulate) ;[Public $$] Create Generic Provider for Synthetic Patients
  ; ASSUMPTION: DUZ MUST HAVE XUMGR OTHERWISE FILEMAN WILL BLOCK YOU!
  N NAME S NAME="PHARMACIST,UNKNOWN SYNTHEA" ; Constant
- Q:$O(^VA(200,"B",NAME,0)) $O(^(0)) ; Quit if the entry exists with entry
+ n C0XIEN s C0XIEN=$O(^VA(200,"B",NAME,0))
+ if C0XIEN,'$get(rePopulate) quit C0XIEN
+ if C0XIEN,$get(rePopulate) do
+ . new DA,DIK
+ . set DA=C0XIEN
+ . set DIK="^VA(200,"
+ . do ^DIK
+ . kill C0XIEN
+ . set C0XIEN(1)=DA
  ;
- N C0XFDA,C0XIEN,C0XERR,DIERR
+ N C0XFDA,C0XERR,DIERR
  S C0XFDA(200,"?+1,",.01)=NAME
  S C0XFDA(200,"?+1,",1)="UST" ; Initials
  S C0XFDA(200,"?+1,",28)=111 ; Mail Code
  S C0XFDA(200.05,"?+2,?+1,",.01)="`246" ; Person Class - Pharmacist
- S C0XFDA(200.05,"?+2,?+1,",2)=2700101 ; Date active
+ S C0XFDA(200.05,"?+2,?+1,",2)=2000101 ; Date active
  ;
  ; Security keys
  S C0XFDA(200.051,"?+3,?+1,",.01)="PSORPH"
@@ -275,6 +291,9 @@ TESTPROV ; @TEST Test adding a provider
  I PROV N DA,DIK S DA=PROV,DIK="^VA(200," D ^DIK
  S PROV=$$PROV()
  D CHKTF^%ut(PROV>0)
+ N OLDPROV S OLDPROV=PROV
+ S PROV=$$PROV(1)
+ D CHKTF^%ut(OLDPROV=PROV)
  QUIT
  ;
 TESTPHARM ; @TEST Test adding a pharmacist
@@ -282,7 +301,9 @@ TESTPHARM ; @TEST Test adding a pharmacist
  N PHARM S PHARM=$$FIND1^DIC(200,,"QX",NAME,"B")
  I PHARM N DA,DIK S DA=PHARM,DIK="^VA(200," D ^DIK
  S PHARM=$$PHARM()
- D CHKTF^%ut(PHARM>0)
+ N OLDPHARM S OLDPHARM=PHARM
+ S PHARM=$$PHARM(1)
+ D CHKTF^%ut(OLDPHARM=PHARM)
  QUIT
  ;
 TESTHL ; @TEST Test adding a clinic
