@@ -24,8 +24,6 @@ TRAN ; [KIDS] - Transport from source system (BAD! SHOULD BE A FILEMAN FILE)
 PRE ; [KIDS] - Pre Install -- all for Cache
  D CACHEMAP("%web")
  D CACHEMAP("%wd")
- ; TODO: REMOVE THIS. THIS IS NOT BEING USED.
- D CACHEMAP("%sfv2g")
  D CACHETLS
  QUIT
  ;
@@ -76,7 +74,7 @@ POSTSYN ; [Private] Restore SYN global
  ;
 POSTRO ; [Private] Download and Import RO Files
  D MES^XPDUTL("Downloading MASH...")
- D INSTALLRO("https://cdn.rawgit.com/OSEHRA/VistA-FHIR-Data-Loader/master/mash/mash-1-v0.ro")
+ D INSTALLRO("https://github.com/OSEHRA/VistA-FHIR-Data-Loader/releases/download/0.2/mash-graph-1p0.rsa")
  D MES^XPDUTL("Downloading MWS...")
  D INSTALLRO("https://github.com/shabiel/M-Web-Server/releases/download/1.0.0/webinit.rsa")
  D INSTALLRO("https://github.com/shabiel/M-Web-Server/releases/download/1.0.0/mws.rsa")
