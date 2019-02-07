@@ -16,9 +16,9 @@ importAllergy(rtn,ien,args) ; entry point for loading Allergy for a patient
  . k @root@(ien,"load","allergy")
  . m @root@(ien,"load","allergy")=grtn("allergy")
  . if $g(args("debug"))=1 m rtn=grtn
- s rtn("conditionsStatus","status")=$g(grtn("status","status"))
- s rtn("conditionsStatus","loaded")=$g(grtn("status","loaded"))
- s rtn("conditionsStatus","errors")=$g(grtn("status","errors"))
+ s rtn("allergyStatus","status")=$g(grtn("status","status"))
+ s rtn("allergyStatus","loaded")=+$g(grtn("status","loaded"))
+ s rtn("allergyStatus","errors")=+$g(grtn("status","errors"))
  ;b
  ;
  ;
@@ -182,16 +182,16 @@ wsIntakeAllergy(args,body,result,ien) ; web service entry (post)
  . . if $g(ien)'="" if $$loadStatus("allergy",zi,ien)=1 do  quit  ;
  . . . d log(jlog,"Allergy already loaded, skipping")
  . . d log(jlog,"Calling ALLERGY^ISIIMP10 to add allergy")
- . . D ALLERGY^ISIIMP10(.RETSTA,.ISIMISC)
+ . . n myresult s myresult=$$ALLERGY^ISIIMP10(.RESTA,.ISIMISC)
  . . m eval("allergy",zi,"status")=RESTA
- . . d log(jlog,"Return from data loader was: "_$g(ISIRC))
- . . if +$g(RETSTA)=1 do  ;
+ . . d log(jlog,"Return from data loader was: "_myresult)
+ . . if myresult=1 do  ;
  . . . s eval("status","loaded")=$g(eval("status","loaded"))+1
  . . . s eval("allergy",zi,"status","loadstatus")="loaded"
  . . else  d  ;
  . . . s eval("status","errors")=$g(eval("status","errors"))+1
  . . . s eval("allergy",zi,"status","loadstatus")="notLoaded"
- . . . s eval("allergy",zi,"status","loadMessage")=$g(RETSTA)
+ . . . s eval("allergy",zi,"status","loadMessage")=$g(RESTA)
  . . n root s root=$$setroot^%wd("fhir-intake")
  . . i $g(ien)'="" d  ;
  . . . k @root@(ien,"load","allergy",zi)
