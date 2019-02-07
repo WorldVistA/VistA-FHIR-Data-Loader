@@ -15,15 +15,15 @@ SYNDHP91 ;DHP/fjf -  Write  to VistA ;11/07/2018
  ; 1.	Use data2pce to ingest careplans, activities & goals
  ; a.	Encounter
  ; b.	CarePlan points to encounter and the goals
- ; i.	V standard codes (SNOMED CT) - classification 
+ ; i.	V standard codes (SNOMED CT) - classification
  ; c.	Goals - has text goal - points to condition/problems (reason for goal)
- ; i.	Use Healthfactors 
+ ; i.	Use Healthfactors
  ; ii.	Create goals HF category - config - add to configuration utility this will be for problem
  ; iii.	For each goal create a health factor if doesn't already exist (laygo) (text from c above)
  ; iv.	Code which references the problem list
  ; v.	Entire text of goal goes in comment and say that goal addresses this problem  -> add SCT + desc code in there too
 .
- ; d.	
+ ; d.
 .
  ; Signature:
  ;Visit IEN
@@ -38,9 +38,9 @@ SYNDHP91 ;DHP/fjf -  Write  to VistA ;11/07/2018
 .
  ; HF for cat for careplan
  ; HF for careplan (use healthfactor manager
- ; HF for activity 
+ ; HF for activity
  ; pass to DATA2PCE
- ; 
+ ;
  ;
  ; -------- Create Care Plan for Patient
  ;
@@ -87,14 +87,14 @@ CPLUPDT(RETSTA,DHPPAT,DHPVST,DHPCAT,DHPACT,DHPGOL,DHPSCT,DHPSDT,DHPEDT) ;  updat
  S CATTX=$P(DHPCAT,T,2)
  S CATST=$P(DHPCAT,T,3)
  ; Call HF manager and retrieve HF for careplan category data or
- ;   add category HF and return data if it doesn't already exist 
+ ;   add category HF and return data if it doesn't already exist
  S CATDAT=$$HFCPCAT^SYNFHF(CATCD,CATTX)
  ; Call HF manager and retrieve HF for careplan
  ;   add careplan HF if it doesn't already exist
  S HFCAP=$$HFCP^SYNFHF(CATCD,CATTX,CATDAT)
  ; create encounter array
  K ENCDATA
- ; 
+ ;
  ; parse action string
  ;
  S ENCDATA("HEALTH FACTOR",1,"HEALTH FACTOR")=+HFCAP
@@ -109,7 +109,7 @@ CPLUPDT(RETSTA,DHPPAT,DHPVST,DHPCAT,DHPACT,DHPGOL,DHPSCT,DHPSDT,DHPEDT) ;  updat
  .S ENCDATA("HEALTH FACTOR",I+1,"HEALTH FACTOR")=+HFACT
  .S ENCDATA("HEALTH FACTOR",I+1,"EVENT D/T")=DHPSDT
  .S ENCDATA("HEALTH FACTOR",I+1,"COMMENT")="Start: "_DHPSDT_" End: "_DHPEDT
- ; 
+ ;
  S RETSTA=$$DATA2PCE^PXAI("ENCDATA",PACKAGE,SOURCE,.VISIT,USER,$G(ERRDISP),.ZZERR,$G(PPEDIT),.ZZERDESC,.ACCOUNT)
  D EVARS
  M RETSTA=ENCDATA
@@ -121,7 +121,7 @@ T1 ;
  D VARS
  D CPLUPDT(.ZXC,DHPPAT,DHPVST,DHPCAT,DHPACT,DHPGOL,DHPSCT,DHPSDT,DHPEDT)
  Q
- ; 
+ ;
  ;s q=""""
  ;
  ;w q
@@ -135,7 +135,7 @@ T1 ;
  ;a(5)="^%wd(17.040801,1,1227,"load","careplan",12,"parms","DHPSCT")="
  ;a(6)="^%wd(17.040801,1,1227,"load","careplan",12,"parms","DHPSDT")=2760829"
  ;a(7)="^%wd(17.040801,1,1227,"load","careplan",12,"parms","DHPVST")=34818"
- 
+
 VARS ;
  S DHPACT="409002~Food allergy diet~in-progress^58332002~Allergy education~in-progress"
  S DHPCAT="326051000000105~Self care~active"

@@ -62,8 +62,8 @@ clearIndexes    ; do this carefully
  k @gn@("PSO")
  k @gn@("OPS")
  q
- ; 
-fhirTfm(dtin)   ; extrinsic which returns the fileman dateTime 
+ ;
+fhirTfm(dtin)   ; extrinsic which returns the fileman dateTime
  ; for the FHIR format input ie 2017-04-28T01:28:28-04:00
  n tdt
  s tdt=$tr(dtin,":")
@@ -71,7 +71,7 @@ fhirTfm(dtin)   ; extrinsic which returns the fileman dateTime
  s tdt=$e(tdt,1,4)_$e(tdt,6,7)_$e(tdt,9,21)
  q $$HL7TFM^XLFDT(tdt)
  ;
-fhirThl7(dtin)  ; extrinsic which returns the HL7 dateTime 
+fhirThl7(dtin)  ; extrinsic which returns the HL7 dateTime
  ; for the FHIR format input ie 2017-04-28T01:28:28-04:00
  ; example hl7 returned: 20170428012828-0400
  n tdt
@@ -104,11 +104,11 @@ icn2dfn(icn)    ; extrinsic returns the DFN given the patient ICN
  n ien s ien=$$icn2ien(icn)
  q $$ien2dfn(ien)
  ;
-urlEnd(zurl)    ; extrinsic which return the last part of a url 
+urlEnd(zurl)    ; extrinsic which return the last part of a url
  ; (the part after the final /
  q $re($p($re(zurl),"/",1))
  ;
-testValueDex()  ; 
+testValueDex()  ;
  ;new fhir
  do getIntakeFhir^SYNFHIR("testfhir",,"Patient",1)
  do valueDex("testfhir","value")
@@ -162,7 +162,7 @@ testAdb()       ; test Array Defined By
 adb(rtn,ary,pred,obj)   ; returns the array defined by the predicate and object
  if '$d(@ary@("value")) do valueDex(ary,"value")
  new ref
- set ref=@ary@("value",obj) 
+ set ref=@ary@("value",obj)
  if ref'[pred quit  ;
  do replace(.ref,","""_pred_"""","")
  ;w !,ref b
@@ -212,4 +212,4 @@ genos5(sct) ; extrinsic which returns a 5 digit identifier based on sct
  s $e(%rtn,5)=$e("HIJKLMNOPQ",$e(%rtn,5)+1)
  q %rtn
  ;
- 
+

@@ -230,7 +230,7 @@ getEntry(ary,ien,rien) ; returns one entry in ary, passed by name
 loadStatus(ary,ien,rien) ; returns the "load" section of the patient graph
  ; if rien is not specified, all entries are included
  n root s root=$$setroot^%wd("fhir-intake")
- i '$d(@root@(ien)) q  
+ i '$d(@root@(ien)) q
  i $g(rien)="" d  q  ;
  . k @ary
  . m @ary@(ien)=@root@(ien,"load")
@@ -240,7 +240,7 @@ loadStatus(ary,ien,rien) ; returns the "load" section of the patient graph
  m @ary@(ien,rien)=@root@(ien,"load",zi,rien)
  q
  ;
-wsLoadStatus(rtn,filter) ; displays the load status 
+wsLoadStatus(rtn,filter) ; displays the load status
  ; filter must have ien or dfn to specify the patient
  ; optionally, entry number (rien) for a single entry
  ; if ien and dfn are both specified, dfn is used

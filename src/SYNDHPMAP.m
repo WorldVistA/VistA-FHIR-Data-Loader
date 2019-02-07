@@ -12,7 +12,7 @@ MAP(MAP,CODE,DIR) ; Return a mapped code for a given code
  ; DIR - direction of mapping
  ; D for direct (default)
  ; I for inverse
- ; 
+ ;
  ; Output:
  ; 1^map target code
  ; or -1^exception

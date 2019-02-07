@@ -15,7 +15,7 @@ TONOTE(ien,enc,line) ; insert a line to the note associated with encounter enc
  ;w !,"add to note: ",line
  i $l(line)>80 d  ;
  . n tline s tline(0)=line
- . 
+ .
  . d WRAP^DIKCU2(.tline,80)
  . ; ZWR tline
  . n zi

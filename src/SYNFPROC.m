@@ -3,7 +3,7 @@ SYNFPROC ;ven/gpl - fhir loader utilities ;2018-08-17  3:28 PM
  ;
  ; Authored by George P. Lilly 2017-2018
  ;
- ; 
+ ;
  q
  ;
 importProcedures(rtn,ien,args)  ; entry point for loading Procedures for a patient
@@ -34,7 +34,7 @@ wsIntakeProcedures(args,body,result,ien) ; web service entry (post)
  ;. s result("proceduresStatus","status")="alreadyLoaded"
  i $g(ien)'="" d  ; internal call
  . d getIntakeFhir^SYNFHIR("json",,"Procedure",ien,1)
- e  d  ; 
+ e  d  ;
  . s args("load")=0
  . merge jtmp=BODY
  . do decode^%webjson("jtmp","json")
@@ -169,7 +169,7 @@ wsIntakeProcedures(args,body,result,ien) ; web service entry (post)
  . ;b
  e  d  ;
  . d encode^%webjson("jrslt","result")
- . set HTTPRSP("mime")="application/json" 
+ . set HTTPRSP("mime")="application/json"
  q
  ;
 log(ary,txt)  ; adds a text line to @ary@("log")

@@ -472,7 +472,7 @@ SchedRollover ;
  Q
  ; ==================== Developer tools ================
  ;
- ; Build arrays of all accession areas and all 
+ ; Build arrays of all accession areas and all
  ;  site/specimens saved in ^KBAP("LABARR" global
 FindAccAreaAndSiteSpec ;
  N NODE,SNODE

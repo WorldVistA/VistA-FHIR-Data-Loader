@@ -12,7 +12,7 @@ MAP(MAP,CODE,DIR) ; Return a mapped code for a given code
  ;   DIR - direction of mapping
  ;       D for direct (default)
  ;       I for inverse
- ; 
+ ;
  ; Output:
  ;   1^map target code
  ;   or -1^exception
@@ -20,7 +20,7 @@ MAP(MAP,CODE,DIR) ; Return a mapped code for a given code
  N RTN
  S RTN=-1
  I $D(^BSTS) D  ;Q RTN ; is the BSTS terminology server installed?
- .I MAP="sct2icd" D  Q   
+ .I MAP="sct2icd" D  Q
  ..S RTN=$$SCT2ICD10^C0TSUTL(CODE)
  ..Q:RTN=-1
  ..I RTN="" S RTN=-1 Q  ;

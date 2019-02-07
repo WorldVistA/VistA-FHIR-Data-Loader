@@ -10,9 +10,9 @@ PRCADD(RETSTA,DHPPAT,DHPVST,DHPCNT,DHPSCT,DHPDTM)
  ;   DHPPAT   - patient ICN              (mandatory)
  ;   DHPVST   - Visit Identifier         (mandatory)
  ;   DHPCNT   - No of times performed    (mandatory)
- ;   DHPSCT   - SCT Procedure code       (mandatory)   
+ ;   DHPSCT   - SCT Procedure code       (mandatory)
  ;   DHPDTM   - Procedure Date/Time      (mandatory) HL7 format
- ; Output:   
+ ; Output:
  ;   1 - success
  ;  -1 - failure
  ;

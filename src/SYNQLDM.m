@@ -5,7 +5,7 @@ SYNQLDM ; GPL/GPL - QRDA loader entry routines ;2018-08-17  3:25 PM
  ;
  Q
  ;
-INITMAPS        ; initialize maps 
+INITMAPS        ; initialize maps
  N G
  S G=$NA(^XTMP("SYNQLD","MAPS"))
  K @G
@@ -349,7 +349,7 @@ GETMAP(RTN,MAP) ; returns an array of the MAP. if MAP is not specified, it retur
  Q
  ;
 MAPERR(CDE,MAP,CMT) ; add the map error to the mapping-errors graph
- n meroot s meroot=$$setroot^%wd("mapping-errors") 
+ n meroot s meroot=$$setroot^%wd("mapping-errors")
  q:meroot=""
  n meien
  s meien=$o(@meroot@("errors","B",CDE,""))

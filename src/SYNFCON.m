@@ -33,7 +33,7 @@ wsIntakeConditions(args,body,result,ien)        ; web service entry (post)
  ;. s result("conditionsStatus","status")="alreadyLoaded"
  i $g(ien)'="" d  ; internal call
  . d getIntakeFhir^SYNFHIR("json",,"Condition",ien,1)
- e  d  ; 
+ e  d  ;
  . s args("load")=0
  . merge jtmp=BODY
  . do decode^%webjson("jtmp","json")
@@ -183,7 +183,7 @@ wsIntakeConditions(args,body,result,ien)        ; web service entry (post)
  . ;b
  e  d  ;
  . d encode^%webjson("jrslt","result")
- . set HTTPRSP("mime")="application/json" 
+ . set HTTPRSP("mime")="application/json"
  q
  ;
 log(ary,txt)    ; adds a text line to @ary@("log")

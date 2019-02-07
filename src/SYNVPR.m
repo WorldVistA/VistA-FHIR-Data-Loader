@@ -66,14 +66,14 @@ SELPART2()      ; extrinsic which returns the part of the NHIN extract selected
  D ^DIR
  Q ZT(X)
  ;
-gen     
+gen
  S G="all;demographics;reactions;problems;vitals;labs;meds;immunizations;observation;visits;appointments;documents;procedures;consults;flags;factors;skinTests;exams;education;insurance"
  S ZI=""
  F ZI=1:1 Q:$P(G,";",ZI)=""  D  ;
  . W !," S ZT("_ZI_")="""_$P(G,";",ZI)_""""
  q
  ;
-gen2    
+gen2
  S G="all;patient;allergy;problem;vital;lab;med;immunization;visit;appointment;procedure"
  S ZI=""
  F ZI=1:1 Q:$P(G,";",ZI)=""  D  ;
@@ -86,9 +86,9 @@ PAT()   ; extrinsic which returns a dfn from the patient selected
  S DFN=$P(Y,U,1) ; SET THE PATIENT
  Q +Y
  ;
-tree(where,prefix,docid,zout)     ; show a tree starting at a node in MXML. 
+tree(where,prefix,docid,zout)     ; show a tree starting at a node in MXML.
  ; node is passed by name
- ; 
+ ;
  i $g(prefix)="" s prefix="|--" ; starting prefix
  i '$d(SYNJOB) s SYNJOB=$J
  n node s node=$na(^TMP("MXMLDOM",SYNJOB,docid,where))
@@ -108,7 +108,7 @@ oneout(zbuf,ztxt)       ; adds a line to zbuf
  s @zbuf@(zi)=ztxt
  q
  ;
-ALLTXT(where)     ; extrinsic which returns all text lines from the node .. concatinated 
+ALLTXT(where)     ; extrinsic which returns all text lines from the node .. concatinated
  ; together
  n zti s zti=""
  n ztr s ztr=""
@@ -134,20 +134,20 @@ show(what,docid,zout)     ;
  I '$D(C0XJOB) S C0XJOB=$J
  d tree(what,,docid,zout)
  q
- ; 
-GET(ZRTN,ZDFN,ZTYP)     
+ ;
+GET(ZRTN,ZDFN,ZTYP)
  I ZTYP="all" S ZTYP=""
  S FILTER("category")="CP;RA;SR"
  D GET^VPRD(.ZRTN,ZDFN,ZTYP,2250101,$$NOW^XLFDT,,,.FILTER)
  Q
  ;
-GET2(ZRTN,ZDFN,ZTYP)    
+GET2(ZRTN,ZDFN,ZTYP)
  I ZTYP="all" S ZTYP=""
  ;D GET^VPRD(.ZRTN,ZDFN,ZTYP)
  D GET^KBAINHIN(.ZRTN,ZDFN,ZTYP) ; CALL NHINV ROUTINES TO PULL XML
  Q
  ;
-PARSE(INXML)    ; 
+PARSE(INXML)    ;
  K ^TMP("MXMLERR",$J)
  Q $$EN^MXMLDOM(INXML,"W")
  ;
@@ -228,7 +228,7 @@ LABS    ;
  D BROWSE^DDBR(GN,"N","PATIENT "_DFN_" LABS FROM CCR PACKAGE")
  K @GN
  Q
- ; 
+ ;
 CCRXML  ;
  S DFN=$$PAT()
  K OUT
@@ -239,7 +239,7 @@ CCRXML  ;
  D BROWSE^DDBR(GN,"N","PATIENT "_DFN_" CCR XML")
  K @GN
  Q
- ; 
+ ;
 CCR     ;
  S DFN=$$PAT()
  N ZTMP
@@ -252,7 +252,7 @@ CCR     ;
  S DOCID=$$PARSE(ZCCR)
  I $D(^TMP("MXMLERR",$J)) D  ;
  . ;ZWR ^TMP("MXMLERR",$J,*)
- . B  
+ . B
  I DOCID=0 B  ;
  S GN=$NA(^TMP("VPROUT",$J))
  K @GN
@@ -260,7 +260,7 @@ CCR     ;
  D BROWSE^DDBR(GN,"N","PATIENT "_DFN_" CCR XML")
  K @GN,@ZCCR
  Q
- ; 
+ ;
 CCDA    ;
  S DFN=$$PAT()
  N ZTMP
@@ -273,7 +273,7 @@ CCDA    ;
  S DOCID=$$PARSE(ZCCDA)
  I $D(^TMP("MXMLERR",$J)) D  ;
  . ;ZWR ^TMP("MXMLERR",$J,*)
- . B  
+ . B
  I DOCID=0 B  ;
  S GN=$NA(^TMP("VPROUT",$J))
  K @GN
@@ -281,13 +281,13 @@ CCDA    ;
  D BROWSE^DDBR(GN,"N","PATIENT "_DFN_" CCDA XML")
  K @GN,@ZCCDA
  Q
- ; 
+ ;
 listm(out,in)   ; out is passed by name in is passed by reference
  n i s i=$q(@in@(""))
  f  s i=$q(@i) q:i=""  d oneout^SYNVPR(out,i_"="_@i)
  q
  ;
-SMART   ; 
+SMART   ;
  S DFN=$$PAT()
  S ZTYPE=$$SELPART2()
  K G,OUT
@@ -297,9 +297,9 @@ SMART   ;
  D listm(GN,"G")
  D BROWSE^DDBR(GN,"N","PATIENT "_DFN_" SMART MUMPS ARRAY")
  K @GN,G,OUT
- Q 
+ Q
  ;
-SMARTRDF        ; 
+SMARTRDF        ;
  S DFN=$$PAT()
  S ZTYPE=$$SELPART2()
  K G,OUT
@@ -311,14 +311,14 @@ SMARTRDF        ;
  S DOCID=$$PARSE(ZRDF)
  I $D(^TMP("MXMLERR",$J)) D  ;
  . ;ZWR ^TMP("MXMLERR",$J,*)
- . B  
+ . B
  I DOCID=0 B  ;
  S GN=$NA(^TMP("VPROUT",$J))
  K @GN
  D show(1,DOCID,GN)
  D BROWSE^DDBR(GN,"N","PATIENT "_DFN_" RDF XML")
  K @GN,@ZRDF
- Q 
+ Q
  ;
 VPRM    ;
  N ZDFN,ZTYPE
@@ -381,7 +381,7 @@ GTREE(ROOT,DEPTH,PREFIX,LVL,RSLT)    ; show a global in a tree
  . . E  S @RSLT@($O(@RSLT@(" "),-1)+1)=PREFIX_ZGI_" "_$G(@ROOT@(ZGI))
  . D GTREE($NA(@ROOT@(ZGI)),DEPTH,"|  "_PREFIX,+$G(LVL)+1,$G(RSLT))
  Q
- ; 
+ ;
 wsGtree(OUT,FILTER) ; show an outline form of a global
  I '$D(DT) N DIQUIET S DIQUIET=1 D DT^DICRW
  S HTTPRSP("mime")="text/html"
@@ -401,4 +401,4 @@ wsGtree(OUT,FILTER) ; show an outline form of a global
  S @OUT@($O(@OUT@(""),-1)+1)="</pre></body></html>"
  D ADDCRLF^%webutils(.OUT)
  Q
- ; 
+ ;

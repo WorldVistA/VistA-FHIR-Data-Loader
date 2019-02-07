@@ -131,7 +131,7 @@ storeGraph(ary,graph,id)        ; stores an array ary, passed by name
  ;
  q ien
  ;
-wsGetAllergy(rtn,filter)        ; web service to pull a random allergy from 
+wsGetAllergy(rtn,filter)        ; web service to pull a random allergy from
  ; graph fhir-vista-Allergy
  ;
  n root s root=$$setroot^%wd("fhir-vista-AllergyIntolerance")
@@ -146,8 +146,8 @@ wsGetAllergy(rtn,filter)        ; web service to pull a random allergy from
  . m rtn=@r1
  d encode^%webjson(r1,"rtn")
  q
- ; 
-wsGetAppointment(rtn,filter)    ; web service to pull a random appointments from 
+ ;
+wsGetAppointment(rtn,filter)    ; web service to pull a random appointments from
  ; graph fhir-vista-Appointment
  ;
  n root s root=$$setroot^%wd("fhir-vista-Appointment")
@@ -162,8 +162,8 @@ wsGetAppointment(rtn,filter)    ; web service to pull a random appointments from
  . m rtn=@r1
  d encode^%webjson(r1,"rtn")
  q
- ; 
-wsGetProcedure(rtn,filter)      ; web service to pull a random procedure from 
+ ;
+wsGetProcedure(rtn,filter)      ; web service to pull a random procedure from
  ; graph fhir-vista-Procedure
  ;
  n root s root=$$setroot^%wd("fhir-vista-Procedure")
@@ -178,4 +178,4 @@ wsGetProcedure(rtn,filter)      ; web service to pull a random procedure from
  . m rtn=@r1
  d encode^%webjson(r1,"rtn")
  q
- ; 
+ ;

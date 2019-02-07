@@ -33,7 +33,7 @@ wsIntakeEncounters(args,body,result,ien)        ; web service entry (post)
  ;. s result("encountersStatus","status")="alreadyLoaded"
  i $g(ien)'="" d  ; internal call
  . d getIntakeFhir^SYNFHIR("json",,"Encounter",ien,1)
- e  d  ; 
+ e  d  ;
  . ;s args("load")=0
  . merge jtmp=BODY
  . do decode^%webjson("jtmp","json")
@@ -231,7 +231,7 @@ wsIntakeEncounters(args,body,result,ien)        ; web service entry (post)
  . ;b
  e  d  ;
  . d encode^%webjson("jrslt","result")
- . set HTTPRSP("mime")="application/json" 
+ . set HTTPRSP("mime")="application/json"
  q
  ;
 log(ary,txt)    ; adds a text line to @ary@("log")
@@ -310,7 +310,7 @@ LOADALL(count) ; count is how many to do. default is 1000
  . do importProcedures^SYNFPROC(.return,%1,.filter)
  q
  ;
-NEXT(start) ; extrinsic which returns the next patient for encounter loading    
+NEXT(start) ; extrinsic which returns the next patient for encounter loading
  ; start is the dfn to start looking, default is zerro
  i '$d(start) s start=0
  n root s groot=$$setroot^%wd("fhir-intake")

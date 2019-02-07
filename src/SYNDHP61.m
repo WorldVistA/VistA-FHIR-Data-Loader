@@ -15,7 +15,7 @@ VITUPD(RETSTA,DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPROV,DHPLOC) ; vitals update
  ;  DHPDTM  - Observation Date/Time (mandatory) HL7 format
  ;  DHPROV  - provider              (mandatory) NPI#
  ;  DHPLOC  - location              (mandatory) name
- ; Output:   
+ ; Output:
  ;  1 - success
  ; -1 - failure
  ;
@@ -80,7 +80,7 @@ VITFDA ; build FDA array for Vitals
  S FDA(FN,"+1,",1.2)=DHPOBS ;rate
  Q
  ;
-NEXTIEN() ; 
+NEXTIEN() ;
  ; Get new code IEN
  Q $O(^GMR(FN,9E29),-1)+1
  ;
@@ -105,9 +105,9 @@ PROBUPD(RETSTA,DHPPAT,DHPSCT,DHPSDES,DHPROV,DHPDTM,DHPRID) ; problems update
  ;  DHPROV -   Provider     (NPI)              (optional)
  ;  DHPDTM -   Observation Date/Time  (HL7)    (mandatory)
  ;  DHPRID -   DHP unique resource ID     (optional)
- ;               agency_facility          
+ ;               agency_facility
  ;
- ; Output:   
+ ; Output:
  ;  1 - success
  ; -1 - failure
  ;
@@ -133,7 +133,7 @@ PROBFDA ; build FDA array for Problems
  ;S DHPOBS=$$UNCNVT(DHPSCT,DHPOBS)
  S ORIEN(1)=$$NEXTIEN()
  S PATIEN=$O(^DPT("AFICN",DHPPAT,""))
- S MAPVUID=5217693 ; VUID for SNOMED CT to ICD-10-CM mapping 
+ S MAPVUID=5217693 ; VUID for SNOMED CT to ICD-10-CM mapping
  K LEX
  S DHPICD=$$GETASSN^LEXTRAN1(DHPSCT,MAPVUID)
  S DHPICD=$O(LEX(1,""))
@@ -237,7 +237,7 @@ IMMUNUPD(RETSTA,DHPPAT,VISIT,IMMUNIZ,ANATLOC,ADMINRT,DOSE,EVENTDT,IMMPROV) ;Immu
  M RESTSTA("IMMDATA")=IMMDATA
  QUIT
  ;
- ; $$DATA2PCE Output:   
+ ; $$DATA2PCE Output:
  ;+   1  if no errors and processed completely
  ;+  -1  if errors occurred but processed completely as possible
  ;+  -2  if could not get a visit
@@ -303,7 +303,7 @@ ENCTUPD(RETSTA,DHPPAT,STARTDT,ENDDT,ENCPROV,CLINIC,SCTDX,SCTCPT) ;Encounter upda
  S $P(APPTDATE,".",2)=APPTTM
  ;
  ; map SNOMED CT code in SCTDX to ICD-10
- S MAPVUID=5217693 ; VUID for SNOMED CT to ICD-10-CM mapping 
+ S MAPVUID=5217693 ; VUID for SNOMED CT to ICD-10-CM mapping
  ;K LEX
  ;S DHPICD=$$GETASSN^LEXTRAN1(SCTDX,MAPVUID)
  ;S DHPICD=$O(LEX(1,""))

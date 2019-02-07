@@ -33,7 +33,7 @@ wsIntakeMeds(args,body,result,ien)      ; web service entry (post)
  ;. s result("medstatus","status")="alreadyLoaded"
  i $g(ien)'="" d  ; internal call
  . d getIntakeFhir^SYNFHIR("json",,"MedicationRequest",ien,1)
- e  d  ; 
+ e  d  ;
  . merge jtmp=BODY
  . do decode^%webjson("jtmp","json")
  ;
@@ -165,7 +165,7 @@ wsIntakeMeds(args,body,result,ien)      ; web service entry (post)
  . ;b
  e  d  ;
  . d encode^%webjson("jrslt","result")
- . set HTTPRSP("mime")="application/json" 
+ . set HTTPRSP("mime")="application/json"
  q
  ;
 log(ary,txt)    ; adds a text line to @ary@("log")
@@ -183,7 +183,7 @@ loadStatus(typ,zx,zien) ; extrinsic return 1 if resource was loaded
 testall(limit,start)    ; run the meds import on all imported patients
  ;; next line added for DUZ setup because of <UNDEFINED>ENTDFLT+12^XPAR1 *DUZ(2)
  S USER=$$DUZ^SYNDHP69()
- ;; 
+ ;;
  i $g(limit)="" s limit=1
  n cnt s cnt=0
  new root s root=$$setroot^%wd("fhir-intake")

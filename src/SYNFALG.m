@@ -34,7 +34,7 @@ wsIntakeAllergy(args,body,result,ien) ; web service entry (post)
  ;. s result("allergytatus","status")="alreadyLoaded"
  i $g(ien)'="" d  ; internal call
  . d getIntakeFhir^SYNFHIR("json",,"AllergyIntolerance",ien,1)
- e  d  ; 
+ e  d  ;
  . ;s args("load")=0
  . merge jtmp=BODY
  . do decode^%webjson("jtmp","json")
@@ -86,7 +86,7 @@ wsIntakeAllergy(args,body,result,ien) ; web service entry (post)
  . set eval("allergy",zi,"vars","codeSystem")=codesystem
  . ;
  . ; if rxnorm, call meds routine
- . ; 
+ . ;
  . i codesystem["rxnorm" do  q  ;
  . . d MEDALGY^SYNFALG2(dfn,.root,.json,zi,.eval,.jlog,.args)
  . ;
@@ -123,7 +123,7 @@ wsIntakeAllergy(args,body,result,ien) ; web service entry (post)
  . ;
  . ; set up to call the data loader
  . ;
- . ;ALLERGY^ISIIMP10(ISIRESUL,ISIMISC)          
+ . ;ALLERGY^ISIIMP10(ISIRESUL,ISIMISC)
  .;;NAME             |TYPE       |FILE,FIELD |DESC
  .;;-----------------------------------------------------------------------
  .;;ALLERGEN         |FIELD      |120.82,.01 |
@@ -212,7 +212,7 @@ wsIntakeAllergy(args,body,result,ien) ; web service entry (post)
  . ;b
  e  d  ;
  . d encode^%webjson("jrslt","result")
- . set HTTPRSP("mime")="application/json" 
+ . set HTTPRSP("mime")="application/json"
  q
  ;
 USERNAME() ; extrinsic returns the name of the user

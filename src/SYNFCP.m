@@ -33,7 +33,7 @@ wsIntakeCareplan(args,body,result,ien)        ; web service entry (post)
  ;. s result("careplanStatus","status")="alreadyLoaded"
  i $g(ien)'="" d  ; internal call
  . d getIntakeFhir^SYNFHIR("json",,"CarePlan",ien,1)
- e  d  ; 
+ e  d  ;
  . s args("load")=0
  . merge jtmp=BODY
  . do decode^%webjson("jtmp","json")
@@ -105,7 +105,7 @@ wsIntakeCareplan(args,body,result,ien)        ; web service entry (post)
  . e  d log(jlog,"visit date unknow")
  . ;
  . ; determine the category code
- . ; 
+ . ;
  . new sctcode set sctcode=$get(json("entry",zi,"resource","category",1,"coding",1,"code"))
  . n cattext s cattext=$get(json("entry",zi,"resource","category",1,"coding",1,"display"))
  . n x s $p(x,"-",80)=""
@@ -187,7 +187,7 @@ wsIntakeCareplan(args,body,result,ien)        ; web service entry (post)
  . ;
  . ; determine careplan status (active vs inactive)
  . ;
- . n careplanstatus 
+ . n careplanstatus
  . set careplanstatus=$get(json("entry",zi,"resource","status"))
  . d log(jlog,"CarePlan Status: "_careplanstatus)
  . n catstr
@@ -210,7 +210,7 @@ wsIntakeCareplan(args,body,result,ien)        ; web service entry (post)
  . n visitIen s visitIen=$$visitIen^SYNFENC(ien,encounterId)
  . s eval("careplan",zi,"vars","visitIen")=visitIen
  . d log(jlog,"visit ien is: "_visitIen)
- . ; 
+ . ;
  . ; activities
  . ;
  . n actary,actstr,actien,an
@@ -299,7 +299,7 @@ wsIntakeCareplan(args,body,result,ien)        ; web service entry (post)
  . ;
  . ; Output: RETSTA
  . ; 1 - success
- . ; -1 - failure -1^message . ; 
+ . ; -1 - failure -1^message . ;
  . ;
  . n RETSTA,DHPPAT,DHPVST,DHPCAT,DHPGOL,DHPSCT,DHPSDT,DHPEDT ;CarePlan update
  . s (DHPPAT,DHPVST,DHPCAT,DHPGOL,DHPSCT,DHPSDT,DHPEDT)="" ;CarePlan update
@@ -375,7 +375,7 @@ wsIntakeCareplan(args,body,result,ien)        ; web service entry (post)
  . ;b
  e  d  ;
  . d encode^%webjson("jrslt","result")
- . set HTTPRSP("mime")="application/json" 
+ . set HTTPRSP("mime")="application/json"
  q
  ;
 log(ary,txt)    ; adds a text line to @ary@("log")
@@ -391,7 +391,7 @@ loadStatus(typ,zx,zien) ; extrinsic return 1 if resource was loaded
  i $get(@root@(zien,"load",typ,zx,"status","loadstatus"))="loaded" s rt=1
  q rt
  ;
-DX(ien,ptr,sep) ; extrinsic returns code^text for diagnosis in 
+DX(ien,ptr,sep) ; extrinsic returns code^text for diagnosis in
  ; a condition pointed to by ptr in patient ien
  ; sep is optional separator - default is "^"
  i $g(sep)="" s sep="^"

@@ -33,7 +33,7 @@ wsIntakeVitals(args,body,result,ien) ; web service entry (post)
  ;. s result("vitalsStatus","status")="alreadyLoaded"
  i $g(ien)'="" d  ; internal call
  . d getIntakeFhir^SYNFHIR("json",,"Observation",ien,1)
- e  d  ; 
+ e  d  ;
  . ;s args("load")=0
  . merge jtmp=BODY
  . do decode^%webjson("jtmp","json")
@@ -73,7 +73,7 @@ wsIntakeVitals(args,body,result,ien) ; web service entry (post)
  . ;
  . new obstype set obstype=$get(json("entry",zi,"resource","category",1,"coding",1,"code"))
  . if obstype="" do  ; category is missing, try mapping the code
- . . new trycode,trydisp,tryy 
+ . . new trycode,trydisp,tryy
  . . set trycode=$g(json("entry",zi,"resource","code","coding",1,"code"))
  . . set trydisp=$g(json("entry",zi,"resource","code","coding",1,"display"))
  . . s tryy=$$loinc2sct(trycode)
@@ -239,7 +239,7 @@ wsIntakeVitals(args,body,result,ien) ; web service entry (post)
  . ;b
  e  d  ;
  . d encode^%webjson("jrslt","result")
- . set HTTPRSP("mime")="application/json" 
+ . set HTTPRSP("mime")="application/json"
  q 1
  ;
 log(ary,txt) ; adds a text line to @ary@("log")

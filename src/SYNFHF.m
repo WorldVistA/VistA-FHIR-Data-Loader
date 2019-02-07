@@ -7,7 +7,7 @@ SYNFHF  ;ven/gpl - fhir loader utilities ;2018-08-17  3:27 PM
  q
  ;
 HFCPCAT(CODE,TEXT) ; returns ien^name for the Health Factor Category
- ; for the Care Plan category. This ien will be needed for all 
+ ; for the Care Plan category. This ien will be needed for all
  ; calls to get Care Plan, Activity, and Goal Health Factors
  ;
  n COMMENT
@@ -19,7 +19,7 @@ HFCP(CODE,TEXT,CAT) ; returns ien^name for the Care Plan Health Factor
  ; for this Care Plan Health Factor
  ; CODE is the Snomed code for the Care Plan Category
  ; TEXT is the Snomed text for the Care Plan Category
- ; 
+ ;
  n COMMENT
  s COMMENT="SYN Care Plan Health Factor for: "_CODE_" "_TEXT
  q $$GETHF("CP",CAT,CODE,TEXT,0,COMMENT,1)
@@ -39,7 +39,7 @@ HFADDR(CODE,TEXT,CAT) ; returns ien^name for a Care Plan Address HF
  q $$GETHF("ADDR",CAT,CODE,TEXT,0,COMMENT,1)
  ;
 HFGOAL(CODE,CAT,TEXT,DIAG) ; returns ien^name for a Care Plan Goal
- ; in the Care Plan Category CAT (ien) 
+ ; in the Care Plan Category CAT (ien)
  ; DIAG is the diagnosis code^text for the problem the goal addresses (opt)
  ;
  n COMMENT
@@ -121,7 +121,7 @@ GETHF(SYNCAT,HFCAT,CODE,TEXT,ISHFCAT,CMT,LAYGO) ;
  I $D(^DD(9999999.64,200)) D  ; this system has the codes subfile
  . q:cdesys=""
  . s FDA(fncode,"?+2,?+1,",.01)=cdesys ; always code system
- . s FDA(fncode,"?+2,?+1,",1)=cde ; 
+ . s FDA(fncode,"?+2,?+1,",1)=cde ;
  . s FDA(fncode,"?+2,?+1,",2)=$p($$NOW^XLFDT,".",1) ;
  n err
  D UPDIE(.FDA,.ien)
