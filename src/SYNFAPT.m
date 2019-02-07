@@ -15,9 +15,9 @@ importAppointment(rtn,ien,args) ; entry point for loading Appointment for a pati
  . k @root@(ien,"load","appointment")
  . m @root@(ien,"load","appointment")=grtn("appointment")
  . if $g(args("debug"))=1 m rtn=grtn
- s rtn("conditionsStatus","status")=$g(grtn("status","status"))
- s rtn("conditionsStatus","loaded")=$g(grtn("status","loaded"))
- s rtn("conditionsStatus","errors")=$g(grtn("status","errors"))
+ s rtn("apptStatus","status")=$g(grtn("status","status"))
+ s rtn("apptStatus","loaded")=$g(grtn("status","loaded"))
+ s rtn("apptStatus","errors")=$g(grtn("status","errors"))
  ;b
  ;
  ;
