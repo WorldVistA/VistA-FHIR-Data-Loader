@@ -1,4 +1,4 @@
-SYNVPR  ; GPL - VPR viewing routines ;2019-01-31  10:42 AM
+SYNVPR  ; GPL/GPL - VPR viewing routines ;2019-01-31  10:42 AM
  ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
  ;
  ; Authored by George P. Lilly 2013-2018
@@ -66,14 +66,14 @@ SELPART2()      ; extrinsic which returns the part of the NHIN extract selected
  D ^DIR
  Q ZT(X)
  ;
-gen
+gen ;
  S G="all;demographics;reactions;problems;vitals;labs;meds;immunizations;observation;visits;appointments;documents;procedures;consults;flags;factors;skinTests;exams;education;insurance"
  S ZI=""
  F ZI=1:1 Q:$P(G,";",ZI)=""  D  ;
  . W !," S ZT("_ZI_")="""_$P(G,";",ZI)_""""
  q
  ;
-gen2
+gen2 ;
  S G="all;patient;allergy;problem;vital;lab;med;immunization;visit;appointment;procedure"
  S ZI=""
  F ZI=1:1 Q:$P(G,";",ZI)=""  D  ;
@@ -135,13 +135,13 @@ show(what,docid,zout)     ;
  d tree(what,,docid,zout)
  q
  ;
-GET(ZRTN,ZDFN,ZTYP)
+GET(ZRTN,ZDFN,ZTYP) ;
  I ZTYP="all" S ZTYP=""
  S FILTER("category")="CP;RA;SR"
  D GET^VPRD(.ZRTN,ZDFN,ZTYP,2250101,$$NOW^XLFDT,,,.FILTER)
  Q
  ;
-GET2(ZRTN,ZDFN,ZTYP)
+GET2(ZRTN,ZDFN,ZTYP) ;
  I ZTYP="all" S ZTYP=""
  ;D GET^VPRD(.ZRTN,ZDFN,ZTYP)
  D GET^KBAINHIN(.ZRTN,ZDFN,ZTYP) ; CALL NHINV ROUTINES TO PULL XML
@@ -250,10 +250,8 @@ CCR     ;
  M @ZCCR=ZTMP
  N DOCID
  S DOCID=$$PARSE(ZCCR)
- I $D(^TMP("MXMLERR",$J)) D  ;
- . ;ZWR ^TMP("MXMLERR",$J,*)
- . B
- I DOCID=0 B  ;
+ I $D(^TMP("MXMLERR",$J)) S $EC=",U-ERROR,"
+ I DOCID=0
  S GN=$NA(^TMP("VPROUT",$J))
  K @GN
  D show(1,DOCID,GN)
@@ -271,10 +269,8 @@ CCDA    ;
  M @ZCCDA=@ZTMP
  N DOCID
  S DOCID=$$PARSE(ZCCDA)
- I $D(^TMP("MXMLERR",$J)) D  ;
- . ;ZWR ^TMP("MXMLERR",$J,*)
- . B
- I DOCID=0 B  ;
+ I $D(^TMP("MXMLERR",$J)) S $EC=",U-ERROR,"
+ I DOCID=0
  S GN=$NA(^TMP("VPROUT",$J))
  K @GN
  D show(1,DOCID,GN)
@@ -309,10 +305,8 @@ SMARTRDF        ;
  M @ZRDF=G
  N DOCID
  S DOCID=$$PARSE(ZRDF)
- I $D(^TMP("MXMLERR",$J)) D  ;
- . ;ZWR ^TMP("MXMLERR",$J,*)
- . B
- I DOCID=0 B  ;
+ I $D(^TMP("MXMLERR",$J)) S $EC=",U-ERROR,"
+ I DOCID=0 S $EC=",U-ERROR,"
  S GN=$NA(^TMP("VPROUT",$J))
  K @GN
  D show(1,DOCID,GN)
@@ -348,11 +342,7 @@ wsGLOBAL(OUT,FILTER)    ; dump a global to the browser as text
  . E  S V=$NAME(%(V)),V=$E(V,3,$L(V)-1) ; This double quotes internal quotes and also adds quotes on the outside
  . S @OUT@($O(@OUT@(""),-1)+1)=ROOT_"="_V
  S @OUT@(.1)="OSEHRA ZGO Export: M Web Server ZWRITE Export"
- I $P($SY,",")=47 S @OUT@(.2)=$ZDATE($HOROLOG,"DD-MON-YEAR 12:60:SS")
- I $L($SY,":")=2 D
- . N MLIST S MLIST=" JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC"
- . S @OUT@(.2)=$TR($ZDATE($HOROLOG,2,MLIST)," ","-")_" "_$ZTIME($P($HOROLOG,",",2))
- S @OUT@(.2)=$G(@OUT@(.2))_" ZWR"
+ S @OUT@(.2)=$TR($TR($$FMTE^XLFDT($$NOW^XLFDT,"9")," ","-"),"@"," ")_" ZWR"
  D ADDCRLF^%webutils(.OUT)
  Q
  ;
@@ -391,12 +381,9 @@ wsGtree(OUT,FILTER) ; show an outline form of a global
  Q:ROOT=""
  N LEVEL S LEVEL=$G(FILTER("level"))
  I LEVEL'="" S LEVEL=LEVEL-1
- m ^gpl("gtree")=FILTER
- m ^gpl("gtree","out")=OUT
  I $G(FILTER("local"))'=1 S ROOT="^"_ROOT
  I LEVEL="" D GTREE(ROOT,9,,,OUT)
  I LEVEL'="" D GTREE(ROOT,LEVEL,,,OUT)
- m ^gpl("gtree","rslt")=@OUT
  S @OUT="<!DOCTYPE HTML><html><head></head><body><pre>"
  S @OUT@($O(@OUT@(""),-1)+1)="</pre></body></html>"
  D ADDCRLF^%webutils(.OUT)
