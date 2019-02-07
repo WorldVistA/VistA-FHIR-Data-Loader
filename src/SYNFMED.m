@@ -230,14 +230,15 @@ ETSCONVSBD(RXN)  ; [Private] Convert RxnCUI SBD -> SCD
  ;
 ETSCONVSCDC(RXN) ; [Private] Convert RxnCUI SCDC -> SCD
  K ^TMP("SYNDATA",$J,RXN)
- M ^TMP("SYNDATA",$J,RXN)=^TMP("ETSDAT",$J,RXN)
+ M ^TMP("SYNDATA",$J,RXN)=^TMP("ETSDATA",$J,RXN)
  N RESULT S RESULT=0
- N I,Z F I=0:0 S I=$O(^TMP("ETSDATA",$J,RXN,"RXNREL",I)) Q:'I  S Z=^(I,0) D  Q:RESULT
+ N SYNI,Z F SYNI=0:0 S SYNI=$O(^TMP("ETSDATA",$J,RXN,"RXNREL",SYNI)) Q:'SYNI  S Z=^(SYNI,0) D  Q:RESULT
  . I $P(Z,U,5)="consists_of",$P(Z,U,8)=4096 S RESULT=$P(Z,U,4)
+ . I 'RESULT QUIT  ; previous line didn't return anything, try again
  . N % S %=$$GETDATA^ETSRXN(RESULT) ; delete previous data
  . N TYPE S TYPE=$$ETSTYPE(RESULT)  ; uses new context
  . I TYPE'="SCD" S RESULT=0
- . K ^TMP("ETSDATA",$J,RXN) M ^TMP("ETSDAT",$J,RXN)=^TMP("SYNDATA",$J,RXN) ; restore context
+ . K ^TMP("ETSDATA",$J,RXN) M ^TMP("ETSDATA",$J,RXN)=^TMP("SYNDATA",$J,RXN) ; restore context
  Q RESULT
  ;
 MATCHVM(VUIDS) ; [Public] Match delimited list of VUIDs to delimited set of drugs (not one to one)

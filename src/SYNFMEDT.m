@@ -148,6 +148,7 @@ T7L ; @DATA
  ;;316672
  ;;389128
  ;;392151
+ ;;477045
  ;;564666
  ;;568530
  ;;573839
@@ -192,7 +193,7 @@ T8 ; @TEST Add drugs for patients from T7L
  . ; W SYNT," "
  . N RXN S RXN=$$WRITERXRXN^SYNFMED(DFN,SYNT,DT)
  . ; W RXN,!
- . D CHKTF^%ut(RXN>0)
+ . D CHKTF^%ut(RXN>0,RXN)
  QUIT
  ;
 KILLDRUG ; [Public] Remove all Drug Data
