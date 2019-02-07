@@ -199,7 +199,7 @@ wsIntakeEncounters(args,body,result,ien)        ; web service entry (post)
  . . d log(jlog,"Return from data loader was: "_$g(RETSTA))
  . . ;
  . . m eval("encounters",zi,"status","return")=RETSTA
- . . i $g(DEBUG)=1 ZWR RETSTA
+ . . ; i $g(DEBUG)=1 ZWR RETSTA
  . . n root s root=$$setroot^%wd("fhir-intake")
  . . n visitIen s visitIen=$p(RETSTA,"^",2) ; returned visit ien
  . . i +visitIen>0 d
