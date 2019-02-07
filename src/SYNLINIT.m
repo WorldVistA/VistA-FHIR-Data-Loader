@@ -1,5 +1,5 @@
 SYNLINIT ; ven/lgc - Initialize Lab in a new VistA instance ; 10/16/18 10:50am
- ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 2
+ ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 2
  ;
  ;
  Q  ; Not from top

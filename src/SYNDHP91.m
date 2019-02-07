@@ -1,5 +1,5 @@
-SYNDHP91 ;DHP/fjf -  Write  to VistA ;11/07/2018
- ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 3
+SYNDHP91 ;DHP/fjf -  Write  to VistA ;2019-02-07  3:35 PM
+ ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 3
  ;
  ;
  QUIT
@@ -10,8 +10,6 @@ SYNDHP91 ;DHP/fjf -  Write  to VistA ;11/07/2018
  ; c. Goals - text and ptr to PL
  ; Status - fhir CODE
  ; Date
-.
-.
  ; 1.	Use data2pce to ingest careplans, activities & goals
  ; a.	Encounter
  ; b.	CarePlan points to encounter and the goals
@@ -22,20 +20,15 @@ SYNDHP91 ;DHP/fjf -  Write  to VistA ;11/07/2018
  ; iii.	For each goal create a health factor if doesn't already exist (laygo) (text from c above)
  ; iv.	Code which references the problem list
  ; v.	Entire text of goal goes in comment and say that goal addresses this problem  -> add SCT + desc code in there too
-.
  ; d.
-.
  ; Signature:
  ;Visit IEN
  ;Goals (array) text & code <- problem list code (SNOMED CT & or ICD)
  ;Activities (array) SNOMED code^status
  ;Classification SNOMED CT code
  ;CarePlan Status from FHIR set
-.
-.
  ;Generate TIU note for careplan and associate with encounter.
  ;//*
-.
  ; HF for cat for careplan
  ; HF for careplan (use healthfactor manager
  ; HF for activity
@@ -135,7 +128,7 @@ T1 ;
  ;a(5)="^%wd(17.040801,1,1227,"load","careplan",12,"parms","DHPSCT")="
  ;a(6)="^%wd(17.040801,1,1227,"load","careplan",12,"parms","DHPSDT")=2760829"
  ;a(7)="^%wd(17.040801,1,1227,"load","careplan",12,"parms","DHPVST")=34818"
-
+ ;
 VARS ;
  S DHPACT="409002~Food allergy diet~in-progress^58332002~Allergy education~in-progress"
  S DHPCAT="326051000000105~Self care~active"
@@ -156,4 +149,3 @@ EVARS ;
  S ENCDATA("IVARS","DHPVST")=DHPVST
  S ENCDATA("IVARS","DHPGOL")=DHPGOL
  Q
-.

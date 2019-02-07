@@ -1,5 +1,5 @@
 SYNFCON ;ven/gpl - fhir loader utilities ;2018-08-17  3:28 PM
- ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 13
+ ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
  ;
  ; Authored by George P. Lilly 2017-2018
  ;

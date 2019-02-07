@@ -1,5 +1,5 @@
-SYNFUTL ;ven/gpl - fhir loader utilities ;2018-08-17  3:26 PM
- ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 13
+SYNFUTL ;ven/gpl - fhir loader utilities ;2019-02-07  3:35 PM
+ ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
  ;
  ; Authored by George P. Lilly 2017-2018
  ;
@@ -212,4 +212,3 @@ genos5(sct) ; extrinsic which returns a 5 digit identifier based on sct
  s $e(%rtn,5)=$e("HIJKLMNOPQ",$e(%rtn,5)+1)
  q %rtn
  ;
-

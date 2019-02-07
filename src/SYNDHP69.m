@@ -1,5 +1,5 @@
 SYNDHP69 ;AFHIL-DHP/fjf - Commin Utility Functions;2019-01-31  10:40 AM
- ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 13
+ ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
  Q
  ;
 DUZ() ; issues/set DUZ
