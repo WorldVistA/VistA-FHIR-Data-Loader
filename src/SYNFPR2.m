@@ -16,9 +16,9 @@ importConditions(rtn,ien,args)   ; entry point for loading Problems for a patien
  . k @root@(ien,"load","conditions")
  . m @root@(ien,"load","conditions")=grtn("conditions")
  . if $g(args("debug"))=1 m rtn=grtn
- s rtn("conditionsStatus","status")=$g(grtn("status","status"))
- s rtn("conditionsStatus","loaded")=$g(grtn("status","loaded"))
- s rtn("conditionsStatus","errors")=$g(grtn("status","errors"))
+ s rtn("problemStatus","status")=$g(grtn("status","status"))
+ s rtn("problemStatus","loaded")=$g(grtn("status","loaded"))
+ s rtn("problemStatus","errors")=$g(grtn("status","errors"))
  ;b
  ;
  ;
@@ -31,7 +31,7 @@ wsIntakeConditions(args,body,result,ien)               ; web service entry (post
  ; ien is specified for internal calls, where the json is already in a graph
  n jtmp,json,jrslt,eval
  ;i $g(ien)'="" if $$loadStatus("conditions","",ien)=1 d  q  ;
- ;. s result("conditionsStatus","status")="alreadyLoaded"
+ ;. s result("problemStatus","status")="alreadyLoaded"
  i $g(ien)'="" d  ; internal call
  . d getIntakeFhir^SYNFHIR("json",,"Condition",ien,1)
  e  d  ; 
@@ -205,7 +205,6 @@ wsIntakeConditions(args,body,result,ien)               ; web service entry (post
  . m jrslt("source")=json
  . m jrslt("args")=args
  . m jrslt("eval")=eval
- m jrslt("conditionsStatus")=eval("conditionsStatus")
  set jrslt("result","status")="ok"
  set jrslt("result","loaded")=$g(eval("status","loaded"))
  i $g(ien)'="" d  ; called internally
