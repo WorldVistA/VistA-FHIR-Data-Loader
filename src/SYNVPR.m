@@ -338,7 +338,7 @@ wsGLOBAL(OUT,FILTER)    ; dump a global to the browser as text
  N ORIG,OL S ORIG=ROOT,OL=$QL(ROOT) ; Orig, Orig Length
  F  S ROOT=$Q(@ROOT) Q:$G(ROOT)=""  Q:$NA(@ROOT,OL)'=$NA(@ORIG,OL)  D
  . N %,V S V=$$CLEAN(@ROOT)
- . I +$P(V,"E")=V ; numeric
+ . I V'["e",+$P(V,"E")=V ; numeric
  . E  S V=$NAME(%(V)),V=$E(V,3,$L(V)-1) ; This double quotes internal quotes and also adds quotes on the outside
  . S @OUT@($O(@OUT@(""),-1)+1)=ROOT_"="_V
  S @OUT@(.1)="OSEHRA ZGO Export: M Web Server ZWRITE Export"
