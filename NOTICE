@@ -1,5 +1,13 @@
-Copyright 2017-2018 Perspecta
-Copyright 2018 Sam Habiel
+Code in the ISI Data Loader (not in this repo but included in the KIDS build
+and is required to run this software) is (c) 2012 Johns Hopkins University.
+It's licensed under Apache 2.0. For the purposes of licensing, it's considered
+a library used by the software.
+
+Code in this repository has the following copyrights:
+
+Copyright 2017-2019 Perspecta
+Copyright 2018-2019 Sam Habiel
+Copyright 2017-2019 George Lilly
 
 All of the code in this project is new and not derived from any other projects.
 
