@@ -11,7 +11,8 @@ As of v0.2 (unlike v0.1), PCE STANDARDIZATION 1.0 is now required. In order to
 install this, you need these patches:
  
  * https://foia-vista.osehra.org/Patches_By_Application/XU-KERNEL/XU-8_SEQ-546_PAT-672.kids
- * https://code.osehra.org/journal/journal/view/1532 (need to log-in to download)
+ * https://code.osehra.org/journal/download?items=1097,%208 (zip file, unzip and load PCE_STANDARDIZATION_1_0_T4.KID)
+ * https://github.com/OSEHRA/VistA-FHIR-Data-Loader/releases/download/0.2/SYN_BUNDLE_0P2.KIDS.zip (zip file, unzip and load SYN_BUNDLE_0P2.KIDS)
 
 As of the time of this writing, PCE STANDARIDZATION has not been officially
 released by the VA. That's why you need to obtain it from the Tech Journal. 
