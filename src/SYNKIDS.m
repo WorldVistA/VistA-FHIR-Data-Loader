@@ -1,4 +1,4 @@
-SYNKIDS ; OSE/SMH - Synthea Installer ; 8/16/18 5:02pm
+SYNKIDS ; OSE/SMH - Synthea Installer ; Feb 21 2019
  ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 2
  ;
  ; WARNING: THIS ROUTINE IS A BAD EXAMPLE FOR ANYBODY TRYING TO WRITE GOOD CODE.
@@ -76,8 +76,8 @@ POSTRO ; [Private] Download and Import RO Files
  D MES^XPDUTL("Downloading MASH...")
  D INSTALLRO("https://github.com/OSEHRA/VistA-FHIR-Data-Loader/releases/download/0.2/mash-graph-1p0.rsa")
  D MES^XPDUTL("Downloading MWS...")
- D INSTALLRO("https://github.com/shabiel/M-Web-Server/releases/download/1.0.0/webinit.rsa")
- D INSTALLRO("https://github.com/shabiel/M-Web-Server/releases/download/1.0.0/mws.rsa")
+ D INSTALLRO("https://github.com/shabiel/M-Web-Server/releases/download/1.0.2/webinit.rsa")
+ D INSTALLRO("https://github.com/shabiel/M-Web-Server/releases/download/1.0.2/mws.rsa")
  QUIT
  ;
 POSTWWW ; [Private] Initialize MWS
