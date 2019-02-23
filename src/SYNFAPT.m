@@ -1,5 +1,5 @@
 SYNFAPT ;ven/gpl - fhir loader utilities ;2018-08-17  3:25 PM
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 4
  ;
  ; Authored by George P. Lilly 2017-2018
  ;
@@ -15,9 +15,9 @@ importAppointment(rtn,ien,args) ; entry point for loading Appointment for a pati
  . k @root@(ien,"load","appointment")
  . m @root@(ien,"load","appointment")=grtn("appointment")
  . if $g(args("debug"))=1 m rtn=grtn
- s rtn("apptStatus","status")=$g(grtn("status","status"))
- s rtn("apptStatus","loaded")=$g(grtn("status","loaded"))
- s rtn("apptStatus","errors")=$g(grtn("status","errors"))
+ s rtn("conditionsStatus","status")=$g(grtn("status","status"))
+ s rtn("conditionsStatus","loaded")=$g(grtn("status","loaded"))
+ s rtn("conditionsStatus","errors")=$g(grtn("status","errors"))
  ;b
  ;
  ;
@@ -31,10 +31,10 @@ wsIntakeAppointment(args,body,result,ien)       ; web service entry (post)
  n jtmp,json,jrslt,eval
  i $g(ien)'="" d  ; internal call
  . d getIntakeFhir^SYNFHIR("json",,"Appointment",ien,1)
- e  d  ;
+ e  d  ; 
  . s args("load")=0
  . merge jtmp=BODY
- . do decode^%webjson("jtmp","json")
+ . do DECODE^VPRJSON("jtmp","json")
  ;if '$d(json) d  ; if no appointment, get a random set of appointments
  ;. d getRandomApt(.json) ; get a random set of appointments
  i '$d(json) q  ;
@@ -167,8 +167,8 @@ wsIntakeAppointment(args,body,result,ien)       ; web service entry (post)
  . m result("ien")=ien
  . ;b
  e  d  ;
- . d encode^%webjson("jrslt","result")
- . set HTTPRSP("mime")="application/json"
+ . d ENCODE^VPRJSON("jrslt","result")
+ . set HTTPRSP("mime")="application/json" 
  q
  ;
 log(ary,txt)    ; adds a text line to @ary@("log")
@@ -226,13 +226,13 @@ getRandomApt(ary)       ; make a web service call to get random appointments
  . n ok,r1
  . s ok=$$%^%WC(.r1,"GET",url)
  . i '$d(r1) q  ;
- . d decode^%webjson("r1","ary")
+ . d DECODE^VPRJSON("r1","ary")
  n url
  s url=srvr_"randomAllergy"
  n ret,json,jtmp
  s ret=$$GETURL^XTHC10(url,,"jtmp")
  d assemble^SYNFPUL("jtmp","json")
  i '$d(json) q  ;
- d decode^%webjson("json","ary")
+ d DECODE^VPRJSON("json","ary")
  q
  ;

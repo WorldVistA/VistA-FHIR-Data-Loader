@@ -1,5 +1,5 @@
 SYNFMEDT ;OSE/SMH - Unit Tests for Synthetic Medications;Jun 11 2018
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 4
  ;
  D EN^%ut($T(+0),2,1)
  QUIT
@@ -144,11 +144,8 @@ T7 ; @TEST Analysis of meds that don't load
 T7L ; @DATA
  ;;239981
  ;;308056
- ;;316049
- ;;316672
  ;;389128
  ;;392151
- ;;477045
  ;;564666
  ;;568530
  ;;573839
@@ -193,7 +190,7 @@ T8 ; @TEST Add drugs for patients from T7L
  . ; W SYNT," "
  . N RXN S RXN=$$WRITERXRXN^SYNFMED(DFN,SYNT,DT)
  . ; W RXN,!
- . D CHKTF^%ut(RXN>0,RXN)
+ . D CHKTF^%ut(RXN>0)
  QUIT
  ;
 KILLDRUG ; [Public] Remove all Drug Data

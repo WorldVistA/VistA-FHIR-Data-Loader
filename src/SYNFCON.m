@@ -1,5 +1,5 @@
 SYNFCON ;ven/gpl - fhir loader utilities ;2018-08-17  3:28 PM
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 4
  ;
  ; Authored by George P. Lilly 2017-2018
  ;
@@ -33,10 +33,10 @@ wsIntakeConditions(args,body,result,ien)        ; web service entry (post)
  ;. s result("conditionsStatus","status")="alreadyLoaded"
  i $g(ien)'="" d  ; internal call
  . d getIntakeFhir^SYNFHIR("json",,"Condition",ien,1)
- e  d  ;
+ e  d  ; 
  . s args("load")=0
  . merge jtmp=BODY
- . do decode^%webjson("jtmp","json")
+ . do DECODE^VPRJSON("jtmp","json")
  i '$d(json) q  ;
  m ^gpl("gjson")=json
  ;
@@ -182,8 +182,8 @@ wsIntakeConditions(args,body,result,ien)        ; web service entry (post)
  . m result("status")=jrslt("result")
  . ;b
  e  d  ;
- . d encode^%webjson("jrslt","result")
- . set HTTPRSP("mime")="application/json"
+ . d ENCODE^VPRJSON("jrslt","result")
+ . set HTTPRSP("mime")="application/json" 
  q
  ;
 log(ary,txt)    ; adds a text line to @ary@("log")

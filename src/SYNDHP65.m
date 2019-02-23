@@ -1,5 +1,5 @@
 SYNDHP65 ;DHP/AFHIL -fjf -  Write Procedures to VistA ; 12th Sept 2018
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 4
  ;
  ;
 PRCADD(RETSTA,DHPPAT,DHPVST,DHPCNT,DHPSCT,DHPDTM)
@@ -10,9 +10,9 @@ PRCADD(RETSTA,DHPPAT,DHPVST,DHPCNT,DHPSCT,DHPDTM)
  ;   DHPPAT   - patient ICN              (mandatory)
  ;   DHPVST   - Visit Identifier         (mandatory)
  ;   DHPCNT   - No of times performed    (mandatory)
- ;   DHPSCT   - SCT Procedure code       (mandatory)
+ ;   DHPSCT   - SCT Procedure code       (mandatory)   
  ;   DHPDTM   - Procedure Date/Time      (mandatory) HL7 format
- ; Output:
+ ; Output:   
  ;   1 - success
  ;  -1 - failure
  ;
@@ -62,5 +62,5 @@ INIT ; Initiate variables
  Q
  ;
 T1 ;
- D PRCADD(.ZXC,"5000000352V586511",32060,1,56876005,20151002)
+ D PRCADD(.ZXC,"5000000352V586511",20559,1,56876005,20151002)
  Q

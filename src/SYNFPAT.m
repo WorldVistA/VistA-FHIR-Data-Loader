@@ -1,5 +1,5 @@
 SYNFPAT ;ven/gpl - fhir loader utilities ;2018-05-08  4:18 PM
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 4
  ;
  ; Authored by George P. Lilly 2017-2018
  ;
@@ -30,7 +30,7 @@ importPatient(rtn,ien) ; register and import a fhir patient (demographics only)
  ; name
  ;
  new patname
- set patname=$$patname("fhir")
+ set patname=$$patname("fhir") 
  if patname'="" do  ;
  . set @parms@("NAME")=patname
  . do log^SYNFUTL("Patient name is: "_patname)
@@ -75,7 +75,7 @@ importPatient(rtn,ien) ; register and import a fhir patient (demographics only)
  ;
  do INITMAPS^SYNQLDM
  new eary,ecd
- ;do adb^SYNFUTL("eary","fhir","text","ethnicity") ; array defined by
+ ;do adb^SYNFUTL("eary","fhir","text","ethnicity") ; array defined by 
  ;set ecd=$get(eary("coding",1,"code")) ; the ethnic code
  set ecd=$$deriveCode("fhir","us-core-ethnicity",zntry)
  if ecd'="" d  ;
@@ -90,7 +90,7 @@ importPatient(rtn,ien) ; register and import a fhir patient (demographics only)
  ; race code
  ;
  new rary,rcd
- ;do adb^SYNFUTL("rary","fhir","text","race") ; array defined by
+ ;do adb^SYNFUTL("rary","fhir","text","race") ; array defined by 
  ;set rcd=$get(rary("coding",1,"code")) ; the ethnic code
  set rcd=$$deriveCode("fhir","us-core-race",zntry)
  if rcd'="" d  ;
@@ -149,7 +149,7 @@ importPatient(rtn,ien) ; register and import a fhir patient (demographics only)
  d setIndex^SYNFUTL(ien,"ICN",icn)
  ;
  s rtn("dfn")=zdfn
- s rtn("loadStatus")="loaded"
+ s rtn("loadStatus")="loaded" 
  if icn'=-1 s rtn("icn")=icn
  ;
  quit
@@ -312,7 +312,7 @@ newIcn(dfn) ; extrinsic which creates a new ICN for the patient
  ;
  new tmpicn
  set tmpicn=$$icn(dfn)
- if tmpicn'=-1 do  quit tmpicn
+ if tmpicn'=-1 do  quit tmpicn  
  . n ien s ien=$$dfn2ien^SYNFUTL(dfn)
  . if ien'="" do setIndex^SYNFUTL(ien,"ICN",tmpicn)
  ;
@@ -321,7 +321,7 @@ newIcn(dfn) ; extrinsic which creates a new ICN for the patient
  set tmpicn=$o(^DPT("AICN",99999999999),-1)+1
  if tmpicn=1 s tmpicn=50000001 ; first ICN in the system
  ;
- ;991.01    INTEGRATION CONTROL NUMBER (NJ12,0Xa), [MPI;1]
+ ;991.01    INTEGRATION CONTROL NUMBER (NJ12,0Xa), [MPI;1]          
  ;991.02    ICN CHECKSUM (Fa), [MPI;2]
  ;991.1     FULL ICN (FXa), [MPI;10]
  ;
@@ -363,7 +363,7 @@ newIcn2(dfn,pid) ; extrinsic which creates a new ICN for the patient based on th
  ;
  s tmpicn=$$pid2icn^SYNFUTL(pid) ; generate the icn from the pid
  ;
- ;991.01    INTEGRATION CONTROL NUMBER (NJ12,0Xa), [MPI;1]
+ ;991.01    INTEGRATION CONTROL NUMBER (NJ12,0Xa), [MPI;1]          
  ;991.02    ICN CHECKSUM (Fa), [MPI;2]
  ;991.1     FULL ICN (FXa), [MPI;10]
  ;
@@ -403,7 +403,7 @@ fixindex1 ; create the ICN and DFN indexes
  . q:icn=""
  . s @gn@(zi,"DFN",dfn)=""
  . d setIndex^SYNFUTL(zi,"DFN",dfn)
- . i icn'="" d
+ . i icn'="" d  
  . . s @gn@(zi,"ICN",icn)=""
  . . d setIndex^SYNFUTL(zi,"ICN",icn)
  q

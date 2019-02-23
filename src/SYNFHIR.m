@@ -1,5 +1,5 @@
 SYNFHIR ;ven/gpl - fhir loader utilities ;2018-08-17  3:27 PM
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 4
  ;
  ; Authored by George P. Lilly 2017-2018
  ;
@@ -20,7 +20,7 @@ wsPostFHIR(ARGS,BODY,RESULT)    ; recieve from addpatient
  set ien=$order(@root@(" "),-1)+1
  set gr=$name(@root@(ien,"json"))
  merge json=BODY
- do decode^%webjson("json",gr)
+ do DECODE^VPRJSON("json",gr)
  do indexFhir(ien)
  ;
  if id'="" do  ;
@@ -51,9 +51,8 @@ wsPostFHIR(ARGS,BODY,RESULT)    ; recieve from addpatient
  . do importAppointment^SYNFAPT(.return,ien,.ARGS)
  . do importMeds^SYNFMED2(.return,ien,.ARGS)
  . do importProcedures^SYNFPROC(.return,ien,.ARGS)
- . do importCarePlan^SYNFCP(.return,ien,.ARGS)
  ;
- do encode^%webjson("return","RESULT")
+ do ENCODE^VPRJSON("return","RESULT")
  set HTTPRSP("mime")="application/json"
  ;
  quit 1
@@ -188,16 +187,16 @@ wsShow(rtn,filter)      ; web service to show the fhir
  . do getIntakeFhir("jtmp",$g(filter("bundle")),type,ien,1)
  . ;do getIntakeFhir("jtmp",,type,ien,1)
  . set juse="jtmp"
- do encode^%webjson(juse,"rtn")
- s HTTPRSP("mime")="application/json"
+ do ENCODE^VPRJSON(juse,"rtn")
+ s HTTPRSP("mime")="application/json" 
  quit
  ;
 getIntakeFhir(rtn,id,type,ien,plain)    ; returns fhir vars for patient bundle=id resourceType type
  ; id is the bundle date range to be returned, optional
  ; if id is not passed, all resources of the type are returned
- ; ien is required and is the graph ien of the patient
+ ; ien is required and is the graph ien of the patient 
  ; rtn passed by name. it will overlay results in @rtn, so is additive
- ; if plain is 1 then the array is returned without the type as the first
+ ; if plain is 1 then the array is returned without the type as the first 
  ;    element of each node
  ;
  new root set root=$$setroot^%wd("fhir-intake")
@@ -236,7 +235,7 @@ fhir2graph(in,out)      ; transforms fhir to a graph
  ; detects if json parser has been run and will run it if not
  ;
  new json
- if $ql($q(@in@("")))<2 do decode^%webjson(in,"json") set in="json"
+ if $ql($q(@in@("")))<2 do DECODE^VPRJSON(in,"json") set in="json"
  ;
  new rootj
  set rootj=$na(@in@("entry"))
@@ -288,7 +287,7 @@ getEntry(ary,ien,rien) ; returns one entry in ary, passed by name
 loadStatus(ary,ien,rien) ; returns the "load" section of the patient graph
  ; if rien is not specified, all entries are included
  n root s root=$$setroot^%wd("fhir-intake")
- i '$d(@root@(ien)) q
+ i '$d(@root@(ien)) q  
  i $g(rien)="" d  q  ;
  . k @ary
  . m @ary@(ien)=@root@(ien,"load")
@@ -298,7 +297,7 @@ loadStatus(ary,ien,rien) ; returns the "load" section of the patient graph
  m @ary@(ien,rien)=@root@(ien,"load",zi,rien)
  q
  ;
-wsLoadStatus(rtn,filter) ; displays the load status
+wsLoadStatus(rtn,filter) ; displays the load status 
  ; filter must have ien or dfn to specify the patient
  ; optionally, entry number (rien) for a single entry
  ; if ien and dfn are both specified, dfn is used

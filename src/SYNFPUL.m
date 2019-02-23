@@ -1,5 +1,5 @@
 SYNFPUL ;ven/gpl - fhir loader utilities ;2018-08-17  3:26 PM
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 4
  ;
  ; Authored by George P. Lilly 2017-2018
  ;
@@ -35,7 +35,7 @@ wsPull(rtn,filter)      ; pull web service. assumes url to list is passed as fil
  s @groot@("B",listname,lien)=""
  ;
  set gr=$name(@groot@(lien,"list"))
- do decode^%webjson("json",gr)
+ do DECODE^VPRJSON("json",gr)
  s @gr@("listname")=listname
  do indexList(lien)
  s rtn("listien")=lien
@@ -87,7 +87,7 @@ wsLol(rtn,filter)       ; list of list web service
  s @groot@("B",listname,lien)=""
  ;
  set gr=$name(@groot@(lien,"list"))
- do decode^%webjson("json",gr)
+ do DECODE^VPRJSON("json",gr)
  s @gr@("listname")=listname
  do indexLol(lien)
  k @gr@("listname")
@@ -97,7 +97,7 @@ wsLol(rtn,filter)       ; list of list web service
  n jout m jout=@gr
  k jout("listname")
  ;m @rtn=json
- d encode^%webjson("jout",rtn)
+ d ENCODE^VPRJSON("jout",rtn)
  set HTTPRSP("mime")="application/json"
  q
  ;
@@ -128,7 +128,7 @@ wsLol2(rtn,filter)      ; list of list web service
  ;s @groot@("B",listname,lien)=""
  ;
  ;set gr=$name(@groot@(lien,"list"))
- ;do decode^%webjson("json",gr)
+ ;do DECODE^VPRJSON("json",gr)
  ;s @gr@("listname")=listname
  ;do indexLol(lien)
  ;k @gr@("listname")
@@ -138,7 +138,7 @@ wsLol2(rtn,filter)      ; list of list web service
  ;n jout m jout=@gr
  ;k jout("listname")
  m @rtn=json
- ;d encode^%webjson("jout",rtn)
+ ;d ENCODE^VPRJSON("jout",rtn)
  set HTTPRSP("mime")="application/json"
  q
  ;
@@ -179,7 +179,7 @@ getlol  ; get list of lists
  s @groot@("B",listname,lien)=""
  ;
  set gr=$name(@groot@(lien,"list"))
- do decode^%webjson("json",gr)
+ do DECODE^VPRJSON("json",gr)
  s @gr@("listname")=listname
  do indexLol(lien)
  ;
@@ -303,7 +303,7 @@ wsLoadPat(zrtn,zfilter) ; load one patient from a URL
  ;
  set ien=$order(@root@(" "),-1)+1
  set gr=$name(@root@(ien,"json"))
- do decode^%webjson("json",gr)
+ do DECODE^VPRJSON("json",gr)
  do indexFhir^SYNFHIR(ien)
  W:ien#500=0 !,"Patient # "_ien_" "_$$FMTE^XLFDT($$NOW^XLFDT)
  ;
@@ -333,10 +333,11 @@ wsLoadPat(zrtn,zfilter) ; load one patient from a URL
  . do importAppointment^SYNFAPT(.return,ien,.ARGS)
  . do importMeds^SYNFMED2(.return,ien,.ARGS)
  . do importProcedures^SYNFPROC(.return,ien,.ARGS)
- . do importCarePlan^SYNFCP(.return,ien,.ARGS)
+ . do importLabs^SYNFLAB(.return,ien,.ARGS)
+ . ;do taskLabs^SYNFHIR(.return,ien,.ARGS)
  ;
- ;do encode^%webjson("return","RESULT")
- ;do encode^%webjson("return","zrtn")
+ ;do ENCODE^VPRJSON("return","RESULT")
+ ;do ENCODE^VPRJSON("return","zrtn")
  set HTTPRSP("mime")="application/json"
  ;
  quit

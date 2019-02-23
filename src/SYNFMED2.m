@@ -1,5 +1,5 @@
 SYNFMED2        ;ven/gpl - fhir loader utilities ;2018-08-17  3:27 PM
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 4
  ;
  ; Authored by George P. Lilly 2017-2018
  ;
@@ -15,9 +15,9 @@ importMeds(rtn,ien,args)        ; entry point for loading Medications for a pati
  . k @root@(ien,"load","meds")
  . m @root@(ien,"load","meds")=grtn("meds")
  . if $g(args("debug"))=1 m rtn=grtn
- s rtn("medsStatus","status")=$g(grtn("status","status"))
- s rtn("medsStatus","loaded")=$g(grtn("status","loaded"))
- s rtn("medsStatus","errors")=$g(grtn("status","errors"))
+ s rtn("conditionsStatus","status")=$g(grtn("status","status"))
+ s rtn("conditionsStatus","loaded")=$g(grtn("status","loaded"))
+ s rtn("conditionsStatus","errors")=$g(grtn("status","errors"))
  ;b
  ;
  ;
@@ -33,9 +33,9 @@ wsIntakeMeds(args,body,result,ien)      ; web service entry (post)
  ;. s result("medstatus","status")="alreadyLoaded"
  i $g(ien)'="" d  ; internal call
  . d getIntakeFhir^SYNFHIR("json",,"MedicationRequest",ien,1)
- e  d  ;
+ e  d  ; 
  . merge jtmp=BODY
- . do decode^%webjson("jtmp","json")
+ . do DECODE^VPRJSON("jtmp","json")
  ;
  ;i '$d(json) d getRandomMeds(.json)
  ;
@@ -164,8 +164,8 @@ wsIntakeMeds(args,body,result,ien)      ; web service entry (post)
  . m result("ien")=ien
  . ;b
  e  d  ;
- . d encode^%webjson("jrslt","result")
- . set HTTPRSP("mime")="application/json"
+ . d ENCODE^VPRJSON("jrslt","result")
+ . set HTTPRSP("mime")="application/json" 
  q
  ;
 log(ary,txt)    ; adds a text line to @ary@("log")
@@ -183,7 +183,7 @@ loadStatus(typ,zx,zien) ; extrinsic return 1 if resource was loaded
 testall(limit,start)    ; run the meds import on all imported patients
  ;; next line added for DUZ setup because of <UNDEFINED>ENTDFLT+12^XPAR1 *DUZ(2)
  S USER=$$DUZ^SYNDHP69()
- ;;
+ ;; 
  i $g(limit)="" s limit=1
  n cnt s cnt=0
  new root s root=$$setroot^%wd("fhir-intake")
@@ -233,14 +233,14 @@ getRandomMeds(ary) ; make a web service call to get random allergies
  . n ok,r1
  . s ok=$$%^%WC(.r1,"GET",url)
  . i '$d(r1) q  ;
- . d decode^%webjson("r1","ary")
+ . d DECODE^VPRJSON("r1","ary")
  n url
  s url=srvr_"randommeds"
  n ret,json,jtmp
  s ret=$$GETURL^XTHC10(url,,"jtmp")
  d assemble^SYNFPUL("jtmp","json")
  i '$d(json) q  ;
- d decode^%webjson("json","ary")
+ d DECODE^VPRJSON("json","ary")
  q
  ;
 medsum ; search all loaded patients and catelog the procedure codes

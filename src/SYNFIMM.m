@@ -1,5 +1,5 @@
 SYNFIMM ;ven/gpl - fhir loader utilities ;2018-05-08  4:38 PM
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 4
  ;
  ; Authored by George P. Lilly 2017-2018
  ;
@@ -33,10 +33,10 @@ wsIntakeImmu(args,body,result,ien) ; web service entry (post)
  ;. s result("immunizationsStatus","status")="alreadyLoaded"
  i $g(ien)'="" d  ; internal call
  . d getIntakeFhir^SYNFHIR("json",,"Immunization",ien,1)
- e  d  ;
+ e  d  ; 
  . s args("load")=0
  . merge jtmp=BODY
- . do decode^%webjson("jtmp","json")
+ . do DECODE^VPRJSON("jtmp","json")
  i '$d(json) q  ;
  m ^gpl("gjson")=json
  ;
@@ -152,7 +152,7 @@ wsIntakeImmu(args,body,result,ien) ; web service entry (post)
  . if $g(args("load"))=1 d  ; only load if told to
  . . if $g(ien)'="" if $$loadStatus("immunizations",zi,ien)=1 do  quit  ;
  . . . d log(jlog,"Immunization already loaded, skipping")
- . . d log(jlog,"Calling IMMUNUPD^ZZDHP61 to add immunization")
+ . . d log(jlog,"Calling IMMUNUPD^SYNDHP61 to add immunization")
  . . D IMMUNUPD^SYNDHP61(.RETSTA,DHPPAT,.VISIT,IMMUNIZ,ANATLOC,ADMINRT,DOSE,EVENTDT,IMMPROV) ;Immunization update
  . . m eval("immunizations",zi,"status")=RETSTA
  . . d log(jlog,"Return from data loader was: "_$g(RETSTA))
@@ -181,8 +181,8 @@ wsIntakeImmu(args,body,result,ien) ; web service entry (post)
  . m result("ien")=ien
  . ;b
  e  d  ;
- . d encode^%webjson("jrslt","result")
- . set HTTPRSP("mime")="application/json"
+ . d ENCODE^VPRJSON("jrslt","result")
+ . set HTTPRSP("mime")="application/json" 
  q
  ;
 log(ary,txt) ; adds a text line to @ary@("log")

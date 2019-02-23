@@ -1,5 +1,5 @@
-SYNDHP61 ; Write To VistA ;5/4/18  10:43
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
+SYNDHP61 ;DHP/FJF/ART - Write To VistA ;12/07/2018
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 4
  ;;Original routine authored by Andrew Thompson & Ferdinand Frankson of DXC Technology 2017-2018
  ;
  QUIT
@@ -15,7 +15,7 @@ VITUPD(RETSTA,DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPROV,DHPLOC) ; vitals update
  ;  DHPDTM  - Observation Date/Time (mandatory) HL7 format
  ;  DHPROV  - provider              (mandatory) NPI#
  ;  DHPLOC  - location              (mandatory) name
- ; Output:
+ ; Output:   
  ;  1 - success
  ; -1 - failure
  ;
@@ -80,7 +80,7 @@ VITFDA ; build FDA array for Vitals
  S FDA(FN,"+1,",1.2)=DHPOBS ;rate
  Q
  ;
-NEXTIEN() ;
+NEXTIEN() ; 
  ; Get new code IEN
  Q $O(^GMR(FN,9E29),-1)+1
  ;
@@ -98,16 +98,18 @@ SI2IMP(SCT,OBS) ; convert metric units to imperial
  ;
 PROBUPD(RETSTA,DHPPAT,DHPSCT,DHPSDES,DHPROV,DHPDTM,DHPRID) ; problems update
  ;
+ ; Alternate entry for creating problem/condition if snomed code does not map to icd code, so can't use DATA2PCE
+ ;
  ; Input:
  ;  DHPPAT -   patient ICN                (mandatory)
  ;  DHPSCT -   SNOMED CT code             (mandatory)
- ;  DHPSDES -  SNOMED CT designation code (optional)      >>>not used in code below<<<
+ ;  DHPSDES -  SNOMED CT designation code (optional)      >>>not used in code below, code (DHPSCDES) is looked up in Lexicon <<<
  ;  DHPROV -   Provider     (NPI)              (optional)
  ;  DHPDTM -   Observation Date/Time  (HL7)    (mandatory)
  ;  DHPRID -   DHP unique resource ID     (optional)
- ;               agency_facility
+ ;               agency_facility          
  ;
- ; Output:
+ ; Output:   
  ;  1 - success
  ; -1 - failure
  ;
@@ -133,50 +135,45 @@ PROBFDA ; build FDA array for Problems
  ;S DHPOBS=$$UNCNVT(DHPSCT,DHPOBS)
  S ORIEN(1)=$$NEXTIEN()
  S PATIEN=$O(^DPT("AFICN",DHPPAT,""))
- S MAPVUID=5217693 ; VUID for SNOMED CT to ICD-10-CM mapping
+ S MAPVUID=5217693 ; VUID for SNOMED CT to ICD-10-CM mapping 
  K LEX
  S DHPICD=$$GETASSN^LEXTRAN1(DHPSCT,MAPVUID)
  S DHPICD=$O(LEX(1,""))
  I DHPICD="" S DHPICD="R69."
  S DHPICD=+$$ICDDX^ICDEX(DHPICD,30)
- S FDA(FN,"+1,",.01)=DHPICD
- S FDA(FN,"+1,",.02)=PATIEN
- S FDA(FN,"+1,",.03)=$$HL7TFM^XLFDT(DHPDTM)
+ S FDA(FN,"+1,",.01)=DHPICD ;diagnosis
+ S FDA(FN,"+1,",.02)=PATIEN ;patient name
+ S FDA(FN,"+1,",.03)=$$NOW^XLFDT() ;date last modified
  S FDA(FN,"+1,",.04)="P" ; or "F" personal history/family history
- ;S FDA(FN,"+1,",.05)=         ; provider narrative
- ;B
+ ;
  S DHPLOC=+DHPRID
  S FDA(FN,"+1,",.06)=DHPLOC ; location
- S FDA(FN,"+1,",.07)=$$HL7TFM^XLFDT(DHPDTM)
- S FDA(FN,"+1,",.08)=$$HL7TFM^XLFDT(DHPDTM)
- S FDA(FN,"+1,",.13)=$$HL7TFM^XLFDT(DHPDTM)
+ S FDA(FN,"+1,",1.07)=$$HL7TFM^XLFDT(DHPDTM) ;date resolved <<<<<<<<<<<<< not if still active
+ S FDA(FN,"+1,",.08)=$$NOW^XLFDT() ;date entered
+ S FDA(FN,"+1,",.13)=$$HL7TFM^XLFDT(DHPDTM) ;date of onset
  S STATII=P_"A"_P_"I"_P
- S FDA(FN,"+1,",.12)=$S(STATII[(P_$G(DHPSTA)_P):DHPSTA,1:"A")
- S FDA(FN,"+1,",80001)=DHPSCT
- ;I '$D(DHPSCDES) D
- ;.N LEX
- ;.S LEX=$$CODE^LEXTRAN(DHPSCT,"SCT",,,,1)
- ;.;S DHPSCDES=""
- ;.S DHPSCDES=$P($G(LEX("P")),U,3)
+ S FDA(FN,"+1,",.12)=$S(STATII[(P_$G(DHPSTA)_P):DHPSTA,1:"A") ;status
+ S FDA(FN,"+1,",80001)=DHPSCT ; snomed ct concept code
+ ;
  N LEX
  S LEX=$$CODE^LEXTRAN(DHPSCT,"SCT",,,,1,1)
  S DHPSCDES=$P($G(LEX("P")),U,3)
  S LEXIEN=$P(LEX("P"),U,2)
  S EXPRSN=$P(LEX("P"),U)
  S PROVNAR=$$PROVNARTL(EXPRSN)
- S FDA(FN,"+1,",.05)=PROVNAR
- S FDA(FN,"+1,",1.01)=LEXIEN
- S FDA(FN,"+1,",80002)=DHPSCDES
- S FDA(FN,"+1,",80201)=$$HL7TFM^XLFDT(DHPDTM)
- S FDA(FN,"+1,",80202)="10D"
- S NUM=$O(^AUPNPROB("AA",PATIEN,DHPLOC,""),-1)
+ S FDA(FN,"+1,",.05)=PROVNAR ;provider narrative
+ S FDA(FN,"+1,",1.01)=LEXIEN ;problem
+ S FDA(FN,"+1,",80002)=DHPSCDES ;snomed ct designation code
+ S FDA(FN,"+1,",80201)=$$HL7TFM^XLFDT(DHPDTM) ;date of interest
+ S FDA(FN,"+1,",80202)="10D" ;coding system
+ S NUM=$O(^AUPNPROB("AA",PATIEN,DHPLOC,""),-1) ;get last NMBR used
  S NUM=+$RE(+$RE(NUM))
  S NUM=NUM+1
- S FDA(FN,"+1,",.07)=NUM
+ S FDA(FN,"+1,",.07)=NUM ;nmbr
  S PRVIEN="" I DHPROV'="" S PRVIEN=$O(^VA(200,"ANPI",DHPROV,""))
- S FDA(FN,"+1,",1.03)=PRVIEN
- S FDA(FN,"+1,",1.04)=PRVIEN
- S FDA(FN,"+1,",1.05)=PRVIEN
+ S FDA(FN,"+1,",1.03)=PRVIEN ;entered by
+ S FDA(FN,"+1,",1.04)=PRVIEN ;recording provider
+ S FDA(FN,"+1,",1.05)=PRVIEN ;responsible provider
  ;W ! ZW FDA
  Q
 PROVNARTL(EXPRSN) ; deal with provider narrative
@@ -237,7 +234,7 @@ IMMUNUPD(RETSTA,DHPPAT,VISIT,IMMUNIZ,ANATLOC,ADMINRT,DOSE,EVENTDT,IMMPROV) ;Immu
  M RESTSTA("IMMDATA")=IMMDATA
  QUIT
  ;
- ; $$DATA2PCE Output:
+ ; $$DATA2PCE Output:   
  ;+   1  if no errors and processed completely
  ;+  -1  if errors occurred but processed completely as possible
  ;+  -2  if could not get a visit
@@ -303,7 +300,7 @@ ENCTUPD(RETSTA,DHPPAT,STARTDT,ENDDT,ENCPROV,CLINIC,SCTDX,SCTCPT) ;Encounter upda
  S $P(APPTDATE,".",2)=APPTTM
  ;
  ; map SNOMED CT code in SCTDX to ICD-10
- S MAPVUID=5217693 ; VUID for SNOMED CT to ICD-10-CM mapping
+ S MAPVUID=5217693 ; VUID for SNOMED CT to ICD-10-CM mapping 
  ;K LEX
  ;S DHPICD=$$GETASSN^LEXTRAN1(SCTDX,MAPVUID)
  ;S DHPICD=$O(LEX(1,""))
@@ -403,11 +400,11 @@ T3 S IDT=20170115154546
  .K ZXC
  .D ENCTUPD(.ZXC,"9004935583V839304",SDT,EDT,"9990000348","GENERAL MEDICINE",73211009,10492003)
  .W !!,"___________________________________________________",!!
- .;ZW ZXC
+ .ZW ZXC
  .W !!
- .;ZW ENCDATA
+ .ZW ENCDATA
  .W !!,"___________________________________________________",!!
- .;ZW ZZERDESC
+ .ZW ZZERDESC
  .W !!,"___________________________________________________",!!
- .;ZW ZZERR
+ .ZW ZZERR
  Q

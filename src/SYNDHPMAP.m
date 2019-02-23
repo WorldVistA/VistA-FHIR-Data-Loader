@@ -1,5 +1,5 @@
 SYNDHPMAP ; AFHIL/FJF terminology mapping
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 4
  ;;Original routine authored by Andrew Thompson & Ferdinand Frankson of DXC Technology 2017-2018
  ;
 MAP(MAP,CODE,DIR) ; Return a mapped code for a given code
@@ -12,7 +12,7 @@ MAP(MAP,CODE,DIR) ; Return a mapped code for a given code
  ; DIR - direction of mapping
  ; D for direct (default)
  ; I for inverse
- ;
+ ; 
  ; Output:
  ; 1^map target code
  ; or -1^exception

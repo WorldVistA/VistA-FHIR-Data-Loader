@@ -1,5 +1,5 @@
 SYNBSTS1 ;ven/gpl - fhir loader utilities ;2018-08-17  3:22 PM
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 2
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 4
  ;
  ; Authored by George P. Lilly 2017-2018
  ;
@@ -39,7 +39,7 @@ match ; try matching snomed codes between icd9 and icd10 graphs
  . i icd10="" d  q  ;
  . . w !,"error, icd10 code not found ",zi," icd9= ",icd9
  . i icd10["?" s icd10=$tr(icd10,"?","")
- . ;w !,"zi= ",zi," snomed= ",sct," icd10= ",icd10
+ . ;w !,"zi= ",zi," snomed= ",sct," icd10= ",icd10 
  . s cnt=cnt+1
  w !,"count= ",cnt
  q
@@ -88,7 +88,7 @@ matchbsts ; try matching snomed codes between icd9 and icd10 graphs and bsts
  . i icd10="" d  ;q  ;
  . . w !,"error, icd10 code not found ",zi," icd9= ",icd9
  . i icd10["?" s icd10=$tr(icd10,"?","")
- . ;w !,"zi= ",zi," snomed= ",sct," icd10= ",icd10
+ . ;w !,"zi= ",zi," snomed= ",sct," icd10= ",icd10 
  . s bstsicd10=$$SCT2ICD10^C0TSUTL(sct)
  . i bstsicd10=-1 d  ;
  . . w !,"bsts_error, SCT code not found: ",sct

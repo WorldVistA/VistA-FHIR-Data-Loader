@@ -1,5 +1,5 @@
 SYNFPRB ;ven/gpl - fhir loader utilities ;2018-08-17  3:27 PM
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 4
  ;
  ; Authored by George P. Lilly 2017-2018
  ;
@@ -33,10 +33,10 @@ wsIntakeConditions(args,body,result,ien)        ; web service entry (post)
  ;. s result("conditionsStatus","status")="alreadyLoaded"
  i $g(ien)'="" d  ; internal call
  . d getIntakeFhir^SYNFHIR("json",,"Condition",ien,1)
- e  d  ;
+ e  d  ; 
  . s args("load")=0
  . merge jtmp=BODY
- . do decode^%webjson("jtmp","json")
+ . do DECODE^VPRJSON("jtmp","json")
  i '$d(json) q  ;
  m ^gpl("gjson")=json
  ;
@@ -103,7 +103,7 @@ wsIntakeConditions(args,body,result,ien)        ; web service entry (post)
  . e  d log(jlog,"visit date unknow")
  . ;
  . ; determine the code
- . ;
+ . ; 
  . new sctcode set sctcode=$get(json("entry",zi,"resource","code","coding",1,"code"))
  . do log(jlog,"code is: "_sctcode)
  . set eval("conditions",zi,"vars","code")=sctcode
@@ -211,7 +211,7 @@ wsIntakeConditions(args,body,result,ien)        ; web service entry (post)
  . . . d log(jlog,"Calling PRBUPDT^SYNDHP62 to add snomed condition")
  . . . D PRBUPDT^SYNDHP62(.RETSTA,DHPPAT,DHPVST,DHPROV,DHPONS,DHPABT,DHPCLNST,DHPSCT)    ;Problem/Condition update
  . . m eval("conditions",zi,"status")=RETSTA
- . . i $g(DEBUG)=1 ZWR RETSTA
+ . . i $g(DEBUG)=1 ZW RETSTA
  . . d log(jlog,"Return from data loader was: "_$g(RETSTA))
  . . if +$g(RETSTA)=1 do  ;
  . . . s eval("status","loaded")=$g(eval("status","loaded"))+1
@@ -238,8 +238,8 @@ wsIntakeConditions(args,body,result,ien)        ; web service entry (post)
  . m result("ien")=ien
  . ;b
  e  d  ;
- . d encode^%webjson("jrslt","result")
- . set HTTPRSP("mime")="application/json"
+ . d ENCODE^VPRJSON("jrslt","result")
+ . set HTTPRSP("mime")="application/json" 
  q
  ;
 log(ary,txt)    ; adds a text line to @ary@("log")

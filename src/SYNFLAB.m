@@ -1,5 +1,5 @@
 SYNFLAB ;ven/gpl - fhir loader utilities ;2018-05-08  4:23 PM
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 4
  ;
  ; Authored by George P. Lilly 2017-2018
  ;
@@ -36,7 +36,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  e  d  ;
  . ;s args("load")=0
  . merge jtmp=BODY
- . do decode^%webjson("jtmp","json")
+ . do DECODE^VPRJSON("jtmp","json")
  i '$d(json) q 0  ;
  m ^gpl("gjson")=json
  ;
@@ -151,9 +151,6 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . ;
  . n vistalab s vistalab=$$graphmap^SYNGRAPH("loinc-lab-map",obscode)
  . i +vistalab=-1 s vistalab=$$graphmap^SYNGRAPH("loinc-lab-map"," "_obscode)
- . i +vistalab'=-1 d
- .. d log(jlog,"Lab found in graph: "_vistalab)
- .. s eval("labs",zi,"parms","vistalab")=vistalab
  . if +vistalab=-1 s vistalab=labtype
  . s vistalab=$$TRIM^XLFSTR(vistalab) ; get rid of trailing blanks
  . ;n sct s sct=$$loinc2sct(obscode) ; find the snomed code
@@ -207,13 +204,14 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . s eval("labs",zi,"status","loadstatus")="readyToLoad"
  . ;
  . if $g(args("load"))=1 d  ; only load if told to
+ . . new (DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPPROV,DHPLOC,DHPLOINC,DHPLAB,DUZ,DT,U,jlog,ien,zi,eval)
  . . if $g(ien)'="" if $$loadStatus("labs",zi,ien)=1 do  quit  ;
  . . . d log(jlog,"Lab already loaded, skipping")
  . . d log(jlog,"Calling LABADD^SYNDHP63 to add lab")
  . . ;LABADD(RETSTA,DHPPAT,DHPLOC,DHPTEST,DHPRSLT,DHPRSDT) ;Create lab test
  . . D LABADD^SYNDHP63(.RETSTA,DHPPAT,DHPLOC,DHPLAB,DHPOBS,DHPDTM,DHPLOINC)     ; labs update
  . . S ^ZZLABLOG(ien)=$G(RETSTA)
- . . d log(jlog,"Return from LABADD^ZZDHP63 was: "_$g(RETSTA))
+ . . d log(jlog,"Return from LABADD^SYNDHP63 was: "_$g(RETSTA))
  . . i $g(DEBUG)=1 ZWRITE RETSTA
  . . if +$g(RETSTA)=1 do  ;
  . . . s eval("status","loaded")=$g(eval("status","loaded"))+1
@@ -232,7 +230,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . m result("status")=jrslt("result")
  . ;b
  e  d  ;
- . d encode^%webjson("jrslt","result")
+ . d ENCODE^VPRJSON("jrslt","result")
  . set HTTPRSP("mime")="application/json"
  q 1
  ;

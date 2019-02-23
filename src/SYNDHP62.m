@@ -1,5 +1,5 @@
 SYNDHP62 ;DHP/ART -  Write Problems, Appointments To VistA ;05/29/2018
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 3
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 4
  ;;Original routine authored by Andrew Thompson & Ferdinand Frankson of DXC Technology 2017-2018
  ;
  QUIT
@@ -44,12 +44,12 @@ PRBUPDT(RETSTA,DHPPAT,DHPVST,DHPROV,DHPONS,DHPABT,DHPCLNST,DHPSCT) ;Problem/Cond
  ;
  S PROBDATA("DX/PL",1,"PL ADD")=1
  S DHPONS=$P($$HL7TFM^XLFDT(DHPONS),".",1)
- ;20130526110511-0400
+ ;20130526110511-0400 
  ;date portion only, active problems can not have a date resolved
  S PROBDATA("DX/PL",1,"PL ONSET DATE")=DHPONS
  S:$G(DHPABT)'="" PROBDATA("DX/PL",1,"PL RESOLVED DATE")=$P($$HL7TFM^XLFDT(DHPABT),".",1)
  ;
- ;S MAPVUID=5217693 ; VUID for SNOMED CT to ICD-10-CM mapping
+ ;S MAPVUID=5217693 ; VUID for SNOMED CT to ICD-10-CM mapping 
  ;K LEX
  ;S DHPICD=$$GETASSN^LEXTRAN1(DHPSCT,MAPVUID)
  ;S DHPICD=$O(LEX(1,""))
@@ -99,7 +99,7 @@ PRBUPDT(RETSTA,DHPPAT,DHPVST,DHPROV,DHPONS,DHPABT,DHPCLNST,DHPSCT) ;Problem/Cond
  I $D(ZZERR) M RETSTA("ZZERR")=ZZERR
  M RETSTA("PROBDATA")=PROBDATA
  ;
- ; $$DATA2PCE Output:
+ ; $$DATA2PCE Output:   
  ;+   1  if no errors and processed completely
  ;+  -1  if errors occurred but processed completely as possible
  ;+  -2  if could not get a visit

@@ -1,5 +1,5 @@
 SYNFMED ;OSE/SMH - Add Medications to Patient Record;Dec 24, 2018@21:29
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 4
  ; (C) 2018 Sam Habiel
  ; See accompanying license for terms of use.
  ;
@@ -24,7 +24,7 @@ RXN2VUI(RXN) ; [Public] Get ^ delimited VUIDs for an RxNorm
  . i $e(VUIDS,$l(VUIDS))=U S $E(VUIDS,$L(VUIDS))=""
  ;
  ; TODO: Rest is not implemented yet.
- N URL S URL="https://rxnav.nlm.nih.gov/REST/rxcui/{RXN}/property.json?propName=VUID"
+ N URL S URL="https://urldefense.proofpoint.com/v2/url?u=https-3A__rxnav.nlm.nih.gov_REST_rxcui_-257BRXN-257D_property.json-3FpropName-3DVUID&d=DwIGAg&c=YC-d702opsuYKpiO2Bmlzg&r=eB2byuHqGYSl6WZ7RDYf1bvstA3WGqBWtfGBHGmVhGo&m=kwStjQ92-x-nfHapaaCBIrLM6PmehOLCy6kLF0XM-YI&s=Rg5ZS13K894gfUhNZGWW-e83KvJXkNH2fiuLKNh5A_c&e="
  N % S %("{RXN}")=RXN
  S URL=$$REPLACE^XLFSTR(URL,.%)
  N C0CRETURN
@@ -229,16 +229,9 @@ ETSCONVSBD(RXN)  ; [Private] Convert RxnCUI SBD -> SCD
  Q RESULT
  ;
 ETSCONVSCDC(RXN) ; [Private] Convert RxnCUI SCDC -> SCD
- K ^TMP("SYNDATA",$J,RXN)
- M ^TMP("SYNDATA",$J,RXN)=^TMP("ETSDATA",$J,RXN)
  N RESULT S RESULT=0
- N SYNI,Z F SYNI=0:0 S SYNI=$O(^TMP("ETSDATA",$J,RXN,"RXNREL",SYNI)) Q:'SYNI  S Z=^(SYNI,0) D  Q:RESULT
+ N I,Z F I=0:0 S I=$O(^TMP("ETSDATA",$J,RXN,"RXNREL",I)) Q:'I  S Z=^(I,0) D  Q:RESULT
  . I $P(Z,U,5)="consists_of",$P(Z,U,8)=4096 S RESULT=$P(Z,U,4)
- . I 'RESULT QUIT  ; previous line didn't return anything, try again
- . N % S %=$$GETDATA^ETSRXN(RESULT) ; delete previous data
- . N TYPE S TYPE=$$ETSTYPE(RESULT)  ; uses new context
- . I TYPE'="SCD" S RESULT=0
- . K ^TMP("ETSDATA",$J,RXN) M ^TMP("ETSDATA",$J,RXN)=^TMP("SYNDATA",$J,RXN) ; restore context
  Q RESULT
  ;
 MATCHVM(VUIDS) ; [Public] Match delimited list of VUIDs to delimited set of drugs (not one to one)
@@ -338,7 +331,7 @@ NEXT ;
  ;
  ; Brand Names & NDCs
  ; N NDCS
- ; N URL S URL="https://rxnav.nlm.nih.gov/REST/rxcui/{RXN}/ndcs.json"
+ ; N URL S URL="https://urldefense.proofpoint.com/v2/url?u=https-3A__rxnav.nlm.nih.gov_REST_rxcui_-257BRXN-257D_ndcs.json&d=DwIGAg&c=YC-d702opsuYKpiO2Bmlzg&r=eB2byuHqGYSl6WZ7RDYf1bvstA3WGqBWtfGBHGmVhGo&m=kwStjQ92-x-nfHapaaCBIrLM6PmehOLCy6kLF0XM-YI&s=XbfMHATQu-t2zuLynioJexSigqQkZXXUr9zDjGooMII&e="
  ; N % S %("{RXN}")=RXN
  ; S URL=$$REPLACE^XLFSTR(URL,.%)
  ; N C0CRETURN
@@ -465,7 +458,7 @@ WRITERXRXN(PSODFN,RXNCUI,RXDATE) ; [$$/D Public] Create a new prescription for a
  I 'RXNCDCUI Q -2_U_"RxNorm CUI "_RXNCUI_" is not a valid RxNorm. Please check using RxNav or similar"
  ;
  N DRUG S DRUG=$$ADDDRUG(RXNCDCUI)
- I 'DRUG Q -1_U_"RxNorm CUI "_RXNCUI_" could not be resolved into a drug."
+ I 'DRUG Q -1_U_"RxNorm CUI "_RXNCDCUI_" could not be resolved into a drug."
  S DRUG=$P(DRUG,U) ; in case we get multiple drugs back; reported by George.
  I $QUIT QUIT $$WRITERXPS(PSODFN,DRUG,RXDATE)
  D WRITERXPS(PSODFN,DRUG,RXDATE)

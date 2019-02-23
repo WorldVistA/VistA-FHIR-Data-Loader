@@ -1,5 +1,5 @@
-SYNDHP63 ;DHP/ART -  Write Lab Tests to VistA ;2019-01-31  10:43 AM
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 3
+SYNDHP63 ;DHP/ART -  Write Lab Tests to VistA ;05/29/2018
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 4
  ;;Original routine authored by Andrew Thompson & Ferdinand Frankson of DXC Technology 2017-2018
  ;
  QUIT
@@ -77,12 +77,15 @@ LABADD(RETSTA,DHPPAT,DHPLOC,DHPTEST,DHPRSLT,DHPRSDT,DHPLOINC) ;Create lab test
  . W "DATE:     ",LABARRAY("RESULT_DT"),!
  ;
  ;call ISI Labs Ingest
+ S DUZ=$$DUZ^SYNDHP69
+ ;
  S DHPRC=$$LAB^ISIIMP12(.RC,.LABARRAY)
  I +DHPRC=-1 S RETSTA=DHPRC QUIT
  ;
  S RETSTA=1
  ;
  QUIT
+ ;
  ;
 T1 ; test one
  ;

@@ -1,5 +1,5 @@
 SYNFENC ;ven/gpl - fhir loader utilities ;2018-08-17  3:28 PM
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 4
  ;
  ; Authored by George P. Lilly 2017-2018
  ;
@@ -33,10 +33,10 @@ wsIntakeEncounters(args,body,result,ien)        ; web service entry (post)
  ;. s result("encountersStatus","status")="alreadyLoaded"
  i $g(ien)'="" d  ; internal call
  . d getIntakeFhir^SYNFHIR("json",,"Encounter",ien,1)
- e  d  ;
+ e  d  ; 
  . ;s args("load")=0
  . merge jtmp=BODY
- . do decode^%webjson("jtmp","json")
+ . do DECODE^VPRJSON("jtmp","json")
  i '$d(json) q  ;
  m ^gpl("gjson")=json
  ;
@@ -199,7 +199,7 @@ wsIntakeEncounters(args,body,result,ien)        ; web service entry (post)
  . . d log(jlog,"Return from data loader was: "_$g(RETSTA))
  . . ;
  . . m eval("encounters",zi,"status","return")=RETSTA
- . . ; i $g(DEBUG)=1 ZWR RETSTA
+ . . i $g(DEBUG)=1 ZWR RETSTA
  . . n root s root=$$setroot^%wd("fhir-intake")
  . . n visitIen s visitIen=$p(RETSTA,"^",2) ; returned visit ien
  . . i +visitIen>0 d
@@ -230,8 +230,8 @@ wsIntakeEncounters(args,body,result,ien)        ; web service entry (post)
  . m result("status")=jrslt("result")
  . ;b
  e  d  ;
- . d encode^%webjson("jrslt","result")
- . set HTTPRSP("mime")="application/json"
+ . d ENCODE^VPRJSON("jrslt","result")
+ . set HTTPRSP("mime")="application/json" 
  q
  ;
 log(ary,txt)    ; adds a text line to @ary@("log")
@@ -310,7 +310,7 @@ LOADALL(count) ; count is how many to do. default is 1000
  . do importProcedures^SYNFPROC(.return,%1,.filter)
  q
  ;
-NEXT(start) ; extrinsic which returns the next patient for encounter loading
+NEXT(start) ; extrinsic which returns the next patient for encounter loading    
  ; start is the dfn to start looking, default is zerro
  i '$d(start) s start=0
  n root s groot=$$setroot^%wd("fhir-intake")

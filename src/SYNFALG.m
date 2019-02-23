@@ -1,5 +1,5 @@
 SYNFALG ;ven/gpl - fhir loader utilities ; 2/20/18 4:11am
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 4
  ;
  ; Authored by George P. Lilly 2017-2018
  ; (c) Sam Habiel 2018
@@ -16,9 +16,9 @@ importAllergy(rtn,ien,args) ; entry point for loading Allergy for a patient
  . k @root@(ien,"load","allergy")
  . m @root@(ien,"load","allergy")=grtn("allergy")
  . if $g(args("debug"))=1 m rtn=grtn
- s rtn("allergyStatus","status")=$g(grtn("status","status"))
- s rtn("allergyStatus","loaded")=+$g(grtn("status","loaded"))
- s rtn("allergyStatus","errors")=+$g(grtn("status","errors"))
+ s rtn("conditionsStatus","status")=$g(grtn("status","status"))
+ s rtn("conditionsStatus","loaded")=$g(grtn("status","loaded"))
+ s rtn("conditionsStatus","errors")=$g(grtn("status","errors"))
  ;b
  ;
  ;
@@ -34,10 +34,10 @@ wsIntakeAllergy(args,body,result,ien) ; web service entry (post)
  ;. s result("allergytatus","status")="alreadyLoaded"
  i $g(ien)'="" d  ; internal call
  . d getIntakeFhir^SYNFHIR("json",,"AllergyIntolerance",ien,1)
- e  d  ;
+ e  d  ; 
  . ;s args("load")=0
  . merge jtmp=BODY
- . do decode^%webjson("jtmp","json")
+ . do DECODE^VPRJSON("jtmp","json")
  ;
  ;i '$d(json) d getRandomAllergy(.json)
  ;
@@ -86,7 +86,7 @@ wsIntakeAllergy(args,body,result,ien) ; web service entry (post)
  . set eval("allergy",zi,"vars","codeSystem")=codesystem
  . ;
  . ; if rxnorm, call meds routine
- . ;
+ . ; 
  . i codesystem["rxnorm" do  q  ;
  . . d MEDALGY^SYNFALG2(dfn,.root,.json,zi,.eval,.jlog,.args)
  . ;
@@ -123,7 +123,7 @@ wsIntakeAllergy(args,body,result,ien) ; web service entry (post)
  . ;
  . ; set up to call the data loader
  . ;
- . ;ALLERGY^ISIIMP10(ISIRESUL,ISIMISC)
+ . ;ALLERGY^ISIIMP10(ISIRESUL,ISIMISC)          
  .;;NAME             |TYPE       |FILE,FIELD |DESC
  .;;-----------------------------------------------------------------------
  .;;ALLERGEN         |FIELD      |120.82,.01 |
@@ -182,16 +182,16 @@ wsIntakeAllergy(args,body,result,ien) ; web service entry (post)
  . . if $g(ien)'="" if $$loadStatus("allergy",zi,ien)=1 do  quit  ;
  . . . d log(jlog,"Allergy already loaded, skipping")
  . . d log(jlog,"Calling ALLERGY^ISIIMP10 to add allergy")
- . . n myresult s myresult=$$ALLERGY^ISIIMP10(.RESTA,.ISIMISC)
+ . . D ALLERGY^ISIIMP10(.RETSTA,.ISIMISC)
  . . m eval("allergy",zi,"status")=RESTA
- . . d log(jlog,"Return from data loader was: "_myresult)
- . . if myresult=1 do  ;
+ . . d log(jlog,"Return from data loader was: "_$g(ISIRC))
+ . . if +$g(RETSTA)=1 do  ;
  . . . s eval("status","loaded")=$g(eval("status","loaded"))+1
  . . . s eval("allergy",zi,"status","loadstatus")="loaded"
  . . else  d  ;
  . . . s eval("status","errors")=$g(eval("status","errors"))+1
  . . . s eval("allergy",zi,"status","loadstatus")="notLoaded"
- . . . s eval("allergy",zi,"status","loadMessage")=$g(RESTA)
+ . . . s eval("allergy",zi,"status","loadMessage")=$g(RETSTA)
  . . n root s root=$$setroot^%wd("fhir-intake")
  . . i $g(ien)'="" d  ;
  . . . k @root@(ien,"load","allergy",zi)
@@ -211,8 +211,8 @@ wsIntakeAllergy(args,body,result,ien) ; web service entry (post)
  . m result("ien")=ien
  . ;b
  e  d  ;
- . d encode^%webjson("jrslt","result")
- . set HTTPRSP("mime")="application/json"
+ . d ENCODE^VPRJSON("jrslt","result")
+ . set HTTPRSP("mime")="application/json" 
  q
  ;
 USERNAME() ; extrinsic returns the name of the user
@@ -274,14 +274,14 @@ getRandomAllergy(ary) ; make a web service call to get random allergies
  . n ok,r1
  . s ok=$$%^%WC(.r1,"GET",url)
  . i '$d(r1) q  ;
- . d decode^%webjson("r1","ary")
+ . d DECODE^VPRJSON("r1","ary")
  n url
  s url=srvr_"randomAllergy"
  n ret,json,jtmp
  s ret=$$GETURL^XTHC10(url,,"jtmp")
  d assemble^SYNFPUL("jtmp","json")
  i '$d(json) q  ;
- d decode^%webjson("json","ary")
+ d DECODE^VPRJSON("json","ary")
  q
  ;
 ISGMR(CDE) ; extrinsic return the ien and allergy name in GMR ALLERGIES if any

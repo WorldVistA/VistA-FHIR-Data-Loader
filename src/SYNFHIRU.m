@@ -1,5 +1,5 @@
 SYNFHIRU ;ven/gpl - fhir loader utilities ;2018-08-17  3:27 PM
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 4
  ;
  ; Authored by George P. Lilly 2017-2018
  ;
@@ -34,7 +34,7 @@ wsUpdatePatient(ARGS,BODY,RESULT)    ; recieve from updatepatient
  . s HTTPERR=400
  ;
  n gr1,zi,cnt,rien ; initial entries
- do decode^%webjson("json","gr1")
+ do DECODE^VPRJSON("json","gr1")
  ;
  ; shift resource numbers to fit in graph
  ;
@@ -82,7 +82,7 @@ wsUpdatePatient(ARGS,BODY,RESULT)    ; recieve from updatepatient
  . do importCarePlan^SYNFCP(.return,ien,.ARGS)
  ;
  k SYNBUNDLE
- do encode^%webjson("return","RESULT")
+ do ENCODE^VPRJSON("return","RESULT")
  set HTTPRSP("mime")="application/json"
  ;
  quit 1
@@ -230,7 +230,7 @@ getEntry(ary,ien,rien) ; returns one entry in ary, passed by name
 loadStatus(ary,ien,rien) ; returns the "load" section of the patient graph
  ; if rien is not specified, all entries are included
  n root s root=$$setroot^%wd("fhir-intake")
- i '$d(@root@(ien)) q
+ i '$d(@root@(ien)) q  
  i $g(rien)="" d  q  ;
  . k @ary
  . m @ary@(ien)=@root@(ien,"load")
@@ -240,7 +240,7 @@ loadStatus(ary,ien,rien) ; returns the "load" section of the patient graph
  m @ary@(ien,rien)=@root@(ien,"load",zi,rien)
  q
  ;
-wsLoadStatus(rtn,filter) ; displays the load status
+wsLoadStatus(rtn,filter) ; displays the load status 
  ; filter must have ien or dfn to specify the patient
  ; optionally, entry number (rien) for a single entry
  ; if ien and dfn are both specified, dfn is used
