@@ -211,7 +211,7 @@ wsIntakeConditions(args,body,result,ien)        ; web service entry (post)
  . . . d log(jlog,"Calling PRBUPDT^SYNDHP62 to add snomed condition")
  . . . D PRBUPDT^SYNDHP62(.RETSTA,DHPPAT,DHPVST,DHPROV,DHPONS,DHPABT,DHPCLNST,DHPSCT)    ;Problem/Condition update
  . . m eval("conditions",zi,"status")=RETSTA
- . . i $g(DEBUG)=1 ZWR RETSTA
+ . . ;i $g(DEBUG)=1 ZWR RETSTA
  . . d log(jlog,"Return from data loader was: "_$g(RETSTA))
  . . if +$g(RETSTA)=1 do  ;
  . . . s eval("status","loaded")=$g(eval("status","loaded"))+1

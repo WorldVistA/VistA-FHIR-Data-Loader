@@ -207,6 +207,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . s eval("labs",zi,"status","loadstatus")="readyToLoad"
  . ;
  . if $g(args("load"))=1 d  ; only load if told to
+ . . new (DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPPROV,DHPLOC,DHPLOINC,DHPLAB,DUZ,DT,U,jlog,ien,zi,eval)
  . . if $g(ien)'="" if $$loadStatus("labs",zi,ien)=1 do  quit  ;
  . . . d log(jlog,"Lab already loaded, skipping")
  . . d log(jlog,"Calling LABADD^SYNDHP63 to add lab")

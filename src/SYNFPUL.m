@@ -334,6 +334,7 @@ wsLoadPat(zrtn,zfilter) ; load one patient from a URL
  . do importMeds^SYNFMED2(.return,ien,.ARGS)
  . do importProcedures^SYNFPROC(.return,ien,.ARGS)
  . do importCarePlan^SYNFCP(.return,ien,.ARGS)
+ . do importLabs^SYNLAB(.return,ien,.ARGS)
  ;
  ;do encode^%webjson("return","RESULT")
  ;do encode^%webjson("return","zrtn")

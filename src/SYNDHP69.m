@@ -6,8 +6,10 @@ DUZ() ; issues/set DUZ
  I '$D(DT) S DT=$$DT^XLFDT
  N VASITE S VASITE=$$SITE^VASITE
  N SITE S SITE=$P(VASITE,"^",3)
- S DUZ=$S(+$G(DUZ)=0:$$PROV^SYNINIT,1:DUZ)
- D DUZ^XUS1A
+ ;S DUZ=$S(+$G(DUZ)=0:$$PROV^SYNINIT,1:DUZ)
+ ;D DUZ^XUS1A
+ S DUZ=$S(+$G(DUZ)=0:1,1:DUZ)
+ S DUZ("AG")="V",DUZ(2)=+SITE ;'temporary' fix for lab accession
  Q DUZ
  ;
  ;
@@ -44,7 +46,7 @@ FACPAR(RETSTA,DHPFAC) ; Setup/delete faciltity identification parameter
  I $$CKPRDF=0 S RETSTA=0_"^parameter definition error" Q
  ;
  ; add the parameter if it doesn't exist, or delete for FAC="@"
- N ZZERR
+ K ZZERR
  D EN^XPAR("SYS","SYNDHPFAC",,DHPFAC,.ZZERR)
  S RETSTA='ZZERR
  Q
@@ -61,8 +63,17 @@ CKPRDF() ; Check that parameter definition exists for SYNDHPFAC
  D UPDATE^DIE(,"FDA",,"ZZERR")
  Q '$D(ZZERR)
  ;
-TEST D EN^%ut($T(+0),1) QUIT
+LOGRST(RETSTA) ; expunge ^VPRHTTP("log")
+ ;
+ N QT
+ S QT=""""
+ K ^VPRHTTP("log")
+ S RETSTA="Mission accomplished - ^VPRHTTP("_QT_"log"_QT_")"_" annihilated"
+ Q
+ ;
+ ;TEST D EN^%ut($T(+0),1) QUIT
 T1 ; @TEST HASHINFO^ORDEA previously crashed due to bad DUZ(2)
+ K DUZ
  S DUZ=$$DUZ()
  N ORY
  D HASHINFO^ORDEA(.ORY,1,$$PROV^SYNINIT)
