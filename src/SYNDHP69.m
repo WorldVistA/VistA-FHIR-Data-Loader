@@ -1,4 +1,4 @@
-SYNDHP69 ;AFHIL-DHP/fjf - Commin Utility Functions;2019-01-31  10:40 AM
+SYNDHP69 ;AFHIL-DHP/fjf - Commin Utility Functions;2019-03-06  5:02 PM
  ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
  Q
  ;
@@ -6,10 +6,8 @@ DUZ() ; issues/set DUZ
  I '$D(DT) S DT=$$DT^XLFDT
  N VASITE S VASITE=$$SITE^VASITE
  N SITE S SITE=$P(VASITE,"^",3)
- ;S DUZ=$S(+$G(DUZ)=0:$$PROV^SYNINIT,1:DUZ)
- ;D DUZ^XUS1A
- S DUZ=$S(+$G(DUZ)=0:1,1:DUZ)
- S DUZ("AG")="V",DUZ(2)=+SITE ;'temporary' fix for lab accession
+ S DUZ=$S(+$G(DUZ)=0:$$PROV^SYNINIT,1:DUZ)
+ D DUZ^XUS1A
  Q DUZ
  ;
  ;
@@ -46,7 +44,7 @@ FACPAR(RETSTA,DHPFAC) ; Setup/delete faciltity identification parameter
  I $$CKPRDF=0 S RETSTA=0_"^parameter definition error" Q
  ;
  ; add the parameter if it doesn't exist, or delete for FAC="@"
- K ZZERR
+ N ZZERR
  D EN^XPAR("SYS","SYNDHPFAC",,DHPFAC,.ZZERR)
  S RETSTA='ZZERR
  Q
@@ -67,13 +65,13 @@ LOGRST(RETSTA) ; expunge ^VPRHTTP("log")
  ;
  N QT
  S QT=""""
- K ^VPRHTTP("log")
- S RETSTA="Mission accomplished - ^VPRHTTP("_QT_"log"_QT_")"_" annihilated"
+ K ^%webhttp("log")
+ S RETSTA="Mission accomplished - ^%webhttp("_QT_"log"_QT_")"_" annihilated"
  Q
  ;
  ;TEST D EN^%ut($T(+0),1) QUIT
+TEST D EN^%ut($T(+0),1) QUIT
 T1 ; @TEST HASHINFO^ORDEA previously crashed due to bad DUZ(2)
- K DUZ
  S DUZ=$$DUZ()
  N ORY
  D HASHINFO^ORDEA(.ORY,1,$$PROV^SYNINIT)
