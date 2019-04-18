@@ -325,6 +325,7 @@ wsLoadPat(zrtn,zfilter) ; load one patient from a URL
  ;
  if rdfn'="" do  ; patient creation was successful
  . if $g(ARGS("load"))="" s ARGS("load")=1
+ . do importLabs^SYNFLAB(.return,ien,.ARGS)
  . do importVitals^SYNFVIT(.return,ien,.ARGS)
  . do importEncounters^SYNFENC(.return,ien,.ARGS)
  . do importImmu^SYNFIMM(.return,ien,.ARGS)
@@ -334,7 +335,6 @@ wsLoadPat(zrtn,zfilter) ; load one patient from a URL
  . do importMeds^SYNFMED2(.return,ien,.ARGS)
  . do importProcedures^SYNFPROC(.return,ien,.ARGS)
  . do importCarePlan^SYNFCP(.return,ien,.ARGS)
- . do importLabs^SYNLAB(.return,ien,.ARGS)
  ;
  ;do encode^%webjson("return","RESULT")
  ;do encode^%webjson("return","zrtn")
