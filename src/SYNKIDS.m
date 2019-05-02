@@ -1,4 +1,4 @@
-SYNKIDS ; OSE/SMH - Synthea Installer ; Mar 7 2019
+SYNKIDS ; OSE/SMH - Synthea Installer ; May 2 2019
  ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 2
  ;
  ; WARNING: THIS ROUTINE IS A BAD EXAMPLE FOR ANYBODY TRYING TO WRITE GOOD CODE.
@@ -49,9 +49,7 @@ POSTSYN ; [Private] Restore SYN global
  ; Next line makes this safe to run in dev mode
  D MES^XPDUTL("Merging ^SYN global in. This takes time...")
  I $D(XPDGREF)#2,$D(@XPDGREF@("SYN")) D
- . K ^SYN("2002.010")
- . K ^SYN("2002.020")
- . K ^SYN("2002.030")
+ . K ^SYN("2002.030","sct2icd"),^("sct2icdnine"),^("sct2os5") ; **NAKED**
  . M ^SYN=@XPDGREF@("SYN")
  ;
  ; Install OS5 codes
