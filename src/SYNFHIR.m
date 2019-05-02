@@ -1,4 +1,4 @@
-SYNFHIR ;ven/gpl - fhir loader utilities ;2018-08-17  3:27 PM
+SYNFHIR ;ven/gpl - fhir loader utilities ;2019-05-02
  ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
  ;
  ; Authored by George P. Lilly 2017-2018
@@ -46,7 +46,7 @@ wsPostFHIR(ARGS,BODY,RESULT)    ; recieve from addpatient
  . do importVitals^SYNFVIT(.return,ien,.ARGS)
  . do importEncounters^SYNFENC(.return,ien,.ARGS)
  . do importImmu^SYNFIMM(.return,ien,.ARGS)
- . do importConditions^SYNFPR2(.return,ien,.ARGS)
+ . do importConditions^SYNFPRB(.return,ien,.ARGS)
  . do importAllergy^SYNFALG(.return,ien,.ARGS)
  . do importAppointment^SYNFAPT(.return,ien,.ARGS)
  . do importMeds^SYNFMED2(.return,ien,.ARGS)
