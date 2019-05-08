@@ -176,10 +176,22 @@ clearIndexes(gn)        ; kill the indexes
  q
  ;
 wsShow(rtn,filter)      ; web service to show the fhir
- new ien set ien=$g(filter("ien"))
- if ien="" quit  ;
  new type set type=$get(filter("type"))
  new root set root=$$setroot^%wd("fhir-intake")
+ ;
+ new ien set ien=$g(filter("ien"))
+ if ien="" d  ;
+ . n icn
+ . s icn=$g(filter("icn"))
+ . q:icn=""
+ . s ien=$o(@root@("ICN",icn,""))
+ if ien="" d  ;
+ . n dfn
+ . s dfn=$g(filter("dfn"))
+ . q:dfn=""
+ . s ien=$o(@root@("DFN",dfn,""))
+ if ien="" quit  ;
+ ;
  new jroot set jroot=$name(@root@(ien,"json"))
  ;
  new jtmp,juse
