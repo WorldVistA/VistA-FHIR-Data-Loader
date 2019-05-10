@@ -1,6 +1,7 @@
-SYNDHP91 ;DHP/fjf -  Write  to VistA ;2019-02-07  3:35 PM
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 3
- ;
+SYNDHP91 ;DHP/fjf - HealthConcourse - Write care plans to VistA ;11/07/2018
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 47
+ ;;
+ ;;Original routine authored by Andrew Thompson & Ferdinand Frankson of Perspecta 2017-2019
  ;
  QUIT
  ;
@@ -10,30 +11,37 @@ SYNDHP91 ;DHP/fjf -  Write  to VistA ;2019-02-07  3:35 PM
  ; c. Goals - text and ptr to PL
  ; Status - fhir CODE
  ; Date
- ; 1.	Use data2pce to ingest careplans, activities & goals
- ; a.	Encounter
- ; b.	CarePlan points to encounter and the goals
- ; i.	V standard codes (SNOMED CT) - classification
- ; c.	Goals - has text goal - points to condition/problems (reason for goal)
- ; i.	Use Healthfactors
- ; ii.	Create goals HF category - config - add to configuration utility this will be for problem
- ; iii.	For each goal create a health factor if doesn't already exist (laygo) (text from c above)
- ; iv.	Code which references the problem list
- ; v.	Entire text of goal goes in comment and say that goal addresses this problem  -> add SCT + desc code in there too
+ ;
+ ;
+ ; 1.   Use data2pce to ingest careplans, activities & goals
+ ; a.   Encounter
+ ; b.   CarePlan points to encounter and the goals
+ ; i.   V standard codes (SNOMED CT) - classification 
+ ; c.   Goals - has text goal - points to condition/problems (reason for goal)
+ ; i.   Use Healthfactors 
+ ; ii.  Create goals HF category - config - add to configuration utility this will be for problem
+ ; iii. For each goal create a health factor if doesn't already exist (laygo) (text from c above)
+ ; iv.  Code which references the problem list
+ ; v.   Entire text of goal goes in comment and say that goal addresses this problem  -> add SCT + desc code in there too
+ ;
  ; d.
+ ;
  ; Signature:
  ;Visit IEN
  ;Goals (array) text & code <- problem list code (SNOMED CT & or ICD)
  ;Activities (array) SNOMED code^status
  ;Classification SNOMED CT code
  ;CarePlan Status from FHIR set
+ ;
+ ;
  ;Generate TIU note for careplan and associate with encounter.
  ;//*
+ ;
  ; HF for cat for careplan
  ; HF for careplan (use healthfactor manager
- ; HF for activity
+ ; HF for activity 
  ; pass to DATA2PCE
- ;
+ ; 
  ;
  ; -------- Create Care Plan for Patient
  ;
@@ -45,7 +53,7 @@ CPLUPDT(RETSTA,DHPPAT,DHPVST,DHPCAT,DHPACT,DHPGOL,DHPSCT,DHPSDT,DHPEDT) ;  updat
  ;   DHPCAT   - Category ID (SCT code. text, and FHIR status - active, completed, etc)
  ;   DHPACT   - List of Activities (SCT code, text, and FHIR status - in-progress, etc)
  ;   DHPGOL   - List of Goals
- ;   DHPSCT   - Reason for CarePlan (SCT code) (ignore for time being)
+ ;   DHPSCT   - Reason for CarePlan (SCT code) - Care Plan Addresses
  ;   DHPSDT   - CarePlan Period start
  ;   DHPEDT   - CarePlan period end
  ;
@@ -65,7 +73,7 @@ CPLUPDT(RETSTA,DHPPAT,DHPVST,DHPCAT,DHPACT,DHPGOL,DHPSCT,DHPSDT,DHPEDT) ;  updat
  S U="^",T="~"
  ;
  S DHPGOL=$G(DHPGOL)
- S DHPDCT=$G(DHPSCT)
+ S DHPSCT=$G(DHPSCT)
  S DHPSDT=$P($$HL7TFM^XLFDT(DHPSDT),".",1)
  S DHPEDT=$P($$HL7TFM^XLFDT(DHPEDT),".",1)
  ;
@@ -79,29 +87,65 @@ CPLUPDT(RETSTA,DHPPAT,DHPVST,DHPCAT,DHPACT,DHPGOL,DHPSCT,DHPSDT,DHPEDT) ;  updat
  S CATCD=$P(DHPCAT,T)
  S CATTX=$P(DHPCAT,T,2)
  S CATST=$P(DHPCAT,T,3)
+ ;S CONC=$$CODE^LEXTRAN(DHPSCT,"SCT",,,,,1)
+ S ADDCD=$P(DHPSCT,U)
+ S ADDTX=$P(DHPSCT,U,2)
+ S ADDST=$P(DHPSCT,U,3)
+ ;
  ; Call HF manager and retrieve HF for careplan category data or
- ;   add category HF and return data if it doesn't already exist
+ ;   add category HF and return data if it doesn't already exist 
  S CATDAT=$$HFCPCAT^SYNFHF(CATCD,CATTX)
+ ;
  ; Call HF manager and retrieve HF for careplan
  ;   add careplan HF if it doesn't already exist
  S HFCAP=$$HFCP^SYNFHF(CATCD,CATTX,CATDAT)
- ; create encounter array
- K ENCDATA
  ;
- ; parse action string
+ ; Call HF manager and retrieve HF for careplan addresses data or
+ ;   add addresses HF and return data if it doesn't already exist 
+ S ADDDAT=$$HFADDR^SYNFHF(ADDCD,ADDTX,CATDAT)
+ ;
+ ; create encounter array
+ ;
+ K ENCDATA
+ ; 
+ ;
+ ; Careplan health factor
  ;
  S ENCDATA("HEALTH FACTOR",1,"HEALTH FACTOR")=+HFCAP
  S ENCDATA("HEALTH FACTOR",1,"EVENT D/T")=DHPSDT
  S ENCDATA("HEALTH FACTOR",1,"COMMENT")="Start: "_DHPSDT_" End: "_DHPEDT_" Status: "_CATST
- F I=1:1:$L(DHPACT,U) D
- .S ACTS=$P(DHPACT,U,I)
- .S ACTSCT=$P(ACTS,T)
- .S ACTTXT=$P(ACTS,T,2)
- .S ACTSTA=$P(ACTS,T,3)
- .S HFACT=$$HFACT^SYNFHF(ACTSCT,ACTTXT,+CATDAT)
- .S ENCDATA("HEALTH FACTOR",I+1,"HEALTH FACTOR")=+HFACT
- .S ENCDATA("HEALTH FACTOR",I+1,"EVENT D/T")=DHPSDT
- .S ENCDATA("HEALTH FACTOR",I+1,"COMMENT")="Start: "_DHPSDT_" End: "_DHPEDT
+ ;
+ ; what health factor addresses
+ ;
+ S ENCDATA("HEALTH FACTOR",2,"HEALTH FACTOR")=+ADDDAT
+ S ENCDATA("HEALTH FACTOR",2,"EVENT D/T")=DHPSDT
+ S ENCDATA("HEALTH FACTOR",2,"COMMENT")="Start: "_DHPSDT_" End: "_DHPEDT ; _" Status: "_ADDST
+ ;
+ ; careplan activities
+ ;
+ I +CATDAT'=0 D
+ .F I=1:1:$L(DHPACT,U) D
+ ..S ACTS=$P(DHPACT,U,I)
+ ..S ACTSCT=$P(ACTS,T)
+ ..S ACTTXT=$P(ACTS,T,2)
+ ..S ACTSTA=$P(ACTS,T,3)
+ ..S HFACT=$$HFACT^SYNFHF(ACTSCT,ACTTXT,+CATDAT)
+ ..S ENCDATA("HEALTH FACTOR",I+2,"HEALTH FACTOR")=+HFACT
+ ..S ENCDATA("HEALTH FACTOR",I+2,"EVENT D/T")=DHPSDT
+ ..S ENCDATA("HEALTH FACTOR",I+2,"COMMENT")="Start: "_DHPSDT_" End: "_DHPEDT_" Status: "_ACTSTA
+ ; 
+GOLS ; careplan goals
+ ;
+ F J=1:1:$L(DHPGOL,U) D
+ .S GOLS=$P(DHPGOL,U,J)
+ .S GOLSCT=$P(GOLS,T)
+ .S GOLTXT=$P(GOLS,T,2)
+ .S GOLSTA=$P(GOLS,T,3)
+ .S HFACT=$$HFGOAL^SYNFHF(GOLSCT,+CATDAT,GOLTXT)
+ .S ENCDATA("HEALTH FACTOR",J+I+2,"HEALTH FACTOR")=+HFACT
+ .S ENCDATA("HEALTH FACTOR",J+I+2,"EVENT D/T")=DHPSDT
+ .S ENCDATA("HEALTH FACTOR",J+I+2,"COMMENT")="Start: "_DHPSDT_" End: "_DHPEDT_" Status: "_GOLSTA
+ ;
  ;
  S RETSTA=$$DATA2PCE^PXAI("ENCDATA",PACKAGE,SOURCE,.VISIT,USER,$G(ERRDISP),.ZZERR,$G(PPEDIT),.ZZERDESC,.ACCOUNT)
  D EVARS
@@ -114,7 +158,7 @@ T1 ;
  D VARS
  D CPLUPDT(.ZXC,DHPPAT,DHPVST,DHPCAT,DHPACT,DHPGOL,DHPSCT,DHPSDT,DHPEDT)
  Q
- ;
+ ; 
  ;s q=""""
  ;
  ;w q
@@ -133,12 +177,18 @@ VARS ;
  S DHPACT="409002~Food allergy diet~in-progress^58332002~Allergy education~in-progress"
  S DHPCAT="326051000000105~Self care~active"
  S DHPEDT=""
- S DHPPAT="1435855215V947437"
- S DHPSCT=""
+ S DHPPAT="1345112108V472042"
+ S DHPSCT="230690007^Cerebrovascular accident^passive"
  S DHPSDT="19760829"
- S DHPVST="34818"
- S DHPGOL=""
+ S DHPVST="34885"
+ S DHPGOL="15777000~Address patient knowledge deficit on diabetic self-care~in-progress^15777000"
+ S DHPGOL=DHPGOL_"~Improve and maintenance of optimal foot health: aim at early detection of peripheral"
+ S DHPGOL=DHPGOL_" vascular problems and neuropathy presumed due to diabetes; and prevention of diabetic"
+ S DHPGOL=DHPGOL_" foot ulcer, gangrene~in-progress^15777000~Maintain blood pressure below 140/90 mmHg"
+ S DHPGOL=DHPGOL_"~in-progress^15777000~Glucose [Mass/volume] in Blood < 108~in-progress^15777000"
+ S DHPGOL=DHPGOL_"~Hemoglobin A1c total in Blood < 7.0~in-progress"
  Q
+ ; 
 EVARS ;
  S ENCDATA("IVARS","DHPACT")=DHPACT
  S ENCDATA("IVARS","DHPCAT")=DHPCAT
