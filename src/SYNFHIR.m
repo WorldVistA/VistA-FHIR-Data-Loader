@@ -200,7 +200,8 @@ wsShow(rtn,filter)      ; web service to show the fhir
  . do getIntakeFhir("jtmp",$g(filter("bundle")),type,ien,1)
  . ;do getIntakeFhir("jtmp",,type,ien,1)
  . set juse="jtmp"
- do encode^%webjson(juse,"rtn")
+ ;do encode^%webjson(juse,"rtn")
+ do ENCODE^VPRJSON(juse,"rtn")
  s HTTPRSP("mime")="application/json"
  quit
  ;
