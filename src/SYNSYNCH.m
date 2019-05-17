@@ -8,7 +8,56 @@ SYNSYNCH ;ven/gpl - fhir loader utilities ;2018-08-17  3:27 PM
 URL(WHICH) ; 
  ;q:WHICH="SYN" "http://syn.vistaplex.org/"
  q:WHICH="SYN" "206.189.178.171"
+ ;q:WHICH="k8dev" "23.195.69.112"
+ q:WHICH="k8dev" "https://vista.dev.openplatform.healthcare/rgnet-web"
  q ""
+ ;
+SYNCH(VSYS,VURL) ; synchronize with another VistA system
+ ;
+ N FILTER
+ S FILTER("source")=$G(VSYS)
+ S FILTER("url")=$G(VURL)
+ N RTN
+ D WSIDSYNC(.RTN,.FILTER)
+ ;
+ n root s root=$$setroot^%wd("vista-synch")
+ n sroot s sroot=$na(@root@(1,"list","synch"))
+ i '$d(@sroot) d  q  ;
+ . s RTN=$G(RTN)_"^"_" Synchronize step failed"
+ . w RTN(1)
+ n return
+ d decode^%webjson("RTN","return")
+ w !,"System: "_$g(return("result","source"))
+ w !,"URL: "_$g(return("result","url"))
+ w !,"Matches: "_$g(return("result","match","matchcount"))
+ w !,"Patients to Synchronize: "_$g(return("result","match","synchcount"))
+ q
+ ;
+INGEST ; complete the synchronization
+ ;
+ n root s root=$$setroot^%wd("vista-synch")
+ n sroot s sroot=$na(@root@(1,"list","synch"))
+ i '$d(@sroot) d  q  ;
+ . W !,"No patients to synchronize"
+ n url
+ s url=$g(@root@(1,"list","url"))
+ i url="" d  q  ;
+ . w !,"No URL found for Ingestion"
+ n zicn,cnt
+ s cnt=0
+ s zicn=""
+ ;s zicn=$o(@sroot@("")) d  ;
+ f  s zicn=$o(@sroot@(zicn)) q:zicn=""  d  ;
+ . i $g(@sroot@(zicn,"status"))="loaded" q  ;
+ . n filter
+ . s filter("id")=zicn
+ . s filter("url")=url_"/showfhir?icn="_zicn
+ . w !,"Loading patient: "_zicn
+ . n rtn
+ . d wsLoadPat^SYNFPUL(.rtn,.filter)
+ . s @sroot@(zicn,"status")="loaded"
+ . i $d(rtn) m @sroot@("zicn","result")=rtn
+ q
  ;
 WSIDSYNC(RTN,FILTER) ; identify patients to synch
  ; FILTER("source")=name of the source
@@ -65,6 +114,7 @@ getlist(RTN,FILTER,rslt) ; extrinsic puts list in a graph returns 0 on fail
  set gr=$name(@root@(lien,"list"))
  do DECODE^VPRJSON("json",gr)
  s @gr@("name")=name
+ s @gr@("url")=$p(url,"/DHPPATICNALL",1)
  ;
  q 1
  ;
