@@ -12,11 +12,27 @@ URL(WHICH) ;
  q:WHICH="k8dev" "https://vista.dev.openplatform.healthcare/rgnet-web"
  q ""
  ;
-SYNCH(VSYS,VURL) ; synchronize with another VistA system
+SYNCH(VSYS) ; synchronize with another VistA system
  ;
- N FILTER
- S FILTER("source")=$G(VSYS)
- S FILTER("url")=$G(VURL)
+ N FILTER,SRC,ZURL
+ S (SRC,ZURL)=""
+ I $G(VSYS)'="" D  ; a system name is supplied
+ . I $L($T(^SYNDTS89))>0 D  ; DHP urls are available
+ . . n urlrt ; return for DHP list
+ . . d urlrts^SYNDTS89(VSYS)
+ . . S ZURL=$G(urlrt(VSYS))
+ . . I ZURL="none" S ZURL=""
+ I ZURL="" D  ; try hardcoded table
+ . S ZURL=$$URL(VSYS)
+ ; confirm with user
+ S DIR("A")="SOURCE VISTA URL"
+ S DIR("B")=ZURL
+ S DIR(0)="F^"
+ D ^DIR
+ Q:X="^"
+ S ZURL=X
+ S FILTER("source")=SRC
+ S FILTER("url")=ZURL
  N RTN
  D WSIDSYNC(.RTN,.FILTER)
  ;
@@ -43,6 +59,15 @@ INGEST ; complete the synchronization
  s url=$g(@root@(1,"list","url"))
  i url="" d  q  ;
  . w !,"No URL found for Ingestion"
+ ; confirm with user
+ S DIR("A")="SOURCE VISTA URL"
+ i url["rgnet-web" s url=$p(url,"rgnet",1)_"vpr"_$p(url,"rgnet",2)
+ S DIR("B")=url
+ S DIR(0)="F^"
+ D ^DIR
+ Q:X="^"
+ S url=X
+ ;
  n zicn,cnt
  s cnt=0
  s zicn=""
