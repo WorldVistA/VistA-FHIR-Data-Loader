@@ -40,7 +40,7 @@ wsPull(rtn,filter)      ; pull web service. assumes url to list is passed as fil
  do indexList(lien)
  s rtn("listien")=lien
  ;
- w !
+ ;w !
  ;zwrite @gr@(*)
  ;
  q
@@ -296,6 +296,8 @@ wsLoadPat(zrtn,zfilter) ; load one patient from a URL
  i +ret=-1 d  s $ec=",u-error,"
  . w !,ret," ",purl
  ;
+ i json["error" s zrtn="-1^Bundle returned error" q  ;
+ i json="" s zrtn="-1^Bundle returned null" q  ;
  ;
  new ien,root,gr,id,return
  set root=$$setroot^%wd("fhir-intake")

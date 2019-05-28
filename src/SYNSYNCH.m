@@ -15,7 +15,8 @@ URL(WHICH) ;
 SYNCH(VSYS) ; synchronize with another VistA system
  ;
  N FILTER,SRC,ZURL
- S (SRC,ZURL)=""
+ S ZURL=""
+ S SRC=VSYS
  I $G(VSYS)'="" D  ; a system name is supplied
  . I $L($T(^SYNDTS89))>0 D  ; DHP urls are available
  . . n urlrt ; return for DHP list
@@ -80,6 +81,7 @@ INGEST ; complete the synchronization
  . w !,"Loading patient: "_zicn
  . n rtn
  . d wsLoadPat^SYNFPUL(.rtn,.filter)
+ . i +rtn=-1 w !,"patient "_zicn_" returned error: "_rtn q  ; error retrieving patient
  . s @sroot@(zicn,"status")="loaded"
  . i $d(rtn) m @sroot@("zicn","result")=rtn
  q
@@ -96,7 +98,7 @@ WSIDSYNC(RTN,FILTER) ; identify patients to synch
  ;
  d match("vista-synch",.rslt)
  ;
- d ENCODE^VPRJSON("rslt","RTN")
+ d encode^%webjson("rslt","RTN")
  q
  ;
 getlist(RTN,FILTER,rslt) ; extrinsic puts list in a graph returns 0 on fail
@@ -111,7 +113,7 @@ getlist(RTN,FILTER,rslt) ; extrinsic puts list in a graph returns 0 on fail
  s rslt("result","url")=url
  i url="not found" d  q 0
  . s rslt("result","status")="url not provided, aborting"
- . d ENCODE^VPRJSON("rslt","RTN")
+ . d encode^%webjson("rslt","RTN")
  s url=url_"/DHPPATICNALL?JSON=J"
  n gname s gname="vista-synch"
  n root s root=$$setroot^%wd(gname)
@@ -137,7 +139,7 @@ getlist(RTN,FILTER,rslt) ; extrinsic puts list in a graph returns 0 on fail
  s @root@("B",name,lien)=""
  ;
  set gr=$name(@root@(lien,"list"))
- do DECODE^VPRJSON("json",gr)
+ do decode^%webjson("json",gr)
  s @gr@("name")=name
  s @gr@("url")=$p(url,"/DHPPATICNALL",1)
  ;
@@ -181,6 +183,12 @@ match(graph,rslt) ; matches ICNs to local system
  . . . s @groot@("newIcn",newicn,"oldIcn")=zi
  . . . s @groot@("newIcn",newicn,"dfn",dfn)=""
  . i fien=""  d  ;
+ . . i $d(^DPT("AFICN",zi)) d  q  ;
+ . . . s matcnt=matcnt+1
+ . . . s @groot@(zi,"match")=""
+ . . . s @groot@(zi,"fien")=fien
+ . . . n dfn
+ . . . s @groot@(zi,"dfn")=$o(^DPT("AFICN",zi,""))
  . . s syncnt=syncnt+1
  . . s @groot@(zi,"synch")=""
  . . s @groot@("synch",zi)=""
