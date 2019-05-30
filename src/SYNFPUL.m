@@ -285,7 +285,8 @@ wsLoadPat(zrtn,zfilter) ; load one patient from a URL
  ;
  n ret,json,purl
  s purl=$g(zfilter("url"))
- q:purl=""
+ i purl="" d  q  ;
+ . s zrtn="-1^URL not found"
  i purl["synthea1m.vistaplex.org" d  ;
  . s purl="http://138.197.147.128"_$p(purl,"synthea1m.vistaplex.org",2)
  ;
