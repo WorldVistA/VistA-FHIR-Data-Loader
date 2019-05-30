@@ -81,9 +81,47 @@ INGEST ; complete the synchronization
  . w !,"Loading patient: "_zicn
  . n rtn
  . d wsLoadPat^SYNFPUL(.rtn,.filter)
- . i +rtn=-1 w !,"patient "_zicn_" returned error: "_rtn q  ; error retrieving patient
+ . i +$g(rtn)=-1 w !,"patient "_zicn_" returned error: "_$g(rtn) q  ; error retrieving patient
  . s @sroot@(zicn,"status")="loaded"
  . i $d(rtn) m @sroot@("zicn","result")=rtn
+ q
+ ;
+BYDFN(VSYS) ; retrieve and ingest one patient identified by DFN on the
+ ; remote VistA system
+ N FILTER,SRC,ZURL
+ S ZURL=""
+ S SRC=VSYS
+ I $G(VSYS)'="" D  ; a system name is supplied
+ . I $L($T(^SYNDTS89))>0 D  ; DHP urls are available
+ . . n urlrt ; return for DHP list
+ . . d urlrts^SYNDTS89(VSYS)
+ . . S ZURL=$G(urlrt(VSYS))
+ . . I ZURL="none" S ZURL=""
+ I ZURL="" D  ; try hardcoded table
+ . S ZURL=$$URL(VSYS)
+ ; confirm with user the url for the remote VistA system
+ S DIR("A")="SOURCE VISTA URL"
+ S DIR("B")=ZURL
+ S DIR(0)="F^"
+ D ^DIR
+ Q:X="^"
+ S ZURL=X
+ ; prompt for the DFN
+ N ZDFN S ZDFN=""
+ S DIR("A")="SOURCE PATIENT DFN"
+ S DIR("B")=ZDFN
+ S DIR(0)="F^"
+ D ^DIR
+ Q:X="^"
+ S ZDFN=X
+ ; load the patient
+ s FILTER("id")=ZDFN
+ s FILTER("url")=ZURL_"/showfhir?dfn="_ZDFN
+ w !,"Loading patient DFN: "_ZDFN
+ n rtn
+ d wsLoadPat^SYNFPUL(.rtn,.FILTER)
+ i +$g(rtn)=-1 w !,"patient "_ZDFN_" returned error: "_$g(rtn) q  ; error retrieving patient
+ w !,"Patient DFN "_ZDFN_" loaded"
  q
  ;
 WSIDSYNC(RTN,FILTER) ; identify patients to synch
