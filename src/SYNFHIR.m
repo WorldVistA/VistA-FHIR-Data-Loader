@@ -1,4 +1,4 @@
-SYNFHIR ;ven/gpl - fhir loader utilities ;2019-05-02
+SYNFHIR ;ven/gpl - fhir loader utilities ;2019-05-30  6:02 PM
  ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
  ;
  ; Authored by George P. Lilly 2017-2018
@@ -200,8 +200,7 @@ wsShow(rtn,filter)      ; web service to show the fhir
  . do getIntakeFhir("jtmp",$g(filter("bundle")),type,ien,1)
  . ;do getIntakeFhir("jtmp",,type,ien,1)
  . set juse="jtmp"
- ;do encode^%webjson(juse,"rtn")
- do ENCODE^VPRJSON(juse,"rtn")
+ do encode^%webjson(juse,"rtn")
  s HTTPRSP("mime")="application/json"
  quit
  ;
@@ -331,3 +330,96 @@ wsLoadStatus(rtn,filter) ; displays the load status
  d wsGLOBAL^SYNVPR(.rtn,.filter)
  q
  ;
+FILE(directory) ; [Public] Load files from the file system
+ ;
+ ; Load files from directory
+ new synfiles
+ new synmask set synmask("*.json")=""
+ new % set %=$$LIST^%ZISH(directory,$na(synmask),$na(synfiles))
+ if '% write "Failed to read any files. Check directory.",! quit
+ ;
+ new file set file=""
+ for  set file=$order(synfiles(file)) q:file=""  do
+ . if file["Information" quit  ; We don't process information files yet...
+ . ;
+ . write "Loading ",file,"...",!
+ . kill ^TMP("SYNFILE",$J)
+ . new % set %=$$FTG^%ZISH(directory,file,$name(^TMP("SYNFILE",$J,1)),3)
+ . i '% write "Failed to read the file. Please debug me.",! quit
+ . ;
+ . ; Normalize overflow nodes (and hope for the best that we don't go over 32k)
+ . new i,j set (i,j)=""
+ . for  set i=$order(^TMP("SYNFILE",$J,i)) quit:'i  for  set j=$order(^TMP("SYNFILE",$J,i,"OVF",j)) quit:'j  do
+ .. set ^TMP("SYNFILE",$J,i)=^TMP("SYNFILE",$J,i)_^TMP("SYNFILE",$J,i,"OVF",j)  ; ** NOT TESTED **
+ . ;
+ . ; Now load the file into VistA
+ . write "Ingesting ",file,"...",!
+ . do KILL^XUSCLEAN ; VistA leaks like hell
+ . new args,body,synjsonreturn
+ . merge body=^TMP("SYNFILE",$J)
+ . new % set %=$$wsPostFHIR(.args,.body,.synjsonreturn) ; % always comes out as 1. We will ignore it.
+ . ;
+ . ; Get the status back from JSON
+ . new synreturn,synjsonerror
+ . do decode^%webjson($na(synjsonreturn),$na(synreturn),$na(synjsonerror))
+ . if $data(synjsonerror) write "There is an error decoding the return. Debug me." quit
+ . ;
+ . if $get(synreturn("loadMessage"))["Duplicate" write "Patient Already Loaded",! quit
+ . ;
+ . write "Loaded with following data: ",!
+ . write "DFN: ",synreturn("dfn"),?20,"ICN: ",synreturn("icn"),?50,"Graph Store IEN: ",synreturn("ien"),!
+ . write "--------------------------------------------------------------------------",!
+ . write "Type",?30,"Loaded?",?60,"Error",!
+ . ;
+ . write "ADR/Allergy"
+ . write ?30,synreturn("allergyStatus","loaded")
+ . write ?60,synreturn("allergyStatus","errors")
+ . write !
+ . ;
+ . write "Appointments"
+ . write ?30,synreturn("apptStatus","loaded")
+ . write ?60,synreturn("apptStatus","errors")
+ . write !
+ . ;
+ . write "Care Plans"
+ . write ?30,synreturn("careplanStatus","loaded")
+ . write ?60,synreturn("careplanStatus","errors")
+ . write !
+ . ;
+ . write "Problems"
+ . write ?30,synreturn("conditionsStatus","loaded")
+ . write ?60,synreturn("conditionsStatus","errors")
+ . write !
+ . ;
+ . write "Encounters"
+ . write ?30,synreturn("encountersStatus","loaded")
+ . write ?60,synreturn("encountersStatus","errors")
+ . write !
+ . ;
+ . write "Immunization"
+ . write ?30,synreturn("immunizationsStatus","loaded")
+ . write ?60,synreturn("immunizationsStatus","errors")
+ . write !
+ . ;
+ . write "Labs"
+ . write ?30,synreturn("labsStatus","loaded")
+ . write ?60,synreturn("labsStatus","errors")
+ . write !
+ . ;
+ . write "Meds"
+ . write ?30,synreturn("medsStatus","loaded")
+ . write ?60,synreturn("medsStatus","errors")
+ . write !
+ . ;
+ . write "Procedures"
+ . write ?30,synreturn("proceduresStatus","loaded")
+ . write ?60,synreturn("proceduresStatus","errors")
+ . write !
+ . ;
+ . write "Vitals"
+ . write ?30,synreturn("vitalsStatus","loaded")
+ . write ?60,synreturn("vitalsStatus","errors")
+ . write !
+ . ;
+ . write !
+ quit
