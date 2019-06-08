@@ -142,7 +142,8 @@ triples(index,ary,%wi)  ; index and array are passed by name
  . i $e(purl,$l(purl))="/" s purl=purl_%wi
  . d setIndex(index,purl,"type",type)
  . d setIndex(index,purl,"rien",%wi)
- . n enc s enc=$g(@ary@("resource","context","reference")) q:enc=""
+ . n enc s enc=$g(@ary@("resource","context","reference"))
+ . i enc="" s enc=$g(@ary@("resource","encounter","reference")) q:enc=""
  . d setIndex(index,purl,"encounterReference",enc)
  . n pat s pat=$g(@ary@("resource","subject","reference")) q:pat=""
  . d setIndex(index,purl,"patientReference",pat)
@@ -152,7 +153,8 @@ triples(index,ary,%wi)  ; index and array are passed by name
  . i $e(purl,$l(purl))="/" s purl=purl_%wi
  . d setIndex(index,purl,"type",type)
  . d setIndex(index,purl,"rien",%wi)
- . n enc s enc=$g(@ary@("resource","context","reference")) q:enc=""
+ . n enc s enc=$g(@ary@("resource","context","reference"))
+ . i enc="" s enc=$g(@ary@("resource","encounter","reference")) q:enc=""
  . d setIndex(index,purl,"encounterReference",enc)
  . n pat s pat=$g(@ary@("resource","subject","reference")) q:pat=""
  . d setIndex(index,purl,"patientReference",pat)
@@ -169,7 +171,8 @@ triples(index,ary,%wi)  ; index and array are passed by name
  . i $e(purl,$l(purl))="/" s purl=purl_%wi
  . d setIndex(index,purl,"type",type)
  . d setIndex(index,purl,"rien",%wi)
- . n enc s enc=$g(@ary@("resource","context","reference")) q:enc=""
+ . n enc s enc=$g(@ary@("resource","context","reference"))
+ . i enc="" s enc=$g(@ary@("resource","encounter","reference")) q:enc=""
  . d setIndex(index,purl,"encounterReference",enc)
  . n pat s pat=$g(@ary@("resource","subject","reference")) q:pat=""
  . d setIndex(index,purl,"patientReference",pat)
@@ -188,7 +191,8 @@ triples(index,ary,%wi)  ; index and array are passed by name
  i $e(purl,$l(purl))="/" s purl=purl_%wi
  d setIndex(index,purl,"type",type)
  d setIndex(index,purl,"rien",%wi)
- n enc s enc=$g(@ary@("resource","context","reference")) q:enc=""
+ n enc s enc=$g(@ary@("resource","context,"reference"))
+ i enc="" s enc=$g(@ary@("resource","encounter","reference")) q:enc=""
  d setIndex(index,purl,"encounterReference",enc)
  n pat s pat=$g(@ary@("resource","subject","reference")) q:pat=""
  d setIndex(index,purl,"patientReference",pat)

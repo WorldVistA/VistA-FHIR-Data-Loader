@@ -89,6 +89,7 @@ wsIntakeCareplan(args,body,result,ien)        ; web service entry (post)
  . ; determine the encounter visit ien
  . n encounterId
  . s encounterId=$g(json("entry",zi,"resource","context","reference"))
+ . i encounterId="" s encounterId=$g(json("entry",zi,"resource","encounter","reference"))
  . ;i encounterId["urn:uuid:" s encounterId=$p(encounterId,"urn:uuid:",2)
  . s eval("careplan",zi,"vars","encounterId")=encounterId
  . d log(jlog,"reference encounter ID is : "_encounterId)
@@ -201,6 +202,7 @@ wsIntakeCareplan(args,body,result,ien)        ; web service entry (post)
  . ; determine the encounter visit ien
  . n encounterId
  . s encounterId=$g(json("entry",zi,"resource","context","reference"))
+ . i encounterId="" s encounterId=$g(json("entry",zi,"resource","encounter","reference"))
  . ;i encounterId["urn:uuid:" s encounterId=$p(encounterId,"urn:uuid:",2)
  . s eval("careplan",zi,"vars","encounterId")=encounterId
  . d log(jlog,"reference encounter ID is : "_encounterId)
