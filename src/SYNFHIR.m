@@ -155,9 +155,10 @@ triples(index,ary,%wi)  ; index and array are passed by name
  d setIndex(index,purl,"type",type)
  d setIndex(index,purl,"rien",%wi)
  n enc s enc=$g(@ary@("resource","context","reference"))
- i enc="" s enc=$g(@ary@("resource","encounter","reference")) q:enc=""
+ i enc="" s enc=$g(@ary@("resource","encounter","reference"))
  d setIndex(index,purl,"encounterReference",enc)
- n pat s pat=$g(@ary@("resource","subject","reference")) q:pat=""
+ n pat s pat=$g(@ary@("resource","subject","reference"))
+ i pat="" s pat=$g(@ary@("resource","patient","reference"))
  d setIndex(index,purl,"patientReference",pat)
  q
  ;
@@ -358,6 +359,7 @@ FILE(directory) ; [Public] Load files from the file system
  . ;
  . ; Now load the file into VistA
  . write "Ingesting ",file,"...",!
+ . new file
  . do KILL^XUSCLEAN ; VistA leaks like hell
  . new args,body,synjsonreturn
  . merge body=^TMP("SYNFILE",$J)

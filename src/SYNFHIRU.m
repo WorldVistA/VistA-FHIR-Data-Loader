@@ -176,7 +176,7 @@ triples(index,ary,%wi)  ; index and array are passed by name
  . d setIndex(index,purl,"encounterReference",enc)
  . n pat s pat=$g(@ary@("resource","subject","reference")) q:pat=""
  . d setIndex(index,purl,"patientReference",pat)
- i type="Immunizationi" d  q  ;
+ i type="Immunization" d  q  ;
  . n purl s purl=$g(@ary@("fullUrl"))
  . i purl="" s purl=type_"/"_$g(@ary@("resource","id"))
  . i $e(purl,$l(purl))="/" s purl=purl_%wi
