@@ -1,26 +1,35 @@
-SYNDHP69 ;AFHIL-DHP/fjf - Commin Utility Functions;2019-03-06  5:02 PM
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
+SYNDHP69 ;AFHIL-DHP/fjf/art - HealthConcourse - Common Utility Functions ;05/14/2019
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 1
+ ;;
+ ;;Original routine authored by Andrew Thompson & Ferdinand Frankson of Perspecta 2017-2019
  Q
  ;
 DUZ() ; issues/set DUZ
  I '$D(DT) S DT=$$DT^XLFDT
  N VASITE S VASITE=$$SITE^VASITE
  N SITE S SITE=$P(VASITE,"^",3)
- S DUZ=$S(+$G(DUZ)=0:$$PROV^SYNINIT,1:DUZ)
- D DUZ^XUS1A
+ S DUZ=$S(+$G(DUZ)=0:1,1:DUZ)
+ S DUZ("AG")="V",DUZ(2)=+SITE ;'temporary' fix for lab accession
  Q DUZ
  ;
  ;
-RESID(ENT,SITE) ; resource ID
- ; some rudimenatary validatation inputs
+RESID(ENT,SITE,FILE,IEN,SUB) ; resource ID
+ ; inputs: ENT - "V"
+ ;         SITE - site id
+ ;         FILE - file number
+ ;         IEN - record ien
+ ;         SUB - additional subfiles & iens (optional) ex: 44.1^1^...
+ ; returns: resource id, ex: V-500-44-23, V-500-44-23-44.1-1
  ;
- N S
- S S="_"
- Q ENT_S_SITE_$$FACID
+ N D
+ S D="-"
+ S SUBS=$TR($G(SUB),U,D)
+ Q ENT_D_SITE_$$FACID_D_FILE_D_IEN_$S($L(SUBS)>0:D_SUBS,1:"")
  ;
  ;
 FACID() ; Get facility parameter to append to site
  ;
+ N XPARSYS
  Q $$GET^XPAR("SYS","SYNDHPFAC",1)
  ;
  ;
@@ -38,13 +47,13 @@ FACPAR(RETSTA,DHPFAC) ; Setup/delete faciltity identification parameter
  ;     SCLIN  - Specialist Clinic
  ;     HS     - HealthShare
  ;     @      - delete
- ;
+ ;   
  S RETSTA=0
  I "^ER^SCLIN^HOSP^HS^@"'[DHPFAC S RETSTA=0_"^error" Q
  I $$CKPRDF=0 S RETSTA=0_"^parameter definition error" Q
  ;
  ; add the parameter if it doesn't exist, or delete for FAC="@"
- N ZZERR
+ K ZZERR
  D EN^XPAR("SYS","SYNDHPFAC",,DHPFAC,.ZZERR)
  S RETSTA='ZZERR
  Q
@@ -61,15 +70,16 @@ CKPRDF() ; Check that parameter definition exists for SYNDHPFAC
  D UPDATE^DIE(,"FDA",,"ZZERR")
  Q '$D(ZZERR)
  ;
+ ;
 LOGRST(RETSTA) ; expunge ^VPRHTTP("log")
  ;
  N QT
  S QT=""""
- K ^%webhttp("log")
- S RETSTA="Mission accomplished - ^%webhttp("_QT_"log"_QT_")"_" annihilated"
+ K ^VPRHTTP("log")
+ S RETSTA="Mission accomplished - ^VPRHTTP("_QT_"log"_QT_")"_" annihilated"
  Q
  ;
- ;TEST D EN^%ut($T(+0),1) QUIT
+ ;
 TEST D EN^%ut($T(+0),1) QUIT
 T1 ; @TEST HASHINFO^ORDEA previously crashed due to bad DUZ(2)
  S DUZ=$$DUZ()

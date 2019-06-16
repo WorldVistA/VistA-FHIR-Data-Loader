@@ -1,5 +1,5 @@
 SYNDHPMP ; AFHIL/FJF - HealthConcourse - terminology mapping ;03/26/2019
- ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 47
+ ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 1
  ;;
  ;;Original routine authored by Andrew Thompson & Ferdinand Frankson of Perspecta 2017-2019
  ;
@@ -171,7 +171,7 @@ T4V ;
  S URLMV="https://terminology-service.dev.openplatform.healthcare/vista2/mh2sct?searchString=PHQ-2"
  S RET=$$GETURL^XTHC10(URLMV,,"MAPMV")
  ; now scan json in MPAMV to find string that look like numbers
- ; and convert them to strings by concateneating space
+ ; and convert them to strings by concatenating space
  D NTS("MAPMV")
  ;
  D DECODE^XLFJSON("MAPMV","MAPMVO")
