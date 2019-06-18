@@ -33,6 +33,7 @@ graphmap(graph,code,otype,itype) ; extrinsic mapping function using a graph
  . s graph=$g(@root@("index","root"))
  i $g(graph)="" q "-1^Error, can't find graph"
  i '$d(@graph@("pos")) q "-1^Error, can't find index"
+ i $g(code)="" q "-1^Error, code not provided"
  n gien,ipred,opred
  s ipred=$g(itype)
  i ipred="" s ipred=$o(@graph@("ops",code,""))
