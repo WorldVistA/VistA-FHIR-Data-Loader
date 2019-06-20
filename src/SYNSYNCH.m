@@ -79,6 +79,7 @@ INGEST ; complete the synchronization
  . s filter("id")=zicn
  . s filter("url")=url_"/showfhir?icn="_zicn
  . w !,"Loading patient: "_zicn
+ . s @sroot@(zicn,"status")="loaded"
  . n rtn
  . d wsLoadPat^SYNFPUL(.rtn,.filter)
  . i +$g(rtn)=-1 w !,"patient "_zicn_" returned error: "_$g(rtn) q  ; error retrieving patient
