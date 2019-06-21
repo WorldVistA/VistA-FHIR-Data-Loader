@@ -1,4 +1,4 @@
-SYNDHP69 ;AFHIL-DHP/fjf/art - HealthConcourse - Common Utility Functions ;05/14/2019
+SYNDHP69 ;AFHIL-DHP/fjf/art - HealthConcourse - Common Utility Functions ;2019-06-21  11:21 AM
  ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 1
  ;;
  ;;Original routine authored by Andrew Thompson & Ferdinand Frankson of Perspecta 2017-2019
@@ -8,8 +8,8 @@ DUZ() ; issues/set DUZ
  I '$D(DT) S DT=$$DT^XLFDT
  N VASITE S VASITE=$$SITE^VASITE
  N SITE S SITE=$P(VASITE,"^",3)
- S DUZ=$S(+$G(DUZ)=0:1,1:DUZ)
- S DUZ("AG")="V",DUZ(2)=+SITE ;'temporary' fix for lab accession
+ S DUZ=$S(+$G(DUZ)=0:$$PROV^SYNINIT,1:DUZ)
+ D DUZ^XUS1A
  Q DUZ
  ;
  ;
@@ -47,13 +47,13 @@ FACPAR(RETSTA,DHPFAC) ; Setup/delete faciltity identification parameter
  ;     SCLIN  - Specialist Clinic
  ;     HS     - HealthShare
  ;     @      - delete
- ;   
+ ;
  S RETSTA=0
  I "^ER^SCLIN^HOSP^HS^@"'[DHPFAC S RETSTA=0_"^error" Q
  I $$CKPRDF=0 S RETSTA=0_"^parameter definition error" Q
  ;
  ; add the parameter if it doesn't exist, or delete for FAC="@"
- K ZZERR
+ N ZZERR
  D EN^XPAR("SYS","SYNDHPFAC",,DHPFAC,.ZZERR)
  S RETSTA='ZZERR
  Q
@@ -70,15 +70,13 @@ CKPRDF() ; Check that parameter definition exists for SYNDHPFAC
  D UPDATE^DIE(,"FDA",,"ZZERR")
  Q '$D(ZZERR)
  ;
- ;
 LOGRST(RETSTA) ; expunge ^VPRHTTP("log")
  ;
  N QT
  S QT=""""
- K ^VPRHTTP("log")
- S RETSTA="Mission accomplished - ^VPRHTTP("_QT_"log"_QT_")"_" annihilated"
+ K ^%webhttp("log")
+ S RETSTA="Mission accomplished - ^%webhttp("_QT_"log"_QT_")"_" annihilated"
  Q
- ;
  ;
 TEST D EN^%ut($T(+0),1) QUIT
 T1 ; @TEST HASHINFO^ORDEA previously crashed due to bad DUZ(2)
