@@ -390,7 +390,7 @@ newIcn2(dfn,pid) ; extrinsic which creates a new ICN for the patient based on th
 fixindex1 ; create the ICN and DFN indexes
  d clearIndexes^SYNFUTL ; blow away the indexes
  n gn,zi
- s gn=$$setroot^%wd("fhir-intake")
+ s gn=$$setroot^SYNWD("fhir-intake")
  s zi=0
  f  s zi=$o(@gn@(zi)) q:+zi=0  d  ;
  . n gn2,dfn,icn
@@ -426,7 +426,7 @@ fixicn1 ; fix all DPT ICN indexes
  q
  ;
 genAllIcns ; regenerates all ICNs; insterts in PATIENT file and regenerates indexes
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNWD("fhir-intake")
  n zi s zi=0
  f  s zi=$o(@root@(zi)) q:+zi=0  d  ;
  . n pid,dfn,icn

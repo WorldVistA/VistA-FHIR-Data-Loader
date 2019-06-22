@@ -9,7 +9,7 @@ importMeds(rtn,ien,args)        ; entry point for loading Medications for a pati
  ; calls the intake Medications web service directly
  ;
  n grtn
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNWD("fhir-intake")
  d wsIntakeMeds(.args,,.grtn,ien)
  i $d(grtn) d  ; something was returned
  . k @root@(ien,"load","meds")
@@ -146,7 +146,7 @@ wsIntakeMeds(args,body,result,ien)      ; web service entry (post)
  . . . s eval("meds",zi,"status","loadstatus")="notLoaded"
  . . . s eval("meds",zi,"status","loadMessage")=$g(RETSTA)
  . . . d log(jlog,"Medication failed to load: "_$g(RETSTA))
- . . n root s root=$$setroot^%wd("fhir-intake")
+ . . n root s root=$$setroot^SYNWD("fhir-intake")
  . . k @root@(ien,"load","meds",zi)
  . . m @root@(ien,"load","meds",zi)=eval("meds",zi)
  ;
@@ -174,7 +174,7 @@ log(ary,txt)    ; adds a text line to @ary@("log")
  q
  ;
 loadStatus(typ,zx,zien) ; extrinsic return 1 if resource was loaded
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNWD("fhir-intake")
  n rt s rt=0
  i $g(zx)="" i $d(@root@(zien,"load",typ)) s rt=1 q rt
  i $get(@root@(zien,"load",typ,zx,"status","loadstatus"))="loaded" s rt=1
@@ -186,7 +186,7 @@ testall(limit,start)    ; run the meds import on all imported patients
  ;;
  i $g(limit)="" s limit=1
  n cnt s cnt=0
- new root s root=$$setroot^%wd("fhir-intake")
+ new root s root=$$setroot^SYNWD("fhir-intake")
  new indx s indx=$na(@root@("POS","DFN"))
  n dfn,ien,filter,reslt
  s dfn=0
@@ -204,7 +204,7 @@ testall(limit,start)    ; run the meds import on all imported patients
  q
  ;
 testone(reslt,doload)   ; run the meds import on one imported patient
- new root s root=$$setroot^%wd("fhir-intake")
+ new root s root=$$setroot^SYNWD("fhir-intake")
  new indx s indx=$na(@root@("POS","DFN"))
  n dfn,ien,filter
  n done s done=0
@@ -245,7 +245,7 @@ getRandomMeds(ary) ; make a web service call to get random allergies
  ;
 medsum ; search all loaded patients and catelog the procedure codes
  n root,json,ien,table
- s root=$$setroot^%wd("fhir-intake")
+ s root=$$setroot^SYNWD("fhir-intake")
  s ien=0
  f  s ien=$o(@root@(ien)) q:+ien=0  d  ;
  . k json

@@ -9,7 +9,7 @@ importVitals(rtn,ien,args) ; entry point for loading vitals for a patient
  ; calls the intake Vitals web service directly
  ;
  n grtn
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNWD("fhir-intake")
  n % s %=$$wsIntakeVitals(.args,,.grtn,ien)
  i $d(grtn) d  ; something was returned
  . k @root@(ien,"load","vitals")
@@ -247,7 +247,7 @@ log(ary,txt) ; adds a text line to @ary@("log")
  q
  ;
 loadStatus(typ,zx,zien) ; extrinsic return 1 if resource was loaded
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNWD("fhir-intake")
  n rt s rt=0
  i $g(zx)="" i $d(@root@(zien,"load",typ)) s rt=1 q rt
  i $get(@root@(zien,"load",typ,zx,"status","loadstatus"))="loaded" s rt=1
@@ -277,7 +277,7 @@ loinc2sct(loinc) ; extrinsic returns a Snomed code for a Loinc code
  q $o(SCTA(loinc,""))
  ;
 testall ; run the vitals import on all imported patients
- new root s root=$$setroot^%wd("fhir-intake")
+ new root s root=$$setroot^SYNWD("fhir-intake")
  new indx s indx=$na(@root@("POS","DFN"))
  n dfn,ien,filter,reslt
  s dfn=0

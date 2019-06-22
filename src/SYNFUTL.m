@@ -6,7 +6,7 @@ SYNFUTL ;ven/gpl - fhir loader utilities ;2019-02-07  3:35 PM
  q
  ;
 initPLD(ien,element)    ; initializes the PLD pointers in the fhir graph
- new root set root=$$setroot^%wd("fhir-intake")
+ new root set root=$$setroot^SYNWD("fhir-intake")
  set @root@(ien,"load",element,"PLD","parms")=$name(@root@(ien,"load",element,"parms"))
  set @root@(ien,"load",element,"PLD","log")=$name(@root@(ien,"load",element,"log"))
  set @root@(ien,"load",element,"PLD","verify")=$name(@root@(ien,"load",element,"verify"))
@@ -15,7 +15,7 @@ initPLD(ien,element)    ; initializes the PLD pointers in the fhir graph
  quit
  ;
 setPLD(ien,element)     ; extrinsic which returns the global name containing the PLD for this element
- new root set root=$$setroot^%wd("fhir-intake")
+ new root set root=$$setroot^SYNWD("fhir-intake")
  if '$data(@root@(ien,"load",element,"PLD")) do initPLD(ien,element)
  quit $name(@root@(ien,"load","Patient","PLD"))
  ;
@@ -45,7 +45,7 @@ addArray(dest,array)    ; add array to list dest
  quit
  ;
 setIndex(sub,pred,obj)  ; set the graph indexices
- n gn s gn=$$setroot^%wd("fhir-intake")
+ n gn s gn=$$setroot^SYNWD("fhir-intake")
  q:sub=""
  q:pred=""
  q:obj=""
@@ -56,7 +56,7 @@ setIndex(sub,pred,obj)  ; set the graph indexices
  q
  ;
 clearIndexes    ; do this carefully
- n gn s gn=$$setroot^%wd("fhir-intake")
+ n gn s gn=$$setroot^SYNWD("fhir-intake")
  k @gn@("SPO")
  k @gn@("POS")
  k @gn@("PSO")
@@ -81,19 +81,19 @@ fhirThl7(dtin)  ; extrinsic which returns the HL7 dateTime
  q tdt
  ;
 ien2dfn(ien)    ; extrinsic returns the patient DFN given the graph ien
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNWD("fhir-intake")
  q $o(@root@("PSO","DFN",ien,""))
  ;
 dfn2ien(dfn)    ; extrinsic returns the graph ien given the DFN
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNWD("fhir-intake")
  q $o(@root@("POS","DFN",dfn,""))
  ;
 ien2icn(ien)    ; extrinsic returns the patient ICN given the graph ien
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNWD("fhir-intake")
  q $o(@root@("PSO","ICN",ien,""))
  ;
 icn2ien(icn)    ; extrinsic returns the graph ien given the DFN
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNWD("fhir-intake")
  q $o(@root@("POS","ICN",icn,""))
  ;
 dfn2icn(dfn)    ; extrinsic returns the ICN given the patient DFN
@@ -183,7 +183,7 @@ hex2dec(hex) ; extrinsic returns the decimal conversion of hex number hex
  q dec
  ;
 ien2pid(fien) ; extrinsic returns the patient id from the fhir-intake graph ien=fien
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNWD("fhir-intake")
  n pid
  set pid=$o(@root@(fien,"POS","type","Patient",""))
  q pid

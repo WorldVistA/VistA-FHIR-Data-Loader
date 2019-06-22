@@ -1,10 +1,10 @@
-%wdgraph        ;ven/gpl - mash graph utilities ; 9/24/17 4:33pm
+SYNGRAF        ;ven/gpl - mash graph utilities ; 9/24/17 4:33pm
  ;;1.0;norelease;;feb 27, 2017;build 2
  ;
  ;
  q
  ;
- ; All the public entry points for these routines are found in %wd
+ ; All the public entry points for these routines are found in SYNWD
  ;
 setroot(graph) ; root of working storage
  new %y set %y=$order(^XTMP("SYNGRAPH","B",graph,""))

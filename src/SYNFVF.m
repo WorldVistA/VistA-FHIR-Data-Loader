@@ -41,8 +41,8 @@ sortAFICN(ary)  ; sort the AFICN index by dfn
  ;
 getVehuIcns     ; get the Dev VEHU ICNs and stores them in a graph
  n gn,root
- d purgegraph^%wd("vehu-icns")
- s root=$$setroot^%wd("vehu-icns")
+ d purgegraph^SYNWD("vehu-icns")
+ s root=$$setroot^SYNWD("vehu-icns")
  s gn="http://wip.vistaplex.org:9080/icnlist?dfnmax=100000"
  s ok=$$%^%WC(.g,"GET",gn)
  d decode^%webjson("g","g2")
@@ -57,9 +57,9 @@ getVehuIcns     ; get the Dev VEHU ICNs and stores them in a graph
  ;
 getAllergies    ; get VEHU allergies fhir resources
  ;
- n icnroot s icnroot=$$setroot^%wd("vehu-icns")
+ n icnroot s icnroot=$$setroot^SYNWD("vehu-icns")
  ;
- d purgegraph^%wd("fhir-vista-AllergyIntolerance")
+ d purgegraph^SYNWD("fhir-vista-AllergyIntolerance")
  n zicn s zicn=""
  f  s zicn=$o(@icnroot@("ICN",zicn)) q:zicn=""  d  ;
  . n domain,entries
@@ -73,9 +73,9 @@ getAllergies    ; get VEHU allergies fhir resources
  ;
 getAppointments ; get VEHU appointment fhir resources
  ;
- n icnroot s icnroot=$$setroot^%wd("vehu-icns")
+ n icnroot s icnroot=$$setroot^SYNWD("vehu-icns")
  ;
- d purgegraph^%wd("fhir-vista-Appointment")
+ d purgegraph^SYNWD("fhir-vista-Appointment")
  n zicn s zicn=""
  f  s zicn=$o(@icnroot@("ICN",zicn)) q:zicn=""  d  ;
  . n domain,entries
@@ -89,9 +89,9 @@ getAppointments ; get VEHU appointment fhir resources
  ;
 getProcedures   ; get VEHU procedure fhir resources
  ;
- n icnroot s icnroot=$$setroot^%wd("vehu-icns")
+ n icnroot s icnroot=$$setroot^SYNWD("vehu-icns")
  ;
- d purgegraph^%wd("fhir-vista-Procedure")
+ d purgegraph^SYNWD("fhir-vista-Procedure")
  n zicn s zicn=""
  f  s zicn=$o(@icnroot@("ICN",zicn)) q:zicn=""  d  ;
  . n domain,entries
@@ -120,7 +120,7 @@ storeGraph(ary,graph,id)        ; stores an array ary, passed by name
  ; extrinsic, returns the ien
  ;
  i graph="" s graph="misc"
- n root set root=$$setroot^%wd(graph)
+ n root set root=$$setroot^SYNWD(graph)
  ;
  n ien,rien
  s ien=$o(@root@(" "),-1)+1
@@ -134,7 +134,7 @@ storeGraph(ary,graph,id)        ; stores an array ary, passed by name
 wsGetAllergy(rtn,filter)        ; web service to pull a random allergy from
  ; graph fhir-vista-Allergy
  ;
- n root s root=$$setroot^%wd("fhir-vista-AllergyIntolerance")
+ n root s root=$$setroot^SYNWD("fhir-vista-AllergyIntolerance")
  n max
  s max=$o(@root@(" "),-1)
  i +max=0 q  ; nothing to pull
@@ -150,7 +150,7 @@ wsGetAllergy(rtn,filter)        ; web service to pull a random allergy from
 wsGetAppointment(rtn,filter)    ; web service to pull a random appointments from
  ; graph fhir-vista-Appointment
  ;
- n root s root=$$setroot^%wd("fhir-vista-Appointment")
+ n root s root=$$setroot^SYNWD("fhir-vista-Appointment")
  n max
  s max=$o(@root@(" "),-1)
  i +max=0 q  ; nothing to pull
@@ -166,7 +166,7 @@ wsGetAppointment(rtn,filter)    ; web service to pull a random appointments from
 wsGetProcedure(rtn,filter)      ; web service to pull a random procedure from
  ; graph fhir-vista-Procedure
  ;
- n root s root=$$setroot^%wd("fhir-vista-Procedure")
+ n root s root=$$setroot^SYNWD("fhir-vista-Procedure")
  n max
  s max=$o(@root@(" "),-1)
  i +max=0 q  ; nothing to pull

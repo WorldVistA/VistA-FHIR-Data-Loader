@@ -9,7 +9,7 @@ importEncounters(rtn,ien,args)  ; entry point for loading encounters for a patie
  ; calls the intake Encounters web service directly
  ;
  n grtn
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNWD("fhir-intake")
  d wsIntakeEncounters(.args,,.grtn,ien)
  i $d(grtn) d  ; something was returned
  . k @root@(ien,"load","encounters")
@@ -200,7 +200,7 @@ wsIntakeEncounters(args,body,result,ien)        ; web service entry (post)
  . . ;
  . . m eval("encounters",zi,"status","return")=RETSTA
  . . ; i $g(DEBUG)=1 ZWR RETSTA
- . . n root s root=$$setroot^%wd("fhir-intake")
+ . . n root s root=$$setroot^SYNWD("fhir-intake")
  . . n visitIen s visitIen=$p(RETSTA,"^",2) ; returned visit ien
  . . i +visitIen>0 d
  . . . ;
@@ -240,7 +240,7 @@ log(ary,txt)    ; adds a text line to @ary@("log")
  q
  ;
 loadStatus(typ,zx,zien) ; extrinsic return 1 if resource was loaded
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNWD("fhir-intake")
  n rt s rt=0
  i $g(zx)="" i $d(@root@(zien,"load",typ)) s rt=1 q rt
  i $get(@root@(zien,"load",typ,zx,"status","loadstatus"))="loaded" s rt=1
@@ -249,7 +249,7 @@ loadStatus(typ,zx,zien) ; extrinsic return 1 if resource was loaded
 visitIen(ien,encId)     ; extrinsic returns the visit ien for the Encounter ID
  ; returns -1 if none found
  i $g(encId)="" q -1
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNWD("fhir-intake")
  n useenc s useenc=encId
  i useenc["urn:uuid:" s useenc=$p(useenc,"urn:uuid:",2)
  n vrtn
@@ -258,7 +258,7 @@ visitIen(ien,encId)     ; extrinsic returns the visit ien for the Encounter ID
  q vrtn
  ;
 testall ; run the encounters import on all imported patients
- new root s root=$$setroot^%wd("fhir-intake")
+ new root s root=$$setroot^SYNWD("fhir-intake")
  new indx s indx=$na(@root@("POS","DFN"))
  n dfn,ien,filter,reslt
  s dfn=0
@@ -284,7 +284,7 @@ IMPORT(rtn,ien) ; encounters, immunizations, problems for patient ien
 LOADALL(count) ; count is how many to do. default is 1000
  D INITMAPS^SYNQLDM ; make sure map table is loaded
  i '$d(count) s count=1000
- n root s groot=$$setroot^%wd("fhir-intake")
+ n root s groot=$$setroot^SYNWD("fhir-intake")
  n cnt s cnt=0
  n %1 s %1=0
  f  s %1=$o(@groot@(%1)) q:+%1=0  q:cnt=count  d  ;
@@ -313,7 +313,7 @@ LOADALL(count) ; count is how many to do. default is 1000
 NEXT(start) ; extrinsic which returns the next patient for encounter loading
  ; start is the dfn to start looking, default is zerro
  i '$d(start) s start=0
- n root s groot=$$setroot^%wd("fhir-intake")
+ n root s groot=$$setroot^SYNWD("fhir-intake")
  n %1 s %1=start
  n returnien s returnien=0
  f  s %1=$o(@groot@(%1)) q:+%1=0  q:+returnien>0  d  ;

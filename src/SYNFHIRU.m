@@ -14,7 +14,7 @@ wsUpdatePatient(ARGS,BODY,RESULT)    ; recieve from updatepatient
  S USER=$$DUZ^SYNDHP69
  ;
  new json,ien,root,gr,id,return
- set root=$$setroot^%wd("fhir-intake")
+ set root=$$setroot^SYNWD("fhir-intake")
  set id=$get(ARGS("id"))
  ;
  ; first locate the patient to be updated
@@ -89,7 +89,7 @@ wsUpdatePatient(ARGS,BODY,RESULT)    ; recieve from updatepatient
  ;
 indexFhir(ien,root)  ; generate indexes for parsed fhir json
  ;
- i $g(root)="" set root=$$setroot^%wd("fhir-intake")
+ i $g(root)="" set root=$$setroot^SYNWD("fhir-intake")
  if $get(ien)="" quit  ;
  ;
  new jroot set jroot=$name(@root@(ien,"json","entry")) ; root of the json
@@ -195,7 +195,7 @@ triples(index,ary,%wi)  ; index and array are passed by name
  q
  ;
 setIndex(gn,sub,pred,obj)       ; set the graph indexices
- ;n gn s gn=$$setroot^%wd("fhir-intake")
+ ;n gn s gn=$$setroot^SYNWD("fhir-intake")
  q:sub=""
  q:pred=""
  q:obj=""
@@ -222,14 +222,14 @@ clearIndexes(gn)        ; kill the indexes
  q
  ;
 getEntry(ary,ien,rien) ; returns one entry in ary, passed by name
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNWD("fhir-intake")
  i '$d(@root@(ien,"json","entry",rien)) q  ;
  m @ary@("entry",rien)=@root@(ien,"json","entry",rien)
  q
  ;
 loadStatus(ary,ien,rien) ; returns the "load" section of the patient graph
  ; if rien is not specified, all entries are included
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNWD("fhir-intake")
  i '$d(@root@(ien)) q
  i $g(rien)="" d  q  ;
  . k @ary
@@ -245,7 +245,7 @@ wsLoadStatus(rtn,filter) ; displays the load status
  ; optionally, entry number (rien) for a single entry
  ; if ien and dfn are both specified, dfn is used
  ; now supports latest=1 to show the load status of the lastest added patient
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNWD("fhir-intake")
  n ien s ien=$g(filter("ien"))
  i $g(filter("latest"))=1 d  ;
  . set ien=$o(@root@(" "),-1)

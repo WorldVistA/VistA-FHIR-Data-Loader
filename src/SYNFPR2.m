@@ -10,7 +10,7 @@ importConditions(rtn,ien,args)   ; entry point for loading Problems for a patien
  ; calls the intake Conditions web service directly
  ;
  n grtn
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNWD("fhir-intake")
  d wsIntakeConditions(.args,,.grtn,ien)
  i $d(grtn) d  ; something was returned
  . k @root@(ien,"load","conditions")
@@ -197,7 +197,7 @@ wsIntakeConditions(args,body,result,ien)               ; web service entry (post
  . . . s eval("status","errors")=$g(eval("status","errors"))+1
  . . . s eval("conditions",zi,"status","loadstatus")="notLoaded"
  . . . s eval("conditions",zi,"status","loadMessage")=$g(RETSTA)
- . . n root s root=$$setroot^%wd("fhir-intake")
+ . . n root s root=$$setroot^SYNWD("fhir-intake")
  . . k @root@(ien,"load","conditions",zi)
  . . m @root@(ien,"load","conditions",zi)=eval("conditions",zi)
  ;
@@ -223,14 +223,14 @@ log(ary,txt)       ; adds a text line to @ary@("log")
  q
  ;
 loadStatus(typ,zx,zien) ; extrinsic return 1 if resource was loaded
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNWD("fhir-intake")
  n rt s rt=0
  i $g(zx)="" i $d(@root@(zien,"load",typ)) s rt=1 q rt
  i $get(@root@(zien,"load",typ,zx,"status","loadstatus"))="loaded" s rt=1
  q rt
  ;
 testall ; run the conditions import on all imported patients
- new root s root=$$setroot^%wd("fhir-intake")
+ new root s root=$$setroot^SYNWD("fhir-intake")
  new indx s indx=$na(@root@("POS","DFN"))
  n dfn,ien,filter,reslt
  s dfn=0
@@ -243,7 +243,7 @@ testall ; run the conditions import on all imported patients
  q
  ;
 testone(reslt,doload)     ; run the conditions import on all imported patients
- new root s root=$$setroot^%wd("fhir-intake")
+ new root s root=$$setroot^SYNWD("fhir-intake")
  new indx s indx=$na(@root@("POS","DFN"))
  n dfn,ien,filter
  n done s done=0
