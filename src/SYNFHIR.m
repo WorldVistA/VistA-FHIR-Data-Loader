@@ -14,7 +14,7 @@ wsPostFHIR(ARGS,BODY,RESULT)    ; recieve from addpatient
  S USER=$$DUZ^SYNDHP69
  ;
  new json,ien,root,gr,id,return
- set root=$$setroot^%wd("fhir-intake")
+ set root=$$setroot^SYNGRAF("fhir-intake")
  set id=$get(ARGS("id"))
  ;
  set ien=$order(@root@(" "),-1)+1
@@ -60,7 +60,7 @@ wsPostFHIR(ARGS,BODY,RESULT)    ; recieve from addpatient
  ;
 indexFhir(ien)  ; generate indexes for parsed fhir json
  ;
- new root set root=$$setroot^%wd("fhir-intake")
+ new root set root=$$setroot^SYNGRAF("fhir-intake")
  if $get(ien)="" quit  ;
  ;
  new jroot set jroot=$name(@root@(ien,"json","entry")) ; root of the json
@@ -158,7 +158,7 @@ triples(index,ary,%wi)  ; index and array are passed by name
  q
  ;
 setIndex(gn,sub,pred,obj)       ; set the graph indexices
- ;n gn s gn=$$setroot^%wd("fhir-intake")
+ ;n gn s gn=$$setroot^SYNGRAF("fhir-intake")
  q:sub=""
  q:pred=""
  q:obj=""
@@ -179,7 +179,7 @@ wsShow(rtn,filter)      ; web service to show the fhir
  new ien set ien=$g(filter("ien"))
  if ien="" quit  ;
  new type set type=$get(filter("type"))
- new root set root=$$setroot^%wd("fhir-intake")
+ new root set root=$$setroot^SYNGRAF("fhir-intake")
  new jroot set jroot=$name(@root@(ien,"json"))
  ;
  new jtmp,juse
@@ -200,7 +200,7 @@ getIntakeFhir(rtn,id,type,ien,plain)    ; returns fhir vars for patient bundle=i
  ; if plain is 1 then the array is returned without the type as the first
  ;    element of each node
  ;
- new root set root=$$setroot^%wd("fhir-intake")
+ new root set root=$$setroot^SYNGRAF("fhir-intake")
  if $g(ien)="" set ien=$order(@root@("B",id,""))
  if ien="" quit  ;
  ;
@@ -280,14 +280,14 @@ runLabs ; This is what is submitted to Taskman
  QUIT
  ;
 getEntry(ary,ien,rien) ; returns one entry in ary, passed by name
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNGRAF("fhir-intake")
  i '$d(@root@(ien,"json","entry",rien)) q  ;
  m @ary@("entry",rien)=@root@(ien,"json","entry",rien)
  q
  ;
 loadStatus(ary,ien,rien) ; returns the "load" section of the patient graph
  ; if rien is not specified, all entries are included
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNGRAF("fhir-intake")
  i '$d(@root@(ien)) q
  i $g(rien)="" d  q  ;
  . k @ary
@@ -303,7 +303,7 @@ wsLoadStatus(rtn,filter) ; displays the load status
  ; optionally, entry number (rien) for a single entry
  ; if ien and dfn are both specified, dfn is used
  ; now supports latest=1 to show the load status of the lastest added patient
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNGRAF("fhir-intake")
  n ien s ien=$g(filter("ien"))
  i $g(filter("latest"))=1 d  ;
  . set ien=$o(@root@(" "),-1)

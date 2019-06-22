@@ -10,7 +10,7 @@ importAllergy(rtn,ien,args) ; entry point for loading Allergy for a patient
  ; calls the intake Allergy web service directly
  ;
  n grtn
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNGRAF("fhir-intake")
  d wsIntakeAllergy(.args,,.grtn,ien)
  i $d(grtn) d  ; something was returned
  . k @root@(ien,"load","allergy")
@@ -192,7 +192,7 @@ wsIntakeAllergy(args,body,result,ien) ; web service entry (post)
  . . . s eval("status","errors")=$g(eval("status","errors"))+1
  . . . s eval("allergy",zi,"status","loadstatus")="notLoaded"
  . . . s eval("allergy",zi,"status","loadMessage")=$g(RESTA)
- . . n root s root=$$setroot^%wd("fhir-intake")
+ . . n root s root=$$setroot^SYNGRAF("fhir-intake")
  . . i $g(ien)'="" d  ;
  . . . k @root@(ien,"load","allergy",zi)
  . . . m @root@(ien,"load","allergy",zi)=eval("allergy",zi)
@@ -226,14 +226,14 @@ log(ary,txt) ; adds a text line to @ary@("log")
  q
  ;
 loadStatus(typ,zx,zien) ; extrinsic return 1 if resource was loaded
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNGRAF("fhir-intake")
  n rt s rt=0
  i $g(zx)="" i $d(@root@(zien,"load",typ)) s rt=1 q rt
  i $get(@root@(zien,"load",typ,zx,"status","loadstatus"))="loaded" s rt=1
  q rt
  ;
 testall ; run the allergy import on all imported patients
- new root s root=$$setroot^%wd("fhir-intake")
+ new root s root=$$setroot^SYNGRAF("fhir-intake")
  new indx s indx=$na(@root@("POS","DFN"))
  n dfn,ien,filter,reslt
  s dfn=0
@@ -246,7 +246,7 @@ testall ; run the allergy import on all imported patients
  q
  ;
 testone(reslt,doload) ; run the allergy import on one imported patient
- new root s root=$$setroot^%wd("fhir-intake")
+ new root s root=$$setroot^SYNGRAF("fhir-intake")
  new indx s indx=$na(@root@("POS","DFN"))
  n dfn,ien,filter
  n done s done=0
@@ -301,7 +301,7 @@ QADDALGY(ALGY,ADATE,ien) ; adds an allergy to the queue to be processed
  ; ALGY is the name of the allergy. ADATE is the date of the allergy
  ; ien is the patient being processed
  i '$d(ien) q  ;
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNGRAF("fhir-intake")
  n groot s groot=$na(@root@(ien,"load","ALLERGY2ADD"))
  n aien s aien=$o(@groot@(" "),-1)+1
  s @groot@(aien,"allergy")=$g(ALGY)

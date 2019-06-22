@@ -9,7 +9,7 @@ SYNFPUL ;ven/gpl - fhir loader utilities ;2018-08-17  3:26 PM
  ;
 wsPull(rtn,filter)      ; pull web service. assumes url to list is passed as filter("listurl")=url
  ;
- n groot s groot=$$setroot^%wd("patient-lists")
+ n groot s groot=$$setroot^SYNGRAF("patient-lists")
  ;
  n listurl s listurl=$g(filter("listurl"))
  q:listurl=""
@@ -53,7 +53,7 @@ testpull        ;
  ;
 indexList(ien)  ; produce the index for a patient list
  ;
- n lroot s lroot=$$setroot^%wd("patient-lists")
+ n lroot s lroot=$$setroot^SYNGRAF("patient-lists")
  n zi s zi=""
  f  s zi=$o(@lroot@(ien,"list","items",zi)) q:zi=""  d  ;
  . n title s title=$g(@lroot@(ien,"list","items",zi,"title"))
@@ -62,7 +62,7 @@ indexList(ien)  ; produce the index for a patient list
  ;
 wsLol(rtn,filter)       ; list of list web service
  ;
- n groot s groot=$$setroot^%wd("list-of-lists")
+ n groot s groot=$$setroot^SYNGRAF("list-of-lists")
  ;
  n listurl s listurl="http://synthea1m.vistaplex.org:9080/see/rand*?format=json"
  ;n listurl s listurl="http://138.197.147.128:9080/see/rand*?format=json"
@@ -103,7 +103,7 @@ wsLol(rtn,filter)       ; list of list web service
  ;
 wsLol2(rtn,filter)      ; list of list web service
  ;
- n groot s groot=$$setroot^%wd("list-of-lists")
+ n groot s groot=$$setroot^SYNGRAF("list-of-lists")
  ;
  ;n listurl s listurl="http://synthea1m.vistaplex.org:9080/see/rand*?format=json"
  n listurl s listurl="http://138.197.147.128:9080/see/rand*?format=json"
@@ -144,7 +144,7 @@ wsLol2(rtn,filter)      ; list of list web service
  ;
 indexLol(ien)   ;
  ;
- n lroot s lroot=$$setroot^%wd("list-of-lists")
+ n lroot s lroot=$$setroot^SYNGRAF("list-of-lists")
  n zi s zi=""
  f  s zi=$o(@lroot@(ien,"list","items",zi)) q:zi=""  d  ;
  . n title s title=$g(@lroot@(ien,"list","items",zi,"title"))
@@ -153,7 +153,7 @@ indexLol(ien)   ;
  ;
 getlol  ; get list of lists
  ;
- n groot s groot=$$setroot^%wd("list-of-lists")
+ n groot s groot=$$setroot^SYNGRAF("list-of-lists")
  ;
  n listurl
  ;s listurl="http://synthea1m.vistaplex.org:9080/see/dhp-vista*?format=json"
@@ -197,8 +197,8 @@ assemble(in,out)        ; reassemble json from the pieces
  q
  ;
 load1list(zlist)        ;
- n lroot s lroot=$$setroot^%wd("patient-lists")
- n lolroot s lolroot=$$setroot^%wd("list-of-lists")
+ n lroot s lroot=$$setroot^SYNGRAF("patient-lists")
+ n lolroot s lolroot=$$setroot^SYNGRAF("list-of-lists")
  n uselist
  ;s uselist="http://synthea1m.vistaplex.org:9080/see/dhp-vista*"
  s uselist="http://138.197.147.128:9080/see/dhp-vista*"
@@ -236,7 +236,7 @@ load1list(zlist)        ;
  ;
 test1pat(rtn,start,end) ;
  k rtn
- n lroot s lroot=$$setroot^%wd("patient-lists")
+ n lroot s lroot=$$setroot^SYNGRAF("patient-lists")
  n uselist s uselist="dhp-vista-1000-1"
  n listien s listien=$o(@lroot@("B",uselist,""))
  q:listien=""
@@ -257,8 +257,8 @@ test1pat(rtn,start,end) ;
  ;
 loadpats(rtn,listien)   ;
  k rtn
- n lroot s lroot=$$setroot^%wd("patient-lists")
- n froot s froot=$$setroot^%wd("fhir-intake")
+ n lroot s lroot=$$setroot^SYNGRAF("patient-lists")
+ n froot s froot=$$setroot^SYNGRAF("fhir-intake")
  q:listien=""
  n listroot s listroot=$na(@lroot@(listien,"list","items"))
  n pid,purl
@@ -298,7 +298,7 @@ wsLoadPat(zrtn,zfilter) ; load one patient from a URL
  ;
  ;
  new ien,root,gr,id,return
- set root=$$setroot^%wd("fhir-intake")
+ set root=$$setroot^SYNGRAF("fhir-intake")
  set id=$get(zfilter("id"))
  ;
  set ien=$order(@root@(" "),-1)+1
@@ -363,7 +363,7 @@ LOADALL ; load all 50000 patients
  ;
 CLEANGRAPH      ;
  ;
- n groot s groot=$$setroot^%wd("fhir-intake")
+ n groot s groot=$$setroot^SYNGRAF("fhir-intake")
  n zi,zj,zk
  s (zi,zj,zk)=""
  f  s zi=$o(@groot@("B",zi)) q:zi=""  d  ;

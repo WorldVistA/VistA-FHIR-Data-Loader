@@ -9,7 +9,7 @@ importAppointment(rtn,ien,args) ; entry point for loading Appointment for a pati
  ; calls the intake Appointment web service directly
  ;
  n grtn
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNGRAF("fhir-intake")
  d wsIntakeAppointment(.args,,.grtn,ien)
  i $d(grtn) d  ; something was returned
  . k @root@(ien,"load","appointment")
@@ -149,7 +149,7 @@ wsIntakeAppointment(args,body,result,ien)       ; web service entry (post)
  . . . s eval("status","errors")=$g(eval("status","errors"))+1
  . . . s eval("appointment",zi,"status","loadstatus")="notLoaded"
  . . . s eval("appointment",zi,"status","loadMessage")=$g(RETSTA)
- . . n root s root=$$setroot^%wd("fhir-intake")
+ . . n root s root=$$setroot^SYNGRAF("fhir-intake")
  . . k @root@(ien,"load","appointment",zi)
  . . m @root@(ien,"load","appointment",zi)=eval("appointment",zi)
  ;
@@ -176,14 +176,14 @@ log(ary,txt)    ; adds a text line to @ary@("log")
  q
  ;
 loadStatus(typ,zx,zien) ; extrinsic return 1 if resource was loaded
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNGRAF("fhir-intake")
  n rt s rt=0
  i $g(zx)="" i $d(@root@(zien,"load",typ)) s rt=1 q rt
  i $get(@root@(zien,"load",typ,zx,"status","loadstatus"))="loaded" s rt=1
  q rt
  ;
 testall ; run the appointment import on all imported patients
- new root s root=$$setroot^%wd("fhir-intake")
+ new root s root=$$setroot^SYNGRAF("fhir-intake")
  new indx s indx=$na(@root@("POS","DFN"))
  n dfn,ien,filter,reslt
  s dfn=0
@@ -196,7 +196,7 @@ testall ; run the appointment import on all imported patients
  q
  ;
 testone(reslt,doload)   ; run the appointment import on imported patient
- new root s root=$$setroot^%wd("fhir-intake")
+ new root s root=$$setroot^SYNGRAF("fhir-intake")
  new indx s indx=$na(@root@("POS","DFN"))
  n dfn,ien,filter
  n done s done=0

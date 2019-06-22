@@ -8,7 +8,7 @@ SYNFGR  ;ven/gpl - fhir loader utilities ;2018-08-17  3:27 PM
 resources(ary,lvl)      ; finds all the fhir resources and counts them up
  ; returns ary, passed by name
  ;
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNGRAF("fhir-intake")
  n ien,rien
  s (ien,rien)=0
  f  s ien=$o(@root@(ien)) q:+ien=0  d  ;
@@ -47,7 +47,7 @@ resources(ary,lvl)      ; finds all the fhir resources and counts them up
 careplans(ary,lvl)      ; finds all the careplans and counts them up
  ; returns ary, passed by name
  ;
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNGRAF("fhir-intake")
  n ien,rien
  s (ien,rien)=0
  f  s ien=$o(@root@(ien)) q:+ien=0  d  ;
@@ -81,7 +81,7 @@ careplans(ary,lvl)      ; finds all the careplans and counts them up
 makecpmap ; make a careplan map in a graph
  ;
  n root,map
- s root=$$setroot^%wd("careplanmap")
+ s root=$$setroot^SYNGRAF("careplanmap")
  d careplans("map")
  k @root
  m @root=map
@@ -90,7 +90,7 @@ makecpmap ; make a careplan map in a graph
 careplanshf(ary,lvl)      ; finds all the careplans and counts them up
  ; returns ary, passed by name
  ;
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNGRAF("fhir-intake")
  n ien,rien
  s (ien,rien)=0
  n done s done=0
@@ -137,8 +137,8 @@ careplanshf(ary,lvl)      ; finds all the careplans and counts them up
 makecpmaphf ; make a careplan map in a graph
  ;
  n root,map
- d purgegraph^%wd("cpmaphf3")
- s root=$$setroot^%wd("cpmaphf3")
+ d purgegraph^SYNGRAF("cpmaphf3")
+ s root=$$setroot^SYNGRAF("cpmaphf3")
  ;k @root
  d careplanshf("map")
  m @root=map

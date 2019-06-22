@@ -121,13 +121,13 @@ T1 ;
  ;
  ;F I=1:1:7 s @$p(a(I),q,8)=$p(a(I),"=",2)
  ;
- ;a(1)="^%wd(17.040801,1,1227,"load","careplan",12,"parms","DHPACT")=409002~Food allergy diet~in-progress^58332002~Allergy education~in-progress"
- ;a(2)="^%wd(17.040801,1,1227,"load","careplan",12,"parms","DHPCAT")=326051000000105~Self care~active"
- ;a(3)="^%wd(17.040801,1,1227,"load","careplan",12,"parms","DHPEDT")="
- ;a(4)="^%wd(17.040801,1,1227,"load","careplan",12,"parms","DHPPAT")=1435855215V947437"
- ;a(5)="^%wd(17.040801,1,1227,"load","careplan",12,"parms","DHPSCT")="
- ;a(6)="^%wd(17.040801,1,1227,"load","careplan",12,"parms","DHPSDT")=2760829"
- ;a(7)="^%wd(17.040801,1,1227,"load","careplan",12,"parms","DHPVST")=34818"
+ ;a(1)="^SYNGRAF(17.040801,1,1227,"load","careplan",12,"parms","DHPACT")=409002~Food allergy diet~in-progress^58332002~Allergy education~in-progress"
+ ;a(2)="^SYNGRAF(17.040801,1,1227,"load","careplan",12,"parms","DHPCAT")=326051000000105~Self care~active"
+ ;a(3)="^SYNGRAF(17.040801,1,1227,"load","careplan",12,"parms","DHPEDT")="
+ ;a(4)="^SYNGRAF(17.040801,1,1227,"load","careplan",12,"parms","DHPPAT")=1435855215V947437"
+ ;a(5)="^SYNGRAF(17.040801,1,1227,"load","careplan",12,"parms","DHPSCT")="
+ ;a(6)="^SYNGRAF(17.040801,1,1227,"load","careplan",12,"parms","DHPSDT")=2760829"
+ ;a(7)="^SYNGRAF(17.040801,1,1227,"load","careplan",12,"parms","DHPVST")=34818"
  ;
 VARS ;
  S DHPACT="409002~Food allergy diet~in-progress^58332002~Allergy education~in-progress"

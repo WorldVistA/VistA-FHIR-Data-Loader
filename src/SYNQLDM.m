@@ -349,7 +349,7 @@ GETMAP(RTN,MAP) ; returns an array of the MAP. if MAP is not specified, it retur
  Q
  ;
 MAPERR(CDE,MAP,CMT) ; add the map error to the mapping-errors graph
- n meroot s meroot=$$setroot^%wd("mapping-errors")
+ n meroot s meroot=$$setroot^SYNGRAF("mapping-errors")
  q:meroot=""
  n meien
  s meien=$o(@meroot@("errors","B",CDE,""))

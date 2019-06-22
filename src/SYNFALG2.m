@@ -49,7 +49,7 @@ MEDALGY(dfn,root,json,zi,eval,jlog,args) ; allergy is rxnorm
  . . s eval("status","errors")=$g(eval("status","errors"))+1
  . . s eval("allergy",zi,"status","loadstatus")="notLoaded"
  . . s eval("allergy",zi,"status","loadMessage")=ok
- . n root s root=$$setroot^%wd("fhir-intake")
+ . n root s root=$$setroot^SYNGRAF("fhir-intake")
  . i $g(ien)'="" d  ;
  . . k @root@(ien,"load","allergy",zi)
  . . m @root@(ien,"load","allergy",zi)=eval("allergy",zi)
