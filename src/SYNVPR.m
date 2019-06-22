@@ -1,5 +1,5 @@
 SYNVPR  ; GPL/GPL - VPR viewing routines ;2019-01-31  10:42 AM
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
+ ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 34
  ;
  ; Authored by George P. Lilly 2013-2018
  ;
@@ -384,6 +384,15 @@ wsGtree(OUT,FILTER) ; show an outline form of a global
  I $G(FILTER("local"))'=1 S ROOT="^"_ROOT
  I LEVEL="" D GTREE(ROOT,9,,,OUT)
  I LEVEL'="" D GTREE(ROOT,LEVEL,,,OUT)
+ I $G(FILTER("mfilter"))'="" D  ;
+ . N ZF S ZF=$G(FILTER("mfilter"))
+ . N ZR S ZR="^"_$P(ZF,"^",2)
+ . Q:ZR="^"
+ . I $L($T(@ZR))>0 D  ;
+ . . ;S ZF=ZF_"(.OUT)"
+ . . ;n % s %=$$@ZF@(.OUT)
+ . . I ZF="BAK^VWXPAT" D BAK^VWXPAT(.OUT) Q  ;
+ . . I ZF="BAK2^VWXPAT" D BAK2^VWXPAT(.OUT) Q  ;
  S @OUT="<!DOCTYPE HTML><html><head></head><body><pre>"
  S @OUT@($O(@OUT@(""),-1)+1)="</pre></body></html>"
  D ADDCRLF^%webutils(.OUT)
