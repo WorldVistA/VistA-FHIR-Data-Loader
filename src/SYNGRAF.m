@@ -7,37 +7,38 @@ SYNGRAF        ;ven/gpl - mash graph utilities ; 9/24/17 4:33pm
  ; All the public entry points for these routines are found in SYNWD
  ;
 setroot(graph) ; root of working storage
- new %y set %y=$order(^XTMP("SYNGRAPH","B",graph,""))
+ new %y set %y=$order(^SYNGRAPH(2002.801,"B",graph,""))
  if %y="" set %y=$$addgraph(graph) ; if graph is not present, add it
- quit $name(^XTMP("SYNGRAPH",%y)) ; root for graph
+ quit $name(^SYNGRAPH(2002.801,%y)) ; root for graph
  ;
 rootOf(graph) ; return the root of graph named graph
- new %x1 set %x1=$order(^XTMP("SYNGRAPH","B",graph,""))
+ new %x1 set %x1=$order(^SYNGRAPH(2002.801,"B",graph,""))
  if %x1="" quit -1
- quit $name(^XTMP("SYNGRAPH",%x1,"graph"))
+ quit $name(^SYNGRAPH(2002.801,%x1,"graph"))
  ;
 addgraph(graph) ; makes a place in the graph file for a new graph
- n fien s fien=$o(^XTMP("SYNGRAPH","B",graph,""))
+ n fien s fien=$o(^SYNGRAPH(2002.801,"B",graph,""))
  i fien'="" q fien
- s fien=$o(^XTMP("SYNGRAPH"," "),-1)+1
- s ^XTMP("SYNGRAPH",fien,0)=graph
- s ^XTMP("SYNGRAPH","B",graph,fien)=""
- q fien
+ ;s fien=$o(^XTMP("SYNGRAPH"," "),-1)+1
+ ;s ^XTMP("SYNGRAPH",fien,0)=graph
+ ;s ^XTMP("SYNGRAPH","B",graph,fien)=""
+ ;q fien
  ;
- new fda set fda(17.040801,"?+1,",.01)=graph
+ ;new fda set fda(17.040801,"?+1,",.01)=graph
+ new fda set fda(2002.801,"?+1,",.01)=graph
  new %yerr
  do UPDATE^DIE("","fda","","%yerr")
- new %y set %y=$order(^XTMP("SYNGRAPH","B",graph,""))
+ new %y set %y=$order(^SYNGRAPH(2002.801,"B",graph,""))
  quit %y
  ;
 purgegraph(graph) ; delete a graph
- new %y set %y=$order(^XTMP("SYNGRAPH","B",graph,""))
+ new %y set %y=$order(^SYNGRAPH(2002.801,"B",graph,""))
  if %y="" quit 0
- k ^XTMP("SYNGRAPH",%y)
- k ^XTMP("SYNGRAPH","B",graph,%y)
- q
+ ;k ^XTMP("SYNGRAPH",%y)
+ ;k ^XTMP("SYNGRAPH","B",graph,%y)
+ ;q
  ;
- new fda set fda(17.040801,%y_",",.01)="@"
+ new fda set fda(2002.801,%y_",",.01)="@"
  new %yerr
  do UPDATE^DIE("","fda","","%yerr")
  if '$data(%yerr) quit 1
