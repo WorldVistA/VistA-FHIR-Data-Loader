@@ -17,6 +17,13 @@ rootOf(graph) ; return the root of graph named graph
  quit $name(^XTMP("SYNGRAPH",%x1,"graph"))
  ;
 addgraph(graph) ; makes a place in the graph file for a new graph
+ n fien s fien=$o(^XTMP("SYNGRAPH","B",graph,""))
+ i fien'="" q fien
+ s fien=$o(^XTMP("SYNGRAPH"," "),-1)+1
+ s ^XTMP("SYNGRAPH",fien,0)=graph
+ s ^XTMP("SYNGRAPH","B",graph,fien)=""
+ q fien
+ ;
  new fda set fda(17.040801,"?+1,",.01)=graph
  new %yerr
  do UPDATE^DIE("","fda","","%yerr")
@@ -26,6 +33,10 @@ addgraph(graph) ; makes a place in the graph file for a new graph
 purgegraph(graph) ; delete a graph
  new %y set %y=$order(^XTMP("SYNGRAPH","B",graph,""))
  if %y="" quit 0
+ k ^XTMP("SYNGRAPH",%y)
+ k ^XTMP("SYNGRAPH","B",graph,%y)
+ q
+ ;
  new fda set fda(17.040801,%y_",",.01)="@"
  new %yerr
  do UPDATE^DIE("","fda","","%yerr")
