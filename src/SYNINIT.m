@@ -20,25 +20,25 @@ EN ; [Public; called by KIDS; do everything in this file]
  ; EXECUTION ENDPOINT: wsIntakeConditions^SYNFCON
  ;
 LOADHAND ; [Public] Load URL handlers
- do addService^%webutils("POST","addpatient","wsPostFHIR^SYNFHIR")
- do addService^%webutils("POST","updatepatient","wsUpdatePatient^SYNFHIRU")
- do addService^%webutils("GET","loadstatus","wsLoadStatus^SYNFHIR")
- do addService^%webutils("GET","showfhir","wsShow^SYNFHIR")
- do addService^%webutils("GET","vpr/{dfn}","wsVPR^SYNVPR")
- do addService^%webutils("GET","global/{root}","wsGLOBAL^SYNVPR")
- do addService^%webutils("GET","gtree/{root}","wsGtree^SYNVPR")
- do addService^%webutils("GET","graph/{graph}","wsGetGraph^SYNGRAPH")
+ do addService^SYNWEBUT("POST","addpatient","wsPostFHIR^SYNFHIR")
+ do addService^SYNWEBUT("POST","updatepatient","wsUpdatePatient^SYNFHIRU")
+ do addService^SYNWEBUT("GET","loadstatus","wsLoadStatus^SYNFHIR")
+ do addService^SYNWEBUT("GET","showfhir","wsShow^SYNFHIR")
+ do addService^SYNWEBUT("GET","vpr/{dfn}","wsVPR^SYNVPR")
+ do addService^SYNWEBUT("GET","global/{root}","wsGLOBAL^SYNVPR")
+ do addService^SYNWEBUT("GET","gtree/{root}","wsGtree^SYNVPR")
+ do addService^SYNWEBUT("GET","graph/{graph}","wsGetGraph^SYNGRAPH")
  quit
  ;
 DELHAND ; [Public] Delete URL handlers
- do deleteService^%webutils("POST","addpatient")
- do deleteService^%webutils("POST","updatepatient")
- do deleteService^%webutils("GET","loadstatus")
- do deleteService^%webutils("GET","showfhir")
- do deleteService^%webutils("GET","vpr/{dfn}")
- do deleteService^%webutils("GET","global/{root}")
- do deleteService^%webutils("GET","gtree/{root}")
- do deleteService^%webutils("GET","graph/{graph}")
+ do deleteService^SYNWEBUT("POST","addpatient")
+ do deleteService^SYNWEBUT("POST","updatepatient")
+ do deleteService^SYNWEBUT("GET","loadstatus")
+ do deleteService^SYNWEBUT("GET","showfhir")
+ do deleteService^SYNWEBUT("GET","vpr/{dfn}")
+ do deleteService^SYNWEBUT("GET","global/{root}")
+ do deleteService^SYNWEBUT("GET","gtree/{root}")
+ do deleteService^SYNWEBUT("GET","graph/{graph}")
  quit
  ;
 PROV(rePopulate) ;[Public $$] Create Generic Provider for Synthetic Patients

@@ -93,7 +93,7 @@ getGraph(url,gname) ; get a graph from a web service
  w !,"result= ",%
  i '$d(json) d  q  ;
  . w !,"error, nothing returned"
- d decode^%webjson("json","grf")
+ d decode^SYNJSONE("json","grf")
  m @root=grf
  n indx,rindx
  s indx=$o(@root@(0))
@@ -118,7 +118,7 @@ wsGetGraph(RTN,FILTER) ; web service returns the requested graph FILTER("graph")
  ;s json=$$setroot^SYNWD(graph_"-json")
  S RTN=$na(^TMP("SYNOUT",$J))
  K @RTN
- d encode^%webjson(root,RTN)
+ d encode^SYNJSONE(root,RTN)
  q
  ;
 loincMap() ; create the lonic-lab-map

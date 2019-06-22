@@ -43,7 +43,7 @@ SYNCH(VSYS) ; synchronize with another VistA system
  . s RTN=$G(RTN)_"^"_" Synchronize step failed"
  . w RTN(1)
  n return
- d decode^%webjson("RTN","return")
+ d decode^SYNJSONE("RTN","return")
  w !,"System: "_$g(return("result","source"))
  w !,"URL: "_$g(return("result","url"))
  w !,"Matches: "_$g(return("result","match","matchcount"))
@@ -137,7 +137,7 @@ WSIDSYNC(RTN,FILTER) ; identify patients to synch
  ;
  d match("vista-synch",.rslt)
  ;
- d encode^%webjson("rslt","RTN")
+ d encode^SYNJSONE("rslt","RTN")
  q
  ;
 getlist(RTN,FILTER,rslt) ; extrinsic puts list in a graph returns 0 on fail
@@ -152,7 +152,7 @@ getlist(RTN,FILTER,rslt) ; extrinsic puts list in a graph returns 0 on fail
  s rslt("result","url")=url
  i url="not found" d  q 0
  . s rslt("result","status")="url not provided, aborting"
- . d encode^%webjson("rslt","RTN")
+ . d encode^SYNJSONE("rslt","RTN")
  s url=url_"/DHPPATICNALL?JSON=J"
  n gname s gname="vista-synch"
  n root s root=$$setroot^SYNWD(gname)
@@ -178,7 +178,7 @@ getlist(RTN,FILTER,rslt) ; extrinsic puts list in a graph returns 0 on fail
  s @root@("B",name,lien)=""
  ;
  set gr=$name(@root@(lien,"list"))
- do decode^%webjson("json",gr)
+ do decode^SYNJSONE("json",gr)
  s @gr@("name")=name
  s @gr@("url")=$p(url,"/DHPPATICNALL",1)
  ;

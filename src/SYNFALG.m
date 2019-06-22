@@ -37,7 +37,7 @@ wsIntakeAllergy(args,body,result,ien) ; web service entry (post)
  e  d  ;
  . ;s args("load")=0
  . merge jtmp=BODY
- . do decode^%webjson("jtmp","json")
+ . do decode^SYNJSONE("jtmp","json")
  ;
  ;i '$d(json) d getRandomAllergy(.json)
  ;
@@ -211,7 +211,7 @@ wsIntakeAllergy(args,body,result,ien) ; web service entry (post)
  . m result("ien")=ien
  . ;b
  e  d  ;
- . d encode^%webjson("jrslt","result")
+ . d encode^SYNJSONE("jrslt","result")
  . set HTTPRSP("mime")="application/json"
  q
  ;
@@ -274,14 +274,14 @@ getRandomAllergy(ary) ; make a web service call to get random allergies
  . n ok,r1
  . s ok=$$%^%WC(.r1,"GET",url)
  . i '$d(r1) q  ;
- . d decode^%webjson("r1","ary")
+ . d decode^SYNJSONE("r1","ary")
  n url
  s url=srvr_"randomAllergy"
  n ret,json,jtmp
  s ret=$$GETURL^XTHC10(url,,"jtmp")
  d assemble^SYNFPUL("jtmp","json")
  i '$d(json) q  ;
- d decode^%webjson("json","ary")
+ d decode^SYNJSONE("json","ary")
  q
  ;
 ISGMR(CDE) ; extrinsic return the ien and allergy name in GMR ALLERGIES if any

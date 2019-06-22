@@ -8,9 +8,9 @@ setroot(graph) ; root of working storage
  q $$setroot^SYNWD(graph)
  ;
  i '$d(graph) s graph="seeGraph"
- n %y s %y=$o(^%wd(17.040801,"B",graph,""))
+ n %y s %y=$o(^XTMP("SYNGRAPH","B",graph,""))
  i %y="" s %y=$$addgraph(graph) ; if graph is not present, add it
- q $na(^%wd(17.040801,%y)) ; root for graph
+ q $na(^XTMP("SYNGRAPH",%y)) ; root for graph
  ;
 addgraph(graph) ; makes a place in the graph file for a new graph
  q $$addgraph^SYNWD(graph)
@@ -18,7 +18,7 @@ addgraph(graph) ; makes a place in the graph file for a new graph
  n fda s fda(17.040801,"?+1,",.01)=graph
  n %yerr
  d UPDATE^DIE("","fda","","%yerr")
- n %y s %y=$o(^%wd(17.040801,"B",graph,""))
+ n %y s %y=$o(^XTMP("SYNGRAPH","B",graph,""))
  q %y
  ;
 homedir() ; extrinsic which return the document home
