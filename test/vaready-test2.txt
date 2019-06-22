@@ -1,0 +1,124 @@
+Script started on Sat 22 Jun 2019 05:14:32 PM UTC
+kvehu@d6cb50e40090:~/www/logs\[vehu@d6cb50e40090 logs]$ mumps -dir
+
+VEHU>[?1h=S[C [CD[CU[CZ[C=[C1[C [CD[C [C^[CX[CU[CP[C[?1l>
+
+Setting up programmer environment
+This is a TEST account.
+
+Terminal Type set to: C-VT100
+
+You have 213 new messages.
+Select OPTION NAME: 
+VEHU>[?1h=S[C [CD[CE[CB[CU[CG[C=[C1[C[?1l>
+
+VEHU>[?1h=D[C [CF[CI[CL[CE[C^[CS[CY[CN[CF[CH[CI[CR[C([C"[C/[Ct[Cm[Cp[C/[Cf[Ch[Ci[Cr[C/[C"[C)[C[?1l>
+Loading gpltest1025.json...
+Ingesting gpltest1025.json...
+Loaded with following data: 
+DFN: 101077         ICN: 2118161706V061770        Graph Store IEN: 2
+--------------------------------------------------------------------------
+Type                          Loaded?                       Error
+ADR/Allergy                   0                             0
+Appointments                                                
+Care Plans                                                  
+Problems                                                    
+Encounters                                                  
+Immunization                                                
+Labs                                                        
+Meds                                                        
+Procedures                                                  
+Vitals                                                      
+
+
+VEHU>[?1h=z[Cl[Ci[Cn[Ck[C [C"[CS[CY[CN[CG[CR[CA[CF[C"[C[?1l>
+
+VEHU>[?1h=VEHU>[Kzlink "SYNGRAF"VEHU>[KD FILE^SYNFHIR("/tmp/fhir/")[?1l>
+Loading gpltest1026.json...
+%GTM-E-REC2BIG, Record size (32734) is greater than maximum (16368) for region: 
+TEMP
+%GTM-I-GVIS, 		Global variable: ^TMP("SYNFILE",1027,1)
+
+VEHU>[?1h=VEHU>[KD FILE^SYNFHIR("/tmp/fhir/")[?1l>
+Loading gpltest1027.json...
+Ingesting gpltest1027.json...
+Loaded with following data: 
+DFN: 101078         ICN: 1880252502V374608        Graph Store IEN: 1
+--------------------------------------------------------------------------
+Type                          Loaded?                       Error
+ADR/Allergy                   0                             0
+Appointments                                                
+Care Plans                                                  
+Problems                                                    
+Encounters                                                  
+Immunization                                                
+Labs                                                        
+Meds                                                        
+Procedures                                                  
+Vitals                                                      
+
+
+VEHU>[?1h=z[Cs[Cy[C [C"[Cw[Cg[Ce[Ct[C [Ch[Ct[Ct[Cp[C:[C/[C/[Cv[Ce[Ch[Cu[Cv[C .[Cv[Cs[Ci[Ct[C   i[Cs[Ct[Ca[Cp[Cl[Ce[Cx[C.[Co[Cr[Cg[C/[Cl[Co[Ca[Cd[Cs[Ct[Ca[Ct[Cu[Cs[C?[Cl[Ca[Ct[Ce[Cs[Ct[C=[C1[C"[C[?1l>
+--2019-06-22 17:38:49--  http://vehu.vistaplex.org/loadstatus?latest=1
+Resolving vehu.vistaplex.org (vehu.vistaplex.org)... 134.209.120.143
+Connecting to vehu.vistaplex.org (vehu.vistaplex.org)|134.209.120.143|:80... ^C
+VEHU>[?1h=VEHU>[Kzsy "wget http://vehu.vistaplex.org/loadstatus?latest=1"[C[C[C[C[C[C[C                      /loadstatus?latest=1"                      /loadstatus?latest=1"                      /loadstatus?latest=1"                      /loadstatus?latest=1"                      /loadstatus?latest=1"                      /loadstatus?latest=1"                      /loadstatus?latest=1"                      /loadstatus?latest=1"                      /loadstatus?latest=1"                      /loadstatus?latest=1"                      /loadstatus?latest=1"                      /loadstatus?latest=1"                      /loadstatus?latest=1"                      /loadstatus?latest=1"                      /loadstatus?latest=1"                      /loadstatus?latest=1"                      /loadstatus?latest=1"                      /loadstatus?latest=1"                     l/loadstatus?latest=1"[C                     o/loadstatus?latest=1"[C                     c/loadstatus?latest=1"[C                     a/loadstatus?latest=1"[C                     l/loadstatus?latest=1"[C                     h/loadstatus?latest=1"[C                     o/loadstatus?latest=1"[C                     s/loadstatus?latest=1"[C                     t/loadstatus?latest=1"[C                     :/loadstatus?latest=1"[C                     9/loadstatus?latest=1"[C                     0/loadstatus?latest=1"[C                     8/loadstatus?latest=1"[C                     0/loadstatus?latest=1"[C[?1l>
+--2019-06-22 17:39:24--  http://localhost:9080/loadstatus?latest=1
+Resolving localhost (localhost)... 127.0.0.1, ::1
+Connecting to localhost (localhost)|127.0.0.1|:9080... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 1970 (1.9K) [text/plain]
+Saving to: ‘loadstatus?latest=1’
+
+ 0% [                                       ] 0           --.-K/s              100%[======================================>] 1,970       --.-K/s   in 0s      
+
+2019-06-22 17:39:24 (242 MB/s) - ‘loadstatus?latest=1’ saved [1970/1970]
+
+
+VEHU>[?1h=z[Cs[Cy[C [C"[Cc[Ca[Ct[C [Cl[Co[Ca[Cd[Cs[Ct[Ca[Ct[Cu[Cs[C?[Cl[Ca[Ct[Ce[Cs[Ct[C=[C1[C"[C[?1l>
+OSEHRA ZGO Export: M Web Server ZWRITE Export
+22-Jun-2019 17:39:24 ZWR
+load(1,"Patient","PLD","index")="^SYNGRAPH(2002.801,1)"
+load(1,"Patient","PLD","log")="^SYNGRAPH(2002.801,1,1,""load"",""Patient"",""log"")"
+load(1,"Patient","PLD","parms")="^SYNGRAPH(2002.801,1,1,""load"",""Patient"",""parms"")"
+load(1,"Patient","PLD","status")="^SYNGRAPH(2002.801,1,1,""load"",""Patient"",""status"")"
+load(1,"Patient","PLD","verify")="^SYNGRAPH(2002.801,1,1,""load"",""Patient"",""verify"")"
+load(1,"Patient","log",0)=11
+load(1,"Patient","log",1)="Patient load begins for fhirien= 1"
+load(1,"Patient","log",2)="Patient name is: HARTMANN887,SELMER543"
+load(1,"Patient","log",3)="Patient gender is: female"
+load(1,"Patient","log",4)="Patient ID is 8924a95e-2ba4-451d-9986-ab020a4033c6"
+load(1,"Patient","log",5)="Ethnicity code is 2180-8"
+load(1,"Patient","log",6)="Ethnicity code 2180-8 does not map"
+load(1,"Patient","log",7)="Race code is 2131-1"
+load(1,"Patient","log",8)="Race code 2131-1 does not map"
+load(1,"Patient","log",9)="Called IMPORTPT^ISIIMP03 to import patient"
+load(1,"Patient","log",10)="Return code from Import: 0"
+load(1,"Patient","log",11)="Return values from Import: 101078^999434315^HARTMANN887,SELMER543"
+load(1,"Patient","parms","CITY")="Boston"
+load(1,"Patient","parms","DOB")=2331014
+load(1,"Patient","parms","ID")="8924a95e-2ba4-451d-9986-ab020a4033c6"
+load(1,"Patient","parms","IMP_TYPE")="I"
+load(1,"Patient","parms","MARITAL_STATUS")="M"
+load(1,"Patient","parms","NAME")="HARTMANN887,SELMER543"
+load(1,"Patient","parms","PH_NUM")="(494) 736-1546 x40142"
+load(1,"Patient","parms","SEX")="F"
+load(1,"Patient","parms","SSN")=999434315
+load(1,"Patient","parms","STATE")="MA"
+load(1,"Patient","parms","STREET_ADD1")="65552 Abshire Lodge"
+load(1,"Patient","parms","ZIP")="02116"
+load(1,"Patient","status","DFN")=101078
+load(1,"Patient","status","ICN")="1880252502V374608"
+load(1,"Patient","status","loadStatus")="loaded"
+
+VEHU>[?1h=VEHU>[Kzsy "cat loadstatus?latest=1"VEHU>[Kzsy "wget http://localhost:9080/loadstatus?latest=1"VEHU>[Kzsy "wget http://vehu.vistaplex.org/loadstatus?latest=1"VEHU>[KD FILE^SYNFHIR("/tmp/fhir/")[?1l>
+Loading gpltest1028.json...
+%GTM-E-REC2BIG, Record size (32734) is greater than maximum (16368) for region: 
+TEMP
+%GTM-I-GVIS, 		Global variable: ^TMP("SYNFILE",1027,1)
+
+VEHU>[?1h=h[C[?1l>
+kvehu@d6cb50e40090:~/www/logs\[vehu@d6cb50e40090 logs]$ exit
+exit
+
+Script done on Sat 22 Jun 2019 05:44:01 PM UTC

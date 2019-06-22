@@ -1,0 +1,1482 @@
+Script started on Sat 22 Jun 2019 03:34:08 AM UTC
+kvehu@d6cb50e40090:~/www/logs\[vehu@d6cb50e40090 logs]$ mumps -dir
+
+VEHU>[?1h=S[C [CD[CU[CZ[C=[C1[C [CD[C [C^[CX[CU[CP[C[?1l>
+
+Setting up programmer environment
+This is a TEST account.
+
+Terminal Type set to: C-VT100
+
+You have 213 new messages.
+Select OPTION NAME: 
+VEHU>[?1h=D[C [CF[CI[CL[CE[C^[CS[CY[CN[CF[CH[CI[CR[C([C"[C/[Ct[Cm[Cp[C/[Cf[Ch[Ci[Cr[C"[C /[C"[C)[C[?1l>
+%GTM-E-LABELMISSING, Label referenced but not defined: FILE
+
+VEHU>[?1h=h[C[?1l>
+kvehu@d6cb50e40090:~/www/logs\[vehu@d6cb50e40090 logs]$ mumps -dir
+
+VEHU>[?1h=S[C [CD[CU[CZ[C=[C1[C [CD[C [C^[CX[CU[CP[C[?1l>
+
+Setting up programmer environment
+This is a TEST account.
+
+Terminal Type set to: C-VT100
+
+You have 213 new messages.
+Select OPTION NAME: 
+VEHU>[?1h=D[C [CT[CE[CS[CT[C1[CK[C^[CS[C        F[CI[CL[CE[C^[CS[CY[CN[CF[CP[CU[CL[C([C"[C/[Ct[Cm[Cp[C/[Cf[Ch[Ci[Cr[C/[C"[C)[C[?1l>
+%GTM-E-LABELMISSING, Label referenced but not defined: FILE
+
+VEHU>[?1h=VEHU>[KD FILE^SYNFPUL("/tmp/fhir/")               ("/tmp/fhir/")               ("/tmp/fhir/")               ("/tmp/fhir/")              H("/tmp/fhir/")[C              I("/tmp/fhir/")[C              R("/tmp/fhir/")[C[?1l>
+Loading gpltest.json...
+Ingesting gpltest.json...
+%GTM-E-NULSUBSC, Update failed because Null subscripts are not allowed for curre
+nt region
+%GTM-I-GVIS, 		Global variable: ^XTMP("SYNGRAPH",""," ")
+
+VEHU>[?1h=D[C [C^[CZ[CT[CE[CR[C[?1l>
+
+VEHU>[?1h=D[C [C^[CX[CT[CE[CR[C[?1l>
+
+
+In response to the DATE prompt you can enter:
+     'S' to specify text to be matched in error or routine name
+
+
+3 errors logged on 6/22/2019
+  3)  <GVIS' 		Global variable: ^XTMP("SYNGRAPH"'""'" ")(NULSUBSC)>wsPostFHIR+1
+  2)  <(ZCCTENV)>INIT+3^XTHC10        03:28:00  ROU:vehu    30606  /dev/pts/6
+  1)  <GVIS' 		Global variable: ^XTMP("SYNGRAPH"'""'"B"'"http://138.197.147.128
+
+No screened error
+
+     Enter '^' to quit listing, <RETURN> to continue...: 1 3
+Process ID:  30872  (30872)             JUN 22, 2019 03:41:34
+UCI/VOL: [ROU:vehu]                     
+$ZA:   0                                $ZB: \013
+Current $IO: /dev/pts/7                 Current $ZIO: /dev/pts/7^0^16^/dev/pts/7
+$ZE= wsPostFHIR+12^SYNFHIR, Update failed because Null subscripts are not allowe
+d for current region'%GTM-I-GVIS' 		Global variable: ^XTMP("SYNGRAPH"'""'" "),15
+0373498,-%GTM-E-NULSUBSC
+ . new % set %=$$wsPostFHIR(.args,.body,.synjsonreturn) ; % always comes out as 
+1. We will ignore it.
+
+Which symbol? > 
+
+Which error? >  
+
+Which date? > 
+VEHU>[?1h=Z[CW[CR[C [C^[C&[CX[CT[CM[CP[C     X[CT[CM[CP[C([C"[CS[CY[CN[CG[CR[CA[CP[CH[C,[C "[C,[C*[C)[C[?1l>
+^XTMP("SYNGRAPH",1,0)="list-of-lists"
+^XTMP("SYNGRAPH","B","list-of-lists",1)=""
+
+VEHU>[?1h=h[C[?1l>
+kvehu@d6cb50e40090:~/www/logs\[vehu@d6cb50e40090 logs]$ mumps -dir
+
+VEHU>[?1h=s[C S[C [CD[CU[CZ[C=[C1[C [CD[C [C^[CX[CU[CP[C[?1l>
+
+Setting up programmer environment
+This is a TEST account.
+
+Terminal Type set to: C-VT100
+
+You have 213 new messages.
+Select OPTION NAME: 
+VEHU>[?1h=D[C [CF[CI[CL[CE[C^[CS[CY[CN[CF[CH[CI[CR[C([C"[C/[Ct[Cm[Cp[C/[Cf[Ch[Ci[Cr[C/[C"[C)[C[?1l>
+Loading gpltest.json...
+Ingesting gpltest.json...
+	 ZW MAPSVO
+	 ^-----
+		At column 2, line 152, source module /home/vehu/p/SYNDHPMP.m
+%GTM-E-INVCMD, Invalid command keyword encountered
+	 ZW MAPMVO
+	 ^-----
+		At column 2, line 154, source module /home/vehu/p/SYNDHPMP.m
+%GTM-E-INVCMD, Invalid command keyword encountered
+	 ZW MAPSVO
+	 ^-----
+		At column 2, line 180, source module /home/vehu/p/SYNDHPMP.m
+%GTM-E-INVCMD, Invalid command keyword encountered
+	 ZW MAPMVO
+	 ^-----
+		At column 2, line 182, source module /home/vehu/p/SYNDHPMP.m
+%GTM-E-INVCMD, Invalid command keyword encountered
+Loaded with following data: 
+DFN: 101076         ICN: 1554254176V230766        Graph Store IEN: 1
+--------------------------------------------------------------------------
+Type                          Loaded?                       Error
+ADR/Allergy                   0                             0
+Appointments                                                
+Care Plans                    1                             
+Problems                      4                             
+Encounters                    1                             
+Immunization                                                
+Labs                                                        
+Meds                          1                             
+Procedures                                                  
+Vitals                                                      
+
+
+VEHU>[?1h=z[Cw[Cr[C [C^[CX[CT[CM[CP[C([C"[CS[CY[CN[CG[CR[CA[CP[CH[C"[C,[C*[C)[C[?1l>
+^XTMP("SYNGRAPH",1,0)="list-of-lists"
+^XTMP("SYNGRAPH",2,0)="fhir-intake"
+^XTMP("SYNGRAPH",2,1,"DFN",101076)=""
+^XTMP("SYNGRAPH",2,1,"ICN","1554254176V230766")=""
+^XTMP("SYNGRAPH",2,1,"OPS",1,"rien","urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d5bccce86
+b8")=""
+^XTMP("SYNGRAPH",2,1,"OPS",2,"rien","urn:uuid:65d2638c-da33-4e64-b7da-f1d825f691
+e9")=""
+^XTMP("SYNGRAPH",2,1,"OPS",3,"rien","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba266
+37")=""
+^XTMP("SYNGRAPH",2,1,"OPS",4,"rien","urn:uuid:549aaab2-dd2f-4c66-803c-a95bb68980
+6b")=""
+^XTMP("SYNGRAPH",2,1,"OPS",5,"rien","urn:uuid:3878e8cf-1a3e-4ba9-be3f-b6336c0af5
+15")=""
+^XTMP("SYNGRAPH",2,1,"OPS",6,"rien","urn:uuid:fb4ea770-1c33-459e-a9cf-254c399744
+65")=""
+^XTMP("SYNGRAPH",2,1,"OPS",7,"rien","urn:uuid:de194a92-2817-4946-b804-107ad1bd7f
+49")=""
+^XTMP("SYNGRAPH",2,1,"OPS",8,"rien","urn:uuid:68574004-9f34-4564-bec9-3d21abab22
+fc")=""
+^XTMP("SYNGRAPH",2,1,"OPS",9,"rien","urn:uuid:53bee5f0-d5e2-40d2-8fbc-71aa5ba1a9
+ba")=""
+^XTMP("SYNGRAPH",2,1,"OPS",10,"rien","CarePlan/10")=""
+^XTMP("SYNGRAPH",2,1,"OPS",11,"rien","Medication/11")=""
+^XTMP("SYNGRAPH",2,1,"OPS",12,"rien","MedicationRequest/12")=""
+^XTMP("SYNGRAPH",2,1,"OPS",14200,"visitIen","57b1ba72-24ea-4b6e-a4d2-11670ba2663
+7")=""
+^XTMP("SYNGRAPH",2,1,"OPS","2010-06-07T02:30:36-04:00","dateTime","urn:uuid:57b1
+ba72-24ea-4b6e-a4d2-11670ba26637")=""
+^XTMP("SYNGRAPH",2,1,"OPS","20100607023036-0400","hl7dateTime","urn:uuid:57b1ba7
+2-24ea-4b6e-a4d2-11670ba26637")=""
+^XTMP("SYNGRAPH",2,1,"OPS","CarePlan","type","CarePlan/10")=""
+^XTMP("SYNGRAPH",2,1,"OPS","Condition","type","urn:uuid:3878e8cf-1a3e-4ba9-be3f-
+b6336c0af515")=""
+^XTMP("SYNGRAPH",2,1,"OPS","Condition","type","urn:uuid:549aaab2-dd2f-4c66-803c-
+a95bb689806b")=""
+^XTMP("SYNGRAPH",2,1,"OPS","Condition","type","urn:uuid:de194a92-2817-4946-b804-
+107ad1bd7f49")=""
+^XTMP("SYNGRAPH",2,1,"OPS","Condition","type","urn:uuid:fb4ea770-1c33-459e-a9cf-
+254c39974465")=""
+^XTMP("SYNGRAPH",2,1,"OPS","DiagnosticReport","type","urn:uuid:53bee5f0-d5e2-40d
+2-8fbc-71aa5ba1a9ba")=""
+^XTMP("SYNGRAPH",2,1,"OPS","Encounter","type","urn:uuid:57b1ba72-24ea-4b6e-a4d2-
+11670ba26637")=""
+^XTMP("SYNGRAPH",2,1,"OPS","Medication","type","Medication/11")=""
+^XTMP("SYNGRAPH",2,1,"OPS","MedicationRequest","type","MedicationRequest/12")=""
+^XTMP("SYNGRAPH",2,1,"OPS","Observation","type","urn:uuid:68574004-9f34-4564-bec
+9-3d21abab22fc")=""
+^XTMP("SYNGRAPH",2,1,"OPS","Organization","type","urn:uuid:65d2638c-da33-4e64-b7
+da-f1d825f691e9")=""
+^XTMP("SYNGRAPH",2,1,"OPS","Patient","type","urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d
+5bccce86b8")=""
+^XTMP("SYNGRAPH",2,1,"OPS","ambulatory","class","urn:uuid:57b1ba72-24ea-4b6e-a4d
+2-11670ba26637")=""
+^XTMP("SYNGRAPH",2,1,"OPS","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637","enco
+unterReference","CarePlan/10")=""
+^XTMP("SYNGRAPH",2,1,"OPS","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637","enco
+unterReference","MedicationRequest/12")=""
+^XTMP("SYNGRAPH",2,1,"OPS","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637","enco
+unterReference","urn:uuid:3878e8cf-1a3e-4ba9-be3f-b6336c0af515")=""
+^XTMP("SYNGRAPH",2,1,"OPS","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637","enco
+unterReference","urn:uuid:53bee5f0-d5e2-40d2-8fbc-71aa5ba1a9ba")=""
+^XTMP("SYNGRAPH",2,1,"OPS","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637","enco
+unterReference","urn:uuid:549aaab2-dd2f-4c66-803c-a95bb689806b")=""
+^XTMP("SYNGRAPH",2,1,"OPS","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637","enco
+unterReference","urn:uuid:68574004-9f34-4564-bec9-3d21abab22fc")=""
+^XTMP("SYNGRAPH",2,1,"OPS","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637","enco
+unterReference","urn:uuid:de194a92-2817-4946-b804-107ad1bd7f49")=""
+^XTMP("SYNGRAPH",2,1,"OPS","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637","enco
+unterReference","urn:uuid:fb4ea770-1c33-459e-a9cf-254c39974465")=""
+^XTMP("SYNGRAPH",2,1,"OPS","urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8","pati
+entReference","CarePlan/10")=""
+^XTMP("SYNGRAPH",2,1,"OPS","urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8","pati
+entReference","MedicationRequest/12")=""
+^XTMP("SYNGRAPH",2,1,"OPS","urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8","pati
+entReference","urn:uuid:3878e8cf-1a3e-4ba9-be3f-b6336c0af515")=""
+^XTMP("SYNGRAPH",2,1,"OPS","urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8","pati
+entReference","urn:uuid:53bee5f0-d5e2-40d2-8fbc-71aa5ba1a9ba")=""
+^XTMP("SYNGRAPH",2,1,"OPS","urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8","pati
+entReference","urn:uuid:549aaab2-dd2f-4c66-803c-a95bb689806b")=""
+^XTMP("SYNGRAPH",2,1,"OPS","urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8","pati
+entReference","urn:uuid:68574004-9f34-4564-bec9-3d21abab22fc")=""
+^XTMP("SYNGRAPH",2,1,"OPS","urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8","pati
+entReference","urn:uuid:de194a92-2817-4946-b804-107ad1bd7f49")=""
+^XTMP("SYNGRAPH",2,1,"OPS","urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8","pati
+entReference","urn:uuid:fb4ea770-1c33-459e-a9cf-254c39974465")=""
+^XTMP("SYNGRAPH",2,1,"POS","class","ambulatory","urn:uuid:57b1ba72-24ea-4b6e-a4d
+2-11670ba26637")=""
+^XTMP("SYNGRAPH",2,1,"POS","dateTime","2010-06-07T02:30:36-04:00","urn:uuid:57b1
+ba72-24ea-4b6e-a4d2-11670ba26637")=""
+^XTMP("SYNGRAPH",2,1,"POS","encounterReference","urn:uuid:57b1ba72-24ea-4b6e-a4d
+2-11670ba26637","CarePlan/10")=""
+^XTMP("SYNGRAPH",2,1,"POS","encounterReference","urn:uuid:57b1ba72-24ea-4b6e-a4d
+2-11670ba26637","MedicationRequest/12")=""
+^XTMP("SYNGRAPH",2,1,"POS","encounterReference","urn:uuid:57b1ba72-24ea-4b6e-a4d
+2-11670ba26637","urn:uuid:3878e8cf-1a3e-4ba9-be3f-b6336c0af515")=""
+^XTMP("SYNGRAPH",2,1,"POS","encounterReference","urn:uuid:57b1ba72-24ea-4b6e-a4d
+2-11670ba26637","urn:uuid:53bee5f0-d5e2-40d2-8fbc-71aa5ba1a9ba")=""
+^XTMP("SYNGRAPH",2,1,"POS","encounterReference","urn:uuid:57b1ba72-24ea-4b6e-a4d
+2-11670ba26637","urn:uuid:549aaab2-dd2f-4c66-803c-a95bb689806b")=""
+^XTMP("SYNGRAPH",2,1,"POS","encounterReference","urn:uuid:57b1ba72-24ea-4b6e-a4d
+2-11670ba26637","urn:uuid:68574004-9f34-4564-bec9-3d21abab22fc")=""
+^XTMP("SYNGRAPH",2,1,"POS","encounterReference","urn:uuid:57b1ba72-24ea-4b6e-a4d
+2-11670ba26637","urn:uuid:de194a92-2817-4946-b804-107ad1bd7f49")=""
+^XTMP("SYNGRAPH",2,1,"POS","encounterReference","urn:uuid:57b1ba72-24ea-4b6e-a4d
+2-11670ba26637","urn:uuid:fb4ea770-1c33-459e-a9cf-254c39974465")=""
+^XTMP("SYNGRAPH",2,1,"POS","hl7dateTime","20100607023036-0400","urn:uuid:57b1ba7
+2-24ea-4b6e-a4d2-11670ba26637")=""
+^XTMP("SYNGRAPH",2,1,"POS","patientReference","urn:uuid:8ee6c306-9ca1-4e56-bf6c-
+8d5bccce86b8","CarePlan/10")=""
+^XTMP("SYNGRAPH",2,1,"POS","patientReference","urn:uuid:8ee6c306-9ca1-4e56-bf6c-
+8d5bccce86b8","MedicationRequest/12")=""
+^XTMP("SYNGRAPH",2,1,"POS","patientReference","urn:uuid:8ee6c306-9ca1-4e56-bf6c-
+8d5bccce86b8","urn:uuid:3878e8cf-1a3e-4ba9-be3f-b6336c0af515")=""
+^XTMP("SYNGRAPH",2,1,"POS","patientReference","urn:uuid:8ee6c306-9ca1-4e56-bf6c-
+8d5bccce86b8","urn:uuid:53bee5f0-d5e2-40d2-8fbc-71aa5ba1a9ba")=""
+^XTMP("SYNGRAPH",2,1,"POS","patientReference","urn:uuid:8ee6c306-9ca1-4e56-bf6c-
+8d5bccce86b8","urn:uuid:549aaab2-dd2f-4c66-803c-a95bb689806b")=""
+^XTMP("SYNGRAPH",2,1,"POS","patientReference","urn:uuid:8ee6c306-9ca1-4e56-bf6c-
+8d5bccce86b8","urn:uuid:68574004-9f34-4564-bec9-3d21abab22fc")=""
+^XTMP("SYNGRAPH",2,1,"POS","patientReference","urn:uuid:8ee6c306-9ca1-4e56-bf6c-
+8d5bccce86b8","urn:uuid:de194a92-2817-4946-b804-107ad1bd7f49")=""
+^XTMP("SYNGRAPH",2,1,"POS","patientReference","urn:uuid:8ee6c306-9ca1-4e56-bf6c-
+8d5bccce86b8","urn:uuid:fb4ea770-1c33-459e-a9cf-254c39974465")=""
+^XTMP("SYNGRAPH",2,1,"POS","rien",1,"urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d5bccce86
+b8")=""
+^XTMP("SYNGRAPH",2,1,"POS","rien",2,"urn:uuid:65d2638c-da33-4e64-b7da-f1d825f691
+e9")=""
+^XTMP("SYNGRAPH",2,1,"POS","rien",3,"urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba266
+37")=""
+^XTMP("SYNGRAPH",2,1,"POS","rien",4,"urn:uuid:549aaab2-dd2f-4c66-803c-a95bb68980
+6b")=""
+^XTMP("SYNGRAPH",2,1,"POS","rien",5,"urn:uuid:3878e8cf-1a3e-4ba9-be3f-b6336c0af5
+15")=""
+^XTMP("SYNGRAPH",2,1,"POS","rien",6,"urn:uuid:fb4ea770-1c33-459e-a9cf-254c399744
+65")=""
+^XTMP("SYNGRAPH",2,1,"POS","rien",7,"urn:uuid:de194a92-2817-4946-b804-107ad1bd7f
+49")=""
+^XTMP("SYNGRAPH",2,1,"POS","rien",8,"urn:uuid:68574004-9f34-4564-bec9-3d21abab22
+fc")=""
+^XTMP("SYNGRAPH",2,1,"POS","rien",9,"urn:uuid:53bee5f0-d5e2-40d2-8fbc-71aa5ba1a9
+ba")=""
+^XTMP("SYNGRAPH",2,1,"POS","rien",10,"CarePlan/10")=""
+^XTMP("SYNGRAPH",2,1,"POS","rien",11,"Medication/11")=""
+^XTMP("SYNGRAPH",2,1,"POS","rien",12,"MedicationRequest/12")=""
+^XTMP("SYNGRAPH",2,1,"POS","type","CarePlan","CarePlan/10")=""
+^XTMP("SYNGRAPH",2,1,"POS","type","Condition","urn:uuid:3878e8cf-1a3e-4ba9-be3f-
+b6336c0af515")=""
+^XTMP("SYNGRAPH",2,1,"POS","type","Condition","urn:uuid:549aaab2-dd2f-4c66-803c-
+a95bb689806b")=""
+^XTMP("SYNGRAPH",2,1,"POS","type","Condition","urn:uuid:de194a92-2817-4946-b804-
+107ad1bd7f49")=""
+^XTMP("SYNGRAPH",2,1,"POS","type","Condition","urn:uuid:fb4ea770-1c33-459e-a9cf-
+254c39974465")=""
+^XTMP("SYNGRAPH",2,1,"POS","type","DiagnosticReport","urn:uuid:53bee5f0-d5e2-40d
+2-8fbc-71aa5ba1a9ba")=""
+^XTMP("SYNGRAPH",2,1,"POS","type","Encounter","urn:uuid:57b1ba72-24ea-4b6e-a4d2-
+11670ba26637")=""
+^XTMP("SYNGRAPH",2,1,"POS","type","Medication","Medication/11")=""
+^XTMP("SYNGRAPH",2,1,"POS","type","MedicationRequest","MedicationRequest/12")=""
+^XTMP("SYNGRAPH",2,1,"POS","type","Observation","urn:uuid:68574004-9f34-4564-bec
+9-3d21abab22fc")=""
+^XTMP("SYNGRAPH",2,1,"POS","type","Organization","urn:uuid:65d2638c-da33-4e64-b7
+da-f1d825f691e9")=""
+^XTMP("SYNGRAPH",2,1,"POS","type","Patient","urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d
+5bccce86b8")=""
+^XTMP("SYNGRAPH",2,1,"POS","visitIen",14200,"57b1ba72-24ea-4b6e-a4d2-11670ba2663
+7")=""
+^XTMP("SYNGRAPH",2,1,"PSO","class","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba2663
+7","ambulatory")=""
+^XTMP("SYNGRAPH",2,1,"PSO","dateTime","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba2
+6637","2010-06-07T02:30:36-04:00")=""
+^XTMP("SYNGRAPH",2,1,"PSO","encounterReference","CarePlan/10","urn:uuid:57b1ba72
+-24ea-4b6e-a4d2-11670ba26637")=""
+^XTMP("SYNGRAPH",2,1,"PSO","encounterReference","MedicationRequest/12","urn:uuid
+:57b1ba72-24ea-4b6e-a4d2-11670ba26637")=""
+^XTMP("SYNGRAPH",2,1,"PSO","encounterReference","urn:uuid:3878e8cf-1a3e-4ba9-be3
+f-b6336c0af515","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637")=""
+^XTMP("SYNGRAPH",2,1,"PSO","encounterReference","urn:uuid:53bee5f0-d5e2-40d2-8fb
+c-71aa5ba1a9ba","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637")=""
+^XTMP("SYNGRAPH",2,1,"PSO","encounterReference","urn:uuid:549aaab2-dd2f-4c66-803
+c-a95bb689806b","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637")=""
+^XTMP("SYNGRAPH",2,1,"PSO","encounterReference","urn:uuid:68574004-9f34-4564-bec
+9-3d21abab22fc","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637")=""
+^XTMP("SYNGRAPH",2,1,"PSO","encounterReference","urn:uuid:de194a92-2817-4946-b80
+4-107ad1bd7f49","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637")=""
+^XTMP("SYNGRAPH",2,1,"PSO","encounterReference","urn:uuid:fb4ea770-1c33-459e-a9c
+f-254c39974465","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637")=""
+^XTMP("SYNGRAPH",2,1,"PSO","hl7dateTime","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670
+ba26637","20100607023036-0400")=""
+^XTMP("SYNGRAPH",2,1,"PSO","patientReference","CarePlan/10","urn:uuid:8ee6c306-9
+ca1-4e56-bf6c-8d5bccce86b8")=""
+^XTMP("SYNGRAPH",2,1,"PSO","patientReference","MedicationRequest/12","urn:uuid:8
+ee6c306-9ca1-4e56-bf6c-8d5bccce86b8")=""
+^XTMP("SYNGRAPH",2,1,"PSO","patientReference","urn:uuid:3878e8cf-1a3e-4ba9-be3f-
+b6336c0af515","urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8")=""
+^XTMP("SYNGRAPH",2,1,"PSO","patientReference","urn:uuid:53bee5f0-d5e2-40d2-8fbc-
+71aa5ba1a9ba","urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8")=""
+^XTMP("SYNGRAPH",2,1,"PSO","patientReference","urn:uuid:549aaab2-dd2f-4c66-803c-
+a95bb689806b","urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8")=""
+^XTMP("SYNGRAPH",2,1,"PSO","patientReference","urn:uuid:68574004-9f34-4564-bec9-
+3d21abab22fc","urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8")=""
+^XTMP("SYNGRAPH",2,1,"PSO","patientReference","urn:uuid:de194a92-2817-4946-b804-
+107ad1bd7f49","urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8")=""
+^XTMP("SYNGRAPH",2,1,"PSO","patientReference","urn:uuid:fb4ea770-1c33-459e-a9cf-
+254c39974465","urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8")=""
+^XTMP("SYNGRAPH",2,1,"PSO","rien","CarePlan/10",10)=""
+^XTMP("SYNGRAPH",2,1,"PSO","rien","Medication/11",11)=""
+^XTMP("SYNGRAPH",2,1,"PSO","rien","MedicationRequest/12",12)=""
+^XTMP("SYNGRAPH",2,1,"PSO","rien","urn:uuid:3878e8cf-1a3e-4ba9-be3f-b6336c0af515
+",5)=""
+^XTMP("SYNGRAPH",2,1,"PSO","rien","urn:uuid:53bee5f0-d5e2-40d2-8fbc-71aa5ba1a9ba
+",9)=""
+^XTMP("SYNGRAPH",2,1,"PSO","rien","urn:uuid:549aaab2-dd2f-4c66-803c-a95bb689806b
+",4)=""
+^XTMP("SYNGRAPH",2,1,"PSO","rien","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637
+",3)=""
+^XTMP("SYNGRAPH",2,1,"PSO","rien","urn:uuid:65d2638c-da33-4e64-b7da-f1d825f691e9
+",2)=""
+^XTMP("SYNGRAPH",2,1,"PSO","rien","urn:uuid:68574004-9f34-4564-bec9-3d21abab22fc
+",8)=""
+^XTMP("SYNGRAPH",2,1,"PSO","rien","urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8
+",1)=""
+^XTMP("SYNGRAPH",2,1,"PSO","rien","urn:uuid:de194a92-2817-4946-b804-107ad1bd7f49
+",7)=""
+^XTMP("SYNGRAPH",2,1,"PSO","rien","urn:uuid:fb4ea770-1c33-459e-a9cf-254c39974465
+",6)=""
+^XTMP("SYNGRAPH",2,1,"PSO","type","CarePlan/10","CarePlan")=""
+^XTMP("SYNGRAPH",2,1,"PSO","type","Medication/11","Medication")=""
+^XTMP("SYNGRAPH",2,1,"PSO","type","MedicationRequest/12","MedicationRequest")=""
+^XTMP("SYNGRAPH",2,1,"PSO","type","urn:uuid:3878e8cf-1a3e-4ba9-be3f-b6336c0af515
+","Condition")=""
+^XTMP("SYNGRAPH",2,1,"PSO","type","urn:uuid:53bee5f0-d5e2-40d2-8fbc-71aa5ba1a9ba
+","DiagnosticReport")=""
+^XTMP("SYNGRAPH",2,1,"PSO","type","urn:uuid:549aaab2-dd2f-4c66-803c-a95bb689806b
+","Condition")=""
+^XTMP("SYNGRAPH",2,1,"PSO","type","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637
+","Encounter")=""
+^XTMP("SYNGRAPH",2,1,"PSO","type","urn:uuid:65d2638c-da33-4e64-b7da-f1d825f691e9
+","Organization")=""
+^XTMP("SYNGRAPH",2,1,"PSO","type","urn:uuid:68574004-9f34-4564-bec9-3d21abab22fc
+","Observation")=""
+^XTMP("SYNGRAPH",2,1,"PSO","type","urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8
+","Patient")=""
+^XTMP("SYNGRAPH",2,1,"PSO","type","urn:uuid:de194a92-2817-4946-b804-107ad1bd7f49
+","Condition")=""
+^XTMP("SYNGRAPH",2,1,"PSO","type","urn:uuid:fb4ea770-1c33-459e-a9cf-254c39974465
+","Condition")=""
+^XTMP("SYNGRAPH",2,1,"PSO","visitIen","57b1ba72-24ea-4b6e-a4d2-11670ba26637",142
+00)=""
+^XTMP("SYNGRAPH",2,1,"SPO","57b1ba72-24ea-4b6e-a4d2-11670ba26637","visitIen",142
+00)=""
+^XTMP("SYNGRAPH",2,1,"SPO","CarePlan/10","encounterReference","urn:uuid:57b1ba72
+-24ea-4b6e-a4d2-11670ba26637")=""
+^XTMP("SYNGRAPH",2,1,"SPO","CarePlan/10","patientReference","urn:uuid:8ee6c306-9
+ca1-4e56-bf6c-8d5bccce86b8")=""
+^XTMP("SYNGRAPH",2,1,"SPO","CarePlan/10","rien",10)=""
+^XTMP("SYNGRAPH",2,1,"SPO","CarePlan/10","type","CarePlan")=""
+^XTMP("SYNGRAPH",2,1,"SPO","Medication/11","rien",11)=""
+^XTMP("SYNGRAPH",2,1,"SPO","Medication/11","type","Medication")=""
+^XTMP("SYNGRAPH",2,1,"SPO","MedicationRequest/12","encounterReference","urn:uuid
+:57b1ba72-24ea-4b6e-a4d2-11670ba26637")=""
+^XTMP("SYNGRAPH",2,1,"SPO","MedicationRequest/12","patientReference","urn:uuid:8
+ee6c306-9ca1-4e56-bf6c-8d5bccce86b8")=""
+^XTMP("SYNGRAPH",2,1,"SPO","MedicationRequest/12","rien",12)=""
+^XTMP("SYNGRAPH",2,1,"SPO","MedicationRequest/12","type","MedicationRequest")=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:3878e8cf-1a3e-4ba9-be3f-b6336c0af515","enco
+unterReference","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637")=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:3878e8cf-1a3e-4ba9-be3f-b6336c0af515","pati
+entReference","urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8")=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:3878e8cf-1a3e-4ba9-be3f-b6336c0af515","rien
+",5)=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:3878e8cf-1a3e-4ba9-be3f-b6336c0af515","type
+","Condition")=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:53bee5f0-d5e2-40d2-8fbc-71aa5ba1a9ba","enco
+unterReference","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637")=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:53bee5f0-d5e2-40d2-8fbc-71aa5ba1a9ba","pati
+entReference","urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8")=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:53bee5f0-d5e2-40d2-8fbc-71aa5ba1a9ba","rien
+",9)=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:53bee5f0-d5e2-40d2-8fbc-71aa5ba1a9ba","type
+","DiagnosticReport")=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:549aaab2-dd2f-4c66-803c-a95bb689806b","enco
+unterReference","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637")=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:549aaab2-dd2f-4c66-803c-a95bb689806b","pati
+entReference","urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8")=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:549aaab2-dd2f-4c66-803c-a95bb689806b","rien
+",4)=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:549aaab2-dd2f-4c66-803c-a95bb689806b","type
+","Condition")=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637","clas
+s","ambulatory")=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637","date
+Time","2010-06-07T02:30:36-04:00")=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637","hl7d
+ateTime","20100607023036-0400")=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637","rien
+",3)=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637","type
+","Encounter")=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:65d2638c-da33-4e64-b7da-f1d825f691e9","rien
+",2)=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:65d2638c-da33-4e64-b7da-f1d825f691e9","type
+","Organization")=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:68574004-9f34-4564-bec9-3d21abab22fc","enco
+unterReference","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637")=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:68574004-9f34-4564-bec9-3d21abab22fc","pati
+entReference","urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8")=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:68574004-9f34-4564-bec9-3d21abab22fc","rien
+",8)=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:68574004-9f34-4564-bec9-3d21abab22fc","type
+","Observation")=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8","rien
+",1)=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8","type
+","Patient")=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:de194a92-2817-4946-b804-107ad1bd7f49","enco
+unterReference","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637")=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:de194a92-2817-4946-b804-107ad1bd7f49","pati
+entReference","urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8")=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:de194a92-2817-4946-b804-107ad1bd7f49","rien
+",7)=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:de194a92-2817-4946-b804-107ad1bd7f49","type
+","Condition")=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:fb4ea770-1c33-459e-a9cf-254c39974465","enco
+unterReference","urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637")=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:fb4ea770-1c33-459e-a9cf-254c39974465","pati
+entReference","urn:uuid:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8")=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:fb4ea770-1c33-459e-a9cf-254c39974465","rien
+",6)=""
+^XTMP("SYNGRAPH",2,1,"SPO","urn:uuid:fb4ea770-1c33-459e-a9cf-254c39974465","type
+","Condition")=""
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"fullUrl")="urn:uuid:8ee6c306-9ca1-4e56-bf
+6c-8d5bccce86b8"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","address",1,"city")="Leicester"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","address",1,"country")="US"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","address",1,"extension",1,"exte
+nsion",1,"url")="latitude"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","address",1,"extension",1,"exte
+nsion",1,"valueDecimal")=42.256360164667136
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","address",1,"extension",1,"exte
+nsion",2,"url")="longitude"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","address",1,"extension",1,"exte
+nsion",2,"valueDecimal")=-71.8770509846154
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","address",1,"extension",1,"url"
+)="http://hl7.org/fhir/StructureDefinition/geolocation"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","address",1,"line",1)="1782 Max
+imus Groves"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","address",1,"postalCode")="0152
+4"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","address",1,"state")="MA"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","birthDate")="1955-03-31"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","communication",1,"language","c
+oding",1,"code")="en-US"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","communication",1,"language","c
+oding",1,"display")="English (United States)"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","communication",1,"language","c
+oding",1,"system")="http://hl7.org/fhir/ValueSet/languages"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","deceasedDateTime")="2010-06-07
+T02:30:36-04:00"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","extension",1,"url")="http://hl
+7.org/fhir/us/core/StructureDefinition/us-core-race"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","extension",1,"valueCodeableCon
+cept","coding",1,"code")="2106-3"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","extension",1,"valueCodeableCon
+cept","coding",1,"display")="White"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","extension",1,"valueCodeableCon
+cept","coding",1,"system")="http://hl7.org/fhir/v3/Race"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","extension",1,"valueCodeableCon
+cept","text")="race"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","extension",2,"url")="http://hl
+7.org/fhir/us/core/StructureDefinition/us-core-ethnicity"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","extension",2,"valueCodeableCon
+cept","coding",1,"code")="2186-5"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","extension",2,"valueCodeableCon
+cept","coding",1,"display")="Nonhispanic"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","extension",2,"valueCodeableCon
+cept","coding",1,"system")="http://hl7.org/fhir/v3/Ethnicity"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","extension",2,"valueCodeableCon
+cept","text")="ethnicity"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","extension",3,"url")="http://hl
+7.org/fhir/StructureDefinition/birthPlace"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","extension",3,"valueAddress","c
+ity")="Malden"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","extension",3,"valueAddress","c
+ountry")="US"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","extension",3,"valueAddress","s
+tate")="MA"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","extension",4,"url")="http://hl
+7.org/fhir/StructureDefinition/patient-mothersMaidenName"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","extension",4,"valueString")="T
+ierra549 Stracke175"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","extension",5,"url")="http://hl
+7.org/fhir/us/core/StructureDefinition/us-core-birthsex"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","extension",5,"valueCode")="M"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","extension",6,"url")="http://hl
+7.org/fhir/StructureDefinition/patient-interpreterRequired"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","extension",6,"valueBoolean")="
+false"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","extension",7,"url")="http://st
+andardhealthrecord.org/fhir/StructureDefinition/shr-actor-FictionalPerson-extens
+ion"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","extension",7,"valueBoolean")="
+true"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","extension",8,"url")="http://st
+andardhealthrecord.org/fhir/StructureDefinition/shr-demographics-FathersName-ext
+ension"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","extension",8,"valueHumanName",
+"text")="Arlene753 Hansen74"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","extension",9,"url")="http://st
+andardhealthrecord.org/fhir/StructureDefinition/shr-demographics-SocialSecurityN
+umber-extension"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","extension",9,"valueString")="9
+99-71-9314"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","gender")="male"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","id")="8ee6c306-9ca1-4e56-bf6c-
+8d5bccce86b8"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","identifier",1,"system")="https
+://github.com/synthetichealth/synthea"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","identifier",1,"value")="bdb28e
+b7-8afa-4185-8652-315ae473e642"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","identifier",2,"system")="http:
+//hl7.org/fhir/sid/us-ssn"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","identifier",2,"type","coding",
+1,"code")="SB"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","identifier",2,"type","coding",
+1,"system")="http://hl7.org/fhir/identifier-type"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","identifier",2,"value")=9997193
+14
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","identifier",2,"value","\s")=""
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","identifier",3,"system")="urn:o
+id:2.16.840.1.113883.4.3.25"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","identifier",3,"type","coding",
+1,"code")="DL"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","identifier",3,"type","coding",
+1,"system")="http://hl7.org/fhir/v2/0203"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","identifier",3,"value")="S99936
+885"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","identifier",4,"system")="http:
+//standardhealthrecord.org/fhir/StructureDefinition/passportNumber"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","identifier",4,"type","coding",
+1,"code")="PPN"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","identifier",4,"type","coding",
+1,"system")="http://hl7.org/fhir/v2/0203"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","identifier",4,"value")="X48553
+404X"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","maritalStatus","coding",1,"cod
+e")="M"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","maritalStatus","coding",1,"sys
+tem")="http://hl7.org/fhir/v3/MaritalStatus"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","maritalStatus","text")="M"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","meta","profile",1)="http://sta
+ndardhealthrecord.org/fhir/StructureDefinition/shr-demographics-PersonOfRecord"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","multipleBirthBoolean")="false"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","name",1,"family")="Hansen74"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","name",1,"given",1)="Louvenia81
+7"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","name",1,"prefix",1)="Mr."
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","name",1,"use")="official"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","resourceType")="Patient"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","telecom",1,"system")="phone"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","telecom",1,"use")="home"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","telecom",1,"value")="1-514-041
+-6290 x66983"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","text","div")="<div>Generated b
+y <a href=""https://github.com/synthetichealth/synthea"">Synthea</"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","text","div","\",1)="a>. Versio
+n identifier: 4d02400401b9fab839e47bf5b2f1f6a8c683ab55</div>"
+^XTMP("SYNGRAPH",2,1,"json","entry",1,"resource","text","status")="generated"
+^XTMP("SYNGRAPH",2,1,"json","entry",2,"fullUrl")="urn:uuid:65d2638c-da33-4e64-b7
+da-f1d825f691e9"
+^XTMP("SYNGRAPH",2,1,"json","entry",2,"resource","id")="65d2638c-da33-4e64-b7da-
+f1d825f691e9"
+^XTMP("SYNGRAPH",2,1,"json","entry",2,"resource","meta","profile",1)="http://sta
+ndardhealthrecord.org/fhir/StructureDefinition/shr-actor-Organization"
+^XTMP("SYNGRAPH",2,1,"json","entry",2,"resource","name")="Synthetic Provider"
+^XTMP("SYNGRAPH",2,1,"json","entry",2,"resource","resourceType")="Organization"
+^XTMP("SYNGRAPH",2,1,"json","entry",2,"resource","type",1,"coding",1,"code")="pr
+ov"
+^XTMP("SYNGRAPH",2,1,"json","entry",2,"resource","type",1,"coding",1,"display")=
+"Healthcare Provider"
+^XTMP("SYNGRAPH",2,1,"json","entry",2,"resource","type",1,"coding",1,"system")="
+http://hl7.org/fhir/ValueSet/organization-type"
+^XTMP("SYNGRAPH",2,1,"json","entry",2,"resource","type",1,"text")="Healthcare Pr
+ovider"
+^XTMP("SYNGRAPH",2,1,"json","entry",3,"fullUrl")="urn:uuid:57b1ba72-24ea-4b6e-a4
+d2-11670ba26637"
+^XTMP("SYNGRAPH",2,1,"json","entry",3,"resource","class","code")="ambulatory"
+^XTMP("SYNGRAPH",2,1,"json","entry",3,"resource","id")="57b1ba72-24ea-4b6e-a4d2-
+11670ba26637"
+^XTMP("SYNGRAPH",2,1,"json","entry",3,"resource","meta","profile",1)="http://sta
+ndardhealthrecord.org/fhir/StructureDefinition/shr-encounter-Encounter"
+^XTMP("SYNGRAPH",2,1,"json","entry",3,"resource","period","end")="2010-06-07T02:
+45:36-04:00"
+^XTMP("SYNGRAPH",2,1,"json","entry",3,"resource","period","start")="2010-06-07T0
+2:30:36-04:00"
+^XTMP("SYNGRAPH",2,1,"json","entry",3,"resource","resourceType")="Encounter"
+^XTMP("SYNGRAPH",2,1,"json","entry",3,"resource","serviceProvider","reference")=
+"urn:uuid:65d2638c-da33-4e64-b7da-f1d825f691e9"
+^XTMP("SYNGRAPH",2,1,"json","entry",3,"resource","status")="finished"
+^XTMP("SYNGRAPH",2,1,"json","entry",3,"resource","subject","reference")="urn:uui
+d:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8"
+^XTMP("SYNGRAPH",2,1,"json","entry",3,"resource","type",1,"coding",1,"code")=308
+646001
+^XTMP("SYNGRAPH",2,1,"json","entry",3,"resource","type",1,"coding",1,"code","\s"
+)=""
+^XTMP("SYNGRAPH",2,1,"json","entry",3,"resource","type",1,"coding",1,"system")="
+http://snomed.info/sct"
+^XTMP("SYNGRAPH",2,1,"json","entry",3,"resource","type",1,"text")="Death Certifi
+cation"
+^XTMP("SYNGRAPH",2,1,"json","entry",4,"fullUrl")="urn:uuid:549aaab2-dd2f-4c66-80
+3c-a95bb689806b"
+^XTMP("SYNGRAPH",2,1,"json","entry",4,"resource","assertedDate")="1973-07-28"
+^XTMP("SYNGRAPH",2,1,"json","entry",4,"resource","clinicalStatus")="active"
+^XTMP("SYNGRAPH",2,1,"json","entry",4,"resource","code","coding",1,"code")=38341
+003
+^XTMP("SYNGRAPH",2,1,"json","entry",4,"resource","code","coding",1,"code","\s")=
+""
+^XTMP("SYNGRAPH",2,1,"json","entry",4,"resource","code","coding",1,"display")="H
+ypertension"
+^XTMP("SYNGRAPH",2,1,"json","entry",4,"resource","code","coding",1,"system")="ht
+tp://snomed.info/sct"
+^XTMP("SYNGRAPH",2,1,"json","entry",4,"resource","code","text")="Hypertension"
+^XTMP("SYNGRAPH",2,1,"json","entry",4,"resource","context","reference")="urn:uui
+d:57b1ba72-24ea-4b6e-a4d2-11670ba26637"
+^XTMP("SYNGRAPH",2,1,"json","entry",4,"resource","id")="549aaab2-dd2f-4c66-803c-
+a95bb689806b"
+^XTMP("SYNGRAPH",2,1,"json","entry",4,"resource","meta","profile",1)="http://sta
+ndardhealthrecord.org/fhir/StructureDefinition/shr-problem-Problem"
+^XTMP("SYNGRAPH",2,1,"json","entry",4,"resource","onsetDateTime")="1973-07-28T23
+:54:43-04:00"
+^XTMP("SYNGRAPH",2,1,"json","entry",4,"resource","resourceType")="Condition"
+^XTMP("SYNGRAPH",2,1,"json","entry",4,"resource","subject","reference")="urn:uui
+d:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8"
+^XTMP("SYNGRAPH",2,1,"json","entry",4,"resource","verificationStatus")="confirme
+d"
+^XTMP("SYNGRAPH",2,1,"json","entry",5,"fullUrl")="urn:uuid:3878e8cf-1a3e-4ba9-be
+3f-b6336c0af515"
+^XTMP("SYNGRAPH",2,1,"json","entry",5,"resource","assertedDate")="2005-01-01"
+^XTMP("SYNGRAPH",2,1,"json","entry",5,"resource","clinicalStatus")="active"
+^XTMP("SYNGRAPH",2,1,"json","entry",5,"resource","code","coding",1,"code")=16257
+3006
+^XTMP("SYNGRAPH",2,1,"json","entry",5,"resource","code","coding",1,"code","\s")=
+""
+^XTMP("SYNGRAPH",2,1,"json","entry",5,"resource","code","coding",1,"display")="S
+uspected lung cancer (situation)"
+^XTMP("SYNGRAPH",2,1,"json","entry",5,"resource","code","coding",1,"system")="ht
+tp://snomed.info/sct"
+^XTMP("SYNGRAPH",2,1,"json","entry",5,"resource","code","text")="Suspected lung 
+cancer (situation)"
+^XTMP("SYNGRAPH",2,1,"json","entry",5,"resource","context","reference")="urn:uui
+d:57b1ba72-24ea-4b6e-a4d2-11670ba26637"
+^XTMP("SYNGRAPH",2,1,"json","entry",5,"resource","id")="3878e8cf-1a3e-4ba9-be3f-
+b6336c0af515"
+^XTMP("SYNGRAPH",2,1,"json","entry",5,"resource","meta","profile",1)="http://sta
+ndardhealthrecord.org/fhir/StructureDefinition/shr-problem-Problem"
+^XTMP("SYNGRAPH",2,1,"json","entry",5,"resource","onsetDateTime")="2005-01-01T02
+:54:01-05:00"
+^XTMP("SYNGRAPH",2,1,"json","entry",5,"resource","resourceType")="Condition"
+^XTMP("SYNGRAPH",2,1,"json","entry",5,"resource","subject","reference")="urn:uui
+d:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8"
+^XTMP("SYNGRAPH",2,1,"json","entry",5,"resource","verificationStatus")="confirme
+d"
+^XTMP("SYNGRAPH",2,1,"json","entry",6,"fullUrl")="urn:uuid:fb4ea770-1c33-459e-a9
+cf-254c39974465"
+^XTMP("SYNGRAPH",2,1,"json","entry",6,"resource","assertedDate")="2005-01-09"
+^XTMP("SYNGRAPH",2,1,"json","entry",6,"resource","clinicalStatus")="active"
+^XTMP("SYNGRAPH",2,1,"json","entry",6,"resource","code","coding",1,"code")=25463
+7007
+^XTMP("SYNGRAPH",2,1,"json","entry",6,"resource","code","coding",1,"code","\s")=
+""
+^XTMP("SYNGRAPH",2,1,"json","entry",6,"resource","code","coding",1,"display")="N
+on-small cell lung cancer (disorder)"
+^XTMP("SYNGRAPH",2,1,"json","entry",6,"resource","code","coding",1,"system")="ht
+tp://snomed.info/sct"
+^XTMP("SYNGRAPH",2,1,"json","entry",6,"resource","code","text")="Non-small cell 
+lung cancer (disorder)"
+^XTMP("SYNGRAPH",2,1,"json","entry",6,"resource","context","reference")="urn:uui
+d:57b1ba72-24ea-4b6e-a4d2-11670ba26637"
+^XTMP("SYNGRAPH",2,1,"json","entry",6,"resource","id")="fb4ea770-1c33-459e-a9cf-
+254c39974465"
+^XTMP("SYNGRAPH",2,1,"json","entry",6,"resource","meta","profile",1)="http://sta
+ndardhealthrecord.org/fhir/StructureDefinition/shr-problem-Problem"
+^XTMP("SYNGRAPH",2,1,"json","entry",6,"resource","onsetDateTime")="2005-01-09T23
+:16:18-05:00"
+^XTMP("SYNGRAPH",2,1,"json","entry",6,"resource","resourceType")="Condition"
+^XTMP("SYNGRAPH",2,1,"json","entry",6,"resource","subject","reference")="urn:uui
+d:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8"
+^XTMP("SYNGRAPH",2,1,"json","entry",6,"resource","verificationStatus")="confirme
+d"
+^XTMP("SYNGRAPH",2,1,"json","entry",7,"fullUrl")="urn:uuid:de194a92-2817-4946-b8
+04-107ad1bd7f49"
+^XTMP("SYNGRAPH",2,1,"json","entry",7,"resource","assertedDate")="2005-01-12"
+^XTMP("SYNGRAPH",2,1,"json","entry",7,"resource","clinicalStatus")="active"
+^XTMP("SYNGRAPH",2,1,"json","entry",7,"resource","code","coding",1,"code")=42413
+2000
+^XTMP("SYNGRAPH",2,1,"json","entry",7,"resource","code","coding",1,"code","\s")=
+""
+^XTMP("SYNGRAPH",2,1,"json","entry",7,"resource","code","coding",1,"display")="N
+on-small cell carcinoma of lung, TNM stage 1 (disorder)"
+^XTMP("SYNGRAPH",2,1,"json","entry",7,"resource","code","coding",1,"system")="ht
+tp://snomed.info/sct"
+^XTMP("SYNGRAPH",2,1,"json","entry",7,"resource","code","text")="Non-small cell 
+carcinoma of lung, TNM stage 1 (disorder)"
+^XTMP("SYNGRAPH",2,1,"json","entry",7,"resource","context","reference")="urn:uui
+d:57b1ba72-24ea-4b6e-a4d2-11670ba26637"
+^XTMP("SYNGRAPH",2,1,"json","entry",7,"resource","id")="de194a92-2817-4946-b804-
+107ad1bd7f49"
+^XTMP("SYNGRAPH",2,1,"json","entry",7,"resource","meta","profile",1)="http://sta
+ndardhealthrecord.org/fhir/StructureDefinition/shr-problem-Problem"
+^XTMP("SYNGRAPH",2,1,"json","entry",7,"resource","onsetDateTime")="2005-01-12T20
+:09:33-05:00"
+^XTMP("SYNGRAPH",2,1,"json","entry",7,"resource","resourceType")="Condition"
+^XTMP("SYNGRAPH",2,1,"json","entry",7,"resource","subject","reference")="urn:uui
+d:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8"
+^XTMP("SYNGRAPH",2,1,"json","entry",7,"resource","verificationStatus")="confirme
+d"
+^XTMP("SYNGRAPH",2,1,"json","entry",8,"fullUrl")="urn:uuid:68574004-9f34-4564-be
+c9-3d21abab22fc"
+^XTMP("SYNGRAPH",2,1,"json","entry",8,"resource","category",1,"coding",1,"system
+")="http://hl7.org/fhir/observation-category"
+^XTMP("SYNGRAPH",2,1,"json","entry",8,"resource","code","coding",1,"code")="6945
+3-9"
+^XTMP("SYNGRAPH",2,1,"json","entry",8,"resource","code","coding",1,"display")="C
+ause of Death [US Standard Certificate of Death]"
+^XTMP("SYNGRAPH",2,1,"json","entry",8,"resource","code","coding",1,"system")="ht
+tp://loinc.org"
+^XTMP("SYNGRAPH",2,1,"json","entry",8,"resource","code","text")="Cause of Death 
+[US Standard Certificate of Death]"
+^XTMP("SYNGRAPH",2,1,"json","entry",8,"resource","context","reference")="urn:uui
+d:57b1ba72-24ea-4b6e-a4d2-11670ba26637"
+^XTMP("SYNGRAPH",2,1,"json","entry",8,"resource","effectiveDateTime")="2010-06-0
+7T02:30:36-04:00"
+^XTMP("SYNGRAPH",2,1,"json","entry",8,"resource","id")="68574004-9f34-4564-bec9-
+3d21abab22fc"
+^XTMP("SYNGRAPH",2,1,"json","entry",8,"resource","issued")="2010-06-07T02:30:36-
+04:00"
+^XTMP("SYNGRAPH",2,1,"json","entry",8,"resource","meta","profile",1)="http://sta
+ndardhealthrecord.org/fhir/StructureDefinition/shr-observation-Observation"
+^XTMP("SYNGRAPH",2,1,"json","entry",8,"resource","resourceType")="Observation"
+^XTMP("SYNGRAPH",2,1,"json","entry",8,"resource","status")="final"
+^XTMP("SYNGRAPH",2,1,"json","entry",8,"resource","subject","reference")="urn:uui
+d:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8"
+^XTMP("SYNGRAPH",2,1,"json","entry",8,"resource","valueCodeableConcept","coding"
+,1,"code")=254637007
+^XTMP("SYNGRAPH",2,1,"json","entry",8,"resource","valueCodeableConcept","coding"
+,1,"code","\s")=""
+^XTMP("SYNGRAPH",2,1,"json","entry",8,"resource","valueCodeableConcept","coding"
+,1,"display")="Non-small cell lung cancer (disorder)"
+^XTMP("SYNGRAPH",2,1,"json","entry",8,"resource","valueCodeableConcept","coding"
+,1,"system")="http://snomed.info/sct"
+^XTMP("SYNGRAPH",2,1,"json","entry",8,"resource","valueCodeableConcept","text")=
+"Non-small cell lung cancer (disorder)"
+^XTMP("SYNGRAPH",2,1,"json","entry",9,"fullUrl")="urn:uuid:53bee5f0-d5e2-40d2-8f
+bc-71aa5ba1a9ba"
+^XTMP("SYNGRAPH",2,1,"json","entry",9,"resource","code","coding",1,"code")="6940
+9-1"
+^XTMP("SYNGRAPH",2,1,"json","entry",9,"resource","code","coding",1,"display")="U
+.S. standard certificate of death - 2003 revision"
+^XTMP("SYNGRAPH",2,1,"json","entry",9,"resource","code","coding",1,"system")="ht
+tp://loinc.org"
+^XTMP("SYNGRAPH",2,1,"json","entry",9,"resource","context","reference")="urn:uui
+d:57b1ba72-24ea-4b6e-a4d2-11670ba26637"
+^XTMP("SYNGRAPH",2,1,"json","entry",9,"resource","effectiveDateTime")="2010-06-0
+7T02:30:36-04:00"
+^XTMP("SYNGRAPH",2,1,"json","entry",9,"resource","id")="53bee5f0-d5e2-40d2-8fbc-
+71aa5ba1a9ba"
+^XTMP("SYNGRAPH",2,1,"json","entry",9,"resource","issued")="2010-06-07T02:30:36-
+04:00"
+^XTMP("SYNGRAPH",2,1,"json","entry",9,"resource","meta","profile",1)="http://sta
+ndardhealthrecord.org/fhir/StructureDefinition/shr-observation-Panel"
+^XTMP("SYNGRAPH",2,1,"json","entry",9,"resource","resourceType")="DiagnosticRepo
+rt"
+^XTMP("SYNGRAPH",2,1,"json","entry",9,"resource","result",1,"display")="Cause of
+ Death [US Standard Certificate of Death]"
+^XTMP("SYNGRAPH",2,1,"json","entry",9,"resource","result",1,"reference")="urn:uu
+id:68574004-9f34-4564-bec9-3d21abab22fc"
+^XTMP("SYNGRAPH",2,1,"json","entry",9,"resource","status")="final"
+^XTMP("SYNGRAPH",2,1,"json","entry",9,"resource","subject","reference")="urn:uui
+d:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8"
+^XTMP("SYNGRAPH",2,1,"json","entry",10,"resource","activity",1,"detail","code","
+coding",1,"code")=133918004
+^XTMP("SYNGRAPH",2,1,"json","entry",10,"resource","activity",1,"detail","code","
+coding",1,"code","\s")=""
+^XTMP("SYNGRAPH",2,1,"json","entry",10,"resource","activity",1,"detail","code","
+coding",1,"display")="Comfort measures"
+^XTMP("SYNGRAPH",2,1,"json","entry",10,"resource","activity",1,"detail","code","
+coding",1,"system")="http://snomed.info/sct"
+^XTMP("SYNGRAPH",2,1,"json","entry",10,"resource","activity",1,"detail","status"
+)="in-progress"
+^XTMP("SYNGRAPH",2,1,"json","entry",10,"resource","activity",2,"detail","code","
+coding",1,"code")=408957008
+^XTMP("SYNGRAPH",2,1,"json","entry",10,"resource","activity",2,"detail","code","
+coding",1,"code","\s")=""
+^XTMP("SYNGRAPH",2,1,"json","entry",10,"resource","activity",2,"detail","code","
+coding",1,"display")="Chronic pain control management"
+^XTMP("SYNGRAPH",2,1,"json","entry",10,"resource","activity",2,"detail","code","
+coding",1,"system")="http://snomed.info/sct"
+^XTMP("SYNGRAPH",2,1,"json","entry",10,"resource","activity",2,"detail","status"
+)="in-progress"
+^XTMP("SYNGRAPH",2,1,"json","entry",10,"resource","activity",3,"detail","code","
+coding",1,"code")=243072006
+^XTMP("SYNGRAPH",2,1,"json","entry",10,"resource","activity",3,"detail","code","
+coding",1,"code","\s")=""
+^XTMP("SYNGRAPH",2,1,"json","entry",10,"resource","activity",3,"detail","code","
+coding",1,"display")="Cancer education"
+^XTMP("SYNGRAPH",2,1,"json","entry",10,"resource","activity",3,"detail","code","
+coding",1,"system")="http://snomed.info/sct"
+^XTMP("SYNGRAPH",2,1,"json","entry",10,"resource","activity",3,"detail","status"
+)="in-progress"
+^XTMP("SYNGRAPH",2,1,"json","entry",10,"resource","addresses",1,"reference")="ur
+n:uuid:de194a92-2817-4946-b804-107ad1bd7f49"
+^XTMP("SYNGRAPH",2,1,"json","entry",10,"resource","category",1,"coding",1,"code"
+)=182964004
+^XTMP("SYNGRAPH",2,1,"json","entry",10,"resource","category",1,"coding",1,"code"
+,"\s")=""
+^XTMP("SYNGRAPH",2,1,"json","entry",10,"resource","category",1,"coding",1,"displ
+ay")="Terminal care"
+^XTMP("SYNGRAPH",2,1,"json","entry",10,"resource","category",1,"coding",1,"syste
+m")="http://snomed.info/sct"
+^XTMP("SYNGRAPH",2,1,"json","entry",10,"resource","context","reference")="urn:uu
+id:57b1ba72-24ea-4b6e-a4d2-11670ba26637"
+^XTMP("SYNGRAPH",2,1,"json","entry",10,"resource","period","start")="2005-01-12"
+^XTMP("SYNGRAPH",2,1,"json","entry",10,"resource","resourceType")="CarePlan"
+^XTMP("SYNGRAPH",2,1,"json","entry",10,"resource","status")="active"
+^XTMP("SYNGRAPH",2,1,"json","entry",10,"resource","subject","reference")="urn:uu
+id:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8"
+^XTMP("SYNGRAPH",2,1,"json","entry",11,"resource","code","coding",1,"code")=8340
+60
+^XTMP("SYNGRAPH",2,1,"json","entry",11,"resource","code","coding",1,"code","\s")
+=""
+^XTMP("SYNGRAPH",2,1,"json","entry",11,"resource","code","coding",1,"display")="
+Penicillin V Potassium 250 MG"
+^XTMP("SYNGRAPH",2,1,"json","entry",11,"resource","code","coding",1,"system")="h
+ttp://www.nlm.nih.gov/research/umls/rxnorm"
+^XTMP("SYNGRAPH",2,1,"json","entry",11,"resource","code","text")="Penicillin V P
+otassium 250 MG"
+^XTMP("SYNGRAPH",2,1,"json","entry",11,"resource","meta","profile",1)="http://st
+andardhealthrecord.org/fhir/StructureDefinition/shr-medication-Medication"
+^XTMP("SYNGRAPH",2,1,"json","entry",11,"resource","resourceType")="Medication"
+^XTMP("SYNGRAPH",2,1,"json","entry",12,"resource","authoredOn")="1969-11-08"
+^XTMP("SYNGRAPH",2,1,"json","entry",12,"resource","context","reference")="urn:uu
+id:57b1ba72-24ea-4b6e-a4d2-11670ba26637"
+^XTMP("SYNGRAPH",2,1,"json","entry",12,"resource","extension",1,"url")="http://s
+tandardhealthrecord.org/fhir/StructureDefinition/shr-base-ActionCode-extension"
+^XTMP("SYNGRAPH",2,1,"json","entry",12,"resource","extension",1,"valueCodeableCo
+ncept","coding",1,"code")=33633005
+^XTMP("SYNGRAPH",2,1,"json","entry",12,"resource","extension",1,"valueCodeableCo
+ncept","coding",1,"code","\s")=""
+^XTMP("SYNGRAPH",2,1,"json","entry",12,"resource","extension",1,"valueCodeableCo
+ncept","coding",1,"display")="Prescription of drug (procedure)"
+^XTMP("SYNGRAPH",2,1,"json","entry",12,"resource","extension",1,"valueCodeableCo
+ncept","coding",1,"system")="http://snomed.info/sct"
+^XTMP("SYNGRAPH",2,1,"json","entry",12,"resource","extension",1,"valueCodeableCo
+ncept","text")="Prescription of drug (procedure)"
+^XTMP("SYNGRAPH",2,1,"json","entry",12,"resource","medicationReference","referen
+ce")=""
+^XTMP("SYNGRAPH",2,1,"json","entry",12,"resource","medicationReference","referen
+ce","\s")=""
+^XTMP("SYNGRAPH",2,1,"json","entry",12,"resource","meta","profile",1)="http://st
+andardhealthrecord.org/fhir/StructureDefinition/shr-medication-MedicationPrescri
+ption"
+^XTMP("SYNGRAPH",2,1,"json","entry",12,"resource","resourceType")="MedicationReq
+uest"
+^XTMP("SYNGRAPH",2,1,"json","entry",12,"resource","status")="active"
+^XTMP("SYNGRAPH",2,1,"json","entry",12,"resource","subject","reference")="urn:uu
+id:8ee6c306-9ca1-4e56-bf6c-8d5bccce86b8"
+^XTMP("SYNGRAPH",2,1,"json","resourceType")="Bundle"
+^XTMP("SYNGRAPH",2,1,"json","type")="collection"
+^XTMP("SYNGRAPH",2,1,"load","Patient","PLD","index")="^XTMP(""SYNGRAPH"",2)"
+^XTMP("SYNGRAPH",2,1,"load","Patient","PLD","log")="^XTMP(""SYNGRAPH"",2,1,""loa
+d"",""Patient"",""log"")"
+^XTMP("SYNGRAPH",2,1,"load","Patient","PLD","parms")="^XTMP(""SYNGRAPH"",2,1,""l
+oad"",""Patient"",""parms"")"
+^XTMP("SYNGRAPH",2,1,"load","Patient","PLD","status")="^XTMP(""SYNGRAPH"",2,1,""
+load"",""Patient"",""status"")"
+^XTMP("SYNGRAPH",2,1,"load","Patient","PLD","verify")="^XTMP(""SYNGRAPH"",2,1,""
+load"",""Patient"",""verify"")"
+^XTMP("SYNGRAPH",2,1,"load","Patient","log",0)=9
+^XTMP("SYNGRAPH",2,1,"load","Patient","log",1)="Patient load begins for fhirien=
+ 1"
+^XTMP("SYNGRAPH",2,1,"load","Patient","log",2)="Patient name is: HANSEN74,LOUVEN
+IA817"
+^XTMP("SYNGRAPH",2,1,"load","Patient","log",3)="Patient gender is: male"
+^XTMP("SYNGRAPH",2,1,"load","Patient","log",4)="Patient ID is 8ee6c306-9ca1-4e56
+-bf6c-8d5bccce86b8"
+^XTMP("SYNGRAPH",2,1,"load","Patient","log",5)="Ethnicity code is 2186-5"
+^XTMP("SYNGRAPH",2,1,"load","Patient","log",6)="Race code is 2106-3"
+^XTMP("SYNGRAPH",2,1,"load","Patient","log",7)="Called IMPORTPT^ISIIMP03 to impo
+rt patient"
+^XTMP("SYNGRAPH",2,1,"load","Patient","log",8)="Return code from Import: 0"
+^XTMP("SYNGRAPH",2,1,"load","Patient","log",9)="Return values from Import: 10107
+6^999719314^HANSEN74,LOUVENIA817"
+^XTMP("SYNGRAPH",2,1,"load","Patient","parms","CITY")="Leicester"
+^XTMP("SYNGRAPH",2,1,"load","Patient","parms","DOB")=2550331
+^XTMP("SYNGRAPH",2,1,"load","Patient","parms","ETHNICITY")="NOT HISPANIC OR LATI
+NO"
+^XTMP("SYNGRAPH",2,1,"load","Patient","parms","ID")="8ee6c306-9ca1-4e56-bf6c-8d5
+bccce86b8"
+^XTMP("SYNGRAPH",2,1,"load","Patient","parms","IMP_TYPE")="I"
+^XTMP("SYNGRAPH",2,1,"load","Patient","parms","MARITAL_STATUS")="M"
+^XTMP("SYNGRAPH",2,1,"load","Patient","parms","NAME")="HANSEN74,LOUVENIA817"
+^XTMP("SYNGRAPH",2,1,"load","Patient","parms","PH_NUM")="1-514-041-6290 x66983"
+^XTMP("SYNGRAPH",2,1,"load","Patient","parms","RACE")="WHITE"
+^XTMP("SYNGRAPH",2,1,"load","Patient","parms","SEX")="M"
+^XTMP("SYNGRAPH",2,1,"load","Patient","parms","SSN")=999719314
+^XTMP("SYNGRAPH",2,1,"load","Patient","parms","STATE")="MA"
+^XTMP("SYNGRAPH",2,1,"load","Patient","parms","STREET_ADD1")="1782 Maximus Grove
+s"
+^XTMP("SYNGRAPH",2,1,"load","Patient","parms","ZIP")="01524"
+^XTMP("SYNGRAPH",2,1,"load","Patient","status","DFN")=101076
+^XTMP("SYNGRAPH",2,1,"load","Patient","status","ICN")="1554254176V230766"
+^XTMP("SYNGRAPH",2,1,"load","Patient","status","loadStatus")="loaded"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"log",1)="DFN: 101076"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"log",2)="ID is: "
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"log",3)="reference encounter ID is : 
+urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"log",4)="visit ien is: 14200"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"log",5)="visit date is: 3100607.023"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"log",6)="category code is: 182964004"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"log",7)="category text is: Terminal c
+are"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"log",8)="Care Plan Category Code: 182
+964004"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"log",9)="Care Plan Category Text: Ter
+minal care"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"log",10)="Care Plan Category HF: 7060
+^SYN CPCAT TERMINAL CARE (SCT:182964004) [C]"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"log",11)="Care Plan HF: 7065^SYN CP T
+ERMINAL CARE (SCT:182964004)"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"log",12)="Addresses Condition Referen
+ce: urn:uuid:de194a92-2817-4946-b804-107ad1bd7f49"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"log",13)="Addresses Code: 424132000^N
+on-small cell carcinoma of lung, TNM stage 1 (disorder)"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"log",14)="beginDateTime is: 2005-01-1
+2"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"log",15)="fileman beginDateTime is: 3
+050112"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"log",16)="hl7 beginDateTime is: 20050
+112"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"log",17)="no endDateTime"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"log",18)="CarePlan Status: active"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"log",19)="Care Plan Category string: 
+182964004~Terminal care~active"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"log",20)="reference encounter ID is :
+ urn:uuid:57b1ba72-24ea-4b6e-a4d2-11670ba26637"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"log",21)="visit ien is: 14200"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"log",22)="CP Activity HF: 7066^SYN AC
+T COMFORT MEASURES (SCT:133918004)"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"log",23)="CP Activity HF: 7067^SYN AC
+T CHRONIC PAIN CONTROL MANAGEMENT (SCT:408957008)"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"log",24)="CP Activity HF: 7068^SYN AC
+T CANCER EDUCATION (SCT:243072006)"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"log",25)="Activity string: 133918004~
+Comfort measures~in-progress^408957008~Chronic pain control management~in-progre
+ss^243072006~Cancer education~in-progress"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"log",26)="Calling CPLUPDT^SYNDHP91 to
+ add care plans"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"log",27)="Return from data loader was
+: 1"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"parms","DHPACT")="133918004~Comfort m
+easures~in-progress^408957008~Chronic pain control management~in-progress^243072
+006~Cancer education~in-progress"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"parms","DHPCAT")="182964004~Terminal 
+care~active"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"parms","DHPEDT")=""
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"parms","DHPGOL")=""
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"parms","DHPPAT")="1554254176V230766"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"parms","DHPSCT")=424132000
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"parms","DHPSDT")=20050112
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"parms","DHPVST")=14200
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status")=1
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status","HEALTH FACTOR",1,"COMMENT")=
+"Start: 3050112 End:  Status: active"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status","HEALTH FACTOR",1,"EVENT D/T"
+)=3050112
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status","HEALTH FACTOR",1,"HEALTH FAC
+TOR")=7065
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status","HEALTH FACTOR",2,"COMMENT")=
+"Start: 3050112 End: "
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status","HEALTH FACTOR",2,"EVENT D/T"
+)=3050112
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status","HEALTH FACTOR",2,"HEALTH FAC
+TOR")=7069
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status","HEALTH FACTOR",3,"COMMENT")=
+"Start: 3050112 End:  Status: in-progress"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status","HEALTH FACTOR",3,"EVENT D/T"
+)=3050112
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status","HEALTH FACTOR",3,"HEALTH FAC
+TOR")=7066
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status","HEALTH FACTOR",4,"COMMENT")=
+"Start: 3050112 End:  Status: in-progress"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status","HEALTH FACTOR",4,"EVENT D/T"
+)=3050112
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status","HEALTH FACTOR",4,"HEALTH FAC
+TOR")=7067
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status","HEALTH FACTOR",5,"COMMENT")=
+"Start: 3050112 End:  Status: in-progress"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status","HEALTH FACTOR",5,"EVENT D/T"
+)=3050112
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status","HEALTH FACTOR",5,"HEALTH FAC
+TOR")=7068
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status","HEALTH FACTOR",6,"COMMENT")=
+"Start: 3050112 End:  Status: "
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status","HEALTH FACTOR",6,"EVENT D/T"
+)=3050112
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status","HEALTH FACTOR",6,"HEALTH FAC
+TOR")=7070
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status","IVARS","DHPACT")="133918004~
+Comfort measures~in-progress^408957008~Chronic pain control management~in-progre
+ss^243072006~Cancer education~in-progress"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status","IVARS","DHPCAT")="182964004~
+Terminal care~active"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status","IVARS","DHPEDT")=""
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status","IVARS","DHPGOL")=""
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status","IVARS","DHPPAT")="1554254176
+V230766"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status","IVARS","DHPSCT")=424132000
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status","IVARS","DHPSDT")=3050112
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status","IVARS","DHPVST")=14200
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"status","loadstatus")="loaded"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","actString")="133918004~Comfort
+ measures~in-progress^408957008~Chronic pain control management~in-progress^2430
+72006~Cancer education~in-progress"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","activities")=""
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","activities",1,"code")=13391800
+4
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","activities",1,"hf")="7066^SYN 
+ACT COMFORT MEASURES (SCT:133918004)"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","activities",1,"status")="in-pr
+ogress"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","activities",1,"system")="http:
+//snomed.info/sct"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","activities",1,"text")="Comfort
+ measures"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","activities",2,"code")=40895700
+8
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","activities",2,"hf")="7067^SYN 
+ACT CHRONIC PAIN CONTROL MANAGEMENT (SCT:408957008)"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","activities",2,"status")="in-pr
+ogress"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","activities",2,"system")="http:
+//snomed.info/sct"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","activities",2,"text")="Chronic
+ pain control management"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","activities",3,"code")=24307200
+6
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","activities",3,"hf")="7068^SYN 
+ACT CANCER EDUCATION (SCT:243072006)"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","activities",3,"status")="in-pr
+ogress"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","activities",3,"system")="http:
+//snomed.info/sct"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","activities",3,"text")="Cancer 
+education"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","beginDateTime")="2005-01-12"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","categoryText")="Terminal care"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","code")=182964004
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","encounterId")="urn:uuid:57b1ba
+72-24ea-4b6e-a4d2-11670ba26637"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","fmBeginDateTime")=3050112
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","goalString")=""
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","goals")=""
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","hl7BeginDateTime")=20050112
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","id")=""
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","resourceType")="CarePlan"
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","visitDate")=3100607.023
+^XTMP("SYNGRAPH",2,1,"load","careplan",10,"vars","visitIen")=14200
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"log",1)="reference encounter ID is :
+ 57b1ba72-24ea-4b6e-a4d2-11670ba26637"
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"log",2)="visit ien is: 14200"
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"log",3)="visit date is: 3100607.023"
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"log",4)="code is: 38341003"
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"log",5)="icd code type is: icd9"
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"log",6)="icd mapping is: -1^code not
+ mapped"
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"log",7)="snomed code 38341003 is not
+ mapped"
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"log",8)="onsetDateTime is: 1973-07-2
+8T23:54:43-04:00"
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"log",9)="fileman onsetDateTime is: 2
+730728.235443"
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"log",10)="hl7 onsetDateTime is: 1973
+0728235443-0400"
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"log",11)="no abatementDateTime"
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"log",12)="reference encounter ID is 
+: 57b1ba72-24ea-4b6e-a4d2-11670ba26637"
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"log",13)="visit ien is: 14200"
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"log",14)="Provider NPI for outpatien
+t is: 9990000348"
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"log",15)="Calling PROBUPD^SYNDHP61 t
+o add condition"
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"log",16)="Return from data loader wa
+s: 1"
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"parms","DHPCLNST")="I"
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"parms","DHPONS")="19730728235443-040
+0"
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"parms","DHPPAT")="1554254176V230766"
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"parms","DHPROV")=9990000348
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"parms","DHPSCT")=38341003
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"parms","DHPVST")=14200
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"status")=1
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"status","loadstatus")="loaded"
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"vars","code")=38341003
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"vars","encounterId")="57b1ba72-24ea-
+4b6e-a4d2-11670ba26637"
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"vars","fmOnsetDateTime")=2730728.235
+443
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"vars","hl7OnsetDateTime")="197307282
+35443-0400"
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"vars","mappedIcdCode")="-1^code not 
+mapped"
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"vars","onsetDateTime")="1973-07-28T2
+3:54:43-04:00"
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"vars","resourceType")="Condition"
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"vars","visitDate")=3100607.023
+^XTMP("SYNGRAPH",2,1,"load","conditions",4,"vars","visitIen")=14200
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"log",1)="reference encounter ID is :
+ 57b1ba72-24ea-4b6e-a4d2-11670ba26637"
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"log",2)="visit ien is: 14200"
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"log",3)="visit date is: 3100607.023"
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"log",4)="code is: 162573006"
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"log",5)="icd code type is: icd9"
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"log",6)="icd mapping is: -1^code not
+ mapped"
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"log",7)="snomed code 162573006 is no
+t mapped"
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"log",8)="onsetDateTime is: 2005-01-0
+1T02:54:01-05:00"
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"log",9)="fileman onsetDateTime is: 3
+050101.025401"
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"log",10)="hl7 onsetDateTime is: 2005
+0101025401-0500"
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"log",11)="no abatementDateTime"
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"log",12)="reference encounter ID is 
+: 57b1ba72-24ea-4b6e-a4d2-11670ba26637"
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"log",13)="visit ien is: 14200"
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"log",14)="Provider NPI for outpatien
+t is: 9990000348"
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"log",15)="Calling PROBUPD^SYNDHP61 t
+o add condition"
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"log",16)="Return from data loader wa
+s: 1"
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"parms","DHPCLNST")="I"
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"parms","DHPONS")="20050101025401-050
+0"
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"parms","DHPPAT")="1554254176V230766"
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"parms","DHPROV")=9990000348
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"parms","DHPSCT")=162573006
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"parms","DHPVST")=14200
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"status")=1
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"status","loadstatus")="loaded"
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"vars","code")=162573006
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"vars","encounterId")="57b1ba72-24ea-
+4b6e-a4d2-11670ba26637"
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"vars","fmOnsetDateTime")=3050101.025
+401
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"vars","hl7OnsetDateTime")="200501010
+25401-0500"
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"vars","mappedIcdCode")="-1^code not 
+mapped"
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"vars","onsetDateTime")="2005-01-01T0
+2:54:01-05:00"
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"vars","resourceType")="Condition"
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"vars","visitDate")=3100607.023
+^XTMP("SYNGRAPH",2,1,"load","conditions",5,"vars","visitIen")=14200
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"log",1)="reference encounter ID is :
+ 57b1ba72-24ea-4b6e-a4d2-11670ba26637"
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"log",2)="visit ien is: 14200"
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"log",3)="visit date is: 3100607.023"
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"log",4)="code is: 254637007"
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"log",5)="icd code type is: icd9"
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"log",6)="icd mapping is: -1^code not
+ mapped"
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"log",7)="snomed code 254637007 is no
+t mapped"
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"log",8)="onsetDateTime is: 2005-01-0
+9T23:16:18-05:00"
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"log",9)="fileman onsetDateTime is: 3
+050109.231618"
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"log",10)="hl7 onsetDateTime is: 2005
+0109231618-0500"
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"log",11)="no abatementDateTime"
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"log",12)="reference encounter ID is 
+: 57b1ba72-24ea-4b6e-a4d2-11670ba26637"
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"log",13)="visit ien is: 14200"
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"log",14)="Provider NPI for outpatien
+t is: 9990000348"
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"log",15)="Calling PROBUPD^SYNDHP61 t
+o add condition"
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"log",16)="Return from data loader wa
+s: 1"
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"parms","DHPCLNST")="I"
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"parms","DHPONS")="20050109231618-050
+0"
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"parms","DHPPAT")="1554254176V230766"
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"parms","DHPROV")=9990000348
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"parms","DHPSCT")=254637007
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"parms","DHPVST")=14200
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"status")=1
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"status","loadstatus")="loaded"
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"vars","code")=254637007
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"vars","encounterId")="57b1ba72-24ea-
+4b6e-a4d2-11670ba26637"
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"vars","fmOnsetDateTime")=3050109.231
+618
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"vars","hl7OnsetDateTime")="200501092
+31618-0500"
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"vars","mappedIcdCode")="-1^code not 
+mapped"
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"vars","onsetDateTime")="2005-01-09T2
+3:16:18-05:00"
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"vars","resourceType")="Condition"
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"vars","visitDate")=3100607.023
+^XTMP("SYNGRAPH",2,1,"load","conditions",6,"vars","visitIen")=14200
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"log",1)="reference encounter ID is :
+ 57b1ba72-24ea-4b6e-a4d2-11670ba26637"
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"log",2)="visit ien is: 14200"
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"log",3)="visit date is: 3100607.023"
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"log",4)="code is: 424132000"
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"log",5)="icd code type is: icd9"
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"log",6)="icd mapping is: -1^code not
+ mapped"
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"log",7)="snomed code 424132000 is no
+t mapped"
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"log",8)="onsetDateTime is: 2005-01-1
+2T20:09:33-05:00"
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"log",9)="fileman onsetDateTime is: 3
+050112.200933"
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"log",10)="hl7 onsetDateTime is: 2005
+0112200933-0500"
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"log",11)="no abatementDateTime"
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"log",12)="reference encounter ID is 
+: 57b1ba72-24ea-4b6e-a4d2-11670ba26637"
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"log",13)="visit ien is: 14200"
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"log",14)="Provider NPI for outpatien
+t is: 9990000348"
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"log",15)="Calling PROBUPD^SYNDHP61 t
+o add condition"
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"log",16)="Return from data loader wa
+s: 1"
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"parms","DHPCLNST")="I"
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"parms","DHPONS")="20050112200933-050
+0"
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"parms","DHPPAT")="1554254176V230766"
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"parms","DHPROV")=9990000348
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"parms","DHPSCT")=424132000
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"parms","DHPVST")=14200
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"status")=1
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"status","loadstatus")="loaded"
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"vars","code")=424132000
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"vars","encounterId")="57b1ba72-24ea-
+4b6e-a4d2-11670ba26637"
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"vars","fmOnsetDateTime")=3050112.200
+933
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"vars","hl7OnsetDateTime")="200501122
+00933-0500"
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"vars","mappedIcdCode")="-1^code not 
+mapped"
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"vars","onsetDateTime")="2005-01-12T2
+0:09:33-05:00"
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"vars","resourceType")="Condition"
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"vars","visitDate")=3100607.023
+^XTMP("SYNGRAPH",2,1,"load","conditions",7,"vars","visitIen")=14200
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"log",1)="ID is: 57b1ba72-24ea-4b6e-a
+4d2-11670ba26637"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"log",2)="code is: 308646001"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"log",3)="code system is: http://snom
+ed.info/sct"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"log",4)="reasonCode is: "
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"log",5)="reasonCode system is: "
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"log",6)="effectiveDateTime is: 2010-
+06-07T02:30:36-04:00"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"log",7)="fileman dateTime is: 310060
+7.023036"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"log",8)="hl7 dateTime is: 2010060702
+3036-0400"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"log",9)="endDateTime is: 2010-06-07T
+02:45:36-04:00"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"log",10)="fileman endDateTime is: 31
+00607.024536"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"log",11)="hl7 endDateTime is: 201006
+07024536-0400"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"log",12)="HL7 StartDateTime is: 2010
+0607023036-0400"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"log",13)="HL7 End DateTime is: 20100
+607024536-0400"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"log",14)="Provider for outpatient is
+: 9990000348"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"log",15)="Location for outpatient is
+: GENERAL MEDICINE"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"log",16)="Calling ENCTUPD^SYNDHP61 d
+ata loader to add encounter"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"log",17)="Return from data loader wa
+s: 1^14200"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"note",1)="--------------------------
+-----------------------------------------------------"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"note",2)="Care Plan Instituted"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"note",3)=""
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"note",4)="Care Plan Category: "
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"note",5)="  Terminal care (SCT:18296
+4004)"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"note",6)="Care Plan Addresses:"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"note",7)="  Non-small cell carcinoma
+ of lung, TNM stage 1 (disorder)(SCT:424132000)"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"note",8)="  Begin Date: 2005-01-12"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"note",9)="  End Date: "
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"note",10)="  Status: active"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"note",11)="Care Plan Activities"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"note",12)="  Comfort measures (SCT:1
+33918004)"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"note",13)="    status: in-progress"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"note",14)="  Chronic pain control ma
+nagement (SCT:408957008)"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"note",15)="    status: in-progress"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"note",16)="  Cancer education (SCT:2
+43072006)"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"note",17)="    status: in-progress"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"parms","CLINIC")="GENERAL MEDICINE"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"parms","DHPPAT")="1554254176V230766"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"parms","ENCPROV")=9990000348
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"parms","ENDDT")="20100607024536-0400
+"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"parms","SCTCPT")=308646001
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"parms","SCTDX")=""
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"parms","STARTDT")="20100607023036-04
+00"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"status","loadstatus")="loaded"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"status","return")="1^14200"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"status","return","APPT")=1
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"status","return","CKIN")=1
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"status","return","CKOUT")="-1^No Out
+patient Encounter record^No Visit stop code record^No V POV record for Visit"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"status","return","ENCDATA","ENCOUNTE
+R",1,"ENC D/T")="3100607.0230"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"status","return","ENCDATA","ENCOUNTE
+R",1,"ENCOUNTER TYPE")="P"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"status","return","ENCDATA","ENCOUNTE
+R",1,"HOS LOC")=23
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"status","return","ENCDATA","ENCOUNTE
+R",1,"PATIENT")=101076
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"status","return","ENCDATA","ENCOUNTE
+R",1,"SERVICE CATEGORY")="A"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"status","return","ENCDATA","PROCEDUR
+E",1,"PROCEDURE")="9128M"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"status","return","ENCDATA","PROCEDUR
+E",1,"QTY")=1
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"status","return","ENCDATA","PROVIDER
+",1,"NAME")=520824645
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"status","return","ENCDATA","PROVIDER
+",1,"PRIMARY")=1
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"vars","code")=308646001
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"vars","codeSystem")="http://snomed.i
+nfo/sct"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"vars","effectiveDateTime")="2010-06-
+07T02:30:36-04:00"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"vars","endDateTime")="2010-06-07T02:
+45:36-04:00"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"vars","fmDateTime")=3100607.023036
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"vars","fmEndDateTime")=3100607.02453
+6
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"vars","hl7DateTime")="20100607023036
+-0400"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"vars","hl7endDateTime")="20100607024
+536-0400"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"vars","id")="57b1ba72-24ea-4b6e-a4d2
+-11670ba26637"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"vars","reasonCode")=""
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"vars","reasonCodeSys")=""
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"vars","resourceType")="Encounter"
+^XTMP("SYNGRAPH",2,1,"load","encounters",3,"visitIen")=14200
+^XTMP("SYNGRAPH",2,1,"load","labs",8,"log",1)="Observation Category missing, not
+ vital signs; code is: 69453-9 Cause of Death [US Standard Certificate of Death]
+"
+^XTMP("SYNGRAPH",2,1,"load","labs",8,"log",2)="Observation Category is not labor
+atory, skipping"
+^XTMP("SYNGRAPH",2,1,"load","labs",8,"vars","observationCategory")=""
+^XTMP("SYNGRAPH",2,1,"load","labs",8,"vars","resourceType")="Observation"
+^XTMP("SYNGRAPH",2,1,"load","meds",12,"log",1)="rxnorm code is: 834060"
+^XTMP("SYNGRAPH",2,1,"load","meds",12,"log",2)="drug name is: Penicillin V Potas
+sium 250 MG"
+^XTMP("SYNGRAPH",2,1,"load","meds",12,"log",3)="code system is: rxnorm"
+^XTMP("SYNGRAPH",2,1,"load","meds",12,"log",4)="orderdateTime is: 1969-11-08"
+^XTMP("SYNGRAPH",2,1,"load","meds",12,"log",5)="fileman orderdateTime is: 269110
+8"
+^XTMP("SYNGRAPH",2,1,"load","meds",12,"log",6)="hl7 orderdateTime is: 19691108"
+^XTMP("SYNGRAPH",2,1,"load","meds",12,"log",7)="Calling WRITERXRXN^SYNFMED to ad
+d meds"
+^XTMP("SYNGRAPH",2,1,"load","meds",12,"log",8)="Response from WRITERXRXN^SYNFMED
+ is: 100000001"
+^XTMP("SYNGRAPH",2,1,"load","meds",12,"log",9)="Medication: 834060 Penicillin V 
+Potassium 250 MG"
+^XTMP("SYNGRAPH",2,1,"load","meds",12,"status")=100000001
+^XTMP("SYNGRAPH",2,1,"load","meds",12,"status","loadstatus")="loaded"
+^XTMP("SYNGRAPH",2,1,"load","meds",12,"vars","codeSystem")="rxnorm"
+^XTMP("SYNGRAPH",2,1,"load","meds",12,"vars","drugname")="Penicillin V Potassium
+ 250 MG"
+^XTMP("SYNGRAPH",2,1,"load","meds",12,"vars","fmOrderdateTime")=2691108
+^XTMP("SYNGRAPH",2,1,"load","meds",12,"vars","hl7OrderdateTime")=19691108
+^XTMP("SYNGRAPH",2,1,"load","meds",12,"vars","orderdateTime")="1969-11-08"
+^XTMP("SYNGRAPH",2,1,"load","meds",12,"vars","resourceType")="MedicationRequest"
+^XTMP("SYNGRAPH",2,1,"load","meds",12,"vars","rxnorm")=834060
+^XTMP("SYNGRAPH",2,1,"load","vitals",8,"log",1)="Observation Category missing, n
+ot vital signs; code is: 69453-9 Cause of Death [US Standard Certificate of Deat
+h]"
+^XTMP("SYNGRAPH",2,1,"load","vitals",8,"log",2)="Observation Category is not vit
+al-signs, skipping"
+^XTMP("SYNGRAPH",2,1,"load","vitals",8,"vars","observationCategory")=""
+^XTMP("SYNGRAPH",2,1,"load","vitals",8,"vars","resourceType")="Observation"
+^XTMP("SYNGRAPH",2,1,"type","CarePlan",10)=""
+^XTMP("SYNGRAPH",2,1,"type","Condition",4)=""
+^XTMP("SYNGRAPH",2,1,"type","Condition",5)=""
+^XTMP("SYNGRAPH",2,1,"type","Condition",6)=""
+^XTMP("SYNGRAPH",2,1,"type","Condition",7)=""
+^XTMP("SYNGRAPH",2,1,"type","DiagnosticReport",9)=""
+^XTMP("SYNGRAPH",2,1,"type","Encounter",3)=""
+^XTMP("SYNGRAPH",2,1,"type","Medication",11)=""
+^XTMP("SYNGRAPH",2,1,"type","MedicationRequest",12)=""
+^XTMP("SYNGRAPH",2,1,"type","Observation",8)=""
+^XTMP("SYNGRAPH",2,1,"type","Organization",2)=""
+^XTMP("SYNGRAPH",2,1,"type","Patient",1)=""
+^XTMP("SYNGRAPH",2,"DFN",101076,1)=""
+^XTMP("SYNGRAPH",2,"ICN","1554254176V230766",1)=""
+^XTMP("SYNGRAPH",2,"OPS",101076,"DFN",1)=""
+^XTMP("SYNGRAPH",2,"OPS","1554254176V230766","ICN",1)=""
+^XTMP("SYNGRAPH",2,"POS","DFN",101076,1)=""
+^XTMP("SYNGRAPH",2,"POS","ICN","1554254176V230766",1)=""
+^XTMP("SYNGRAPH",2,"PSO","DFN",1,101076)=""
+^XTMP("SYNGRAPH",2,"PSO","ICN",1,"1554254176V230766")=""
+^XTMP("SYNGRAPH",2,"SPO",1,"DFN",101076)=""
+^XTMP("SYNGRAPH",2,"SPO",1,"ICN","1554254176V230766")=""
+^XTMP("SYNGRAPH",3,0)="mapping-errors"
+^XTMP("SYNGRAPH",3,"errors",1,"code")=38341003
+^XTMP("SYNGRAPH",3,"errors",1,"count")=1
+^XTMP("SYNGRAPH",3,"errors",1,"map")="icd9"
+^XTMP("SYNGRAPH",3,"errors",2,"code")=162573006
+^XTMP("SYNGRAPH",3,"errors",2,"count")=1
+^XTMP("SYNGRAPH",3,"errors",2,"map")="icd9"
+^XTMP("SYNGRAPH",3,"errors",3,"code")=254637007
+^XTMP("SYNGRAPH",3,"errors",3,"count")=1
+^XTMP("SYNGRAPH",3,"errors",3,"map")="icd9"
+^XTMP("SYNGRAPH",3,"errors",4,"code")=424132000
+^XTMP("SYNGRAPH",3,"errors",4,"count")=1
+^XTMP("SYNGRAPH",3,"errors",4,"map")="icd9"
+^XTMP("SYNGRAPH",3,"errors","B",38341003,1)=""
+^XTMP("SYNGRAPH",3,"errors","B",162573006,2)=""
+^XTMP("SYNGRAPH",3,"errors","B",254637007,3)=""
+^XTMP("SYNGRAPH",3,"errors","B",424132000,4)=""
+^XTMP("SYNGRAPH","B","fhir-intake",2)=""
+^XTMP("SYNGRAPH","B","list-of-lists",1)=""
+^XTMP("SYNGRAPH","B","mapping-errors",3)=""
+
+VEHU>[?1h=[?1l>
+
+VEHU>[?1h=%GTM-I-CTRLC, CTRL_C encountered
+
+VEHU>[?1h=H[C[?1l>
+kvehu@d6cb50e40090:~/www/logs\[vehu@d6cb50e40090 logs]$ exit
+exit
+
+Script done on Sat 22 Jun 2019 03:56:14 AM UTC
