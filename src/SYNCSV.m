@@ -1,7 +1,7 @@
-SYNGRAFcsv  ;ven/gpl-write dialog: csv processing ;2018-02-06T21:47Z
+%wdcsv  ;ven/gpl-write dialog: csv processing ;2018-02-06T21:47Z
  ;;1.8;Mash;
  ;
- ; SYNGRAFcsv implements the Write Document Library's csv ppis & apis.
+ ; %wdcsv implements the Write Document Library's csv ppis & apis.
  ; These will eventually be moved to another Mash namespace, tbd.
  ; It is currently untested & in progress.
  ;
@@ -24,7 +24,7 @@ SYNGRAFcsv  ;ven/gpl-write dialog: csv processing ;2018-02-06T21:47Z
  ;
  ;@last-updated: 2018-02-06T21:47Z
  ;@application: Mumps Advanced Shell (Mash)
- ;@module: Write Dialog - SYNGRAF
+ ;@module: Write Dialog - %wd
  ;@version: 1.8T04
  ;@release-date: not yet released
  ;@patch-list: none yet
@@ -52,17 +52,17 @@ SYNGRAFcsv  ;ven/gpl-write dialog: csv processing ;2018-02-06T21:47Z
  ; https://www.osehra.org/groups/va-pals-open-source-project-group
  ;
  ;@module-log
- ; 2017-09-24 ven/gpl %*1.8t01 SYNGRAFcsv: create routine to hold
+ ; 2017-09-24 ven/gpl %*1.8t01 %wdcsv: create routine to hold
  ; all csv methods.
  ;
- ; 2018-02-06 ven/toad %*1.8t04 SYNGRAFcsv: passim add white space &
+ ; 2018-02-06 ven/toad %*1.8t04 %wdcsv: passim add white space &
  ; hdr comments, tag w/Apache license & attribution & to-do to shift
  ; to %sf later.
  ;
  ;@to-do
- ; SYNGRAF: convert entry points to ppi/api style
- ; r/all local calls w/calls through ^SYNGRAF
- ; break up into smaller routines & change branches from SYNGRAF
+ ; %wd: convert entry points to ppi/api style
+ ; r/all local calls w/calls through ^%wd
+ ; break up into smaller routines & change branches from %wd
  ; renamespace under %sfg? under %sfh? research best choice
  ;
  ;@contents
@@ -87,7 +87,7 @@ csv2graph(source,graph,noindex) ; import a csv file to a graph
  ;
  new %wary,%wi,%wgraph
  if $extract(source,1)="^" merge %wary=@$name(source)
- else  do getThis^SYNGRAFgraph("%wary",source)
+ else  do getThis^%wdgraph("%wary",source)
  new delim s delim=$$delim(.%wary)
  if delim=-1 do  quit  ;
  . write !,"error, delimiter not found"
@@ -97,7 +97,7 @@ csv2graph(source,graph,noindex) ; import a csv file to a graph
  . quit
  new %wgraph,%wcol,%wid ; place to store the graph and the id of the graph
  ; %wcol contains the column names in order
- set %wid=$$nameThis^SYNGRAFgraph(source) ; get the id from the context
+ set %wid=$$nameThis^%wdgraph(source) ; get the id from the context
  ; first get the column names from row 1
  ;for %wi=1:1:$length(%wary(1),delim) set %wcol(%wi)=$$rename($translate($$prune($piece(%wary(1),delim,%wi))," ","_"))
  for %wi=1:1:$length(%wary(1),delim) set %wcol(%wi)=$translate($$prune($piece(%wary(1),delim,%wi))," ","_")
@@ -113,16 +113,16 @@ csv2graph(source,graph,noindex) ; import a csv file to a graph
  if $get(graph)="" set graph="csvGraph"
  merge %wgraph(%wid,"order")=%wcol
  new rpl set rpl=1
- do insert2graph^SYNGRAFgraph("%wgraph",graph,rpl)
+ do insert2graph^%wdgraph("%wgraph",graph,rpl)
  ;
  i $g(noindex)'=1 d  ; we want in index
- . n root s root=$$setroot^SYNGRAF(graph)
+ . n root s root=$$setroot^%wd(graph)
  . s groot=$na(@root@("graph",source))
  . d index(groot)
  . s @root@("index","root")=groot
  . 
  ;
- quit  ; end of csv2graph^SYNGRAF
+ quit  ; end of csv2graph^%wd
  ;
  ;
  ;
@@ -135,7 +135,7 @@ prune(txt) ; extrinsic removes extra quotes
  . set %return=%return_$piece(txt,"""",%w1)
  . quit
  ;
- quit %return ; end of prune^SYNGRAF
+ quit %return ; end of prune^%wd
  ;
  ;
  ;
@@ -145,17 +145,17 @@ delim(ary) ; figures out the csv delimiter
  ; ary is passed by reference
  ; returns the delimiter
  ;
- new SYNGRAFlim,%wfound,%return set %wfound=0
- for SYNGRAFlim=$char(9),",","|" quit:%wfound  do  ; for each common delimiter
- . new %count set %count=$length(ary(1),SYNGRAFlim) ; how many in line 1
+ new %wdlim,%wfound,%return set %wfound=0
+ for %wdlim=$char(9),",","|" quit:%wfound  do  ; for each common delimiter
+ . new %count set %count=$length(ary(1),%wdlim) ; how many in line 1
  . if %count<2 quit  ;
- . if $length(ary(2),SYNGRAFlim)=%count s %wfound=1 s %return=SYNGRAFlim
- . if $data(ary(3)) if $length(ary(3),SYNGRAFlim)='%count set %wfound=0 kill %return
- . if $data(ary(4)) if $length(ary(4),SYNGRAFlim)='%count set %wfound=0 kill %return
+ . if $length(ary(2),%wdlim)=%count s %wfound=1 s %return=%wdlim
+ . if $data(ary(3)) if $length(ary(3),%wdlim)='%count set %wfound=0 kill %return
+ . if $data(ary(4)) if $length(ary(4),%wdlim)='%count set %wfound=0 kill %return
  . quit
  if %wfound=0 quit -1
  ;
- quit %return ; end of $$delim^SYNGRAF
+ quit %return ; end of $$delim^%wd
  ;
  ;
  ;
@@ -182,7 +182,7 @@ rename(name) ; extrinsic returns new name or old name if not found
  new namtmp set namtmp=$get(nam(name))
  if namtmp="" set namtmp=name
  ;
- quit namtmp ; end of $$rename^SYNGRAF
+ quit namtmp ; end of $$rename^%wd
  ;
  ;
  ;
@@ -198,7 +198,7 @@ wellformed(ary,delim) ; extrinsic returns 1 if csv ary is well formed
  . if $length(ary(%wi))'=%count set %result=0
  . quit
  ;
- quit %result ; end of $$wellformed^SYNGRAF
+ quit %result ; end of $$wellformed^%wd
  ;
  ;
 index(zgraph) ; will create a pos and ops index at the place pointed to by graph
@@ -218,4 +218,4 @@ index(zgraph) ; will create a pos and ops index at the place pointed to by graph
  q
  ;
  ;
-eor ; end of routine SYNGRAFcsv
+eor ; end of routine %wdcsv

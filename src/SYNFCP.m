@@ -9,7 +9,7 @@ importCarePlan(rtn,ien,args)  ; entry point for loading Careplans for a patient
  ; calls the intake Careplan web service directly
  ;
  n grtn
- n root s root=$$setroot^SYNGRAF("fhir-intake")
+ n root s root=$$setroot^%wd("fhir-intake")
  d wsIntakeCareplan(.args,,.grtn,ien)
  i $d(grtn) d  ; something was returned
  . k @root@(ien,"load","careplan")
@@ -244,7 +244,7 @@ wsIntakeCareplan(args,body,result,ien)        ; web service entry (post)
  . s goalary=""
  . s goalstr=""
  . s gn=$na(json("entry",zi,"resource","goal"))
- . n root s root=$$setroot^SYNGRAF("fhir-intake")
+ . n root s root=$$setroot^%wd("fhir-intake")
  . n groot s groot=$na(@root@(ien,"json","entry"))
  . f  s goalien=$o(@gn@(goalien)) q:+goalien=0  d  ;
  . . s goalcnt=goalcnt+1
@@ -356,7 +356,7 @@ wsIntakeCareplan(args,body,result,ien)        ; web service entry (post)
  . . . s eval("status","errors")=$g(eval("status","errors"))+1
  . . . s eval("careplan",zi,"status","loadstatus")="notLoaded"
  . . . s eval("careplan",zi,"status","loadMessage")=$g(RETSTA)
- . . n root s root=$$setroot^SYNGRAF("fhir-intake")
+ . . n root s root=$$setroot^%wd("fhir-intake")
  . . k @root@(ien,"load","careplan",zi)
  . . m @root@(ien,"load","careplan",zi)=eval("careplan",zi)
  ;
@@ -384,7 +384,7 @@ log(ary,txt)    ; adds a text line to @ary@("log")
  q
  ;
 loadStatus(typ,zx,zien) ; extrinsic return 1 if resource was loaded
- n root s root=$$setroot^SYNGRAF("fhir-intake")
+ n root s root=$$setroot^%wd("fhir-intake")
  n rt s rt=0
  i $g(zx)="" i $d(@root@(zien,"load",typ)) s rt=1 q rt
  i '$d(@root@(zien,"load",typ,zx,"status")) q rt
@@ -395,7 +395,7 @@ DX(ien,ptr,sep) ; extrinsic returns code^text for diagnosis in
  ; a condition pointed to by ptr in patient ien
  ; sep is optional separator - default is "^"
  i $g(sep)="" s sep="^"
- n root s root=$$setroot^SYNGRAF("fhir-intake")
+ n root s root=$$setroot^%wd("fhir-intake")
  i '$d(@root@(ien,"SPO",ptr)) q ""
  n sct,txt,rien
  i $o(@root@(ien,"SPO",ptr,"type",""))'="Condition" q ""
@@ -407,7 +407,7 @@ DX(ien,ptr,sep) ; extrinsic returns code^text for diagnosis in
  q sct_sep_txt
  ;
 testall ; run the careplan import on all imported patients
- new root s root=$$setroot^SYNGRAF("fhir-intake")
+ new root s root=$$setroot^%wd("fhir-intake")
  new indx s indx=$na(@root@("POS","DFN"))
  n dfn,ien,filter,reslt
  s dfn=0
@@ -420,7 +420,7 @@ testall ; run the careplan import on all imported patients
  q
  ;
 testone(reslt,doload)   ; run the careplan import on all imported patients
- new root s root=$$setroot^SYNGRAF("fhir-intake")
+ new root s root=$$setroot^%wd("fhir-intake")
  new indx s indx=$na(@root@("POS","DFN"))
  n dfn,ien,filter
  n done s done=0

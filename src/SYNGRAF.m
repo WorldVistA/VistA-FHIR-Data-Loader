@@ -1,30 +1,30 @@
-SYNGRAFgraph        ;ven/gpl - mash graph utilities ; 9/24/17 4:33pm
+%wdgraph        ;ven/gpl - mash graph utilities ; 9/24/17 4:33pm
  ;;1.0;norelease;;feb 27, 2017;build 2
  ;
  ;
  q
  ;
- ; All the public entry points for these routines are found in SYNGRAF
+ ; All the public entry points for these routines are found in %wd
  ;
 setroot(graph) ; root of working storage
- new %y set %y=$order(^SYNGRAF(17.040801,"B",graph,""))
+ new %y set %y=$order(^XTMP("SYNGRAPH","B",graph,""))
  if %y="" set %y=$$addgraph(graph) ; if graph is not present, add it
- quit $name(^SYNGRAF(17.040801,%y)) ; root for graph
+ quit $name(^XTMP("SYNGRAPH",%y)) ; root for graph
  ;
 rootOf(graph) ; return the root of graph named graph
- new %x1 set %x1=$order(^SYNGRAF(17.040801,"B",graph,""))
+ new %x1 set %x1=$order(^XTMP("SYNGRAPH","B",graph,""))
  if %x1="" quit -1
- quit $name(^SYNGRAF(17.040801,%x1,"graph"))
+ quit $name(^XTMP("SYNGRAPH",%x1,"graph"))
  ;
 addgraph(graph) ; makes a place in the graph file for a new graph
  new fda set fda(17.040801,"?+1,",.01)=graph
  new %yerr
  do UPDATE^DIE("","fda","","%yerr")
- new %y set %y=$order(^SYNGRAF(17.040801,"B",graph,""))
+ new %y set %y=$order(^XTMP("SYNGRAPH","B",graph,""))
  quit %y
  ;
 purgegraph(graph) ; delete a graph
- new %y set %y=$order(^SYNGRAF(17.040801,"B",graph,""))
+ new %y set %y=$order(^XTMP("SYNGRAPH","B",graph,""))
  if %y="" quit 0
  new fda set fda(17.040801,%y_",",.01)="@"
  new %yerr

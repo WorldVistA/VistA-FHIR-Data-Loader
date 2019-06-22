@@ -17,13 +17,13 @@ TRAN ; [KIDS] - Transport from source system (BAD! SHOULD BE A FILEMAN FILE)
  N I F I=200000000-1:0  S I=$O(^ICPT(I)) Q:'I  M @XPDGREF@("OS5",81,I)=^ICPT(I)
  N LEXF F LEXF=757,757.001,757.01,757.02,757.1,757.21 DO
  . N I F I=3000000000-1:0 S I=$O(^LEX(LEXF,I)) Q:'I  M @XPDGREF@("OS5",LEXF,I)=^LEX(LEXF,I)
- n mapRoot s mapRoot=$$setroot^SYNGRAF("loinc-lab-map")
+ n mapRoot s mapRoot=$$setroot^%wd("loinc-lab-map")
  M @XPDGREF@("loinc-lab-map")=@mapRoot
  QUIT
  ;
 PRE ; [KIDS] - Pre Install -- all for Cache
  D CACHEMAP("%web")
- D CACHEMAP("SYNGRAF")
+ D CACHEMAP("%wd")
  D CACHETLS
  QUIT
  ;
@@ -36,7 +36,7 @@ POST ; [KIDS] - Post Install
  QUIT
  ;
 POSTMAP ; [Private] Add loinc-lab-map to the graph store
- new root set root=$$setroot^SYNGRAF("loinc-lab-map")
+ new root set root=$$setroot^%wd("loinc-lab-map")
  kill @root
  merge @root=@XPDGREF@("loinc-lab-map")
  new rindx set rindx=$name(@root@("graph","map"))

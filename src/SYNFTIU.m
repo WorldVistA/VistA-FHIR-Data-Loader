@@ -26,7 +26,7 @@ TONOTE(ien,enc,line) ; insert a line to the note associated with encounter enc
  ;
 NOTEPTR(ien,enc) ; returns a global pointer to the note for this encounter
  ; ien is the patient graph
- n root s root=$$setroot^SYNGRAF("fhir-intake")
+ n root s root=$$setroot^%wd("fhir-intake")
  n groot s groot=$na(@root@(ien))
  n encien s encien=$o(@groot@("PSO","rien",enc,""))
  q:encien="" ""
@@ -41,7 +41,7 @@ KILLNOTE(ien,enc) ; kill the note for this encounter
  q
  ;
 CLRNOTES(ien,rien) ; kill all notes for patient ien
- n root s root=$$setroot^SYNGRAF("fhir-intake")
+ n root s root=$$setroot^%wd("fhir-intake")
  n groot s groot=$na(@root@(ien,"load","encounters"))
  n zi s zi=0
  f  s zi=$o(@groot@(zi)) q:+zi=0  d  ;

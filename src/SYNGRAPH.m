@@ -29,7 +29,7 @@ graphmap(graph,code,otype,itype) ; extrinsic mapping function using a graph
  ;
  ;i '$d(@graph@("pos")) d  ;
  i $e(graph,1,1)'="^" d  ;
- . n root s root=$$setroot^SYNGRAF(graph)
+ . n root s root=$$setroot^%wd(graph)
  . s graph=$g(@root@("index","root"))
  i $g(graph)="" q "-1^Error, can't find graph"
  i '$d(@graph@("pos")) q "-1^Error, can't find index"
@@ -63,7 +63,7 @@ getGraphMap(rtn,graph,ipred,iobj,opred,oobj) ; retrieve a section of the graph
  ; if opred (output predicate) and/or oobj (output object) are specified,
  ;  they are treated and a "and" condition on the retrieval
  ;
- n root s root=$$setroot^SYNGRAF(graph)
+ n root s root=$$setroot^%wd(graph)
  n groot s groot=$g(@root@("index","root"))
  i groot="" q "-1^can't find graph root"
  i '$d(@groot@("pos")) q "-1^can't find graph index"
@@ -84,9 +84,9 @@ getGraphMap(rtn,graph,ipred,iobj,opred,oobj) ; retrieve a section of the graph
 getGraph(url,gname) ; get a graph from a web service
  ;
  q:'$d(gname)
- i $$rootOf^SYNGRAF(gname)'=-1 d  q  ;
+ i $$rootOf^%wd(gname)'=-1 d  q  ;
  . w !,"error, graph exists: "_gname
- n root s root=$$setroot^SYNGRAF(gname)
+ n root s root=$$setroot^%wd(gname)
  n %,json,grf
  s %=$$%^%WC(.json,"GET",url)
  w !,"result= ",%
@@ -106,24 +106,24 @@ wsGetGraph(RTN,FILTER) ; web service returns the requested graph FILTER("graph")
  n graph s graph=$g(FILTER("graph"))
  i graph="" d  q  ;
  . s RTN="-1^please specify a graph"
- ;n root s root=$$rootOf^SYNGRAF(graph)
- n root s root=$$setroot^SYNGRAF(graph)
+ ;n root s root=$$rootOf^%wd(graph)
+ n root s root=$$setroot^%wd(graph)
  i +root=-1 d  q  ;
  . s RTN="-1^graph not found"
  ;
  ;n json
- ;s json=$$setroot^SYNGRAF(graph_"-json")
+ ;s json=$$setroot^%wd(graph_"-json")
  ;i +json'=-1 s RTN=json q  ;
- ;s json=$$setroot^SYNGRAF(graph_"-json")
+ ;s json=$$setroot^%wd(graph_"-json")
  S RTN=$na(^TMP("SYNOUT",$J))
  K @RTN
  d encode^%webjson(root,RTN)
  q
  ;
 loincMap() ; create the lonic-lab-map
- n root s root=$$setroot^SYNGRAF("loinc-lab-map")
+ n root s root=$$setroot^%wd("loinc-lab-map")
  k @root
- n src s src=$$rootOf^SYNGRAF("loinc-code-map")
+ n src s src=$$rootOf^%wd("loinc-code-map")
  s src=$na(@src@("loinc-codes-map-1.csv"))
  n zi s zi=0
  f  s zi=$o(@src@(zi)) q:+zi=0  d  ;

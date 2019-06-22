@@ -1,4 +1,4 @@
-SYNGRAF     ;ven/gpl - mash graph utilities ; 9/24/17 4:33pm
+%wd     ;ven/gpl - mash graph utilities ; 9/24/17 4:33pm
  ;;1.0;norelease;;feb 27, 2017;build 2
  ;
  ;
@@ -10,39 +10,39 @@ SYNGRAF     ;ven/gpl - mash graph utilities ; 9/24/17 4:33pm
  ; graph handling routines
  ;
 setroot(graph) ; root of working storage
- quit $$setroot^SYNGRAFgraph(graph)
+ quit $$setroot^%wdgraph(graph)
  ;
 rootOf(graph) ; return the root of graph named graph
- quit $$rootOf^SYNGRAFgraph(graph)
+ quit $$rootOf^%wdgraph(graph)
  ;
 addgraph(graph) ; makes a place in the graph file for a new graph
- do addgraph^SYNGRAFgraph(graph)
+ do addgraph^%wdgraph(graph)
  quit
  ;
 purgegraph(graph) ; delete a graph
- do purgegraph^SYNGRAFgraph(graph)
+ do purgegraph^%wdgraph(graph)
  quit
  ;
 insert2graph(ary,graph,replace) ; insert a new entry to a graph
- do insert2graph^SYNGRAFgraph(.ary,graph,replace)
+ do insert2graph^%wdgraph(.ary,graph,replace)
  quit
  ;
 nameThis(altname) ; returns the id to be used for altname
  ; this will eventually use the context graph and the 
  ; local variable context to query the altname and obtain an id
- quit $$nameThis^SYNGRAFgraph(altname)
+ quit $$nameThis^%wdgraph(altname)
  ;
 getThis(rary,fn,nocache) ; find a file and read it into rary array  
- do getThis^SYNGRAFgraph(rary,fn,$get(nocache))
+ do getThis^%wdgraph(rary,fn,$get(nocache))
  quit
  ;
 queryContext(context,locator,property) ; look up project specific 
  ; names and values from the context graph
  ; tbd
- quit $$queryContext^SYNGRAFgraph(context,locator,property)
+ quit $$queryContext^%wdgraph(context,locator,property)
  ;
 queryTag(rtn,tag) ; returns a json/mumps array of tagged items
- do queryTag^SYNGRAFgraph(rtn,tag)
+ do queryTag^%wdgraph(rtn,tag)
  quit
  ;
 fromCache(rary,name,graph) ; return a file from the cache
@@ -50,19 +50,19 @@ fromCache(rary,name,graph) ; return a file from the cache
  quit
  ;
 toCache(arry,name,graph) ; put a file in the cache
- do toCache^SYNGRAFgraph(arry,name,graph)
+ do toCache^%wdgraph(arry,name,graph)
  quit
  ;
 beautify(inary,outary) ; pretty print a line of json
- do beautify^SYNGRAFgraph(inary,outary)
+ do beautify^%wdgraph(inary,outary)
  quit
  ;
 ary2file(ary,dir,file) ;
- do ary2file^SYNGRAFgraph(.ary,dir,file)
+ do ary2file^%wdgraph(.ary,dir,file)
  quit
  ;
 file2ary(ary,dir,file)
- do file2ary^SYNGRAFgraph(.ary,dir,file)
+ do file2ary^%wdgraph(.ary,dir,file)
  quit
  ;
  ;
@@ -74,22 +74,22 @@ csv2graph(source,graph) ; import a csv file to a graph
  ; source is either a filename which will be found in seeGraph
  ; or a global passed by name usually loaded with FTG^%ZISH
  ;
- d csv2graph^SYNGRAFcsv(source,$get(graph))
+ d csv2graph^%wdcsv(source,$get(graph))
  quit
  ;
 prune(txt) ; extrinsic removes extra quotes
- quit $$prune^SYNGRAFcsv(txt)
+ quit $$prune^%wdcsv(txt)
  ;
 delim(ary) ; figures out the cvs delimiter
  ; return -1 if there not found
  ; ary is passed by reference
  ; returns the delimiter
- quit $$delim^SYNGRAFcsv(.ary)
+ quit $$delim^%wdcsv(.ary)
  ;
 wellformed(ary,delim) ; extrinsic returns 1 if ary is well formed
  ; checks to see that the count of the delimiter is the same
  ; on every line
  ; ary is passed by reference
  ;
- quit $$wellformed^SYNGRAFcsv(.ary,delim)
+ quit $$wellformed^%wdcsv(.ary,delim)
  ;

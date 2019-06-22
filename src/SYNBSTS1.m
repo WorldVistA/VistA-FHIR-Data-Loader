@@ -6,13 +6,13 @@ SYNBSTS1 ;ven/gpl - fhir loader utilities ;2018-08-17  3:22 PM
  q
  ;
 ICD9ROOT() ; returns the root of the snomed to icd9 graph
- n root s root=$$setroot^SYNGRAF("icd9tosnomed")
+ n root s root=$$setroot^%wd("icd9tosnomed")
  q:root=""
  s root=$na(@root@("graph","icd9tosnomed.csv"))
  q root
  ;
 ICD10ROOT() ; returns the root of the snomed to icd10 graph
- n root s root=$$setroot^SYNGRAF("sct2icd")
+ n root s root=$$setroot^%wd("sct2icd")
  s root=$na(@root@("graph","sct2icd"))
  q root
  ;
