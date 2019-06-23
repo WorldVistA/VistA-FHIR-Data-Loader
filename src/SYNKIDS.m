@@ -22,14 +22,14 @@ TRAN ; [KIDS] - Transport from source system (BAD! SHOULD BE A FILEMAN FILE)
  QUIT
  ;
 PRE ; [KIDS] - Pre Install -- all for Cache
- D CACHEMAP("%web")
- D CACHEMAP("SYNWD")
- D CACHETLS
+ ;D CACHEMAP("%web")
+ ;D CACHEMAP("SYNWD")
+ ;D CACHETLS
  QUIT
  ;
 POST ; [KIDS] - Post Install
- DO POSTRO
- DO POSTWWW
+ ;DO POSTRO
+ ;DO POSTWWW
  DO POSTSYN
  DO POSTINTRO
  DO POSTMAP

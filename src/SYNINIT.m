@@ -5,7 +5,7 @@ SYNINIT ;OSEHRA/SMH - Initilization Code for Synthetic Data Loader;May 23 2018
  ; Licensed under Apache 2.0.
  ;
 EN ; [Public; called by KIDS; do everything in this file]
- D LOADHAND
+ ;D LOADHAND
  D MES^XPDUTL("")
  D MES^XPDUTL("Syn Patients Importer Init")
  D MES^XPDUTL("Provider "_$$PROV(1))
