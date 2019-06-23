@@ -5,7 +5,9 @@ SYNFHIR ;ven/gpl - fhir loader utilities ;2019-05-30  6:02 PM
  ;
  q
  ;
-wsPostFHIR(ARGS,BODY,RESULT)    ; recieve from addpatient
+wsPostFHIR(ARGS,BODY,RESULT,ien)    ; recieve from addpatient
+ ; ien is for internal calls to this routine, and is the ien
+ ; in the graphstore for the decoded json
  ;
  s U="^"
  ;S DUZ=1
@@ -13,14 +15,17 @@ wsPostFHIR(ARGS,BODY,RESULT)    ; recieve from addpatient
  ;S DUZ(2)=500
  S USER=$$DUZ^SYNDHP69
  ;
- new json,ien,root,gr,id,return
+ ;new json,ien,root,gr,id,return
+ new json,root,gr,id,return
  set root=$$setroot^SYNWD("fhir-intake")
  set id=$get(ARGS("id"))
  ;
- set ien=$order(@root@(" "),-1)+1
- set gr=$name(@root@(ien,"json"))
- merge json=BODY
- do decode^%webjson("json",gr)
+ i $g(ien)="" d  ; not called internally
+ . set ien=$order(@root@(" "),-1)+1
+ . set gr=$name(@root@(ien,"json"))
+ . merge json=BODY
+ . do decode^%webjson("json",gr)
+ ;
  do indexFhir(ien)
  ;
  if id'="" do  ;
@@ -343,137 +348,6 @@ FILE(directory) ; [Public] Load files from the file system
  new % set %=$$LIST^%ZISH(directory,$na(synmask),$na(synfiles))
  if '% write "Failed to read any files. Check directory.",! quit
  ;
- new id,ien
- set (id,ien)=""
- new file set file=""
- for  set file=$order(synfiles(file)) q:file=""  do
- . if file["Information" quit  ; We don't process information files yet...
- . ;
- . write "Loading ",file,"...",!
- . kill ^TMP("SYNFILE",$J)
- . new % set %=$$FTG^%ZISH(directory,file,$name(^TMP("SYNFILE",$J,1)),3)
- . i '% write "Failed to read the file. Please debug me.",! quit
- . ;
- . ; Normalize overflow nodes (and hope for the best that we don't go over 32k)
- . new i,j set (i,j)=""
- . for  set i=$order(^TMP("SYNFILE",$J,i)) quit:'i  for  set j=$order(^TMP("SYNFILE",$J,i,"OVF",j)) quit:'j  do
- .. set ^TMP("SYNFILE",$J,i)=^TMP("SYNFILE",$J,i)_^TMP("SYNFILE",$J,i,"OVF",j)  ; ** NOT TESTED **
- . ;
- . new root,gr,json,return
- . set root=$$setroot^SYNWD("fhir-intake")
- . set id=file
- . s json=$na(^TMP("SYNFILE",$J))
- . ;
- . set ien=$order(@root@(" "),-1)+1
- . set gr=$name(@root@(ien,"json"))
- . do decode^%webjson(json,gr)
- . do indexFhir^SYNFHIR(ien)
- . ;
- . ; Now load the file into VistA
- . write "Ingesting ",file,"...",!
- . ;new args,body,synjsonreturn
- . ;merge body=^TMP("SYNFILE",$J)
- . ;new % set %=$$wsPostFHIR(.args,.body,.synjsonreturn) ; % always comes out as 1. We will ignore it.
- . ;set return("status")="ok"
- . ;set return("id")=id
- . ;set return("ien")=ien
- . ;
- . do importPatient^SYNFPAT(.return,ien)
- . ;
- . new rdfn set rdfn=$get(return("dfn"))
- . if rdfn'="" set @root@("DFN",rdfn,ien)=""
- . ;
- . if rdfn'="" do  ; patient creation was successful
- . . if $g(ARGS("load"))="" s ARGS("load")=1
- . . do importLabs^SYNFLAB(.return,ien,.ARGS)
- . . do importVitals^SYNFVIT(.return,ien,.ARGS)
- . . do importEncounters^SYNFENC(.return,ien,.ARGS)
- . . do importImmu^SYNFIMM(.return,ien,.ARGS)
- . . do importConditions^SYNFPRB(.return,ien,.ARGS)
- . . do importAllergy^SYNFALG(.return,ien,.ARGS)
- . . do importAppointment^SYNFAPT(.return,ien,.ARGS)
- . . do importMeds^SYNFMED2(.return,ien,.ARGS)
- . . do importProcedures^SYNFPROC(.return,ien,.ARGS)
- . . do importCarePlan^SYNFCP(.return,ien,.ARGS)
- . . ;
- . . ; Get the status back from JSON
- . . Q  ; got to debug the following
- . . new synreturn,synjsonerror
- . . do decode^%webjson($na(return),$na(synreturn),$na(synjsonerror))
- . . if $data(synjsonerror) write "There is an error decoding the return. Debug me." quit
- . . ;
- . . if $get(synreturn("loadMessage"))["Duplicate" write "Patient Already Loaded",! quit
- . . ;
- . . Q  ; stopping here until we debug the following
- . . ;
- . . write "Loaded with following data: ",!
- . . write "DFN: ",synreturn("dfn"),?20,"ICN: ",synreturn("icn"),?50,"Graph Store IEN: ",synreturn("ien"),!
- . . write "--------------------------------------------------------------------------",!
- . . write "Type",?30,"Loaded?",?60,"Error",!
- . . ;
- . . write "ADR/Allergy"
- . . write ?30,synreturn("allergyStatus","loaded")
- . . write ?60,synreturn("allergyStatus","errors")
- . . write !
- . . ;
- . . write "Appointments"
- . . write ?30,synreturn("apptStatus","loaded")
- . . write ?60,synreturn("apptStatus","errors")
- . . write !
- . . ;
- . . write "Care Plans"
- . . write ?30,synreturn("careplanStatus","loaded")
- . . write ?60,synreturn("careplanStatus","errors")
- . . write !
- . . ;
- . . write "Problems"
- . . write ?30,synreturn("conditionsStatus","loaded")
- . . write ?60,synreturn("conditionsStatus","errors")
- . . write !
- . . ;
- . . write "Encounters"
- . . write ?30,synreturn("encountersStatus","loaded")
- . . write ?60,synreturn("encountersStatus","errors")
- . . write !
- . . ;
- . . write "Immunization"
- . . write ?30,synreturn("immunizationsStatus","loaded")
- . . write ?60,synreturn("immunizationsStatus","errors")
- . . write !
- . . ;
- . . write "Labs"
- . . write ?30,synreturn("labsStatus","loaded")
- . . write ?60,synreturn("labsStatus","errors")
- . . write !
- . . ;
- . . write "Meds"
- . . write ?30,synreturn("medsStatus","loaded")
- . . write ?60,synreturn("medsStatus","errors")
- . . write !
- . . ;
- . . write "Procedures"
- . . write ?30,synreturn("proceduresStatus","loaded")
- . . write ?60,synreturn("proceduresStatus","errors")
- . . write !
- . . ;
- . . write "Vitals"
- . . write ?30,synreturn("vitalsStatus","loaded")
- . . write ?60,synreturn("vitalsStatus","errors")
- . . write !
- . . ;
- . . write !
- . ;new file,id,ien
- . ;do KILL^XUSCLEAN ; VistA leaks like hell
- quit
- ;
-OLDFILE(directory) ; [Public] Load files from the file system
- ;
- ; Load files from directory
- new synfiles
- new synmask set synmask("*.json")=""
- new % set %=$$LIST^%ZISH(directory,$na(synmask),$na(synfiles))
- if '% write "Failed to read any files. Check directory.",! quit
- ;
  new file set file=""
  for  set file=$order(synfiles(file)) q:file=""  do
  . if file["Information" quit  ; We don't process information files yet...
@@ -492,9 +366,15 @@ OLDFILE(directory) ; [Public] Load files from the file system
  . write "Ingesting ",file,"...",!
  . new file
  . do KILL^XUSCLEAN ; VistA leaks like hell
- . new args,body,synjsonreturn
- . merge body=^TMP("SYNFILE",$J)
- . new % set %=$$wsPostFHIR(.args,.body,.synjsonreturn) ; % always comes out as 1. We will ignore it.
+ . new args,body,synjsonreturn,ien,root,gr
+ . set root=$$setroot^SYNWD("fhir-intake")
+ . set ien=$order(@root@(" "),-1)+1
+ . set gr=$name(@root@(ien,"json"))
+ . s body=$na(^TMP("SYNFILE",$J))
+ . do decode^%webjson(body,gr)
+ . ;merge body=^TMP("SYNFILE",$J) ;don't need to merge because we decoded
+ . ;new % set %=$$wsPostFHIR(.args,.body,.synjsonreturn) ; % always comes out as 1. We will ignore it.
+ . new % set %=$$wsPostFHIR(.args,.body,.synjsonreturn,ien) ; % always comes out as 1. We will ignore it.
  . ;
  . ; Get the status back from JSON
  . new synreturn,synjsonerror
@@ -560,3 +440,4 @@ OLDFILE(directory) ; [Public] Load files from the file system
  . ;
  . write !
  quit
+ ;
