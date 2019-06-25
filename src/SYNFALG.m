@@ -1,4 +1,4 @@
-SYNFALG ;ven/gpl - fhir loader utilities ; 2/20/18 4:11am
+SYNFALG ;ven/gpl - fhir loader utilities ;2019-06-21  3:40 PM
  ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
  ;
  ; Authored by George P. Lilly 2017-2018
@@ -105,7 +105,9 @@ wsIntakeAllergy(args,body,result,ien) ; web service entry (post)
  . ;
  . ; determine the onset date and time
  . ;
- . new onsetdate set onsetdate=$get(json("entry",zi,"resource","assertedDate"))
+ . ; json("entry",439,"resource","recordedDate")="1988-06-30T13:15:44-04:00"
+ . new onsetdate   set onsetdate=$get(json("entry",zi,"resource","assertedDate"))
+ . if onsetdate="" set onsetdate=$get(json("entry",zi,"resource","recordedDate"))
  . do log(jlog,"onsetDateTime is: "_onsetdate)
  . set eval("allergy",zi,"vars","onsetDateTime")=onsetdate
  . new fmOnsetDateTime s fmOnsetDateTime=$$fhirTfm^SYNFUTL(onsetdate)
@@ -287,7 +289,7 @@ getRandomAllergy(ary) ; make a web service call to get random allergies
 ISGMR(CDE) ; extrinsic return the ien and allergy name in GMR ALLERGIES if any
  ; CDE is a snomed code. returns -1 if not found
  N VUID
- S VUID=$$MAP^SYNQLDM(CDE)
+ S VUID=$$MAP^SYNQLDM(CDE,"gmr-allergies")
  ;W !,CDE," VUID:",VUID
  I VUID="" Q -1
  N IEN
