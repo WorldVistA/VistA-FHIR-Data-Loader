@@ -41,8 +41,7 @@ wsPostFHIR(ARGS,BODY,RESULT)    ; recieve from addpatient
  ;
  if rdfn'="" do  ; patient creation was successful
  . if $g(ARGS("load"))="" s ARGS("load")=1
- . ;do taskLabs(.return,ien,.ARGS)
- . DO importLabs^SYNFLAB(.return,ien,.ARGS)
+ . do importLabs^SYNFLAB(.return,ien,.ARGS)
  . do importVitals^SYNFVIT(.return,ien,.ARGS)
  . do importEncounters^SYNFENC(.return,ien,.ARGS)
  . do importImmu^SYNFIMM(.return,ien,.ARGS)
@@ -264,37 +263,11 @@ fhir2graph(in,out)      ; transforms fhir to a graph
  . if rname="" do  quit  ;
  . . w !,"error no resourceType in entry: ",i
  . . ;zwrite @rootj@(i,*)
- . . b
+ . . set $EC=",U-DEBUG-ME,"
  . if '$data(@out@(rname)) set cnt=1
  . else  set cnt=$order(@out@(rname,""),-1)+1
  . merge @out@(rname,cnt)=@rootj@(i,"resource")
  quit
- ;
-taskLabs(return,ien,ARGS) ;load Labs with TASKMAN
- ;
- NEW YSDUZ,ZTRTN,ZTDESC,ZTDTH,ZTSAVE,ZTIO,PATIEN  ;,JOBNBR
- SET YSDUZ=DUZ
- SET ZTRTN="runLabs^SYNFHIR"
- SET ZTDESC="Load Patient Labs"
- SET ZTDTH=$H
- SET ZTIO=""
- SET JOBNBR=$J
- SET PATIEN=ien
- SET ZTSAVE("PATIEN")=""
- ;Submit the job to Taskman
- ;ZWRITE ARGS
- DO ^%ZTLOAD
- ;
- QUIT
- ;
-runLabs ; This is what is submitted to Taskman
- NEW args,ien,return
- ;
- SET ien=PATIEN
- SET args("load")=1
- DO importLabs^SYNFLAB(.return,ien,.args)
- ;
- QUIT
  ;
 getEntry(ary,ien,rien) ; returns one entry in ary, passed by name
  n root s root=$$setroot^%wd("fhir-intake")
