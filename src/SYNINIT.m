@@ -10,7 +10,7 @@ EN ; [Public; called by KIDS; do everything in this file]
  D MES^XPDUTL("Syn Patients Importer Init")
  D MES^XPDUTL("Provider "_$$PROV(1))
  D MES^XPDUTL("Pharmacist "_$$PHARM(1))
- D MES^XPDUTL("Hospital Location "_$$HL())
+ D MES^XPDUTL("Hospital Location "_$$HL(1))
  D MES^XPDUTL("Fixing AMIE thingy") D AMIE
  D MES^XPDUTL("Fixing IB ACTION TYPE file") D IBACTION
  D MES^XPDUTL("Setting up Outpatient Pharmacy "_$$PHRSS())
@@ -229,19 +229,26 @@ IBACTION ; [Public] Fix IB ACTION TYPE file (350.1) PSO entries to point to PHAR
  ;
  QUIT
  ;
-HL() ; [Public $$] Generic Hospital Location Entry
+HL(rePopulate) ; [Public $$] Generic Hospital Location Entry
  N NAME S NAME="GENERAL MEDICINE" ; Constant
- Q:$O(^SC("B",NAME,0)) $O(^(0)) ; Quit if the entry exists with the entry
+ new C0XIEN set C0XIEN=$O(^SC("B",NAME,0))
+ if C0XIEN,'$get(rePopulate) quit C0XIEN
  ;
- N C0XFDA,C0XIEN,C0XERR,DIERR
- S C0XFDA(44,"?+1,",.01)=NAME
- S C0XFDA(44,"?+1,",2)="C" ; Type - Clinic
- S C0XFDA(44,"?+1,",2.1)=1 ; Type Extension - Clinic
- S C0XFDA(44,"?+1,",3)=+$$SITE^VASITE() ; Institution - Default institution
- S C0XFDA(44,"?+1,",8)=295 ; STOP CODE NUMBER - Primary Care
- S C0XFDA(44,"?+1,",9)="M" ; SERVICE
- S C0XFDA(44,"?+1,",2502)="N" ; NON-COUNT CLINIC
- D UPDATE^DIE("",$NA(C0XFDA),$NA(C0XIEN),$NA(C0XERR))
+ new IENS
+ if C0XIEN,$get(rePopulate) set IENS=C0XIEN_","
+ else  set IENS="?+1,"
+ ;
+ N C0XFDA,C0XERR,DIERR
+ S C0XFDA(44,IENS,.01)=NAME
+ S C0XFDA(44,IENS,1)="GENMED" ; Abbreviation
+ S C0XFDA(44,IENS,2)="C" ; Type - Clinic
+ S C0XFDA(44,IENS,2.1)=1 ; Type Extension - Clinic
+ S C0XFDA(44,IENS,3)=+$$SITE^VASITE() ; Institution - Default institution
+ S C0XFDA(44,IENS,8)=295 ; STOP CODE NUMBER - Primary Care
+ S C0XFDA(44,IENS,9)="M" ; SERVICE
+ S C0XFDA(44,IENS,2502)="N" ; NON-COUNT CLINIC
+ if $get(rePopulate) do FILE^DIE("",$NA(C0XFDA),$NA(C0XERR)) set C0XIEN(1)=C0XIEN if 1
+ else  do UPDATE^DIE("",$NA(C0XFDA),$NA(C0XIEN),$NA(C0XERR))
  I $D(DIERR) S $EC=",U1,"
  Q C0XIEN(1) ; HL IEN
  ;
@@ -316,6 +323,9 @@ TESTHL ; @TEST Test adding a clinic
  I HL N DA,DIK S DA=HL,DIK="^SC(" D ^DIK
  S HL=$$HL()
  D CHKTF^%ut(HL>0)
+ N HL2 S HL2=$$HL(1)
+ D CHKEQ^%ut(HL,HL2)
+ D CHKTF^%ut($P(^SC(HL2,0),U,2)="GENMED")
  QUIT
  ;
 TESTLH ; @Test Load Handlers
