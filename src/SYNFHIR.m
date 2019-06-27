@@ -5,28 +5,26 @@ SYNFHIR ;ven/gpl - fhir loader utilities ;2019-05-30  6:02 PM
  ;
  q
  ;
-wsPostFHIR(ARGS,BODY,RESULT)    ; recieve from addpatient
+wsPostFHIR(ARGS,BODY,RESULT,ien)    ; recieve from addpatient
  ;
  s U="^"
  ;S DUZ=1
  ;S DUZ("AG")="V"
  ;S DUZ(2)=500
- S USER=$$DUZ^SYNDHP69
+ N USER S USER=$$DUZ^SYNDHP69
  ;
- new json,ien,root,gr,id,return
+ new json,root,gr,id,return
  set root=$$setroot^%wd("fhir-intake")
- set id=$get(ARGS("id"))
+ if $get(ien)="" do
+ . set ien=$order(@root@(" "),-1)+1
+ . set gr=$name(@root@(ien,"json"))
+ . do decode^%webjson("BODY",gr)
+ . kill BODY  ; remove it from symbol table as it is too big
  ;
- set ien=$order(@root@(" "),-1)+1
- set gr=$name(@root@(ien,"json"))
- merge json=BODY
- do decode^%webjson("json",gr)
  do indexFhir(ien)
  ;
- if id'="" do  ;
- . set @root@("B",id,ien)=""
- else  do  ;
- . ;
+ set id=$get(ARGS("id"))
+ if id'="" set @root@("B",id,ien)="" ; OSE/SMH - What does id do?
  ;
  if $get(ARGS("returngraph"))=1 do  ;
  . merge return("graph")=@root@(ien,"graph")
@@ -332,11 +330,17 @@ FILE(directory) ; [Public] Load files from the file system
  . ;
  . ; Now load the file into VistA
  . write "Ingesting ",file,"...",!
- . new file
- . do KILL^XUSCLEAN ; VistA leaks like hell
- . new args,body,synjsonreturn
- . merge body=^TMP("SYNFILE",$J)
- . new % set %=$$wsPostFHIR(.args,.body,.synjsonreturn) ; % always comes out as 1. We will ignore it.
+ . ;
+ . do
+ .. new synfiles,file,directory
+ .. do KILL^XUSCLEAN ; VistA leaks like hell
+ . ;
+ . new root set root=$$setroot^%wd("fhir-intake")
+ . new ien set ien=$order(@root@(" "),-1)+1
+ . new gr set gr=$name(@root@(ien,"json"))
+ . do decode^%webjson($na(^TMP("SYNFILE",$J)),gr)
+ . new args,synjsonreturn
+ . new % set %=$$wsPostFHIR(.args,,.synjsonreturn,ien) ; ignore % which always comes out at 1
  . ;
  . ; Get the status back from JSON
  . new synreturn,synjsonerror
