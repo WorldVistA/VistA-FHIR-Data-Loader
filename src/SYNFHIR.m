@@ -24,7 +24,7 @@ wsPostFHIR(ARGS,BODY,RESULT,ien)    ; recieve from addpatient
  . set ien=$order(@root@(" "),-1)+1
  . set gr=$name(@root@(ien,"json"))
  . merge json=BODY
- . do decode^%webjson("json",gr)
+ . do decode^SYNJSON("json",gr)
  ;
  do indexFhir(ien)
  ;
@@ -58,7 +58,7 @@ wsPostFHIR(ARGS,BODY,RESULT,ien)    ; recieve from addpatient
  . do importProcedures^SYNFPROC(.return,ien,.ARGS)
  . do importCarePlan^SYNFCP(.return,ien,.ARGS)
  ;
- do encode^%webjson("return","RESULT")
+ do encode^SYNJSON("return","RESULT")
  set HTTPRSP("mime")="application/json"
  ;
  quit 1
@@ -210,7 +210,7 @@ wsShow(rtn,filter)      ; web service to show the fhir
  . do getIntakeFhir("jtmp",$g(filter("bundle")),type,ien,1)
  . ;do getIntakeFhir("jtmp",,type,ien,1)
  . set juse="jtmp"
- do encode^%webjson(juse,"rtn")
+ do encode^SYNJSON(juse,"rtn")
  s HTTPRSP("mime")="application/json"
  quit
  ;
@@ -258,7 +258,7 @@ fhir2graph(in,out)      ; transforms fhir to a graph
  ; detects if json parser has been run and will run it if not
  ;
  new json
- if $ql($q(@in@("")))<2 do decode^%webjson(in,"json") set in="json"
+ if $ql($q(@in@("")))<2 do decode^SYNJSON(in,"json") set in="json"
  ;
  new rootj
  set rootj=$na(@in@("entry"))
@@ -371,14 +371,14 @@ FILE(directory) ; [Public] Load files from the file system
  . set ien=$order(@root@(" "),-1)+1
  . set gr=$name(@root@(ien,"json"))
  . s body=$na(^TMP("SYNFILE",$J))
- . do decode^%webjson(body,gr)
+ . do decode^SYNJSON(body,gr)
  . ;merge body=^TMP("SYNFILE",$J) ;don't need to merge because we decoded
  . ;new % set %=$$wsPostFHIR(.args,.body,.synjsonreturn) ; % always comes out as 1. We will ignore it.
  . new % set %=$$wsPostFHIR(.args,.body,.synjsonreturn,ien) ; % always comes out as 1. We will ignore it.
  . ;
  . ; Get the status back from JSON
  . new synreturn,synjsonerror
- . do decode^%webjson($na(synjsonreturn),$na(synreturn),$na(synjsonerror))
+ . do decode^SYNJSON($na(synjsonreturn),$na(synreturn),$na(synjsonerror))
  . if $data(synjsonerror) write "There is an error decoding the return. Debug me." quit
  . ;
  . if $get(synreturn("loadMessage"))["Duplicate" write "Patient Already Loaded",! quit
