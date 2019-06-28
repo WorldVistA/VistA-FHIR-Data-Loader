@@ -1,4 +1,4 @@
-SYNJSONE ;SLC/KCM -- Encode JSON;Feb 07, 2019@11:01
+SYNJSONE ;SLC/KCM -- Encode JSON;Feb 07, 2019@11:01 ; 6/28/19 1:42pm
  ;
 ENCODE(VVROOT,VVJSON,VVERR) ; VVROOT (M structure) --> VVJSON (array of strings)
  ;
@@ -9,9 +9,9 @@ DIRECT ; TAG for use by encode^SYNJSONE
  ;
  ; VVROOT: closed array reference for M representation of object
  ; VVJSON: destination variable for the string array formatted as JSON
- ;  VVERR: contains error messages, defaults to ^TMP("%webjsonerr",$J)
+ ;  VVERR: contains error messages, defaults to ^TMP("SYNJSONERR",$J)
  ;
- S VVERR=$G(VVERR,"^TMP(""%webjsonerr"",$J)")
+ S VVERR=$G(VVERR,"^TMP(""SYNJSONERR"",$J)")
  I '$L($G(VVROOT)) ; set error info
  I '$L($G(VVJSON)) ; set error info
  N VVLINE,VVMAX,VVERRORS

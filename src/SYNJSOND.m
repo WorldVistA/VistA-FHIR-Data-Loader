@@ -1,4 +1,4 @@
-SYNJSOND ;SLC/KCM -- Decode JSON;2019-03-01  10:44 AM
+SYNJSOND ;SLC/KCM -- Decode JSON;2019-03-01  10:44 AM ; 6/28/19 1:42pm
  ;
 DECODE(VVJSON,VVROOT,VVERR) ; Set JSON object into closed array ref VVROOT
  ;
@@ -9,7 +9,7 @@ DIRECT ; TAG for use by decode^SYNJSOND
  ;
  ; VVJSON: string/array containing serialized JSON object
  ; VVROOT: closed array reference for M representation of object
- ;  VVERR: contains error messages, defaults to ^TMP("%webjsonerr",$J)
+ ;  VVERR: contains error messages, defaults to ^TMP("SYNJSONERR",$J)
  ;
  ;   VVIDX: points to next character in JSON string to process
  ; VVSTACK: manages stack of subscripts
@@ -19,7 +19,7 @@ DIRECT ; TAG for use by decode^SYNJSOND
  ; With the change to VVMAX, the following Unit Tests required changes:
  ; SPLITA^SYNJSODT, SPLITB^SYNJSODT, LONG^SYNJSODT, MAXNUM^SYNJSODT
  N VVMAX S VVMAX=100 ; limit document lines to 100 characters
- S VVERR=$G(VVERR,"^TMP(""%webjsonerr"",$J)")
+ S VVERR=$G(VVERR,"^TMP(""SYNJSONERR"",$J)")
  ; If a simple string is passed in, move it to an temp array (VVINPUT)
  ; so that the processing is consistently on an array.
  I $D(@VVJSON)=1 N VVINPUT S VVINPUT(1)=@VVJSON,VVJSON="VVINPUT"

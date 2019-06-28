@@ -1,4 +1,4 @@
-%webjson ;SLC/KCM -- Decode/Encode JSON;Feb 07, 2019@10:51
+SYNJSON ;SLC/KCM -- Decode/Encode JSON;Feb 07, 2019@10:51 ; 6/28/19 1:41pm
  ;
  ; Note:  Since the routines use closed array references, VVROOT and VVERR
  ;        are used to reduce risk of naming conflicts on the closed array.
