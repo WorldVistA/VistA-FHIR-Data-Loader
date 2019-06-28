@@ -1,5 +1,5 @@
-SYNFHIR ;ven/gpl - fhir loader utilities ;2019-05-30  6:02 PM
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
+SYNFHIR ;ven/gpl - fhir loader utilities ; 6/28/19 2:00pm
+ ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 1
  ;
  ; Authored by George P. Lilly 2017-2018
  ;
@@ -364,8 +364,9 @@ FILE(directory) ; [Public] Load files from the file system
  . ;
  . ; Now load the file into VistA
  . write "Ingesting ",file,"...",!
- . new file
- . do KILL^XUSCLEAN ; VistA leaks like hell
+ . do
+ .. new file,directory,synfiles
+ .. do KILL^XUSCLEAN ; VistA leaks like hell
  . new args,body,synjsonreturn,ien,root,gr
  . set root=$$setroot^SYNWD("fhir-intake")
  . set ien=$order(@root@(" "),-1)+1
