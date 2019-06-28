@@ -28,17 +28,24 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  ; result is json and summarizes what was done
  ; args include patientId
  ; ien is specified for internal calls, where the json is already in a graph
+ n root,troot
+ s root=$$setroot^SYNWD("fhir-intake")
+ ;
  n jtmp,json,jrslt,eval
  ;i $g(ien)'="" if $$loadStatus("labs","",ien)=1 d  q  ;
  ;. s result("labsStatus","status")="alreadyLoaded"
  i $g(ien)'="" d  ; internal call
- . d getIntakeFhir^SYNFHIR("json",,"Observation",ien,1)
- e  d  ;
- . ;s args("load")=0
- . merge jtmp=BODY
- . do decode^SYNJSONE("jtmp","json")
- i '$d(json) q 0  ;
- m ^gpl("gjson")=json
+ . s troot=$na(@root@(ien,"type","Observation"))
+ . ;d getIntakeFhir^SYNFHIR("json",,"Observation",ien,1)
+ e  q 0  ; sending not decoded json in BODY to this routine is not done
+ ; todo: locate the patient and add the labs in BODY to the graph
+ ;. ;s args("load")=0
+ ;. merge jtmp=BODY
+ ;. do decode^SYNJSONE("jtmp","json")
+ ;. s troot=$na(@root@(ien,"type","Observation"))
+ i '$d(@troot) q 0  ;
+ s json=$na(@root@(ien,"json"))
+ ;m ^gpl("gjson")=@troot
  ;
  ; determine the patient
  ;
@@ -55,7 +62,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  ;
  ;
  new zi s zi=0
- for  set zi=$order(json("entry",zi)) quit:+zi=0  do  ;
+ for  set zi=$order(@troot@(zi)) quit:+zi=0  do  ;
  . ;
  . ; define a place to log the processing of this entry
  . ;
@@ -63,7 +70,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . ;
  . ; insure that the resourceType is Observation
  . ;
- . new type set type=$get(json("entry",zi,"resource","resourceType"))
+ . new type set type=$get(@json@("entry",zi,"resource","resourceType"))
  . if type'="Observation" do  quit  ;
  . . set eval("labs",zi,"vars","resourceType")=type
  . . do log(jlog,"Resource type not Observation, skipping entry")
@@ -71,11 +78,11 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . ;
  . ; determine the Observation category and quit if not labs
  . ;
- . new obstype set obstype=$get(json("entry",zi,"resource","category",1,"coding",1,"code"))
+ . new obstype set obstype=$get(@json@("entry",zi,"resource","category",1,"coding",1,"code"))
  . if obstype="" do  ; category is missing, try mapping the code
  . . new trycode,trydisp,tryy
- . . set trycode=$g(json("entry",zi,"resource","code","coding",1,"code"))
- . . set trydisp=$g(json("entry",zi,"resource","code","coding",1,"display"))
+ . . set trycode=$g(@json@("entry",zi,"resource","code","coding",1,"code"))
+ . . set trydisp=$g(@json@("entry",zi,"resource","code","coding",1,"display"))
  . . s tryy=$$loinc2sct(trycode)
  . . if tryy="" d  quit  ;
  . . . d log(jlog,"Observation Category missing, not vital signs; code is: "_trycode_" "_trydisp)
@@ -94,40 +101,40 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . ;
  . ; determine Labs type, code, coding system, and display text
  . ;
- . new labtype set labtype=$get(json("entry",zi,"resource","code","text"))
- . if labtype="" set labtype=$get(json("entry",zi,"resource","code","coding",1,"display"))
+ . new labtype set labtype=$get(@json@("entry",zi,"resource","code","text"))
+ . if labtype="" set labtype=$get(@json@("entry",zi,"resource","code","coding",1,"display"))
  . do log(jlog,"Labs type is: "_labtype)
  . set eval("labs",zi,"vars","type")=labtype
  . ;
  . ; determine the id of the resource
  . ;
- . new id set id=$get(json("entry",zi,"resource","id"))
+ . new id set id=$get(@json@("entry",zi,"resource","id"))
  . set eval("labs",zi,"vars","id")=id
  . d log(jlog,"ID is: "_id)
  . ;
- . new obscode set obscode=$get(json("entry",zi,"resource","code","coding",1,"code"))
+ . new obscode set obscode=$get(@json@("entry",zi,"resource","code","coding",1,"code"))
  . do log(jlog,"code is: "_obscode)
  . set eval("labs",zi,"vars","code")=obscode
  . ;
  . s ^gpl("labs",obscode,labtype)=""
  . ;
- . new codesystem set codesystem=$get(json("entry",zi,"resource","code","coding",1,"system"))
+ . new codesystem set codesystem=$get(@json@("entry",zi,"resource","code","coding",1,"system"))
  . do log(jlog,"code system is: "_codesystem)
  . set eval("labs",zi,"vars","codeSystem")=codesystem
  . ;
  . ; determine the value and units
  . ;
- . new value set value=$get(json("entry",zi,"resource","valueQuantity","value"))
+ . new value set value=$get(@json@("entry",zi,"resource","valueQuantity","value"))
  . do log(jlog,"value is: "_value)
  . set eval("labs",zi,"vars","value")=value
  . ;
- . new unit set unit=$get(json("entry",zi,"resource","valueQuantity","unit"))
+ . new unit set unit=$get(@json@("entry",zi,"resource","valueQuantity","unit"))
  . do log(jlog,"units are: "_unit)
  . set eval("labs",zi,"vars","units")=unit
  . ;
  . ; determine the effective date
  . ;
- . new effdate set effdate=$get(json("entry",zi,"resource","effectiveDateTime"))
+ . new effdate set effdate=$get(@json@("entry",zi,"resource","effectiveDateTime"))
  . do log(jlog,"effectiveDateTime is: "_effdate)
  . set eval("labs",zi,"vars","effectiveDateTime")=effdate
  . new fmtime s fmtime=$$fhirTfm^SYNFUTL(effdate)
@@ -222,7 +229,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . . else  s eval("status","errors")=$g(eval("status","errors"))+1
  ;
  if $get(args("debug"))=1 do  ;
- . m jrslt("source")=json
+ . m jrslt("source")=@json
  . m jrslt("args")=args
  . m jrslt("eval")=eval
  m jrslt("labsStatus")=eval("labsStatus")
