@@ -11,10 +11,10 @@ importLabs(rtn,ien,args) ; entry point for loading labs for a patient
  n grtn
  n root s root=$$setroot^SYNWD("fhir-intake")
  n % s %=$$wsIntakeLabs(.args,,.grtn,ien)
- i $d(grtn) d  ; something was returned
- . k @root@(ien,"load","labs")
- . m @root@(ien,"load","labs")=grtn("labs")
- . if $g(args("debug"))=1 m rtn=grtn
+ ;i $d(grtn) d  ; something was returned
+ ;. k @root@(ien,"load","labs")
+ ;. m @root@(ien,"load","labs")=grtn("labs")
+ ;. if $g(args("debug"))=1 m rtn=grtn
  s rtn("labsStatus","status")=$g(grtn("status","status"))
  s rtn("labsStatus","loaded")=$g(grtn("status","loaded"))
  s rtn("labsStatus","errors")=$g(grtn("status","errors"))
@@ -36,6 +36,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  ;. s result("labsStatus","status")="alreadyLoaded"
  i $g(ien)'="" d  ; internal call
  . s troot=$na(@root@(ien,"type","Observation"))
+ . s eval=$na(@root@(ien,"load")) ; move eval to the graph
  . ;d getIntakeFhir^SYNFHIR("json",,"Observation",ien,1)
  e  q 0  ; sending not decoded json in BODY to this routine is not done
  ; todo: locate the patient and add the labs in BODY to the graph
@@ -49,7 +50,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  ;
  ; determine the patient
  ;
- n dfn,eval
+ n dfn
  if $g(ien)'="" d  ;
  . s dfn=$$ien2dfn^SYNFUTL(ien) ; look up dfn in the graph
  else  d  ;
@@ -66,15 +67,15 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . ;
  . ; define a place to log the processing of this entry
  . ;
- . new jlog set jlog=$name(eval("labs",zi))
+ . new jlog set jlog=$name(@eval@("labs",zi))
  . ;
  . ; insure that the resourceType is Observation
  . ;
  . new type set type=$get(@json@("entry",zi,"resource","resourceType"))
  . if type'="Observation" do  quit  ;
- . . set eval("labs",zi,"vars","resourceType")=type
+ . . set @eval@("labs",zi,"vars","resourceType")=type
  . . do log(jlog,"Resource type not Observation, skipping entry")
- . set eval("labs",zi,"vars","resourceType")=type
+ . set @eval@("labs",zi,"vars","resourceType")=type
  . ;
  . ; determine the Observation category and quit if not labs
  . ;
@@ -90,9 +91,9 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . . d log(jlog,"Derived category is "_obstype)
  . ;
  . if obstype'="laboratory" do  quit  ;
- . . set eval("labs",zi,"vars","observationCategory")=obstype
+ . . set @eval@("labs",zi,"vars","observationCategory")=obstype
  . . do log(jlog,"Observation Category is not laboratory, skipping")
- . set eval("labs",zi,"vars","observationCategory")=obstype
+ . set @eval@("labs",zi,"vars","observationCategory")=obstype
  . ;
  . ; see if this resource has already been loaded. if so, skip it
  . ;
@@ -104,72 +105,72 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . new labtype set labtype=$get(@json@("entry",zi,"resource","code","text"))
  . if labtype="" set labtype=$get(@json@("entry",zi,"resource","code","coding",1,"display"))
  . do log(jlog,"Labs type is: "_labtype)
- . set eval("labs",zi,"vars","type")=labtype
+ . set @eval@("labs",zi,"vars","type")=labtype
  . ;
  . ; determine the id of the resource
  . ;
  . new id set id=$get(@json@("entry",zi,"resource","id"))
- . set eval("labs",zi,"vars","id")=id
+ . set @eval@("labs",zi,"vars","id")=id
  . d log(jlog,"ID is: "_id)
  . ;
  . new obscode set obscode=$get(@json@("entry",zi,"resource","code","coding",1,"code"))
  . do log(jlog,"code is: "_obscode)
- . set eval("labs",zi,"vars","code")=obscode
+ . set @eval@("labs",zi,"vars","code")=obscode
  . ;
  . s ^gpl("labs",obscode,labtype)=""
  . ;
  . new codesystem set codesystem=$get(@json@("entry",zi,"resource","code","coding",1,"system"))
  . do log(jlog,"code system is: "_codesystem)
- . set eval("labs",zi,"vars","codeSystem")=codesystem
+ . set @eval@("labs",zi,"vars","codeSystem")=codesystem
  . ;
  . ; determine the value and units
  . ;
  . new value set value=$get(@json@("entry",zi,"resource","valueQuantity","value"))
  . do log(jlog,"value is: "_value)
- . set eval("labs",zi,"vars","value")=value
+ . set @eval@("labs",zi,"vars","value")=value
  . ;
  . new unit set unit=$get(@json@("entry",zi,"resource","valueQuantity","unit"))
  . do log(jlog,"units are: "_unit)
- . set eval("labs",zi,"vars","units")=unit
+ . set @eval@("labs",zi,"vars","units")=unit
  . ;
  . ; determine the effective date
  . ;
  . new effdate set effdate=$get(@json@("entry",zi,"resource","effectiveDateTime"))
  . do log(jlog,"effectiveDateTime is: "_effdate)
- . set eval("labs",zi,"vars","effectiveDateTime")=effdate
+ . set @eval@("labs",zi,"vars","effectiveDateTime")=effdate
  . new fmtime s fmtime=$$fhirTfm^SYNFUTL(effdate)
  . d log(jlog,"fileman dateTime is: "_fmtime)
- . set eval("labs",zi,"vars","fmDateTime")=fmtime ;
+ . set @eval@("labs",zi,"vars","fmDateTime")=fmtime ;
  . new hl7time s hl7time=$$fhirThl7^SYNFUTL(effdate)
  . d log(jlog,"hl7 dateTime is: "_hl7time)
- . set eval("labs",zi,"vars","hl7DateTime")=hl7time ;
+ . set @eval@("labs",zi,"vars","hl7DateTime")=hl7time ;
  . ;
  . ; set up to call the data loader
  . ;
  . n RETSTA,DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPPROV,DHPLOC,DHPLOINC
  . ;
  . s DHPPAT=$$dfn2icn^SYNFUTL(dfn)
- . s eval("labs",zi,"parms","DHPPAT")=DHPPAT
+ . s @eval@("labs",zi,"parms","DHPPAT")=DHPPAT
  . ;
  . ;n vistalab s vistalab=$$MAP^SYNQLDM(obscode)
  . s DHPLOINC=obscode
  . d log(jlog,"LOINC code is: "_DHPLOINC)
- . s eval("labs",zi,"parms","DHPLOINC")=DHPLOINC
+ . s @eval@("labs",zi,"parms","DHPLOINC")=DHPLOINC
  . ;
  . n vistalab s vistalab=$$graphmap^SYNGRAPH("loinc-lab-map",obscode)
  . i +vistalab=-1 s vistalab=$$graphmap^SYNGRAPH("loinc-lab-map"," "_obscode)
  . i +vistalab'=-1 d
  .. d log(jlog,"Lab found in graph: "_vistalab)
- .. s eval("labs",zi,"parms","vistalab")=vistalab
+ .. s @eval@("labs",zi,"parms","vistalab")=vistalab
  . if +vistalab=-1 s vistalab=labtype
  . s vistalab=$$TRIM^XLFSTR(vistalab) ; get rid of trailing blanks
  . ;n sct s sct=$$loinc2sct(obscode) ; find the snomed code
  . ;i vistalab="" d  quit
  . ;. d log(jlog,"VistA lab not found for loinc code: "_obscode_" "_labtype_" -- skipping")
- . ;. s eval("labs",zi,"status","loadstatus")="cannotLoad"
- . ;. s eval("labs",zi,"status","issue")="VistA lab not found for loinc code: "_obscode_" "_labtype_" -- skipping"
- . ;. s eval("status","errors")=$g(eval("status","errors"))+1
- . s eval("labs",zi,"parms","DHPLAB")=vistalab
+ . ;. s @eval@("labs",zi,"status","loadstatus")="cannotLoad"
+ . ;. s @eval@("labs",zi,"status","issue")="VistA lab not found for loinc code: "_obscode_" "_labtype_" -- skipping"
+ . ;. s @eval@("status","errors")=$g(@eval@("status","errors"))+1
+ . s @eval@("labs",zi,"parms","DHPLAB")=vistalab
  . d log(jlog,"VistA Lab is: "_vistalab)
  . s DHPLAB=vistalab
  . ;
@@ -181,7 +182,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . . s dec=+$p($p(xform,"""",2),",",3)
  . i $l($p(DHPOBS,".",2))>1 d
  . . s DHPOBS=$s(dec<4:$j(DHPOBS,1,dec),dec>3:$j(DHPOBS,1,3),1:$j(DHPOBS,1,0)) ; fix results with too many decimal places
- . s eval("labs",zi,"parms","DHPOBS")=DHPOBS
+ . s @eval@("labs",zi,"parms","DHPOBS")=DHPOBS
  . d log(jlog,"Value is: "_DHPOBS)
  . ;
  . ;i DHPLOINC="2093-3" s DHPOBS=$J(DHPOBS,1,0) ;Total Cholesterol
@@ -192,51 +193,52 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . ;i DHPLOINC="2339-0" s DHPOBS=$J(DHPOBS,1,0) ;Glucose
  . ;
  . s DHPUNT=unit
- . s eval("labs",zi,"parms","DHPUNT")=unit
+ . s @eval@("labs",zi,"parms","DHPUNT")=unit
  . d log(jlog,"Units are: "_unit)
  . ;
  . s DHPDTM=hl7time
- . s eval("labs",zi,"parms","DHPDTM")=hl7time
+ . s @eval@("labs",zi,"parms","DHPDTM")=hl7time
  . d log(jlog,"HL7 DateTime is: "_hl7time)
  . ;
  . s DHPPROV=$$MAP^SYNQLDM("OP","provider")
  . n DHPPROVIEN s DHPPROVIEN=$o(^VA(200,"B",DHPPROV,""))
  . if DHPPROVIEN="" S DHPPROVIEN=3
- . s eval("labs",zi,"parms","DHPPROV")=DHPPROVIEN
+ . s @eval@("labs",zi,"parms","DHPPROV")=DHPPROVIEN
  . d log(jlog,"Provider for outpatient is: #"_DHPPROVIEN_" "_DHPPROV)
  . ;
  . s DHPLOC=$$MAP^SYNQLDM("OP","location")
  . n DHPLOCIEN s DHPLOCIEN=$o(^SC("B",DHPLOC,""))
  . if DHPLOCIEN="" S DHPLOCIEN=4
- . s eval("labs",zi,"parms","DHPLOC")=DHPLOC
+ . s @eval@("labs",zi,"parms","DHPLOC")=DHPLOC
  . d log(jlog,"Location for outpatient is: #"_DHPLOCIEN_" "_DHPLOC)
  . ;
- . s eval("labs",zi,"status","loadstatus")="readyToLoad"
+ . s @eval@("labs",zi,"status","loadstatus")="readyToLoad"
  . ;
  . if $g(args("load"))=1 d  ; only load if told to
- . . new (DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPPROV,DHPLOC,DHPLOINC,DHPLAB,DUZ,DT,U,jlog,ien,zi,eval)
+ . . ;new (DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPPROV,DHPLOC,DHPLOINC,DHPLAB)
  . . if $g(ien)'="" if $$loadStatus("labs",zi,ien)=1 do  quit  ;
  . . . d log(jlog,"Lab already loaded, skipping")
  . . d log(jlog,"Calling LABADD^SYNDHP63 to add lab")
+ . . ;new (DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPPROV,DHPLOC,DHPLOINC,DHPLAB,DUZ,DT,U,jlog,ien,zi,eval)
  . . ;LABADD(RETSTA,DHPPAT,DHPLOC,DHPTEST,DHPRSLT,DHPRSDT) ;Create lab test
  . . D LABADD^SYNDHP63(.RETSTA,DHPPAT,DHPLOC,DHPLAB,DHPOBS,DHPDTM,DHPLOINC)     ; labs update
  . . S ^ZZLABLOG(ien)=$G(RETSTA)
  . . d log(jlog,"Return from LABADD^ZZDHP63 was: "_$g(RETSTA))
  . . i $g(DEBUG)=1 ZWRITE RETSTA
  . . if +$g(RETSTA)=1 do  ;
- . . . s eval("status","loaded")=$g(eval("status","loaded"))+1
- . . . s eval("labs",zi,"status","loadstatus")="loaded"
- . . else  s eval("status","errors")=$g(eval("status","errors"))+1
+ . . . s @eval@("status","loaded")=$g(@eval@("status","loaded"))+1
+ . . . s @eval@("labs",zi,"status","loadstatus")="loaded"
+ . . else  s @eval@("status","errors")=$g(@eval@("status","errors"))+1
  ;
  if $get(args("debug"))=1 do  ;
  . m jrslt("source")=@json
  . m jrslt("args")=args
- . m jrslt("eval")=eval
- m jrslt("labsStatus")=eval("labsStatus")
+ . m jrslt("eval")=@eval
+ m jrslt("labsStatus")=@eval@("labsStatus")
  set jrslt("result","status")="ok"
- set jrslt("result","loaded")=$g(eval("status","loaded"))
+ set jrslt("result","loaded")=$g(@eval@("status","loaded"))
  i $g(ien)'="" d  ; called internally
- . m result=eval
+ . ;m result=eval
  . m result("status")=jrslt("result")
  . ;b
  e  d  ;
