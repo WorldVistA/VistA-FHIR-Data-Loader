@@ -11,10 +11,10 @@ importVitals(rtn,ien,args) ; entry point for loading vitals for a patient
  n grtn
  n root s root=$$setroot^SYNWD("fhir-intake")
  n % s %=$$wsIntakeVitals(.args,,.grtn,ien)
- i $d(grtn) d  ; something was returned
- . k @root@(ien,"load","vitals")
- . m @root@(ien,"load","vitals")=grtn("vitals")
- . if $g(args("debug"))=1 m rtn=grtn
+ ;i $d(grtn) d  ; something was returned
+ ;. k @root@(ien,"load","vitals")
+ ;. m @root@(ien,"load","vitals")=grtn("vitals")
+ ;. if $g(args("debug"))=1 m rtn=grtn
  s rtn("vitalsStatus","status")=$g(grtn("status","status"))
  s rtn("vitalsStatus","loaded")=$g(grtn("status","loaded"))
  s rtn("vitalsStatus","errors")=$g(grtn("status","errors"))
@@ -37,6 +37,7 @@ wsIntakeVitals(args,body,result,ien) ; web service entry (post)
  i $g(ien)'="" d  ; internal call
  . ;d getIntakeFhir^SYNFHIR("json",,"Observation",ien,1)
  . s troot=$na(@root@(ien,"type","Observation"))
+ . s eval=$na(@root@(ien,"load"))
  e  q 0  ; sending json to this routine in BODY is not supported
  ;. ;s args("load")=0
  ;. merge jtmp=BODY
@@ -47,7 +48,7 @@ wsIntakeVitals(args,body,result,ien) ; web service entry (post)
  ;
  ; determine the patient
  ;
- n dfn,eval
+ n dfn
  if $g(ien)'="" d  ;
  . s dfn=$$ien2dfn^SYNFUTL(ien) ; look up dfn in the graph
  else  d  ;
@@ -64,15 +65,15 @@ wsIntakeVitals(args,body,result,ien) ; web service entry (post)
  . ;
  . ; define a place to log the processing of this entry
  . ;
- . new jlog set jlog=$name(eval("vitals",zi))
+ . new jlog set jlog=$name(@eval@("vitals",zi))
  . ;
  . ; insure that the resourceType is Observation
  . ;
  . new type set type=$get(@json@("entry",zi,"resource","resourceType"))
  . if type'="Observation" do  quit  ;
- . . set eval("vitals",zi,"vars","resourceType")=type
+ . . set @eval@("vitals",zi,"vars","resourceType")=type
  . . do log(jlog,"Resource type not Observation, skipping entry")
- . set eval("vitals",zi,"vars","resourceType")=type
+ . set @eval@("vitals",zi,"vars","resourceType")=type
  . ;
  . ; determine the Observation category and quit if not vital-signs
  . ;
@@ -88,9 +89,9 @@ wsIntakeVitals(args,body,result,ien) ; web service entry (post)
  . . d log(jlog,"Derived category is "_obstype)
  . ;
  . if obstype'="vital-signs" do  quit  ;
- . . set eval("vitals",zi,"vars","observationCategory")=obstype
+ . . set @eval@("vitals",zi,"vars","observationCategory")=obstype
  . . do log(jlog,"Observation Category is not vital-signs, skipping")
- . set eval("vitals",zi,"vars","observationCategory")=obstype
+ . set @eval@("vitals",zi,"vars","observationCategory")=obstype
  . ;
  . ; see if this resource has already been loaded. if so, skip it
  . ;
@@ -102,17 +103,17 @@ wsIntakeVitals(args,body,result,ien) ; web service entry (post)
  . new vittype set vittype=$get(@json@("entry",zi,"resource","code","text"))
  . if vittype="" set vittype=$get(@json@("entry",zi,"resource","code","coding",1,"display"))
  . do log(jlog,"Vitals type is: "_vittype)
- . set eval("vitals",zi,"vars","type")=vittype
+ . set @eval@("vitals",zi,"vars","type")=vittype
  . ;
  . ; determine the id of the resource
  . ;
  . new id set id=$get(@json@("entry",zi,"resource","id"))
- . set eval("vitals",zi,"vars","id")=id
+ . set @eval@("vitals",zi,"vars","id")=id
  . d log(jlog,"ID is: "_id)
  . ;
  . new obscode set obscode=$get(@json@("entry",zi,"resource","code","coding",1,"code"))
  . do log(jlog,"code is: "_obscode)
- . set eval("vitals",zi,"vars","code")=obscode
+ . set @eval@("vitals",zi,"vars","code")=obscode
  . ;
  . s ^gpl("vitals",obscode,vittype)=""
  . ; here's what we got so far:
@@ -124,17 +125,17 @@ wsIntakeVitals(args,body,result,ien) ; web service entry (post)
  . ;
  . new codesystem set codesystem=$get(@json@("entry",zi,"resource","code","coding",1,"system"))
  . do log(jlog,"code system is: "_codesystem)
- . set eval("vitals",zi,"vars","codeSystem")=codesystem
+ . set @eval@("vitals",zi,"vars","codeSystem")=codesystem
  . ;
  . ; determine the value and units
  . ;
  . new value set value=$get(@json@("entry",zi,"resource","valueQuantity","value"))
  . do log(jlog,"value is: "_value)
- . set eval("vitals",zi,"vars","value")=value
+ . set @eval@("vitals",zi,"vars","value")=value
  . ;
  . new unit set unit=$get(@json@("entry",zi,"resource","valueQuantity","unit"))
  . do log(jlog,"units are: "_unit)
- . set eval("vitals",zi,"vars","units")=unit
+ . set @eval@("vitals",zi,"vars","units")=unit
  . ;
  . ; fix blood preasure readings (combine two readings to one)
  . ;
@@ -160,8 +161,8 @@ wsIntakeVitals(args,body,result,ien) ; web service entry (post)
  . . s combined=$g(systolic("value"))_"/"_$g(diastolic("value"))
  . . s value=combined
  . . d log(jlog,"Combined Blood Pressure value is: "_combined)
- . . set eval("vitals",zi,"vars","value")=combined
- . . set eval("vitals",zi,"vars","units")=$g(diastolic("units"))
+ . . set @eval@("vitals",zi,"vars","value")=combined
+ . . set @eval@("vitals",zi,"vars","units")=$g(diastolic("units"))
  . . d log(jlog,"Blood Pressure units are: "_$g(diastolic("units")))
  . . ;b
  . ;
@@ -169,56 +170,56 @@ wsIntakeVitals(args,body,result,ien) ; web service entry (post)
  . ;
  . new effdate set effdate=$get(@json@("entry",zi,"resource","effectiveDateTime"))
  . do log(jlog,"effectiveDateTime is: "_effdate)
- . set eval("vitals",zi,"vars","effectiveDateTime")=effdate
+ . set @eval@("vitals",zi,"vars","effectiveDateTime")=effdate
  . new fmtime s fmtime=$$fhirTfm^SYNFUTL(effdate)
  . d log(jlog,"fileman dateTime is: "_fmtime)
- . set eval("vitals",zi,"vars","fmDateTime")=fmtime ;
+ . set @eval@("vitals",zi,"vars","fmDateTime")=fmtime ;
  . new hl7time s hl7time=$$fhirThl7^SYNFUTL(effdate)
  . d log(jlog,"hl7 dateTime is: "_hl7time)
- . set eval("vitals",zi,"vars","hl7DateTime")=hl7time ;
+ . set @eval@("vitals",zi,"vars","hl7DateTime")=hl7time ;
  . ;
  . ; set up to call the data loader
  . ;
  . n RETSTA,DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPPROV,DHPLOC
  . ;
  . s DHPPAT=$$dfn2icn^SYNFUTL(dfn)
- . s eval("vitals",zi,"parms","DHPPAT")=DHPPAT
+ . s @eval@("vitals",zi,"parms","DHPPAT")=DHPPAT
  . ;
  . n sct s sct=$$loinc2sct(obscode) ; find the snomed code
  . i sct="" d  quit
  . . d log(jlog,"Snomed Code not found for vitals code: "_obscode_" -- skipping")
- . . s eval("vitals",zi,"status","loadstatus")="cannotLoad"
- . . s eval("vitals",zi,"status","issue")="Snomed Code not found for vitals code: "_obscode_" -- skipping"
- . . s eval("status","errors")=$g(eval("status","errors"))+1
- . s eval("vitals",zi,"parms","DHPSCT")=sct
+ . . s @eval@("vitals",zi,"status","loadstatus")="cannotLoad"
+ . . s @eval@("vitals",zi,"status","issue")="Snomed Code not found for vitals code: "_obscode_" -- skipping"
+ . . s @eval@("status","errors")=$g(@eval@("status","errors"))+1
+ . s @eval@("vitals",zi,"parms","DHPSCT")=sct
  . d log(jlog,"Snomed Code is: "_sct)
  . s DHPSCT=sct
  . ;
  . s DHPOBS=value
- . s eval("vitals",zi,"parms","DHPOBS")=value
+ . s @eval@("vitals",zi,"parms","DHPOBS")=value
  . d log(jlog,"Value is: "_value)
  . ;
  . s DHPUNT=unit
- . s eval("vitals",zi,"parms","DHPUNT")=unit
+ . s @eval@("vitals",zi,"parms","DHPUNT")=unit
  . d log(jlog,"Units are: "_unit)
  . ;
  . s DHPDTM=hl7time
- . s eval("vitals",zi,"parms","DHPDTM")=hl7time
+ . s @eval@("vitals",zi,"parms","DHPDTM")=hl7time
  . d log(jlog,"HL7 DateTime is: "_hl7time)
  . ;
  . s DHPPROV=$$MAP^SYNQLDM("OP","provider")
  . n DHPPROVIEN s DHPPROVIEN=$o(^VA(200,"B",DHPPROV,""))
  . if DHPPROVIEN="" S DHPPROVIEN=3
- . s eval("vitals",zi,"parms","DHPPROV")=DHPPROVIEN
+ . s @eval@("vitals",zi,"parms","DHPPROV")=DHPPROVIEN
  . d log(jlog,"Provider for outpatient is: #"_DHPPROVIEN_" "_DHPPROV)
  . ;
  . s DHPLOC=$$MAP^SYNQLDM("OP","location")
  . n DHPLOCIEN s DHPLOCIEN=$o(^SC("B",DHPLOC,""))
  . if DHPLOCIEN="" S DHPLOCIEN=4
- . s eval("vitals",zi,"parms","DHPLOC")=DHPLOCIEN
+ . s @eval@("vitals",zi,"parms","DHPLOC")=DHPLOCIEN
  . d log(jlog,"Location for outpatient is: #"_DHPLOCIEN_" "_DHPLOC)
  . ;
- . s eval("vitals",zi,"status","loadstatus")="readyToLoad"
+ . s @eval@("vitals",zi,"status","loadstatus")="readyToLoad"
  . ;
  . if $g(args("load"))=1 d  ; only load if told to
  . . if $g(ien)'="" if $$loadStatus("vitals",zi,ien)=1 do  quit  ;
@@ -227,19 +228,19 @@ wsIntakeVitals(args,body,result,ien) ; web service entry (post)
  . . D VITUPD^SYNDHP61(.RETSTA,DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPPROV,DHPLOC)       ; vitals update
  . . d log(jlog,"Return from VITUPD^ZZDHP61 was: "_$g(RETSTA))
  . . if +$g(RETSTA)=1 do  ;
- . . . s eval("status","loaded")=$g(eval("status","loaded"))+1
- . . . s eval("vitals",zi,"status","loadstatus")="loaded"
- . . else  s eval("status","errors")=$g(eval("status","errors"))+1
+ . . . s @eval@("status","loaded")=$g(@eval@("status","loaded"))+1
+ . . . s @eval@("vitals",zi,"status","loadstatus")="loaded"
+ . . else  s @eval@("status","errors")=$g(@eval@("status","errors"))+1
  ;
  if $get(args("debug"))=1 do  ;
  . m jrslt("source")=@json
  . m jrslt("args")=args
- . m jrslt("eval")=eval
- m jrslt("vitalsStatus")=eval("vitalsStatus")
+ . m jrslt("eval")=@eval
+ m jrslt("vitalsStatus")=@eval@("vitalsStatus")
  set jrslt("result","status")="ok"
- set jrslt("result","loaded")=$g(eval("status","loaded"))
+ set jrslt("result","loaded")=$g(@eval@("status","loaded"))
  i $g(ien)'="" d  ; called internally
- . m result=eval
+ . ;m result=eval
  . m result("status")=jrslt("result")
  . ;b
  e  d  ;
