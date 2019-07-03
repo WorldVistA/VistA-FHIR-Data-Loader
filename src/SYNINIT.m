@@ -247,7 +247,7 @@ HL(rePopulate) ; [Public $$] Generic Hospital Location Entry
  S C0XFDA(44,IENS,8)=295 ; STOP CODE NUMBER - Primary Care
  S C0XFDA(44,IENS,9)="M" ; SERVICE
  S C0XFDA(44,IENS,2502)="N" ; NON-COUNT CLINIC
- if $get(rePopulate) do FILE^DIE("",$NA(C0XFDA),$NA(C0XERR)) set C0XIEN(1)=C0XIEN if 1
+ if C0XIEN do FILE^DIE("",$NA(C0XFDA),$NA(C0XERR)) set C0XIEN(1)=C0XIEN if 1
  else  do UPDATE^DIE("",$NA(C0XFDA),$NA(C0XIEN),$NA(C0XERR))
  I $D(DIERR) S $EC=",U1,"
  Q C0XIEN(1) ; HL IEN
@@ -326,6 +326,9 @@ TESTHL ; @TEST Test adding a clinic
  N HL2 S HL2=$$HL(1)
  D CHKEQ^%ut(HL,HL2)
  D CHKTF^%ut($P(^SC(HL2,0),U,2)="GENMED")
+ N DA,DIK S DA=HL,DIK="^SC(" D ^DIK
+ S HL=$$HL(1)
+ D CHKTF^%ut(HL>0)
  QUIT
  ;
 TESTLH ; @Test Load Handlers
