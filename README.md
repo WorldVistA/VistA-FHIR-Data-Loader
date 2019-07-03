@@ -3,6 +3,27 @@ This project lets you load data from Synthea (https://synthetichealth.github.io/
 into VistA to produce high quality synthetic patient data for development and testing.
 Other FHIR data sources are supportable; but are not supported at this time.
 
+# Pre-installation Requirements
+On GT.M/YottaDB, you need curl and perl installed on the machine that hosts
+GT.M/YottaDB.
+
+On Cache, the Cache user performing the installation must have the Cache role
+%All or %Manager as this software performs two steps that require that ability:
+
+- Creating a TLS Configuration "encrypt_only" to download the M Web Server
+  and MASH routines from GitHub. VA Systems should already have this
+  configuration created by the HWSC Package (XOBW namespace)
+- Map %web and %wd routines and globals away from %SYS to VistA Namespace
+
+On Cache, you are also required to have the ability to write to `^%SYS("TempDir")`.
+
+Disk Space Requirements: We never actually measured how much disk space the
+package and each patient takes. However, from experience, loading about 400
+full patient histories takes up 100 GB.
+
+The Installer DUZ must have the key XUMGR in order to be able to add users to the
+systems.
+
 # Installation
 As of Aug 20th 2018, the official way to install this project is to use the latest
 KIDS build in [releases](https://github.com/OSEHRA/VistA-FHIR-Data-Loader/releases/latest).
@@ -17,9 +38,6 @@ In order to install this, you need these patches:
 
 As of the time of this writing, PCE STANDARIDZATION has not been officially
 released by the VA. That's why you need to obtain it from the Tech Journal. 
-
-The installer must have the key XUMGR in order to be able to add users to the
-systems.
 
 ## Sample Install Transcript
 
@@ -489,9 +507,9 @@ current VistA system.
 
 ## Miscellaneous Web Service Calls for Debugging
 ### Viewing Globals
-Both /global/{global_name} and /gtree/{global_name} are utilities for viewing
+Both `/global/{global_name}` and `/gtree/{global_name}` are utilities for viewing
 globals. The output of /global is the standard ZWRITE format can be used as an
-input to the GT.M/YottaDB mupip load.
+input to the GT.M/YottaDB `mupip load`.
 
 E.g.
 ```
@@ -537,7 +555,7 @@ curl 'http://localhost:9080/gtree/DIC(15)'
 ```
 
 ### Viewing Graphs in the Graph Store
-/graph/{graph name} will give you the data in the graph. Be careful with this
+`/graph/{graph name}` will give you the data in the graph. Be careful with this
 one as some graphs are very huge; and this is trying to give you all the data
 all at once.
 
