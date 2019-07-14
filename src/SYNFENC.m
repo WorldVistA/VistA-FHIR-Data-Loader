@@ -1,7 +1,7 @@
 SYNFENC ;ven/gpl - fhir loader utilities ;2018-08-17  3:28 PM
  ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
  ;
- ; Authored by George P. Lilly 2017-2018
+ ; Authored by George P. Lilly 2017-2019
  ;
  q
  ;
@@ -11,14 +11,10 @@ importEncounters(rtn,ien,args)  ; entry point for loading encounters for a patie
  n grtn
  n root s root=$$setroot^SYNWD("fhir-intake")
  d wsIntakeEncounters(.args,,.grtn,ien)
- i $d(grtn) d  ; something was returned
- . k @root@(ien,"load","encounters")
- . m @root@(ien,"load","encounters")=grtn("encounters")
- . if $g(args("debug"))=1 m rtn=grtn
+ ;
  s rtn("encountersStatus","status")=$g(grtn("status","status"))
  s rtn("encountersStatus","loaded")=$g(grtn("status","loaded"))
  s rtn("encountersStatus","errors")=$g(grtn("status","errors"))
- ;b
  ;
  ;
  q
@@ -28,21 +24,21 @@ wsIntakeEncounters(args,body,result,ien)        ; web service entry (post)
  ; result is json and summarizes what was done
  ; args include patientId
  ; ien is specified for internal calls, where the json is already in a graph
+ ;
+ n root,troot
+ s root=$$setroot^SYNWD("fhir-intake")
+ ;
  n jtmp,json,jrslt,eval
- ;i $g(ien)'="" if $$loadStatus("encounters","",ien)=1 d  q  ;
- ;. s result("encountersStatus","status")="alreadyLoaded"
  i $g(ien)'="" d  ; internal call
- . d getIntakeFhir^SYNFHIR("json",,"Encounter",ien,1)
- e  d  ;
- . ;s args("load")=0
- . merge jtmp=BODY
- . do decode^SYNJSONE("jtmp","json")
- i '$d(json) q  ;
- m ^gpl("gjson")=json
+ . s troot=$na(@root@(ien,"type","Encounter"))
+ . s eval=$na(@root@(ien,"load")) ; move eval to the graph
+ e  q 0  ; sending not decoded json in BODY to this routine not supported
+ ; todo: locate the patient and add the encounters in BODY to the graph
+ s json=$na(@root@(ien,"json"))
  ;
  ; determine the patient
  ;
- n dfn,eval
+ n dfn
  if $g(ien)'="" d  ;
  . s dfn=$$ien2dfn^SYNFUTL(ien) ; look up dfn in the graph
  else  d  ;
@@ -55,81 +51,81 @@ wsIntakeEncounters(args,body,result,ien)        ; web service entry (post)
  ;
  ;
  new zi s zi=0
- for  set zi=$order(json("entry",zi)) quit:+zi=0  do  ;
+ for  set zi=$order(@troot@(zi)) quit:+zi=0  do  ;
  . ;
  . ; define a place to log the processing of this entry
  . ;
- . new jlog set jlog=$name(eval("encounters",zi))
+ . new jlog set jlog=$name(@eval@("encounters",zi))
  . ;
  . ; insure that the resourceType is Encounter
  . ;
- . new type set type=$get(json("entry",zi,"resource","resourceType"))
+ . new type set type=$get(@json@("entry",zi,"resource","resourceType"))
  . if type'="Encounter" do  quit  ;
- . . set eval("encounters",zi,"vars","resourceType")=type
- . . do log(jlog,"Resource type not Observation, skipping entry")
- . set eval("encounters",zi,"vars","resourceType")=type
+ . . set @eval@("encounters",zi,"vars","resourceType")=type
+ . . do log(jlog,"Resource type not Encounter, skipping entry")
+ . set @eval@("encounters",zi,"vars","resourceType")=type
  . ;
  . ; see if this resource has already been loaded. if so, skip it
  . ;
  . if $g(ien)'="" if $$loadStatus("encounters",zi,ien)=1 do  quit  ;
- . . d log(jlog,"Vital sign already loaded, skipping")
+ . . d log(jlog,"Encounter already loaded, skipping")
  . ;
  . ; determine Encounters code, coding system, and display text
  . ;
  . ;
  . ; determine the id of the resource
  . ;
- . new id set id=$get(json("entry",zi,"resource","id"))
- . set eval("encounters",zi,"vars","id")=id
+ . new id set id=$get(@json@("entry",zi,"resource","id"))
+ . set @eval@("encounters",zi,"vars","id")=id
  . d log(jlog,"ID is: "_id)
  . ;
- . new enccode set enccode=$get(json("entry",zi,"resource","type",1,"coding",1,"code"))
+ . new enccode set enccode=$get(@json@("entry",zi,"resource","type",1,"coding",1,"code"))
  . ;n visitcpt s visitcpt=$$MAP^SYNQLDM(enccode)
  . ;i visitcpt="" d  ;
  . ;. d MAPERR^SYNQLDM(enccode,"sct2cpt")
  . ;. d log(jlog,"-1^Encounter code does not map: "_enccode)
  . i enccode="" s enccode=185349003 ; generic visit
  . do log(jlog,"code is: "_enccode)
- . set eval("encounters",zi,"vars","code")=enccode
+ . set @eval@("encounters",zi,"vars","code")=enccode
  . ;
  . ;
- . new codesystem set codesystem=$get(json("entry",zi,"resource","type",1,"coding",1,"system"))
+ . new codesystem set codesystem=$get(@json@("entry",zi,"resource","type",1,"coding",1,"system"))
  . do log(jlog,"code system is: "_codesystem)
- . set eval("encounters",zi,"vars","codeSystem")=codesystem
+ . set @eval@("encounters",zi,"vars","codeSystem")=codesystem
  . ;
  . ; determine the reason code and system (Encounter Diagnosis)
  . ;
- . n reasoncode s reasoncode=$get(json("entry",zi,"resource","reason","coding",1,"code"))
+ . n reasoncode s reasoncode=$get(@json@("entry",zi,"resource","reason","coding",1,"code"))
  . d log(jlog,"reasonCode is: "_reasoncode)
- . set eval("encounters",zi,"vars","reasonCode")=reasoncode
+ . set @eval@("encounters",zi,"vars","reasonCode")=reasoncode
  . ;
  . ; determine reason code system
  . ;
- . new reasoncdsys set reasoncdsys=$get(json("entry",zi,"resource","reason","coding",1,"system"))
+ . new reasoncdsys set reasoncdsys=$get(@json@("entry",zi,"resource","reason","coding",1,"system"))
  . d log(jlog,"reasonCode system is: "_reasoncdsys)
- . set eval("encounters",zi,"vars","reasonCodeSys")=reasoncdsys
+ . set @eval@("encounters",zi,"vars","reasonCodeSys")=reasoncdsys
  . ;
  . ; determine the effective date
  . ;
- . new effdate set effdate=$get(json("entry",zi,"resource","period","start"))
+ . new effdate set effdate=$get(@json@("entry",zi,"resource","period","start"))
  . do log(jlog,"effectiveDateTime is: "_effdate)
- . set eval("encounters",zi,"vars","effectiveDateTime")=effdate
+ . set @eval@("encounters",zi,"vars","effectiveDateTime")=effdate
  . new fmtime s fmtime=$$fhirTfm^SYNFUTL(effdate)
  . d log(jlog,"fileman dateTime is: "_fmtime)
- . set eval("encounters",zi,"vars","fmDateTime")=fmtime ;
+ . set @eval@("encounters",zi,"vars","fmDateTime")=fmtime ;
  . new hl7time s hl7time=$$fhirThl7^SYNFUTL(effdate)
  . d log(jlog,"hl7 dateTime is: "_hl7time)
- . set eval("encounters",zi,"vars","hl7DateTime")=hl7time ;
+ . set @eval@("encounters",zi,"vars","hl7DateTime")=hl7time ;
  . ;
- . new effdateEnd set effdateEnd=$get(json("entry",zi,"resource","period","end"))
+ . new effdateEnd set effdateEnd=$get(@json@("entry",zi,"resource","period","end"))
  . do log(jlog,"endDateTime is: "_effdateEnd)
- . set eval("encounters",zi,"vars","endDateTime")=effdateEnd
+ . set @eval@("encounters",zi,"vars","endDateTime")=effdateEnd
  . new fmtimeEnd s fmtimeEnd=$$fhirTfm^SYNFUTL(effdateEnd)
  . d log(jlog,"fileman endDateTime is: "_fmtimeEnd)
- . set eval("encounters",zi,"vars","fmEndDateTime")=fmtimeEnd ;
+ . set @eval@("encounters",zi,"vars","fmEndDateTime")=fmtimeEnd ;
  . new hl7endTime s hl7endTime=$$fhirThl7^SYNFUTL(effdateEnd)
  . d log(jlog,"hl7 endDateTime is: "_hl7endTime)
- . set eval("encounters",zi,"vars","hl7endDateTime")=hl7endTime ;
+ . set @eval@("encounters",zi,"vars","hl7endDateTime")=hl7endTime ;
  . ;
  . ; set up to call the data loader
  . ;
@@ -138,21 +134,21 @@ wsIntakeEncounters(args,body,result,ien)        ; web service entry (post)
  . n RETSTA,DHPPAT,STARTDT,ENDDT,ENCPROV,CLINIC,SCTDX,SCTCPT
  . ;
  . s DHPPAT=$$dfn2icn^SYNFUTL(dfn)
- . s eval("encounters",zi,"parms","DHPPAT")=DHPPAT
+ . s @eval@("encounters",zi,"parms","DHPPAT")=DHPPAT
  . ;
  . s SCTCPT=enccode
- . s eval("encounters",zi,"parms","SCTCPT")=SCTCPT
+ . s @eval@("encounters",zi,"parms","SCTCPT")=SCTCPT
  . ;
  . ; reason code
  . s SCTDX=reasoncode
- . s eval("encounters",zi,"parms","SCTDX")=SCTDX
+ . s @eval@("encounters",zi,"parms","SCTDX")=SCTDX
  . ;
  . s STARTDT=hl7time
- . s eval("encounters",zi,"parms","STARTDT")=hl7time
+ . s @eval@("encounters",zi,"parms","STARTDT")=hl7time
  . d log(jlog,"HL7 StartDateTime is: "_hl7time)
  . ;
  . s ENDDT=hl7endTime
- . s eval("encounters",zi,"parms","ENDDT")=ENDDT
+ . s @eval@("encounters",zi,"parms","ENDDT")=ENDDT
  . d log(jlog,"HL7 End DateTime is: "_ENDDT)
  . ;
  . ; reason code
@@ -172,22 +168,22 @@ wsIntakeEncounters(args,body,result,ien)        ; web service entry (post)
  . . d:notmapped MAPERR^SYNQLDM(sctcode,icdcodetype)
  . . do log(jlog,"icd mapping is: "_icdcode)
  . . do:notmapped log(jlog,"snomed code "_sctcode_" is not mapped")
- . . set eval("conditions",zi,"vars","mappedIcdCode")=icdcode
- . s eval("encounters",zi,"parms","SCTDX")=SCTDX
+ . . set @eval@("conditions",zi,"vars","mappedIcdCode")=icdcode
+ . s @eval@("encounters",zi,"parms","SCTDX")=SCTDX
  . ;
  . s ENCPROV=$$MAP^SYNQLDM("OP","provider") ; map should return the NPI number
  . ;n DHPPROVIEN s DHPPROVIEN=$o(^VA(200,"B",ENCPROV,"")) ; this has to be the NPI number
  . ;if DHPPROVIEN="" S DHPPROVIEN=3
- . s eval("encounters",zi,"parms","ENCPROV")=ENCPROV
+ . s @eval@("encounters",zi,"parms","ENCPROV")=ENCPROV
  . d log(jlog,"Provider for outpatient is: "_ENCPROV)
  . ;
  . s CLINIC=$$MAP^SYNQLDM("OP","location") ; map containes the name of the clinic file #44
  . ;n DHPLOCIEN s DHPLOCIEN=$o(^SC("B",CLINIC,""))
  . ;if DHPLOCIEN="" S DHPLOCIEN=4
- . s eval("encounters",zi,"parms","CLINIC")=CLINIC
+ . s @eval@("encounters",zi,"parms","CLINIC")=CLINIC
  . d log(jlog,"Location for outpatient is: "_CLINIC)
  . ;
- . s eval("encounters",zi,"status","loadstatus")="readyToLoad"
+ . s @eval@("encounters",zi,"status","loadstatus")="readyToLoad"
  . ;
  . if $g(args("load"))=1 d  ; only load if told to
  . . if $g(ien)="" n ien s ien=$$dfn2ien^SYNFUTL(dfn)
@@ -198,35 +194,33 @@ wsIntakeEncounters(args,body,result,ien)        ; web service entry (post)
  . . d ENCTUPD^SYNDHP61(.RETSTA,DHPPAT,STARTDT,ENDDT,ENCPROV,CLINIC,SCTDX,SCTCPT)        ;Encounter update
  . . d log(jlog,"Return from data loader was: "_$g(RETSTA))
  . . ;
- . . m eval("encounters",zi,"status","return")=RETSTA
- . . ; i $g(DEBUG)=1 ZWR RETSTA
- . . n root s root=$$setroot^SYNWD("fhir-intake")
+ . . m @eval@("encounters",zi,"status","return")=RETSTA
  . . n visitIen s visitIen=$p(RETSTA,"^",2) ; returned visit ien
  . . i +visitIen>0 d
  . . . ;
  . . . n groot s groot=$na(@root@(ien))
  . . . d setIndex^SYNFHIR(groot,id,"visitIen",visitIen) ; save the visit ien in the indexes
- . . . s eval("encounters",zi,"visitIen")=visitIen
+ . . . s @eval@("encounters",zi,"visitIen")=visitIen
  . . e  s visitIen=""
  . . if +$g(RETSTA)=1 do  ;
- . . . s eval("status","loaded")=$g(eval("status","loaded"))+1
- . . . s eval("encounters",zi,"status","loadstatus")="loaded"
+ . . . s @eval@("status","loaded")=$g(@eval@("status","loaded"))+1
+ . . . s @eval@("encounters",zi,"status","loadstatus")="loaded"
  . . else  d  ;
- . . . s eval("status","errors")=$g(eval("status","errors"))+1
- . . . s eval("encounters",zi,"status","loadstatus")="notLoaded"
- . . . s eval("encounters",zi,"status","loadMessage")=$g(RETSTA)
- . . k @root@(ien,"load","encounters",zi)
- . . m @root@(ien,"load","encounters",zi)=eval("encounters",zi)
+ . . . s @eval@("status","errors")=$g(@eval@("status","errors"))+1
+ . . . s @eval@("encounters",zi,"status","loadstatus")="notLoaded"
+ . . . s @eval@("encounters",zi,"status","loadMessage")=$g(RETSTA)
+ . . ;k @root@(ien,"load","encounters",zi)
+ . . ;m @root@(ien,"load","encounters",zi)=@eval@("encounters",zi)
  ;
  if $get(args("debug"))=1 do  ;
  . m jrslt("source")=json
  . m jrslt("args")=args
- . m jrslt("eval")=eval
- m jrslt("encountersStatus")=eval("encountersStatus")
+ . m jrslt("eval")=@eval
+ m jrslt("encountersStatus")=@eval@("encountersStatus")
  set jrslt("result","status")="ok"
- set jrslt("result","loaded")=$g(eval("status","loaded"))
+ set jrslt("result","loaded")=$g(@eval@("status","loaded"))
  i $g(ien)'="" d  ; called internally
- . m result=eval
+ . m result=@eval
  . m result("status")=jrslt("result")
  . ;b
  e  d  ;
