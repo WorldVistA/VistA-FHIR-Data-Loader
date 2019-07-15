@@ -1,7 +1,7 @@
 SYNFMED2        ;ven/gpl - fhir loader utilities ;2018-08-17  3:27 PM
  ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
  ;
- ; Authored by George P. Lilly 2017-2018
+ ; Authored by George P. Lilly 2017-2019
  ;
  q
  ;
@@ -11,14 +11,10 @@ importMeds(rtn,ien,args)        ; entry point for loading Medications for a pati
  n grtn
  n root s root=$$setroot^SYNWD("fhir-intake")
  d wsIntakeMeds(.args,,.grtn,ien)
- i $d(grtn) d  ; something was returned
- . k @root@(ien,"load","meds")
- . m @root@(ien,"load","meds")=grtn("meds")
- . if $g(args("debug"))=1 m rtn=grtn
+ ;
  s rtn("medsStatus","status")=$g(grtn("status","status"))
  s rtn("medsStatus","loaded")=$g(grtn("status","loaded"))
  s rtn("medsStatus","errors")=$g(grtn("status","errors"))
- ;b
  ;
  ;
  q
@@ -28,23 +24,21 @@ wsIntakeMeds(args,body,result,ien)      ; web service entry (post)
  ; result is json and summarizes what was done
  ; args include patientId
  ; ien is specified for internal calls, where the json is already in a graph
+ ;
+ n root,troot
+ s root=$$setroot^SYNWD("fhir-intake")
+ ;
  n jtmp,json,jrslt,eval
- ;i $g(ien)'="" if $$loadStatus("meds","",ien)=1 d  q  ;
- ;. s result("medstatus","status")="alreadyLoaded"
  i $g(ien)'="" d  ; internal call
- . d getIntakeFhir^SYNFHIR("json",,"MedicationRequest",ien,1)
- e  d  ;
- . merge jtmp=BODY
- . do decode^SYNJSONE("jtmp","json")
- ;
- ;i '$d(json) d getRandomMeds(.json)
- ;
- i '$d(json) q  ;
- m ^gpl("gjson")=json
+ . s troot=$na(@root@(ien,"type","MedicationRequest"))
+ . s eval=$na(@root@(ien,"load")) ; move eval to the graph
+ e  q 0  ; sending not decoded json in BODY to this routine not supported
+ ; todo: locate the patient and add the encounters in BODY to the graph
+ s json=$na(@root@(ien,"json"))
  ;
  ; determine the patient
  ;
- n dfn,eval
+ n dfn
  if $g(ien)'="" d  ;
  . s dfn=$$ien2dfn^SYNFUTL(ien) ; look up dfn in the graph
  else  d  ;
@@ -56,19 +50,19 @@ wsIntakeMeds(args,body,result,ien)      ; web service entry (post)
  . s result("meds",1,"log",1)="Error, patient not found.. terminating"
  ;
  new zi s zi=0
- for  set zi=$order(json("entry",zi)) quit:+zi=0  do  ;
+ for  set zi=$order(@troot@(zi)) quit:+zi=0  do  ;
  . ;
  . ; define a place to log the processing of this entry
  . ;
- . new jlog set jlog=$name(eval("meds",zi))
+ . new jlog set jlog=$name(@eval@("meds",zi))
  . ;
  . ; insure that the resourceType is MedicationRequest
  . ;
- . new type set type=$get(json("entry",zi,"resource","resourceType"))
+ . new type set type=$get(@json@("entry",zi,"resource","resourceType"))
  . if type'="MedicationRequest" do  quit  ;
- . . set eval("meds",zi,"vars","resourceType")=type
+ . . set @eval@("meds",zi,"vars","resourceType")=type
  . . do log(jlog,"Resource type not MedicationRequest, skipping entry")
- . set eval("meds",zi,"vars","resourceType")=type
+ . set @eval@("meds",zi,"vars","resourceType")=type
  . ;
  . ; see if this resource has already been loaded. if so, skip it
  . ;
@@ -78,8 +72,8 @@ wsIntakeMeds(args,body,result,ien)      ; web service entry (post)
  . ; determine Meds rxnorm code, coding system, and display text
  . ;
  . n med,rxnorm,codesystem,drugname
- . i $d(json("entry",zi,"resource","medicationCodeableConcept")) d  ;
- . . n gmed s gmed=$na(json("entry",zi,"resource","medicationCodeableConcept"))
+ . i $d(@json@("entry",zi,"resource","medicationCodeableConcept")) d  ;
+ . . n gmed s gmed=$na(@json@("entry",zi,"resource","medicationCodeableConcept"))
  . . s rxnorm=$g(@gmed@("coding",1,"code"))
  . . q:rxnorm=""
  . . s drugname=$g(@gmed@("coding",1,"display"))
@@ -101,29 +95,29 @@ wsIntakeMeds(args,body,result,ien)      ; web service entry (post)
  . ;i rxnorm=313782 d  q  ;
  . ;. do log(jlog,"skipping unloadable drug rxnorm= "_313782)
  . do log(jlog,"rxnorm code is: "_rxnorm)
- . set eval("meds",zi,"vars","rxnorm")=rxnorm
+ . set @eval@("meds",zi,"vars","rxnorm")=rxnorm
  . do log(jlog,"drug name is: "_drugname)
- . set eval("meds",zi,"vars","drugname")=drugname
+ . set @eval@("meds",zi,"vars","drugname")=drugname
  . ;
  . ;
  . do log(jlog,"code system is: "_codesystem)
- . set eval("meds",zi,"vars","codeSystem")=codesystem
+ . set @eval@("meds",zi,"vars","codeSystem")=codesystem
  . ;
  . ; determine the order date and time
  . ;
- . new orderdate set orderdate=$get(json("entry",zi,"resource","authoredOn"))
+ . new orderdate set orderdate=$get(@json@("entry",zi,"resource","authoredOn"))
  . do log(jlog,"orderdateTime is: "_orderdate)
- . set eval("meds",zi,"vars","orderdateTime")=orderdate
+ . set @eval@("meds",zi,"vars","orderdateTime")=orderdate
  . new fmOrderDateTime s fmOrderDateTime=$$fhirTfm^SYNFUTL(orderdate)
  . d log(jlog,"fileman orderdateTime is: "_fmOrderDateTime)
- . set eval("meds",zi,"vars","fmOrderdateTime")=fmOrderDateTime ;
+ . set @eval@("meds",zi,"vars","fmOrderdateTime")=fmOrderDateTime ;
  . new hl7OrderdateTime s hl7OrderdateTime=$$fhirThl7^SYNFUTL(orderdate)
  . d log(jlog,"hl7 orderdateTime is: "_hl7OrderdateTime)
- . set eval("meds",zi,"vars","hl7OrderdateTime")=hl7OrderdateTime ;
+ . set @eval@("meds",zi,"vars","hl7OrderdateTime")=hl7OrderdateTime ;
  . ;
  . ; determine clinical status (active vs inactive)
  . ;
- . n clinicalstatus set clinicalstatus=$get(json("entry",zi,"resource","verificationStatus"))
+ . n clinicalstatus set clinicalstatus=$get(@json@("entry",zi,"resource","verificationStatus"))
  . ;
  . ;
  . ; set up to call the data loader
@@ -135,30 +129,28 @@ wsIntakeMeds(args,body,result,ien)      ; web service entry (post)
  . . d log(jlog,"Calling WRITERXRXN^SYNFMED to add meds")
  . . n RESTA
  . . S RESTA=$$WRITERXRXN^SYNFMED(dfn,rxnorm,fmOrderDateTime)
- . . m eval("meds",zi,"status")=RESTA
+ . . m @eval@("meds",zi,"status")=RESTA
  . . d log(jlog,"Response from WRITERXRXN^SYNFMED is: "_RESTA)
  . . d log(jlog,"Medication: "_rxnorm_" "_drugname)
  . . if RESTA>1 d  ; success
- . . . s eval("status","loaded")=$g(eval("status","loaded"))+1
- . . . s eval("meds",zi,"status","loadstatus")="loaded"
+ . . . s @eval@("status","loaded")=$g(@eval@("status","loaded"))+1
+ . . . s @eval@("meds",zi,"status","loadstatus")="loaded"
  . . else  d  ;
- . . . s eval("status","errors")=$g(eval("status","errors"))+1
- . . . s eval("meds",zi,"status","loadstatus")="notLoaded"
- . . . s eval("meds",zi,"status","loadMessage")=$g(RETSTA)
+ . . . s @eval@("status","errors")=$g(@eval@("status","errors"))+1
+ . . . s @eval@("meds",zi,"status","loadstatus")="notLoaded"
+ . . . s @eval@("meds",zi,"status","loadMessage")=$g(RETSTA)
  . . . d log(jlog,"Medication failed to load: "_$g(RETSTA))
  . . n root s root=$$setroot^SYNWD("fhir-intake")
- . . k @root@(ien,"load","meds",zi)
- . . m @root@(ien,"load","meds",zi)=eval("meds",zi)
  ;
  if $get(args("debug"))=1 do  ;
- . m jrslt("source")=json
+ . m jrslt("source")=@json
  . m jrslt("args")=args
- . m jrslt("eval")=eval
- m jrslt("medsStatus")=eval("medsStatus")
+ . m jrslt("eval")=@eval
+ m jrslt("medsStatus")=@eval@("medsStatus")
  set jrslt("result","status")="ok"
- set jrslt("result","loaded")=$g(eval("status","loaded"))
+ set jrslt("result","loaded")=$g(@eval@("status","loaded"))
  i $g(ien)'="" d  ; called internally
- . m result=eval
+ . ;m result=@eval
  . m result("status")=jrslt("result")
  . m result("dfn")=dfn
  . m result("ien")=ien
