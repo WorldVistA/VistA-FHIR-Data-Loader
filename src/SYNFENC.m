@@ -220,7 +220,7 @@ wsIntakeEncounters(args,body,result,ien)        ; web service entry (post)
  set jrslt("result","status")="ok"
  set jrslt("result","loaded")=$g(@eval@("status","loaded"))
  i $g(ien)'="" d  ; called internally
- . m result=@eval
+ . ;m result=@eval
  . m result("status")=jrslt("result")
  . ;b
  e  d  ;
