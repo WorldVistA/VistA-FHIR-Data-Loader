@@ -1,4 +1,4 @@
-SYNFENC ;ven/gpl - fhir loader utilities ;2018-08-17  3:28 PM
+SYNFENC ;ven/gpl - fhir loader utilities ;Jul 16, 2019@14:02:50
  ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
  ;
  ; Authored by George P. Lilly 2017-2019
@@ -219,6 +219,7 @@ wsIntakeEncounters(args,body,result,ien)        ; web service entry (post)
  m jrslt("encountersStatus")=@eval@("encountersStatus")
  set jrslt("result","status")="ok"
  set jrslt("result","loaded")=$g(@eval@("status","loaded"))
+ set jrslt("result","errors")=$g(@eval@("status","errors"))
  i $g(ien)'="" d  ; called internally
  . ;m result=@eval
  . m result("status")=jrslt("result")

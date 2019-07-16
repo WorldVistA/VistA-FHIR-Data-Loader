@@ -149,6 +149,7 @@ wsIntakeMeds(args,body,result,ien)      ; web service entry (post)
  m jrslt("medsStatus")=@eval@("medsStatus")
  set jrslt("result","status")="ok"
  set jrslt("result","loaded")=$g(@eval@("status","loaded"))
+ set jrslt("result","errors")=$g(@eval@("status","errors"))
  i $g(ien)'="" d  ; called internally
  . ;m result=@eval
  . m result("status")=jrslt("result")
