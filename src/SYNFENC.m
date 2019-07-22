@@ -96,12 +96,14 @@ wsIntakeEncounters(args,body,result,ien)        ; web service entry (post)
  . ; determine the reason code and system (Encounter Diagnosis)
  . ;
  . n reasoncode s reasoncode=$get(@json@("entry",zi,"resource","reason","coding",1,"code"))
+ . i reasoncode="" s reasoncode=$get(@json@("entry",zi,"resource","reasonCode",1,"coding",1,"code"))
  . d log(jlog,"reasonCode is: "_reasoncode)
  . set @eval@("encounters",zi,"vars","reasonCode")=reasoncode
  . ;
  . ; determine reason code system
  . ;
  . new reasoncdsys set reasoncdsys=$get(@json@("entry",zi,"resource","reason","coding",1,"system"))
+ . i reasoncdsys="" set reasoncdsys=$get(@json@("entry",zi,"resource","reasonCode",1,"coding",1,"system"))
  . d log(jlog,"reasonCode system is: "_reasoncdsys)
  . set @eval@("encounters",zi,"vars","reasonCodeSys")=reasoncdsys
  . ;
