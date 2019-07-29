@@ -1,0 +1,1234 @@
+KIDS Distribution saved on Jul 29, 2019@03:47:43
+Menu options for SYN FHIR viewing
+**KIDS**:SYNV*1.0*1^
+
+**INSTALL NAME**
+SYNV*1.0*1
+"BLD",10664,0)
+SYNV*1.0*1^^0^3190729^y
+"BLD",10664,4,0)
+^9.64PA^^
+"BLD",10664,6.3)
+1
+"BLD",10664,"KRN",0)
+^9.67PA^779.2^20
+"BLD",10664,"KRN",.4,0)
+.4
+"BLD",10664,"KRN",.401,0)
+.401
+"BLD",10664,"KRN",.402,0)
+.402
+"BLD",10664,"KRN",.403,0)
+.403
+"BLD",10664,"KRN",.5,0)
+.5
+"BLD",10664,"KRN",.84,0)
+.84
+"BLD",10664,"KRN",3.6,0)
+3.6
+"BLD",10664,"KRN",3.8,0)
+3.8
+"BLD",10664,"KRN",9.2,0)
+9.2
+"BLD",10664,"KRN",9.8,0)
+9.8
+"BLD",10664,"KRN",9.8,"NM",0)
+^9.68A^1^1
+"BLD",10664,"KRN",9.8,"NM",1,0)
+SYNVPR^^0^B223022937
+"BLD",10664,"KRN",9.8,"NM","B","SYNVPR",1)
+
+"BLD",10664,"KRN",19,0)
+19
+"BLD",10664,"KRN",19,"NM",0)
+^9.68A^3^3
+"BLD",10664,"KRN",19,"NM",1,0)
+SYN FHIR JSON^^0
+"BLD",10664,"KRN",19,"NM",2,0)
+SYN FHIR LOAD STATUS^^0
+"BLD",10664,"KRN",19,"NM",3,0)
+SYN FHIR MENU^^0
+"BLD",10664,"KRN",19,"NM","B","SYN FHIR JSON",1)
+
+"BLD",10664,"KRN",19,"NM","B","SYN FHIR LOAD STATUS",2)
+
+"BLD",10664,"KRN",19,"NM","B","SYN FHIR MENU",3)
+
+"BLD",10664,"KRN",19.1,0)
+19.1
+"BLD",10664,"KRN",101,0)
+101
+"BLD",10664,"KRN",409.61,0)
+409.61
+"BLD",10664,"KRN",771,0)
+771
+"BLD",10664,"KRN",779.2,0)
+779.2
+"BLD",10664,"KRN",870,0)
+870
+"BLD",10664,"KRN",8989.51,0)
+8989.51
+"BLD",10664,"KRN",8989.52,0)
+8989.52
+"BLD",10664,"KRN",8994,0)
+8994
+"BLD",10664,"KRN","B",.4,.4)
+
+"BLD",10664,"KRN","B",.401,.401)
+
+"BLD",10664,"KRN","B",.402,.402)
+
+"BLD",10664,"KRN","B",.403,.403)
+
+"BLD",10664,"KRN","B",.5,.5)
+
+"BLD",10664,"KRN","B",.84,.84)
+
+"BLD",10664,"KRN","B",3.6,3.6)
+
+"BLD",10664,"KRN","B",3.8,3.8)
+
+"BLD",10664,"KRN","B",9.2,9.2)
+
+"BLD",10664,"KRN","B",9.8,9.8)
+
+"BLD",10664,"KRN","B",19,19)
+
+"BLD",10664,"KRN","B",19.1,19.1)
+
+"BLD",10664,"KRN","B",101,101)
+
+"BLD",10664,"KRN","B",409.61,409.61)
+
+"BLD",10664,"KRN","B",771,771)
+
+"BLD",10664,"KRN","B",779.2,779.2)
+
+"BLD",10664,"KRN","B",870,870)
+
+"BLD",10664,"KRN","B",8989.51,8989.51)
+
+"BLD",10664,"KRN","B",8989.52,8989.52)
+
+"BLD",10664,"KRN","B",8994,8994)
+
+"BLD",10664,"QUES",0)
+^9.62^^
+"KRN",19,14714,-1)
+0^2
+"KRN",19,14714,0)
+SYN FHIR LOAD STATUS^SYN FHIR LOAD STATUS^^R^^^^^^^^^^
+"KRN",19,14714,20)
+
+"KRN",19,14714,25)
+LOADSTAT^SYNVPR
+"KRN",19,14714,"U")
+SYN FHIR LOAD STATUS
+"KRN",19,14715,-1)
+0^3
+"KRN",19,14715,0)
+SYN FHIR MENU^FHIR MENU^^M^^^^^^^^
+"KRN",19,14715,10,0)
+^19.01IP^2^2
+"KRN",19,14715,10,1,0)
+14714^ST
+"KRN",19,14715,10,1,"^")
+SYN FHIR LOAD STATUS
+"KRN",19,14715,10,2,0)
+14716^JS
+"KRN",19,14715,10,2,"^")
+SYN FHIR JSON
+"KRN",19,14715,99)
+65223,8050
+"KRN",19,14715,"U")
+FHIR MENU
+"KRN",19,14716,-1)
+0^1
+"KRN",19,14716,0)
+SYN FHIR JSON^SYN FHIR JSON^^R^^^^^^^^
+"KRN",19,14716,25)
+FHIRJSON^SYNVPR
+"KRN",19,14716,"U")
+SYN FHIR JSON
+"MBREQ")
+0
+"ORD",18,19)
+19;18;;;OPT^XPDTA;OPTF1^XPDIA;OPTE1^XPDIA;OPTF2^XPDIA;;OPTDEL^XPDIA
+"ORD",18,19,0)
+OPTION
+"QUES","XPF1",0)
+Y
+"QUES","XPF1","??")
+^D REP^XPDH
+"QUES","XPF1","A")
+Shall I write over your |FLAG| File
+"QUES","XPF1","B")
+YES
+"QUES","XPF1","M")
+D XPF1^XPDIQ
+"QUES","XPF2",0)
+Y
+"QUES","XPF2","??")
+^D DTA^XPDH
+"QUES","XPF2","A")
+Want my data |FLAG| yours
+"QUES","XPF2","B")
+YES
+"QUES","XPF2","M")
+D XPF2^XPDIQ
+"QUES","XPI1",0)
+YO
+"QUES","XPI1","??")
+^D INHIBIT^XPDH
+"QUES","XPI1","A")
+Want KIDS to INHIBIT LOGONs during the install
+"QUES","XPI1","B")
+NO
+"QUES","XPI1","M")
+D XPI1^XPDIQ
+"QUES","XPM1",0)
+PO^VA(200,:EM
+"QUES","XPM1","??")
+^D MG^XPDH
+"QUES","XPM1","A")
+Enter the Coordinator for Mail Group '|FLAG|'
+"QUES","XPM1","B")
+
+"QUES","XPM1","M")
+D XPM1^XPDIQ
+"QUES","XPO1",0)
+Y
+"QUES","XPO1","??")
+^D MENU^XPDH
+"QUES","XPO1","A")
+Want KIDS to Rebuild Menu Trees Upon Completion of Install
+"QUES","XPO1","B")
+NO
+"QUES","XPO1","M")
+D XPO1^XPDIQ
+"QUES","XPZ1",0)
+Y
+"QUES","XPZ1","??")
+^D OPT^XPDH
+"QUES","XPZ1","A")
+Want to DISABLE Scheduled Options, Menu Options, and Protocols
+"QUES","XPZ1","B")
+NO
+"QUES","XPZ1","M")
+D XPZ1^XPDIQ
+"QUES","XPZ2",0)
+Y
+"QUES","XPZ2","??")
+^D RTN^XPDH
+"QUES","XPZ2","A")
+Want to MOVE routines to other CPUs
+"QUES","XPZ2","B")
+NO
+"QUES","XPZ2","M")
+D XPZ2^XPDIQ
+"RTN")
+1
+"RTN","SYNVPR")
+0^1^B223022937
+"RTN","SYNVPR",1,0)
+SYNVPR  ; GPL/GPL - VPR viewing routines ;2019-01-31  10:42 AM
+"RTN","SYNVPR",2,0)
+ ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 1
+"RTN","SYNVPR",3,0)
+ ;
+"RTN","SYNVPR",4,0)
+ ; Authored by George P. Lilly 2013-2018
+"RTN","SYNVPR",5,0)
+ ;
+"RTN","SYNVPR",6,0)
+ Q
+"RTN","SYNVPR",7,0)
+ ;
+"RTN","SYNVPR",8,0)
+SELPART()       ; extrinsic which returns the part of the VPR selected
+"RTN","SYNVPR",9,0)
+ N ZT
+"RTN","SYNVPR",10,0)
+ S ZT(1)="all"
+"RTN","SYNVPR",11,0)
+ S ZT(2)="demographics"
+"RTN","SYNVPR",12,0)
+ S ZT(3)="reactions"
+"RTN","SYNVPR",13,0)
+ S ZT(4)="problems"
+"RTN","SYNVPR",14,0)
+ S ZT(5)="vitals"
+"RTN","SYNVPR",15,0)
+ S ZT(6)="labs"
+"RTN","SYNVPR",16,0)
+ S ZT(7)="meds"
+"RTN","SYNVPR",17,0)
+ S ZT(8)="immunizations"
+"RTN","SYNVPR",18,0)
+ S ZT(9)="observation"
+"RTN","SYNVPR",19,0)
+ S ZT(10)="visits"
+"RTN","SYNVPR",20,0)
+ S ZT(11)="appointments"
+"RTN","SYNVPR",21,0)
+ S ZT(12)="documents"
+"RTN","SYNVPR",22,0)
+ S ZT(13)="procedures"
+"RTN","SYNVPR",23,0)
+ S ZT(14)="consults"
+"RTN","SYNVPR",24,0)
+ S ZT(15)="flags"
+"RTN","SYNVPR",25,0)
+ S ZT(16)="factors"
+"RTN","SYNVPR",26,0)
+ S ZT(17)="skinTests"
+"RTN","SYNVPR",27,0)
+ S ZT(18)="exams"
+"RTN","SYNVPR",28,0)
+ S ZT(19)="education"
+"RTN","SYNVPR",29,0)
+ S ZT(20)="insurance"
+"RTN","SYNVPR",30,0)
+ K DIR
+"RTN","SYNVPR",31,0)
+ S DIR(0)="SO^"
+"RTN","SYNVPR",32,0)
+ F ZI=1:1:20 S DIR(0)=DIR(0)_ZI_":"_ZT(ZI)_";"
+"RTN","SYNVPR",33,0)
+ S DIR("B")=1
+"RTN","SYNVPR",34,0)
+ S DIR("L")="Please select clinical category to view: "
+"RTN","SYNVPR",35,0)
+ S DIR("L",1)="1 all          6 labs          11 appointments 16 factors"
+"RTN","SYNVPR",36,0)
+ S DIR("L",2)="2 demographics 7 meds          12 documents    17 skinTests"
+"RTN","SYNVPR",37,0)
+ S DIR("L",3)="3 reactions    8 immunizations 13 procedures   18 exams"
+"RTN","SYNVPR",38,0)
+ S DIR("L",4)="4 problems     9 observation   14 consults     19 education"
+"RTN","SYNVPR",39,0)
+ S DIR("L",5)="5 vitals       10 visits       15 flags        20 insurance"
+"RTN","SYNVPR",40,0)
+ D ^DIR
+"RTN","SYNVPR",41,0)
+ Q ZT(X)
+"RTN","SYNVPR",42,0)
+ ;
+"RTN","SYNVPR",43,0)
+SELPART2()      ; extrinsic which returns the part of the NHIN extract selected
+"RTN","SYNVPR",44,0)
+ N ZT
+"RTN","SYNVPR",45,0)
+ S ZT(1)="all"
+"RTN","SYNVPR",46,0)
+ S ZT(2)="patient"
+"RTN","SYNVPR",47,0)
+ S ZT(3)="allergy"
+"RTN","SYNVPR",48,0)
+ S ZT(4)="problem"
+"RTN","SYNVPR",49,0)
+ S ZT(5)="vital"
+"RTN","SYNVPR",50,0)
+ S ZT(6)="lab"
+"RTN","SYNVPR",51,0)
+ S ZT(7)="med"
+"RTN","SYNVPR",52,0)
+ S ZT(8)="immunization"
+"RTN","SYNVPR",53,0)
+ S ZT(9)="visit"
+"RTN","SYNVPR",54,0)
+ S ZT(10)="appointment"
+"RTN","SYNVPR",55,0)
+ S ZT(11)="procedure"
+"RTN","SYNVPR",56,0)
+ K DIR
+"RTN","SYNVPR",57,0)
+ S DIR(0)="SO^"
+"RTN","SYNVPR",58,0)
+ F ZI=1:1:11 S DIR(0)=DIR(0)_ZI_":"_ZT(ZI)_";"
+"RTN","SYNVPR",59,0)
+ S DIR("B")=1
+"RTN","SYNVPR",60,0)
+ S DIR("L")="Please select clinical category to view: "
+"RTN","SYNVPR",61,0)
+ S DIR("L",1)="1 all      6 lab          11 procedure"
+"RTN","SYNVPR",62,0)
+ S DIR("L",2)="2 patient  7 med          "
+"RTN","SYNVPR",63,0)
+ S DIR("L",3)="3 allergy  8 immunization"
+"RTN","SYNVPR",64,0)
+ S DIR("L",4)="4 problems 9 visit"
+"RTN","SYNVPR",65,0)
+ S DIR("L",5)="5 vitals   10 appointment"
+"RTN","SYNVPR",66,0)
+ D ^DIR
+"RTN","SYNVPR",67,0)
+ Q ZT(X)
+"RTN","SYNVPR",68,0)
+ ;
+"RTN","SYNVPR",69,0)
+SELLOAD()      ; extrinsic which returns the part of the FHIR LOAD selected
+"RTN","SYNVPR",70,0)
+ N ZT
+"RTN","SYNVPR",71,0)
+ S ZT(1)="all"
+"RTN","SYNVPR",72,0)
+ S ZT(2)="Patient"
+"RTN","SYNVPR",73,0)
+ S ZT(3)="allergy"
+"RTN","SYNVPR",74,0)
+ S ZT(4)="conditions"
+"RTN","SYNVPR",75,0)
+ S ZT(5)="vitals"
+"RTN","SYNVPR",76,0)
+ S ZT(6)="labs"
+"RTN","SYNVPR",77,0)
+ S ZT(7)="meds"
+"RTN","SYNVPR",78,0)
+ S ZT(8)="immunizations"
+"RTN","SYNVPR",79,0)
+ S ZT(9)="encounters"
+"RTN","SYNVPR",80,0)
+ S ZT(10)="careplan"
+"RTN","SYNVPR",81,0)
+ S ZT(11)="procedures"
+"RTN","SYNVPR",82,0)
+ K DIR
+"RTN","SYNVPR",83,0)
+ S DIR(0)="SO^"
+"RTN","SYNVPR",84,0)
+ F ZI=1:1:11 S DIR(0)=DIR(0)_ZI_":"_ZT(ZI)_";"
+"RTN","SYNVPR",85,0)
+ S DIR("B")=1
+"RTN","SYNVPR",86,0)
+ S DIR("L")="Please select clinical category to view: "
+"RTN","SYNVPR",87,0)
+ S DIR("L",1)="1 all        6 labs          11 procedure"
+"RTN","SYNVPR",88,0)
+ S DIR("L",2)="2 patient    7 meds          "
+"RTN","SYNVPR",89,0)
+ S DIR("L",3)="3 allergy    8 immunizations"
+"RTN","SYNVPR",90,0)
+ S DIR("L",4)="4 conditions 9 encounters"
+"RTN","SYNVPR",91,0)
+ S DIR("L",5)="5 vitals     10 careplan"
+"RTN","SYNVPR",92,0)
+ D ^DIR
+"RTN","SYNVPR",93,0)
+ Q ZT(X)
+"RTN","SYNVPR",94,0)
+ ;
+"RTN","SYNVPR",95,0)
+SELFHIR()      ; extrinsic which returns the part of the FHIR LOAD selected
+"RTN","SYNVPR",96,0)
+ N ZT
+"RTN","SYNVPR",97,0)
+ S ZT(1)="all"
+"RTN","SYNVPR",98,0)
+ S ZT(2)="Patient"
+"RTN","SYNVPR",99,0)
+ S ZT(3)="Allergy"
+"RTN","SYNVPR",100,0)
+ S ZT(4)="Condition"
+"RTN","SYNVPR",101,0)
+ S ZT(5)="Observation"
+"RTN","SYNVPR",102,0)
+ S ZT(6)="Claim"
+"RTN","SYNVPR",103,0)
+ S ZT(7)="MedicationRequest"
+"RTN","SYNVPR",104,0)
+ S ZT(8)="Immunization"
+"RTN","SYNVPR",105,0)
+ S ZT(9)="Encounter"
+"RTN","SYNVPR",106,0)
+ S ZT(10)="CarePlan"
+"RTN","SYNVPR",107,0)
+ S ZT(11)="Procedure"
+"RTN","SYNVPR",108,0)
+ S ZT(12)="DiagnosticReport"
+"RTN","SYNVPR",109,0)
+ S ZT(13)="ExplanationOfBenefit"
+"RTN","SYNVPR",110,0)
+ S ZT(14)="ImagingStudy"
+"RTN","SYNVPR",111,0)
+ S ZT(15)="Practitioner"
+"RTN","SYNVPR",112,0)
+ S ZT(16)="Organization"
+"RTN","SYNVPR",113,0)
+ K DIR
+"RTN","SYNVPR",114,0)
+ S DIR(0)="SO^"
+"RTN","SYNVPR",115,0)
+ F ZI=1:1:16 S DIR(0)=DIR(0)_ZI_":"_ZT(ZI)_";"
+"RTN","SYNVPR",116,0)
+ S DIR("B")=1
+"RTN","SYNVPR",117,0)
+ S DIR("L")="Please select clinical category to view: "
+"RTN","SYNVPR",118,0)
+ S DIR("L",1)="1 all         7 MedicationRequest 13 ExplanationOfBenefit"
+"RTN","SYNVPR",119,0)
+ S DIR("L",2)="2 Patient     8 Immunization      14 ImagingStudy"
+"RTN","SYNVPR",120,0)
+ S DIR("L",3)="3 Allergy     9 Encounter         15 Practitioner"
+"RTN","SYNVPR",121,0)
+ S DIR("L",4)="4 Condition   10 CarePlan         16 Organization"
+"RTN","SYNVPR",122,0)
+ S DIR("L",5)="5 Observation 11 Procedure"
+"RTN","SYNVPR",123,0)
+ S DIR("L",6)="6 Claim       12 DiagnosticReport"
+"RTN","SYNVPR",124,0)
+ D ^DIR
+"RTN","SYNVPR",125,0)
+ Q ZT(X)
+"RTN","SYNVPR",126,0)
+ ;
+"RTN","SYNVPR",127,0)
+gen ;
+"RTN","SYNVPR",128,0)
+ S G="all;demographics;reactions;problems;vitals;labs;meds;immunizations;observation;visits;appointments;documents;procedures;consults;flags;factors;skinTests;exams;education;insurance"
+"RTN","SYNVPR",129,0)
+ S ZI=""
+"RTN","SYNVPR",130,0)
+ F ZI=1:1 Q:$P(G,";",ZI)=""  D  ;
+"RTN","SYNVPR",131,0)
+ . W !," S ZT("_ZI_")="""_$P(G,";",ZI)_""""
+"RTN","SYNVPR",132,0)
+ q
+"RTN","SYNVPR",133,0)
+ ;
+"RTN","SYNVPR",134,0)
+gen2 ;
+"RTN","SYNVPR",135,0)
+ S G="all;patient;allergy;problem;vital;lab;med;immunization;visit;appointment;procedure"
+"RTN","SYNVPR",136,0)
+ S ZI=""
+"RTN","SYNVPR",137,0)
+ F ZI=1:1 Q:$P(G,";",ZI)=""  D  ;
+"RTN","SYNVPR",138,0)
+ . W !," S ZT("_ZI_")="""_$P(G,";",ZI)_""""
+"RTN","SYNVPR",139,0)
+ q
+"RTN","SYNVPR",140,0)
+ ;
+"RTN","SYNVPR",141,0)
+PAT()   ; extrinsic which returns a dfn from the patient selected
+"RTN","SYNVPR",142,0)
+ S DIC=2,DIC(0)="AEMQ" D ^DIC
+"RTN","SYNVPR",143,0)
+ I Y<1 Q  ; EXIT
+"RTN","SYNVPR",144,0)
+ S DFN=$P(Y,U,1) ; SET THE PATIENT
+"RTN","SYNVPR",145,0)
+ Q +Y
+"RTN","SYNVPR",146,0)
+ ;
+"RTN","SYNVPR",147,0)
+tree(where,prefix,docid,zout)     ; show a tree starting at a node in MXML.
+"RTN","SYNVPR",148,0)
+ ; node is passed by name
+"RTN","SYNVPR",149,0)
+ ;
+"RTN","SYNVPR",150,0)
+ i $g(prefix)="" s prefix="|--" ; starting prefix
+"RTN","SYNVPR",151,0)
+ i '$d(SYNJOB) s SYNJOB=$J
+"RTN","SYNVPR",152,0)
+ n node s node=$na(^TMP("MXMLDOM",SYNJOB,docid,where))
+"RTN","SYNVPR",153,0)
+ n txt s txt=$$CLEAN($$ALLTXT(node))
+"RTN","SYNVPR",154,0)
+ w:'$G(DIQUIET) !,prefix_@node_" "_txt
+"RTN","SYNVPR",155,0)
+ d oneout(zout,prefix_@node_" "_txt)
+"RTN","SYNVPR",156,0)
+ n zi s zi=""
+"RTN","SYNVPR",157,0)
+ f  s zi=$o(@node@("A",zi)) q:zi=""  d  ;
+"RTN","SYNVPR",158,0)
+ . w:'$G(DIQUIET) !,prefix_"  : "_zi_"^"_$g(@node@("A",zi))
+"RTN","SYNVPR",159,0)
+ . d oneout(zout,prefix_"  : "_zi_"^"_$g(@node@("A",zi)))
+"RTN","SYNVPR",160,0)
+ f  s zi=$o(@node@("C",zi)) q:zi=""  d  ;
+"RTN","SYNVPR",161,0)
+ . d tree(zi,"|  "_prefix,docid,zout)
+"RTN","SYNVPR",162,0)
+ q
+"RTN","SYNVPR",163,0)
+ ;
+"RTN","SYNVPR",164,0)
+oneout(zbuf,ztxt)       ; adds a line to zbuf
+"RTN","SYNVPR",165,0)
+ n zi s zi=$o(@zbuf@(""),-1)+1
+"RTN","SYNVPR",166,0)
+ s @zbuf@(zi)=ztxt
+"RTN","SYNVPR",167,0)
+ q
+"RTN","SYNVPR",168,0)
+ ;
+"RTN","SYNVPR",169,0)
+ALLTXT(where)     ; extrinsic which returns all text lines from the node .. concatinated
+"RTN","SYNVPR",170,0)
+ ; together
+"RTN","SYNVPR",171,0)
+ n zti s zti=""
+"RTN","SYNVPR",172,0)
+ n ztr s ztr=""
+"RTN","SYNVPR",173,0)
+ f  s zti=$o(@where@("T",zti)) q:zti=""  d  ;
+"RTN","SYNVPR",174,0)
+ . s ztr=ztr_$g(@where@("T",zti))
+"RTN","SYNVPR",175,0)
+ q ztr
+"RTN","SYNVPR",176,0)
+ ;
+"RTN","SYNVPR",177,0)
+CLEAN(STR)           ; extrinsic function; returns string - gpl borrowed from the CCR package
+"RTN","SYNVPR",178,0)
+ ;; Removes all non printable characters from a string.
+"RTN","SYNVPR",179,0)
+ ;; STR by Value
+"RTN","SYNVPR",180,0)
+ N TR,I
+"RTN","SYNVPR",181,0)
+ F I=0:1:31 S TR=$G(TR)_$C(I)
+"RTN","SYNVPR",182,0)
+ S TR=TR_$C(127)
+"RTN","SYNVPR",183,0)
+ N ZR S ZR=$TR(STR,TR)
+"RTN","SYNVPR",184,0)
+ S ZR=$$LDBLNKS(ZR) ; get rid of leading blanks
+"RTN","SYNVPR",185,0)
+ QUIT ZR
+"RTN","SYNVPR",186,0)
+ ;
+"RTN","SYNVPR",187,0)
+LDBLNKS(st)         ; extrinsic which removes leading blanks from a string
+"RTN","SYNVPR",188,0)
+ n pos f pos=1:1:$l(st)  q:$e(st,pos)'=" "
+"RTN","SYNVPR",189,0)
+ q $e(st,pos,$l(st))
+"RTN","SYNVPR",190,0)
+ ;
+"RTN","SYNVPR",191,0)
+show(what,docid,zout)     ;
+"RTN","SYNVPR",192,0)
+ I '$D(C0XJOB) S C0XJOB=$J
+"RTN","SYNVPR",193,0)
+ d tree(what,,docid,zout)
+"RTN","SYNVPR",194,0)
+ q
+"RTN","SYNVPR",195,0)
+ ;
+"RTN","SYNVPR",196,0)
+GET(ZRTN,ZDFN,ZTYP) ;
+"RTN","SYNVPR",197,0)
+ I ZTYP="all" S ZTYP=""
+"RTN","SYNVPR",198,0)
+ S FILTER("category")="CP;RA;SR"
+"RTN","SYNVPR",199,0)
+ D GET^VPRD(.ZRTN,ZDFN,ZTYP,2250101,$$NOW^XLFDT,,,.FILTER)
+"RTN","SYNVPR",200,0)
+ Q
+"RTN","SYNVPR",201,0)
+ ;
+"RTN","SYNVPR",202,0)
+GET2(ZRTN,ZDFN,ZTYP) ;
+"RTN","SYNVPR",203,0)
+ I ZTYP="all" S ZTYP=""
+"RTN","SYNVPR",204,0)
+ ;D GET^VPRD(.ZRTN,ZDFN,ZTYP)
+"RTN","SYNVPR",205,0)
+ D GET^KBAINHIN(.ZRTN,ZDFN,ZTYP) ; CALL NHINV ROUTINES TO PULL XML
+"RTN","SYNVPR",206,0)
+ Q
+"RTN","SYNVPR",207,0)
+ ;
+"RTN","SYNVPR",208,0)
+PARSE(INXML)    ;
+"RTN","SYNVPR",209,0)
+ K ^TMP("MXMLERR",$J)
+"RTN","SYNVPR",210,0)
+ Q $$EN^MXMLDOM(INXML,"W")
+"RTN","SYNVPR",211,0)
+ ;
+"RTN","SYNVPR",212,0)
+VPR     ;
+"RTN","SYNVPR",213,0)
+ N ZDFN,ZTYPE
+"RTN","SYNVPR",214,0)
+ ;N ZTMP
+"RTN","SYNVPR",215,0)
+ S ZDFN=$$PAT()
+"RTN","SYNVPR",216,0)
+ S ZTYPE=$$SELPART()
+"RTN","SYNVPR",217,0)
+ D GET(.ZTMP,ZDFN,ZTYPE)
+"RTN","SYNVPR",218,0)
+ N DOCID
+"RTN","SYNVPR",219,0)
+ S DOCID=$$PARSE(.ZTMP)
+"RTN","SYNVPR",220,0)
+ S GN=$NA(^TMP("VPROUT",$J))
+"RTN","SYNVPR",221,0)
+ D show(1,DOCID,GN)
+"RTN","SYNVPR",222,0)
+ D BROWSE^DDBR(GN,"N","PATIENT "_ZDFN_" "_ZTYPE)
+"RTN","SYNVPR",223,0)
+ K @GN,^TMP("MXMLDOM",$J),^TMP("VPR",$J),GN
+"RTN","SYNVPR",224,0)
+ q
+"RTN","SYNVPR",225,0)
+ ;
+"RTN","SYNVPR",226,0)
+wsVPR(VPR,FILTER)       ; get from web service call
+"RTN","SYNVPR",227,0)
+ I '$D(DT) N DIQUIET S DIQUIET=1 D DT^DICRW
+"RTN","SYNVPR",228,0)
+ N ZDFN,ZTYPE
+"RTN","SYNVPR",229,0)
+ ;
+"RTN","SYNVPR",230,0)
+ S DUZ=$$DUZ^SYNDHP69
+"RTN","SYNVPR",231,0)
+ ;N ZTMP
+"RTN","SYNVPR",232,0)
+ S ZDFN=$G(FILTER("patientId"))
+"RTN","SYNVPR",233,0)
+ I ZDFN="" S ZDFN=$G(FILTER("patientID"))
+"RTN","SYNVPR",234,0)
+ I ZDFN="" S ZDFN=$G(FILTER("patientid"))
+"RTN","SYNVPR",235,0)
+ I ZDFN="" S ZDFN=$G(FILTER("dfn"))
+"RTN","SYNVPR",236,0)
+ I ZDFN="" D  ;
+"RTN","SYNVPR",237,0)
+ . N ICN S ICN=$G(FILTER("icn"))
+"RTN","SYNVPR",238,0)
+ . I ICN="" Q  ;
+"RTN","SYNVPR",239,0)
+ . S ZDFN=$O(^DPT("AFICN",ICN,""))
+"RTN","SYNVPR",240,0)
+ I ZDFN="" D  ; try ien
+"RTN","SYNVPR",241,0)
+ . N IEN S IEN=$G(FILTER("ien"))
+"RTN","SYNVPR",242,0)
+ . I IEN="" Q  ;
+"RTN","SYNVPR",243,0)
+ . S ZDFN=$$ien2dfn^SYNFUTL(IEN)
+"RTN","SYNVPR",244,0)
+ I ZDFN="" S ZDFN=2
+"RTN","SYNVPR",245,0)
+ S ZTYPE=$G(FILTER("domain"),"all")
+"RTN","SYNVPR",246,0)
+ ; gpl FHIR project 9/15/2018
+"RTN","SYNVPR",247,0)
+ s FILTER("category")="SR;RA;CP"
+"RTN","SYNVPR",248,0)
+ D GET(.ZTMP,ZDFN,ZTYPE)
+"RTN","SYNVPR",249,0)
+ I $G(FILTER("format"))="xml" D  Q  ;
+"RTN","SYNVPR",250,0)
+ . S HTTPRSP("mime")="text/xml"
+"RTN","SYNVPR",251,0)
+ . M VPR=ZTMP
+"RTN","SYNVPR",252,0)
+ N DOCID
+"RTN","SYNVPR",253,0)
+ S DOCID=$$PARSE(.ZTMP)
+"RTN","SYNVPR",254,0)
+ S HTTPRSP("mime")="text/html"
+"RTN","SYNVPR",255,0)
+ S VPR=$NA(^TMP("VPROUT",$J))
+"RTN","SYNVPR",256,0)
+ K @VPR
+"RTN","SYNVPR",257,0)
+ S @VPR="<!DOCTYPE HTML><html><head></head><body><pre>"
+"RTN","SYNVPR",258,0)
+ D show(1,DOCID,VPR)
+"RTN","SYNVPR",259,0)
+ S @VPR@($O(@VPR@(""),-1)+1)="</pre></body></html>"
+"RTN","SYNVPR",260,0)
+ D ADDCRLF^SYNWEBUT(.VPR)
+"RTN","SYNVPR",261,0)
+ ;D BROWSE^DDBR(GN,"N","PATIENT "_ZDFN_" "_ZTYPE)
+"RTN","SYNVPR",262,0)
+ ;K @GN,^TMP("MXMLDOM",$J),^TMP("VPR",$J),GN
+"RTN","SYNVPR",263,0)
+ q
+"RTN","SYNVPR",264,0)
+ ;
+"RTN","SYNVPR",265,0)
+NHIN    ;
+"RTN","SYNVPR",266,0)
+ N ZDFN,ZTYPE
+"RTN","SYNVPR",267,0)
+ ;N ZTMP
+"RTN","SYNVPR",268,0)
+ S ZDFN=$$PAT()
+"RTN","SYNVPR",269,0)
+ S ZTYPE=$$SELPART2()
+"RTN","SYNVPR",270,0)
+ D GET2(.ZTMP,ZDFN,ZTYPE)
+"RTN","SYNVPR",271,0)
+ N DOCID
+"RTN","SYNVPR",272,0)
+ S DOCID=$$PARSE(.ZTMP)
+"RTN","SYNVPR",273,0)
+ S GN=$NA(^TMP("VPROUT",$J))
+"RTN","SYNVPR",274,0)
+ D show(1,DOCID,GN)
+"RTN","SYNVPR",275,0)
+ D BROWSE^DDBR(GN,"N","PATIENT "_ZDFN_" "_ZTYPE)
+"RTN","SYNVPR",276,0)
+ K @GN,^TMP("MXMLDOM",$J),^TMP("VPR",$J),GN
+"RTN","SYNVPR",277,0)
+ q
+"RTN","SYNVPR",278,0)
+ ;
+"RTN","SYNVPR",279,0)
+LABS    ;
+"RTN","SYNVPR",280,0)
+ S DFN=$$PAT()
+"RTN","SYNVPR",281,0)
+ K OUT
+"RTN","SYNVPR",282,0)
+ D LIST^C0CLABS
+"RTN","SYNVPR",283,0)
+ S GN=$NA(^TMP("VPROUT",$J))
+"RTN","SYNVPR",284,0)
+ K @GN
+"RTN","SYNVPR",285,0)
+ M @GN=OUT
+"RTN","SYNVPR",286,0)
+ D BROWSE^DDBR(GN,"N","PATIENT "_DFN_" LABS FROM CCR PACKAGE")
+"RTN","SYNVPR",287,0)
+ K @GN
+"RTN","SYNVPR",288,0)
+ Q
+"RTN","SYNVPR",289,0)
+ ;
+"RTN","SYNVPR",290,0)
+CCRXML  ;
+"RTN","SYNVPR",291,0)
+ S DFN=$$PAT()
+"RTN","SYNVPR",292,0)
+ K OUT
+"RTN","SYNVPR",293,0)
+ D CCRRPC^C0CCCR(.OUT,DFN)
+"RTN","SYNVPR",294,0)
+ S GN=$NA(^TMP("VPROUT",$J))
+"RTN","SYNVPR",295,0)
+ K @GN
+"RTN","SYNVPR",296,0)
+ M @GN=OUT
+"RTN","SYNVPR",297,0)
+ D BROWSE^DDBR(GN,"N","PATIENT "_DFN_" CCR XML")
+"RTN","SYNVPR",298,0)
+ K @GN
+"RTN","SYNVPR",299,0)
+ Q
+"RTN","SYNVPR",300,0)
+ ;
+"RTN","SYNVPR",301,0)
+CCR     ;
+"RTN","SYNVPR",302,0)
+ S DFN=$$PAT()
+"RTN","SYNVPR",303,0)
+ N ZTMP
+"RTN","SYNVPR",304,0)
+ D CCRRPC^C0CCCR(.ZTMP,DFN)
+"RTN","SYNVPR",305,0)
+ K ZTMP(0)
+"RTN","SYNVPR",306,0)
+ N ZCCR S ZCCR=$NA(^TMP("SYNVPR","CCR"))
+"RTN","SYNVPR",307,0)
+ K @ZCCR
+"RTN","SYNVPR",308,0)
+ M @ZCCR=ZTMP
+"RTN","SYNVPR",309,0)
+ N DOCID
+"RTN","SYNVPR",310,0)
+ S DOCID=$$PARSE(ZCCR)
+"RTN","SYNVPR",311,0)
+ I $D(^TMP("MXMLERR",$J)) S $EC=",U-ERROR,"
+"RTN","SYNVPR",312,0)
+ I DOCID=0
+"RTN","SYNVPR",313,0)
+ S GN=$NA(^TMP("VPROUT",$J))
+"RTN","SYNVPR",314,0)
+ K @GN
+"RTN","SYNVPR",315,0)
+ D show(1,DOCID,GN)
+"RTN","SYNVPR",316,0)
+ D BROWSE^DDBR(GN,"N","PATIENT "_DFN_" CCR XML")
+"RTN","SYNVPR",317,0)
+ K @GN,@ZCCR
+"RTN","SYNVPR",318,0)
+ Q
+"RTN","SYNVPR",319,0)
+ ;
+"RTN","SYNVPR",320,0)
+CCDA    ;
+"RTN","SYNVPR",321,0)
+ S DFN=$$PAT()
+"RTN","SYNVPR",322,0)
+ N ZTMP
+"RTN","SYNVPR",323,0)
+ D CCDARPC^KBAICDA(.ZTMP,DFN)
+"RTN","SYNVPR",324,0)
+ K ZTMP(0)
+"RTN","SYNVPR",325,0)
+ N ZCCDA S ZCCDA=$NA(^TMP("SYNVPR",$J,"CCDA"))
+"RTN","SYNVPR",326,0)
+ K @ZCCDA
+"RTN","SYNVPR",327,0)
+ M @ZCCDA=@ZTMP
+"RTN","SYNVPR",328,0)
+ N DOCID
+"RTN","SYNVPR",329,0)
+ S DOCID=$$PARSE(ZCCDA)
+"RTN","SYNVPR",330,0)
+ I $D(^TMP("MXMLERR",$J)) S $EC=",U-ERROR,"
+"RTN","SYNVPR",331,0)
+ I DOCID=0
+"RTN","SYNVPR",332,0)
+ S GN=$NA(^TMP("VPROUT",$J))
+"RTN","SYNVPR",333,0)
+ K @GN
+"RTN","SYNVPR",334,0)
+ D show(1,DOCID,GN)
+"RTN","SYNVPR",335,0)
+ D BROWSE^DDBR(GN,"N","PATIENT "_DFN_" CCDA XML")
+"RTN","SYNVPR",336,0)
+ K @GN,@ZCCDA
+"RTN","SYNVPR",337,0)
+ Q
+"RTN","SYNVPR",338,0)
+ ;
+"RTN","SYNVPR",339,0)
+LOADSTAT     ;
+"RTN","SYNVPR",340,0)
+ N ZDFN,ZTYPE
+"RTN","SYNVPR",341,0)
+ ;N ZTMP
+"RTN","SYNVPR",342,0)
+ S ZDFN=$$PAT()
+"RTN","SYNVPR",343,0)
+ S ZTYPE=$$SELLOAD()
+"RTN","SYNVPR",344,0)
+ N ROOT S ROOT=$$setroot^SYNWD("fhir-intake")
+"RTN","SYNVPR",345,0)
+ Q:ROOT=""
+"RTN","SYNVPR",346,0)
+ N IEN S IEN=$O(@ROOT@("DFN",ZDFN,""))
+"RTN","SYNVPR",347,0)
+ Q:IEN=""
+"RTN","SYNVPR",348,0)
+ N GROOT
+"RTN","SYNVPR",349,0)
+ I ZTYPE="all" S GROOT=$NA(@ROOT@(IEN,"load"))
+"RTN","SYNVPR",350,0)
+ E  S GROOT=$NA(@ROOT@(IEN,"load",ZTYPE))
+"RTN","SYNVPR",351,0)
+ N GN S GN=$NA(^TMP("SYNOUT",$J))
+"RTN","SYNVPR",352,0)
+ K @GN
+"RTN","SYNVPR",353,0)
+ D GTREE(GROOT,9,,,GN)
+"RTN","SYNVPR",354,0)
+ D BROWSE^DDBR(GN,"N","PATIENT "_ZDFN_" "_ZTYPE)
+"RTN","SYNVPR",355,0)
+ K @GN
+"RTN","SYNVPR",356,0)
+ q
+"RTN","SYNVPR",357,0)
+ ;
+"RTN","SYNVPR",358,0)
+FHIRJSON     ;
+"RTN","SYNVPR",359,0)
+ N ZDFN,ZTYPE
+"RTN","SYNVPR",360,0)
+ ;N ZTMP
+"RTN","SYNVPR",361,0)
+ S ZDFN=$$PAT()
+"RTN","SYNVPR",362,0)
+ S ZTYPE=$$SELFHIR()
+"RTN","SYNVPR",363,0)
+ N ROOT S ROOT=$$setroot^SYNWD("fhir-intake")
+"RTN","SYNVPR",364,0)
+ Q:ROOT=""
+"RTN","SYNVPR",365,0)
+ N IEN S IEN=$O(@ROOT@("DFN",ZDFN,""))
+"RTN","SYNVPR",366,0)
+ Q:IEN=""
+"RTN","SYNVPR",367,0)
+ N GROOT
+"RTN","SYNVPR",368,0)
+ I ZTYPE="all" S GROOT=$NA(@ROOT@(IEN,"json"))
+"RTN","SYNVPR",369,0)
+ E  D  ;
+"RTN","SYNVPR",370,0)
+ . S GROOT=$NA(^TMP("SYNFHIR",$J))
+"RTN","SYNVPR",371,0)
+ . K @GROOT
+"RTN","SYNVPR",372,0)
+ . D getIntakeFhir^SYNFHIR(GROOT,,ZTYPE,IEN)
+"RTN","SYNVPR",373,0)
+ N GN S GN=$NA(^TMP("SYNOUT",$J))
+"RTN","SYNVPR",374,0)
+ K @GN
+"RTN","SYNVPR",375,0)
+ D GTREE(GROOT,9,,,GN)
+"RTN","SYNVPR",376,0)
+ D BROWSE^DDBR(GN,"N","PATIENT "_ZDFN_" "_ZTYPE)
+"RTN","SYNVPR",377,0)
+ K @GN
+"RTN","SYNVPR",378,0)
+ q
+"RTN","SYNVPR",379,0)
+ ;
+"RTN","SYNVPR",380,0)
+listm(out,in)   ; out is passed by name in is passed by reference
+"RTN","SYNVPR",381,0)
+ n i s i=$q(@in@(""))
+"RTN","SYNVPR",382,0)
+ f  s i=$q(@i) q:i=""  d oneout^SYNVPR(out,i_"="_@i)
+"RTN","SYNVPR",383,0)
+ q
+"RTN","SYNVPR",384,0)
+ ;
+"RTN","SYNVPR",385,0)
+SMART   ;
+"RTN","SYNVPR",386,0)
+ S DFN=$$PAT()
+"RTN","SYNVPR",387,0)
+ S ZTYPE=$$SELPART2()
+"RTN","SYNVPR",388,0)
+ K G,OUT
+"RTN","SYNVPR",389,0)
+ D EN^C0SMART(.G,DFN,ZTYPE,"raw")
+"RTN","SYNVPR",390,0)
+ S GN=$NA(^TMP("SYNOUT",$J))
+"RTN","SYNVPR",391,0)
+ K @GN
+"RTN","SYNVPR",392,0)
+ D listm(GN,"G")
+"RTN","SYNVPR",393,0)
+ D BROWSE^DDBR(GN,"N","PATIENT "_DFN_" SMART MUMPS ARRAY")
+"RTN","SYNVPR",394,0)
+ K @GN,G,OUT
+"RTN","SYNVPR",395,0)
+ Q
+"RTN","SYNVPR",396,0)
+ ;
+"RTN","SYNVPR",397,0)
+SMARTRDF        ;
+"RTN","SYNVPR",398,0)
+ S DFN=$$PAT()
+"RTN","SYNVPR",399,0)
+ S ZTYPE=$$SELPART2()
+"RTN","SYNVPR",400,0)
+ K G,OUT
+"RTN","SYNVPR",401,0)
+ D EN^C0SMART(.G,DFN,ZTYPE,"rdf")
+"RTN","SYNVPR",402,0)
+ N ZRDF S ZRDF=$NA(^TMP("SYNVPR","RDF"))
+"RTN","SYNVPR",403,0)
+ K @ZRDF
+"RTN","SYNVPR",404,0)
+ M @ZRDF=G
+"RTN","SYNVPR",405,0)
+ N DOCID
+"RTN","SYNVPR",406,0)
+ S DOCID=$$PARSE(ZRDF)
+"RTN","SYNVPR",407,0)
+ I $D(^TMP("MXMLERR",$J)) S $EC=",U-ERROR,"
+"RTN","SYNVPR",408,0)
+ I DOCID=0 S $EC=",U-ERROR,"
+"RTN","SYNVPR",409,0)
+ S GN=$NA(^TMP("VPROUT",$J))
+"RTN","SYNVPR",410,0)
+ K @GN
+"RTN","SYNVPR",411,0)
+ D show(1,DOCID,GN)
+"RTN","SYNVPR",412,0)
+ D BROWSE^DDBR(GN,"N","PATIENT "_DFN_" RDF XML")
+"RTN","SYNVPR",413,0)
+ K @GN,@ZRDF
+"RTN","SYNVPR",414,0)
+ Q
+"RTN","SYNVPR",415,0)
+ ;
+"RTN","SYNVPR",416,0)
+VPRM    ;
+"RTN","SYNVPR",417,0)
+ N ZDFN,ZTYPE
+"RTN","SYNVPR",418,0)
+ N ZTMP
+"RTN","SYNVPR",419,0)
+ S ZDFN=$$PAT()
+"RTN","SYNVPR",420,0)
+ S ZTYPE=$$SELPART()
+"RTN","SYNVPR",421,0)
+ D GETPAT^SYNVPRE(.ZTMP,ZDFN,ZTYPE)
+"RTN","SYNVPR",422,0)
+ S GN=$NA(^TMP("VPROUT",$J))
+"RTN","SYNVPR",423,0)
+ K @GN
+"RTN","SYNVPR",424,0)
+ D listm(GN,"ZTMP")
+"RTN","SYNVPR",425,0)
+ D BROWSE^DDBR(GN,"N","PATIENT "_ZDFN_" "_ZTYPE)
+"RTN","SYNVPR",426,0)
+ K @GN,^TMP("VPR",$J),GN
+"RTN","SYNVPR",427,0)
+ q
+"RTN","SYNVPR",428,0)
+ ;
+"RTN","SYNVPR",429,0)
+wsGLOBAL(OUT,FILTER)    ; dump a global to the browser as text
+"RTN","SYNVPR",430,0)
+ S HTTPRSP("mime")="text/plain"
+"RTN","SYNVPR",431,0)
+ N Q S Q=""""
+"RTN","SYNVPR",432,0)
+ S OUT=$NA(^TMP("SYNOUT",$J))
+"RTN","SYNVPR",433,0)
+ K @OUT
+"RTN","SYNVPR",434,0)
+ N ROOT S ROOT=$G(FILTER("root"))
+"RTN","SYNVPR",435,0)
+ Q:ROOT=""
+"RTN","SYNVPR",436,0)
+ I $G(FILTER("local"))'=1 S ROOT="^"_ROOT
+"RTN","SYNVPR",437,0)
+ N ORIG,OL S ORIG=ROOT,OL=$QL(ROOT) ; Orig, Orig Length
+"RTN","SYNVPR",438,0)
+ F  S ROOT=$Q(@ROOT) Q:$G(ROOT)=""  Q:$NA(@ROOT,OL)'=$NA(@ORIG,OL)  D
+"RTN","SYNVPR",439,0)
+ . N %,V S V=$$CLEAN(@ROOT)
+"RTN","SYNVPR",440,0)
+ . I V'["e",+$P(V,"E")=V ; numeric
+"RTN","SYNVPR",441,0)
+ . E  S V=$NAME(%(V)),V=$E(V,3,$L(V)-1) ; This double quotes internal quotes and also adds quotes on the outside
+"RTN","SYNVPR",442,0)
+ . S @OUT@($O(@OUT@(""),-1)+1)=ROOT_"="_V
+"RTN","SYNVPR",443,0)
+ S @OUT@(.1)="OSEHRA ZGO Export: M Web Server ZWRITE Export"
+"RTN","SYNVPR",444,0)
+ S @OUT@(.2)=$TR($TR($$FMTE^XLFDT($$NOW^XLFDT,"9")," ","-"),"@"," ")_" ZWR"
+"RTN","SYNVPR",445,0)
+ D ADDCRLF^SYNWEBUT(.OUT)
+"RTN","SYNVPR",446,0)
+ Q
+"RTN","SYNVPR",447,0)
+ ;
+"RTN","SYNVPR",448,0)
+GTREE(ROOT,DEPTH,PREFIX,LVL,RSLT)    ; show a global in a tree
+"RTN","SYNVPR",449,0)
+ ; if RSLT, a named reference, is present, the output will be put there
+"RTN","SYNVPR",450,0)
+ ; otherwise, write to the screen
+"RTN","SYNVPR",451,0)
+ ;
+"RTN","SYNVPR",452,0)
+ I $G(PREFIX)="" S PREFIX="|--" ; STARTING PREFIX
+"RTN","SYNVPR",453,0)
+ I '$D(DEPTH) S DEPTH=1 ; USUALLY THIS IS WHAT WE WANT
+"RTN","SYNVPR",454,0)
+ I +$G(LVL)>DEPTH Q  ; ONLY GO THAT DEEP
+"RTN","SYNVPR",455,0)
+ N ZGI S ZGI=""
+"RTN","SYNVPR",456,0)
+ N ZVAL S ZVAL=$G(@ROOT)
+"RTN","SYNVPR",457,0)
+ I $G(LVL)="" D  ;
+"RTN","SYNVPR",458,0)
+ . I $G(RSLT)="" W !,ROOT_" "_$G(@ROOT@(0))
+"RTN","SYNVPR",459,0)
+ . E  S @RSLT@($O(@RSLT@(" "),-1)+1)=ROOT_" "_$G(@ROOT@(0))
+"RTN","SYNVPR",460,0)
+ F  S ZGI=$O(@ROOT@(ZGI)) Q:ZGI=""  D  ;
+"RTN","SYNVPR",461,0)
+ . I $O(@ROOT@(ZGI,""))'="" D  ;
+"RTN","SYNVPR",462,0)
+ . . I $G(@ROOT@(ZGI))'="" D  ;
+"RTN","SYNVPR",463,0)
+ . . . I $G(RSLT)="" W !,PREFIX_ZGI_" ",@ROOT@(ZGI)
+"RTN","SYNVPR",464,0)
+ . . . E  S @RSLT@($O(@RSLT@(" "),-1)+1)=PREFIX_ZGI_" "_@ROOT@(ZGI)
+"RTN","SYNVPR",465,0)
+ . . E  D  ;
+"RTN","SYNVPR",466,0)
+ . . . I $G(RSLT)="" W !,PREFIX_ZGI_" ",$G(@ROOT@(ZGI,0))
+"RTN","SYNVPR",467,0)
+ . . . E  S @RSLT@($O(@RSLT@(" "),-1)+1)=PREFIX_ZGI_" "_$G(@ROOT@(ZGI,0))
+"RTN","SYNVPR",468,0)
+ . E  D  ;
+"RTN","SYNVPR",469,0)
+ . . I $G(RSLT)="" W !,PREFIX_ZGI_" "_$G(@ROOT@(ZGI))
+"RTN","SYNVPR",470,0)
+ . . E  S @RSLT@($O(@RSLT@(" "),-1)+1)=PREFIX_ZGI_" "_$G(@ROOT@(ZGI))
+"RTN","SYNVPR",471,0)
+ . D GTREE($NA(@ROOT@(ZGI)),DEPTH,"|  "_PREFIX,+$G(LVL)+1,$G(RSLT))
+"RTN","SYNVPR",472,0)
+ Q
+"RTN","SYNVPR",473,0)
+ ;
+"RTN","SYNVPR",474,0)
+wsGtree(OUT,FILTER) ; show an outline form of a global
+"RTN","SYNVPR",475,0)
+ I '$D(DT) N DIQUIET S DIQUIET=1 D DT^DICRW
+"RTN","SYNVPR",476,0)
+ S HTTPRSP("mime")="text/html"
+"RTN","SYNVPR",477,0)
+ S OUT=$NA(^TMP("SYNOUT",$J))
+"RTN","SYNVPR",478,0)
+ K @OUT
+"RTN","SYNVPR",479,0)
+ N ROOT S ROOT=$G(FILTER("root"))
+"RTN","SYNVPR",480,0)
+ Q:ROOT=""
+"RTN","SYNVPR",481,0)
+ N LEVEL S LEVEL=$G(FILTER("level"))
+"RTN","SYNVPR",482,0)
+ I LEVEL'="" S LEVEL=LEVEL-1
+"RTN","SYNVPR",483,0)
+ I $G(FILTER("local"))'=1 S ROOT="^"_ROOT
+"RTN","SYNVPR",484,0)
+ I LEVEL="" D GTREE(ROOT,9,,,OUT)
+"RTN","SYNVPR",485,0)
+ I LEVEL'="" D GTREE(ROOT,LEVEL,,,OUT)
+"RTN","SYNVPR",486,0)
+ I $G(FILTER("mfilter"))'="" D  ;
+"RTN","SYNVPR",487,0)
+ . N ZF S ZF=$G(FILTER("mfilter"))
+"RTN","SYNVPR",488,0)
+ . N ZR S ZR="^"_$P(ZF,"^",2)
+"RTN","SYNVPR",489,0)
+ . Q:ZR="^"
+"RTN","SYNVPR",490,0)
+ . I $L($T(@ZR))>0 D  ;
+"RTN","SYNVPR",491,0)
+ . . ;S ZF=ZF_"(.OUT)"
+"RTN","SYNVPR",492,0)
+ . . ;n % s %=$$@ZF@(.OUT)
+"RTN","SYNVPR",493,0)
+ . . I ZF="BAK^VWXPAT" D BAK^VWXPAT(.OUT) Q  ;
+"RTN","SYNVPR",494,0)
+ . . I ZF="BAK2^VWXPAT" D BAK2^VWXPAT(.OUT) Q  ;
+"RTN","SYNVPR",495,0)
+ S @OUT="<!DOCTYPE HTML><html><head></head><body><pre>"
+"RTN","SYNVPR",496,0)
+ S @OUT@($O(@OUT@(""),-1)+1)="</pre></body></html>"
+"RTN","SYNVPR",497,0)
+ D ADDCRLF^SYNWEBUT(.OUT)
+"RTN","SYNVPR",498,0)
+ Q
+"RTN","SYNVPR",499,0)
+ ;
+"VER")
+8.0^22.2
+**END**
+**END**
