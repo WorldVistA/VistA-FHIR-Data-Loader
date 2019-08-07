@@ -1,9 +1,9 @@
-SYNVPR  ; GPL/GPL - VPR viewing routines ;2019-01-31  10:42 AM
+SYNVPR  ; GPL/GPL - VPR viewing routines ;2019-08-07  3:57 PM
  ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 34
  ;
  ; Authored by George P. Lilly 2013-2018
  ;
- Q
+ QUIT
  ;
 SELPART()       ; extrinsic which returns the part of the VPR selected
  N ZT
@@ -66,6 +66,66 @@ SELPART2()      ; extrinsic which returns the part of the NHIN extract selected
  D ^DIR
  Q ZT(X)
  ;
+SELLOAD()      ; extrinsic which returns the part of the FHIR LOAD selected
+ N ZT
+ S ZT(1)="all"
+ S ZT(2)="Patient"
+ S ZT(3)="allergy"
+ S ZT(4)="conditions"
+ S ZT(5)="vitals"
+ S ZT(6)="labs"
+ S ZT(7)="meds"
+ S ZT(8)="immunizations"
+ S ZT(9)="encounters"
+ S ZT(10)="careplan"
+ S ZT(11)="procedures"
+ N DIR,DTOUT,DUOUT,DIRUT,DIROUT,X,Y,DA
+ S DIR(0)="SO^"
+ F ZI=1:1:11 S DIR(0)=DIR(0)_ZI_":"_ZT(ZI)_";"
+ S DIR("B")=1
+ S DIR("L")="Please select clinical category to view: "
+ S DIR("L",1)="1 all        6 labs          11 procedure"
+ S DIR("L",2)="2 patient    7 meds          "
+ S DIR("L",3)="3 allergy    8 immunizations"
+ S DIR("L",4)="4 conditions 9 encounters"
+ S DIR("L",5)="5 vitals     10 careplan"
+ D ^DIR
+ I $D(DIRUT) Q ""
+ Q ZT(X)
+ ;
+SELFHIR()      ; extrinsic which returns the part of the FHIR LOAD selected
+ N ZT
+ S ZT(1)="all"
+ S ZT(2)="Patient"
+ S ZT(3)="Allergy"
+ S ZT(4)="Condition"
+ S ZT(5)="Observation"
+ S ZT(6)="Claim"
+ S ZT(7)="MedicationRequest"
+ S ZT(8)="Immunization"
+ S ZT(9)="Encounter"
+ S ZT(10)="CarePlan"
+ S ZT(11)="Procedure"
+ S ZT(12)="DiagnosticReport"
+ S ZT(13)="ExplanationOfBenefit"
+ S ZT(14)="ImagingStudy"
+ S ZT(15)="Practitioner"
+ S ZT(16)="Organization"
+ N DIR,DTOUT,DUOUT,DIRUT,DIROUT,X,Y,DA
+ S DIR(0)="SO^"
+ F ZI=1:1:16 S DIR(0)=DIR(0)_ZI_":"_ZT(ZI)_";"
+ S DIR("B")=1
+ S DIR("L")="Please select clinical category to view: "
+ S DIR("L",1)="1 all         7 MedicationRequest 13 ExplanationOfBenefit"
+ S DIR("L",2)="2 Patient     8 Immunization      14 ImagingStudy"
+ S DIR("L",3)="3 Allergy     9 Encounter         15 Practitioner"
+ S DIR("L",4)="4 Condition   10 CarePlan         16 Organization"
+ S DIR("L",5)="5 Observation 11 Procedure"
+ S DIR("L",6)="6 Claim       12 DiagnosticReport"
+ D ^DIR
+ I $D(DIRUT) Q ""
+ Q ZT(X)
+ ;
 gen ;
  S G="all;demographics;reactions;problems;vitals;labs;meds;immunizations;observation;visits;appointments;documents;procedures;consults;flags;factors;skinTests;exams;education;insurance"
  S ZI=""
@@ -82,7 +142,7 @@ gen2 ;
  ;
 PAT()   ; extrinsic which returns a dfn from the patient selected
  S DIC=2,DIC(0)="AEMQ" D ^DIC
- I Y<1 Q  ; EXIT
+ I Y<1 Q 0 ; EXIT
  S DFN=$P(Y,U,1) ; SET THE PATIENT
  Q +Y
  ;
@@ -277,6 +337,49 @@ CCDA    ;
  D BROWSE^DDBR(GN,"N","PATIENT "_DFN_" CCDA XML")
  K @GN,@ZCCDA
  Q
+ ;
+LOADSTAT ; [Public] Load Log via FM Browser; OPT: SYN LOAD LOG
+ N ZDFN,ZTYPE
+ S ZDFN=$$PAT()
+ Q:'ZDFN
+ S ZTYPE=$$SELLOAD()
+ Q:ZTYPE=""
+ N ROOT S ROOT=$$setroot^SYNWD("fhir-intake")
+ Q:ROOT=""
+ N IEN S IEN=$O(@ROOT@("DFN",ZDFN,""))
+ Q:IEN=""
+ N GROOT
+ I ZTYPE="all" S GROOT=$NA(@ROOT@(IEN,"load"))
+ E  S GROOT=$NA(@ROOT@(IEN,"load",ZTYPE))
+ N GN S GN=$NA(^TMP("SYNOUT",$J))
+ K @GN
+ D GTREE(GROOT,9,,,GN)
+ D BROWSE^DDBR(GN,"N","PATIENT "_ZDFN_" "_ZTYPE)
+ K @GN
+ q
+ ;
+FHIRJSON ; [Public] Loaded FHIR via FM Broswer; OPT: SYN FHIR JSON
+ N ZDFN,ZTYPE
+ S ZDFN=$$PAT()
+ Q:'ZDFN
+ S ZTYPE=$$SELFHIR()
+ Q:ZTYPE=""
+ N ROOT S ROOT=$$setroot^SYNWD("fhir-intake")
+ Q:ROOT=""
+ N IEN S IEN=$O(@ROOT@("DFN",ZDFN,""))
+ Q:IEN=""
+ N GROOT
+ I ZTYPE="all" S GROOT=$NA(@ROOT@(IEN,"json"))
+ E  D  ;
+ . S GROOT=$NA(^TMP("SYNFHIR",$J))
+ . K @GROOT
+ . D getIntakeFhir^SYNFHIR(GROOT,,ZTYPE,IEN)
+ N GN S GN=$NA(^TMP("SYNOUT",$J))
+ K @GN
+ D GTREE(GROOT,9,,,GN)
+ D BROWSE^DDBR(GN,"N","PATIENT "_ZDFN_" "_ZTYPE)
+ K @GN
+ q
  ;
 listm(out,in)   ; out is passed by name in is passed by reference
  n i s i=$q(@in@(""))

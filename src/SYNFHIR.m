@@ -340,7 +340,16 @@ wsLoadStatus(rtn,filter) ; displays the load status
  d wsGLOBAL^SYNVPR(.rtn,.filter)
  q
  ;
-FILE(directory) ; [Public] Load files from the file system
+FILE(directory) ; [Public] Load files from the file system; OPT: SYN LOAD FILES
+ ;
+ if '$data(directory) do
+ . N DIR,X,Y,DA,DIRUT,DTOUT,DUOUT,DIROUT
+ . S DIR(0)="F^0:1024"
+ . S DIR("A")="Enter directory from which to load Synthea Patients (FHIR DSTU3 or R4)"
+ . D ^DIR
+ . W !
+ . if '$data(DIRUT) set directory=Y
+ quit:'$data(directory)
  ;
  ; Load files from directory
  new synfiles
