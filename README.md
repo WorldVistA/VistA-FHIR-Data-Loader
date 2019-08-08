@@ -3,6 +3,22 @@ This project lets you load data from Synthea (https://synthetichealth.github.io/
 into VistA to produce high quality synthetic patient data for development and testing.
 Other FHIR data sources are supportable; but are not supported at this time.
 
+# Pre-installation Requirements
+The Installer DUZ must have the key XUMGR in order to be able to add users to the
+systems.
+Disk Space Requirements: We never actually measured how much disk space the
+package and each patient takes. However, from experience, loading about 400
+full patient histories takes up 100 GB.
+
+Here's a full list of the software you will need. We do not describe how to
+install this pre-requisites here.
+
+* Java 1.8 or above to run Synthea
+* Git to clone the Synthea Repository
+* Intersystems Cache with the VistA database loaded. This does not have to be
+on your own laptop; you can copy the generated Synthea Patients into the
+machine that hosts your VistA instance.
+
 # Installation
 As of Aug 20th 2018, the official way to install this project is to use the latest
 KIDS build in [releases](https://github.com/OSEHRA/VistA-FHIR-Data-Loader/releases/latest).
@@ -10,9 +26,9 @@ KIDS build in [releases](https://github.com/OSEHRA/VistA-FHIR-Data-Loader/releas
 As of v0.2 (unlike v0.1), PCE STANDARDIZATION 1.0 is now required. In order to
 install this, you need these patches:
  
- * https://foia-vista.osehra.org/Patches_By_Application/XU-KERNEL/XU-8_SEQ-546_PAT-672.kids
- * https://code.osehra.org/journal/download?items=1097,%208 (zip file, unzip and load PCE_STANDARDIZATION_1_0_T4.KID)
- * https://github.com/OSEHRA/VistA-FHIR-Data-Loader/releases/download/0.2/SYN_BUNDLE_0P2.KIDS.zip (zip file, unzip and load SYN_BUNDLE_0P2.KIDS)
+ * https://foia-vista.osehra.org/Patches_By_Application/XU-KERNEL/XU-8_SEQ-546_PAT-672.kids (if not installed)
+ * https://code.osehra.org/journal/download?items=1173,%201 (zip file, unzip and load PCE_STANDARDIZATION_1_0_T5.KID)
+ * https://github.com/OSEHRA/VistA-FHIR-Data-Loader/releases/download/0.2va/VISTA_FHIR_DATA_LOADER_VA_VERSION_0P2.KID.zip (zip file, unzip and load VISTA_FHIR_DATA_LOADER_VA_VERSION_0P2.KID.zip)
 
 As of the time of this writing, PCE STANDARIDZATION has not been officially
 released by the VA. That's why you need to obtain it from the Tech Journal. 
@@ -20,40 +36,45 @@ released by the VA. That's why you need to obtain it from the Tech Journal.
 The KIDS build needs to be unzipped first and then installed. The installer
 must have the key XUMGR in order to be able to add users to the systems.
 
-## Sample Install Transcript on GT.M/YottaDB:
-
+## Sample Install Transcript
 ```
-OSEHRA>D ^XPDIL,^XPDI
+FOIA1907>D ^XPDIL,^XPDI
 
-Enter a Host File: SYN_BUNDLE_0P2.KIDS
+Enter a Host File: /opt/cachesys/foia1907/VISTA_FHIR_DATA_LOADER_VA_VERSION_0P2.KID
 
-KIDS Distribution saved on Feb 07, 2019@15:56:08
-Comment: T13
+KIDS Distribution saved on Aug 07, 2019@21:07:48
+Comment: T5 - FHIR4 Allergies issue; ETS dep; menus; labs don't print
 
 This Distribution contains Transport Globals for the following Package(s):
+   VISTA FHIR DATA LOADER VA VERSION 0.2
    ISI_DATA_LOADER 2.6
    VISTA SYN DATA LOADER 0.2
 Distribution OK!
 
-Want to Continue with Load? YES//
+Want to Continue with Load? YES// 
 Loading Distribution...
 
+   VISTA FHIR DATA LOADER VA VERSION 0.2
    ISI_DATA_LOADER 2.6
-Build VISTA SYN DATA LOADER 0.2 has an Environmental Check Routine
-Want to RUN the Environment Check Routine? YES//
    VISTA SYN DATA LOADER 0.2
-Will first run the Environment Check Routine, SYNKIDS
+Use INSTALL NAME: VISTA FHIR DATA LOADER VA VERSION 0.2 to install this Distribu
+tion.
 
-Use INSTALL NAME: ISI_DATA_LOADER 2.6 to install this Distribution.
+Select INSTALL NAME: VISTA FHIR DATA LOADER VA VERSION 0.2       Loaded from Dis
+tribution    8/8/19@13:19:29
+     => T5 - FHIR4 Allergies issue; ETS dep; menus; labs don't print  ;Created
 
-Select INSTALL NAME: isi_DATA_LOADER 2.6       Loaded from Distribution    2/8/1
-9@14:24:18
-     => T13  ;Created on Feb 07, 2019@15:56:08
-
-This Distribution was loaded on Feb 08, 2019@14:24:18 with header of
-   T13  ;Created on Feb 07, 2019@15:56:08
+This Distribution was loaded on Aug 08, 2019@13:19:29 with header of 
+   T5 - FHIR4 Allergies issue; ETS dep; menus; labs don't print  ;Created on Aug
+ 07, 2019@21:07:48
    It consisted of the following Install(s):
-ISI_DATA_LOADER 2.6VISTA SYN DATA LOADER 0.2
+VISTA FHIR DATA LOADER VA VERSION 0.2ISI_DATA_LOADER 2.6VISTA SYN DATA LOADER 0.
+2
+Checking Install for Package VISTA FHIR DATA LOADER VA VERSION 0.2
+
+Install Questions for VISTA FHIR DATA LOADER VA VERSION 0.2
+
+
 Checking Install for Package ISI_DATA_LOADER 2.6
 
 Install Questions for ISI_DATA_LOADER 2.6
@@ -63,300 +84,141 @@ Incoming Files:
 
    9001      ISI PT IMPORT TEMPLATE  (including data)
 
-Want KIDS to Rebuild Menu Trees Upon Completion of Install? NO//
+Want KIDS to Rebuild Menu Trees Upon Completion of Install? NO// 
 
 Checking Install for Package VISTA SYN DATA LOADER 0.2
-Will first run the Environment Check Routine, SYNKIDS
-
 
 Install Questions for VISTA SYN DATA LOADER 0.2
 
 Incoming Files:
 
 
-   17.040801 graph
+   2002.801  GRAPH
+
+Want KIDS to Rebuild Menu Trees Upon Completion of Install? NO// 
 
 
-Want KIDS to INHIBIT LOGONs during the install? NO//
-Want to DISABLE Scheduled Options, Menu Options, and Protocols? NO//
+Want KIDS to INHIBIT LOGONs during the install? NO// 
+Want to DISABLE Scheduled Options, Menu Options, and Protocols? NO// 
 
 Enter the Device you want to print the Install messages.
 You can queue the install by enter a 'Q' at the device prompt.
 Enter a '^' to abort the install.
 
-DEVICE: HOME// ;p-other;  TELNET
+DEVICE: HOME// ;P-OTHER;  Virtual Terminal
 
-
- Install Started for ISI_DATA_LOADER 2.6 :
-               Feb 08, 2019@14:24:31
-
-Build Distribution Date: Feb 07, 2019
-
+ 
+ Install Started for VISTA FHIR DATA LOADER VA VERSION 0.2 : 
+               Aug 08, 2019@13:19:43
+ 
+Build Distribution Date: Aug 07, 2019
+ 
+ Installing Routines:.
+               Aug 08, 2019@13:19:43
+ 
+ Install Started for ISI_DATA_LOADER 2.6 : 
+               Aug 08, 2019@13:19:43
+ 
+Build Distribution Date: Aug 07, 2019
+ 
  Installing Routines:..........................................................
-               Feb 08, 2019@14:24:32
-
+               Aug 08, 2019@13:19:43
+ 
  Installing Data Dictionaries: ..
-               Feb 08, 2019@14:24:32
-
- Installing Data:
-               Feb 08, 2019@14:24:32
-
- Installing PACKAGE COMPONENTS:
-
+               Aug 08, 2019@13:19:43
+ 
+ Installing Data: 
+               Aug 08, 2019@13:19:43
+ 
+ Installing PACKAGE COMPONENTS: 
+ 
  Installing REMOTE PROCEDURE........................
-
+ 
  Installing OPTION..
-               Feb 08, 2019@14:24:32
-
+               Aug 08, 2019@13:19:43
+ 
  Updating Routine file......
-
+ 
  Updating KIDS files.....
-
- ISI_DATA_LOADER 2.6 Installed.
-               Feb 08, 2019@14:24:32
-
+ 
+ ISI_DATA_LOADER 2.6 Installed. 
+               Aug 08, 2019@13:19:43
+ 
  No link to PACKAGE file
-
- NO Install Message sent
-
- Install Started for VISTA SYN DATA LOADER 0.2 :
-               Feb 08, 2019@14:24:32
-
-Build Distribution Date: Feb 07, 2019
-
- Installing Routines:.........................................
-               Feb 08, 2019@14:24:32
-
+ 
+ NO Install Message sent 
+ 
+ Install Started for VISTA SYN DATA LOADER 0.2 : 
+               Aug 08, 2019@13:19:43
+ 
+Build Distribution Date: Aug 07, 2019
+ 
+ Installing Routines:............................................
+               Aug 08, 2019@13:19:43
+ 
  Running Pre-Install Routine: PRE^SYNKIDS.
-
+ 
  Installing Data Dictionaries: ..
-               Feb 08, 2019@14:24:32
-
+               Aug 08, 2019@13:19:43
+ 
+ Installing PACKAGE COMPONENTS: 
+ 
+ Installing OPTION.....
+               Aug 08, 2019@13:19:43
+ 
  Running Post-Install Routine: POST^SYNKIDS.
-Downloading MASH...
-Downloading MWS...YDB-MUMPS[1714]: %YDB-I-DBFILEXT, Database file /home/osehra/g/osehra.dat extended from 0x000A8684 blocks to 0x000A8A86 at transaction 0x00000000082FBFF0 -- generated from 0x00007F5279F9B3F4.
-YDB-MUMPS[1714]: %YDB-I-DBFILEXT, Database file /home/osehra/g/osehra.dat extended from 0x000A8A86 blocks to 0x000A8E88 at transaction 0x000000000830A3FE -- generated from 0x00007F5279F9B3F4.
-YDB-MUMPS[1714]: %YDB-I-DBFILEXT, Database file /home/osehra/g/osehra.dat extended from 0x000A8E88 blocks to 0x000A928A at transaction 0x00000000083190CA -- generated from 0x00007F5279F9B3F4.
-
-This version (#1.0) of '%webINIT' was created on 22-JAN-2019
-         (at DEMO.OSEHRA.ORG, by MSC FileMan 22.1061)
-
-I AM GOING TO SET UP THE FOLLOWING FILES:
-
-   17.6001   WEB SERVICE URL HANDLER
-
-
-...SORRY, HOLD ON........
-OK, I'M DONE.
-NOTE THAT FILE SECURITY-CODE PROTECTION HAS BEEN MADE
-Trying to open a port for the web server...
-Trying 9080
-
-Mumps Web Services is now listening to port 9080
-Visit http://localhost:9080/ to see the home page.
-Also, try the sample web services...
- - http://localhost:9080/xml
- - http://localhost:9080/ping
-Merging ^SYN global in. This takes time...YDB-MUMPS[1714]: %YDB-I-DBFILEXT, Database file /home/osehra/g/osehra.dat extended from 0x000A928A blocks to 0x000A968C at transaction 0x0000000008326EE5 -- generated from 0x00007F5279F9B3F4.
-YDB-MUMPS[1714]: %YDB-I-DBFILEXT, Database file /home/osehra/g/osehra.dat extended from 0x000A968C blocks to 0x000A9A8E at transaction 0x0000000008335DD6 -- generated from 0x00007F5279F9B3F4.
-YDB-MUMPS[1714]: %YDB-I-DBFILEXT, Database file /home/osehra/g/osehra.dat extended from 0x000A9A8E blocks to 0x000A9E90 at transaction 0x0000000008344D4E -- generated from 0x00007F5279F9B3F4.
-YDB-MUMPS[1714]: %YDB-I-DBFILEXT, Database file /home/osehra/g/osehra.dat extended from 0x000A9E90 blocks to 0x000AA292 at transaction 0x00000000083553F8 -- generated from 0x00007F5279F9B3F4.
-YDB-MUMPS[1714]: %YDB-I-DBFILEXT, Database file /home/osehra/g/osehra.dat extended from 0x000AA292 blocks to 0x000AA694 at transaction 0x0000000008364B28 -- generated from 0x00007F5279F9B3F4.
-YDB-MUMPS[1714]: %YDB-I-DBFILEXT, Database file /home/osehra/g/osehra.dat extended from 0x000AA694 blocks to 0x000AAA96 at transaction 0x000000000836E19D -- generated from 0x00007F5279F9B3F4.
-
-
-Syn Patients Importer Init
-Provider 67
-Pharmacist 68
-Hospital Location 12
-Fixing AMIE thingy
-Fixing IB ACTION TYPE file
-Setting up Outpatient Pharmacy 3
-
- Updating Routine file......
-
- Updating KIDS files.......
-
- VISTA SYN DATA LOADER 0.2 Installed.
-               Feb 08, 2019@14:24:36
-
- Not a VA primary domain
-
- NO Install Message sent
-```
-
-## Sample Install on Cache
-```
-VEHU>d ^XPDIL,^XPDI
-
-Enter a Host File: /tmp/SYN_BUNDLE_0P2.KIDS
-
-KIDS Distribution saved on Feb 07, 2019@15:56:08
-Comment: T13
-
-This Distribution contains Transport Globals for the following Package(s):
-   ISI_DATA_LOADER 2.6
-   VISTA SYN DATA LOADER 0.2
-Distribution OK!
-
-Want to Continue with Load? YES//
-Loading Distribution...
-
-   ISI_DATA_LOADER 2.6
-Build VISTA SYN DATA LOADER 0.2 has an Environmental Check Routine
-Want to RUN the Environment Check Routine? YES//
-   VISTA SYN DATA LOADER 0.2
-Will first run the Environment Check Routine, SYNKIDS
-
-Use INSTALL NAME: ISI_DATA_LOADER 2.6 to install this Distribution.
-
-Select INSTALL NAME: isi_DATA_LOADER 2.6       Loaded from Distribution    2/8/1
-9@15:44
-     => T13  ;Created on Feb 07, 2019@15:56:08
-
-This Distribution was loaded on Feb 08, 2019@15:44 with header of
-   T13  ;Created on Feb 07, 2019@15:56:08
-   It consisted of the following Install(s):
-ISI_DATA_LOADER 2.6VISTA SYN DATA LOADER 0.2
-Checking Install for Package ISI_DATA_LOADER 2.6
-
-Install Questions for ISI_DATA_LOADER 2.6
-
-Incoming Files:
-
-
-   9001      ISI PT IMPORT TEMPLATE  (including data)
-
-Want KIDS to Rebuild Menu Trees Upon Completion of Install? NO//
-
-Checking Install for Package VISTA SYN DATA LOADER 0.2
-Will first run the Environment Check Routine, SYNKIDS
-
-
-Install Questions for VISTA SYN DATA LOADER 0.2
-
-Incoming Files:
-
-
-   17.040801 graph
-
-
-Want KIDS to INHIBIT LOGONs during the install? NO//
-Want to DISABLE Scheduled Options, Menu Options, and Protocols? NO//
-
-Enter the Device you want to print the Install messages.
-You can queue the install by enter a 'Q' at the device prompt.
-Enter a '^' to abort the install.
-
-DEVICE: HOME// ;p-other;  Virtual Terminal
-
-
- Install Started for ISI_DATA_LOADER 2.6 :
-               Feb 08, 2019@15:44:07
-
-Build Distribution Date: Feb 07, 2019
-
- Installing Routines:..........................................................
-               Feb 08, 2019@15:44:07
-
- Installing Data Dictionaries: ..
-               Feb 08, 2019@15:44:07
-
- Installing Data:
-               Feb 08, 2019@15:44:07
-
- Installing PACKAGE COMPONENTS:
-
- Installing REMOTE PROCEDURE........................
-
- Installing OPTION..
-               Feb 08, 2019@15:44:07
-
- Updating Routine file......
-
- Updating KIDS files.....
-
- ISI_DATA_LOADER 2.6 Installed.
-               Feb 08, 2019@15:44:07
-
- No link to PACKAGE file
-
- NO Install Message sent
-
- Install Started for VISTA SYN DATA LOADER 0.2 :
-               Feb 08, 2019@15:44:07
-
-Build Distribution Date: Feb 07, 2019
-
- Installing Routines:.........................................
-               Feb 08, 2019@15:44:07
-
- Running Pre-Install Routine: PRE^SYNKIDS.TLS/SSL client configured on Cache as config name 'encrypt_only'
-
-
- Installing Data Dictionaries: ..
-               Feb 08, 2019@15:44:08
-
- Running Post-Install Routine: POST^SYNKIDS.
-Downloading MASH...
-Downloading MWS...
-This version (#1.0) of '%webINIT' was created on 22-JAN-2019
-         (at DEMO.OSEHRA.ORG, by MSC FileMan 22.1061)
-
-I AM GOING TO SET UP THE FOLLOWING FILES:
-
-   17.6001   WEB SERVICE URL HANDLER
-
-
-...EXCUSE ME, I'M WORKING AS FAST AS I CAN........
-OK, I'M DONE.
-NOTE THAT FILE SECURITY-CODE PROTECTION HAS BEEN MADE
-Trying to open a port for the web server...
-Trying 9080
-
-Mumps Web Services is now listening to port 9080
-Visit http://localhost:9080/ to see the home page.
-Also, try the sample web services...
- - http://localhost:9080/xml
- - http://localhost:9080/ping
 Merging ^SYN global in. This takes time...
 
 Syn Patients Importer Init
-Provider 63
-Pharmacist 64
+Provider 68
+Pharmacist 69
 Hospital Location 3
 Fixing AMIE thingy
 Fixing IB ACTION TYPE file
 Setting up Outpatient Pharmacy 3
-
+ 
  Updating Routine file......
-
+ 
+ Updating KIDS files.....
+ 
+ VISTA SYN DATA LOADER 0.2 Installed. 
+               Aug 08, 2019@13:19:45
+ 
+ No link to PACKAGE file
+ 
+ NO Install Message sent 
+ 
+ Updating Routine file.....
+ 
  Updating KIDS files.......
-
- VISTA SYN DATA LOADER 0.2 Installed.
-               Feb 08, 2019@15:44:10
-
+ 
+ VISTA FHIR DATA LOADER VA VERSION 0.2 Installed. 
+               Aug 08, 2019@13:19:45
+ 
  Not a production UCI
-
- NO Install Message sent
+ 
+ NO Install Message sent 
 ```
 
 # Usage
-## Loading Synthetic Patients
-To pull EXISTING (previously created) synthetic patients, run: `D LOADALL^SYNFPUL`. This will load 1000 patients into VistA.
+To create new synthetic patients from Synthea, and load them into VistA, you
+need to perform the following steps: Create Synthetic Patients Using Synthea,
+(optionally) copy the files to where your VistA instance can reach them on the
+file system, and then load them into VistA using the menu options from the
+top level menu SYNMENU (which is installed as part of the KIDS build).
 
-To create new synthetic patients from Synthea, and load them into VistA, do the following:
+## Creating Synthetic Patients
+Open up your terminal/command line, and check that java and git are installed.
+Running `git --version` and `java -version` will verify that the commands are
+installed.
 
 ```
 git clone https://github.com/synthetichealth/synthea.git
 cd synthea
-./gradlew clean build
-./run_synthea
-find output -name '*.json' # note which patients show up here; you need to pick one
-curl localhost:9080/addpatient -d @{file_name}
+./run_synthea # or ./run_synthea.bat on Windows
 ```
 
-Here's the output of the last three steps for reference:
+Here's the output for reference:
 
 ```
 saichiko:synthea sam$ ./run_synthea
