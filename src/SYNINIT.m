@@ -1,7 +1,7 @@
-SYNINIT ;OSEHRA/SMH - Initilization Code for Synthetic Data Loader;May 23 2018
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019
+SYNINIT ;OSEHRA/SMH - Initilization Code for Synthetic Data Loader;May 23 2018 ;Aug 15, 2019@16:15:31
+ ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 1
  ;
- ; (c) Sam Habiel 2018
+ ; (c) Sam Habiel 2018-2019
  ; Licensed under Apache 2.0.
  ;
 EN ; [Public; called by KIDS; do everything in this file]
@@ -14,32 +14,9 @@ EN ; [Public; called by KIDS; do everything in this file]
  D MES^XPDUTL("Fixing AMIE thingy") D AMIE
  D MES^XPDUTL("Fixing IB ACTION TYPE file") D IBACTION
  D MES^XPDUTL("Setting up Outpatient Pharmacy "_$$PHRSS())
+ D MES^XPDUTL("Disabling Allergy Bulletins") D ALBUL
  QUIT
  ;
- ; NUMBER: 10                              HTTP VERB: POST                         URI: addcondition
- ; EXECUTION ENDPOINT: wsIntakeConditions^SYNFCON
- ;
-LOADHAND ; [Public] Load URL handlers
- do addService^SYNWEBUT("POST","addpatient","wsPostFHIR^SYNFHIR")
- do addService^SYNWEBUT("POST","updatepatient","wsUpdatePatient^SYNFHIRU")
- do addService^SYNWEBUT("GET","loadstatus","wsLoadStatus^SYNFHIR")
- do addService^SYNWEBUT("GET","showfhir","wsShow^SYNFHIR")
- do addService^SYNWEBUT("GET","vpr/{dfn}","wsVPR^SYNVPR")
- do addService^SYNWEBUT("GET","global/{root}","wsGLOBAL^SYNVPR")
- do addService^SYNWEBUT("GET","gtree/{root}","wsGtree^SYNVPR")
- do addService^SYNWEBUT("GET","graph/{graph}","wsGetGraph^SYNGRAPH")
- quit
- ;
-DELHAND ; [Public] Delete URL handlers
- do deleteService^SYNWEBUT("POST","addpatient")
- do deleteService^SYNWEBUT("POST","updatepatient")
- do deleteService^SYNWEBUT("GET","loadstatus")
- do deleteService^SYNWEBUT("GET","showfhir")
- do deleteService^SYNWEBUT("GET","vpr/{dfn}")
- do deleteService^SYNWEBUT("GET","global/{root}")
- do deleteService^SYNWEBUT("GET","gtree/{root}")
- do deleteService^SYNWEBUT("GET","graph/{graph}")
- quit
  ;
 PROV(rePopulate) ;[Public $$] Create Generic Provider for Synthetic Patients
  ; ASSUMPTION: DUZ MUST HAVE XUMGR OTHERWISE FILEMAN WILL BLOCK YOU!
@@ -282,6 +259,13 @@ PSOSITE() ; [Public $$] Add a default pharmacy site
  D UPDATE^DIE("E",$NA(FDA),$NA(IEN))
  I $D(DIERR) S $EC=",U1,"
  Q IEN(1)
+ ;
+ALBUL ; [Public] Disable Allergy Bulletin
+ N FDA,DIERR
+ S FDA(120.84,"1,",7.1)=2
+ D FILE^DIE("","FDA")
+ I $D(DIERR) S $EC=",U1,"
+ QUIT
  ;
 TEST D EN^%ut($T(+0),3) QUIT
  ;
