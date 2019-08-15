@@ -1,4 +1,9 @@
 # VistA FHIR Data Loader Project
+
+There are two versions of this README: One for the community version of the
+software, and one for the VA version. If you are looking for the VA version,
+you will find it here: https://github.com/OSEHRA/VistA-FHIR-Data-Loader/tree/vaready.
+
 This project lets you load data from Synthea (https://synthetichealth.github.io/synthea/) 
 into VistA to produce high quality synthetic patient data for development and testing.
 Other FHIR data sources are supportable; but are not supported at this time.
