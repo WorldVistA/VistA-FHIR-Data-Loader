@@ -1,4 +1,4 @@
-SYNFCP ;ven/gpl - fhir loader utilities ;Jul 16, 2019@14:05:09
+SYNFCP ;ven/gpl - fhir loader utilities ;Aug 15, 2019@14:28:47
  ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
  ;
  ; Authored by George P. Lilly 2017-2019
@@ -348,10 +348,10 @@ wsIntakeCareplan(args,body,result,ien)        ; web service entry (post)
  . . i $g(DEBUG)=1 ZWR RETSTA
  . . d log(jlog,"Return from data loader was: "_$g(RETSTA))
  . . if +$g(RETSTA)=1 do  ;
- . . . s @eval@("status","loaded")=$g(@eval@("status","loaded"))+1
+ . . . s @eval@("careplan","status","loaded")=$g(@eval@("careplan","status","loaded"))+1
  . . . s @eval@("careplan",zi,"status","loadstatus")="loaded"
  . . else  d  ;
- . . . s @eval@("status","errors")=$g(@eval@("status","errors"))+1
+ . . . s @eval@("careplan","status","errors")=$g(@eval@("careplan","status","errors"))+1
  . . . s @eval@("careplan",zi,"status","loadstatus")="notLoaded"
  . . . s @eval@("careplan",zi,"status","loadMessage")=$g(RETSTA)
  . . n root s root=$$setroot^SYNWD("fhir-intake")
@@ -362,13 +362,13 @@ wsIntakeCareplan(args,body,result,ien)        ; web service entry (post)
  . m jrslt("eval")=@eval
  m jrslt("careplanStatus")=@eval@("careplanStatus")
  set jrslt("result","status")="ok"
- set jrslt("result","loaded")=$g(@eval@("status","loaded"))
- set jrslt("result","errors")=$g(@eval@("status","errors"))
+ set jrslt("result","loaded")=$g(@eval@("careplan","status","loaded"))
+ set jrslt("result","errors")=$g(@eval@("careplan","status","errors"))
  i $g(ien)'="" d  ; called internally
  . ;m result=@eval
  . m result("status")=jrslt("result")
- . m result("dfn")=dfn
- . m result("ien")=ien
+ . ;m result("dfn")=dfn
+ . ;m result("ien")=ien
  . ;b
  e  d  ;
  . d encode^SYNJSONE("jrslt","result")

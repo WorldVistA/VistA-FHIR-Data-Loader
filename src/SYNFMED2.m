@@ -133,10 +133,10 @@ wsIntakeMeds(args,body,result,ien)      ; web service entry (post)
  . . d log(jlog,"Response from WRITERXRXN^SYNFMED is: "_RESTA)
  . . d log(jlog,"Medication: "_rxnorm_" "_drugname)
  . . if RESTA>1 d  ; success
- . . . s @eval@("status","loaded")=$g(@eval@("status","loaded"))+1
+ . . . s @eval@("meds","status","loaded")=$g(@eval@("meds","status","loaded"))+1
  . . . s @eval@("meds",zi,"status","loadstatus")="loaded"
  . . else  d  ;
- . . . s @eval@("status","errors")=$g(@eval@("status","errors"))+1
+ . . . s @eval@("meds","status","errors")=$g(@eval@("meds","status","errors"))+1
  . . . s @eval@("meds",zi,"status","loadstatus")="notLoaded"
  . . . s @eval@("meds",zi,"status","loadMessage")=$g(RETSTA)
  . . . d log(jlog,"Medication failed to load: "_$g(RETSTA))
@@ -148,13 +148,13 @@ wsIntakeMeds(args,body,result,ien)      ; web service entry (post)
  . m jrslt("eval")=@eval
  m jrslt("medsStatus")=@eval@("medsStatus")
  set jrslt("result","status")="ok"
- set jrslt("result","loaded")=$g(@eval@("status","loaded"))
- set jrslt("result","errors")=$g(@eval@("status","errors"))
+ set jrslt("result","loaded")=$g(@eval@("meds","status","loaded"))
+ set jrslt("result","errors")=$g(@eval@("meds","status","errors"))
  i $g(ien)'="" d  ; called internally
  . ;m result=@eval
  . m result("status")=jrslt("result")
- . m result("dfn")=dfn
- . m result("ien")=ien
+ . ;m result("dfn")=dfn
+ . ;m result("ien")=ien
  . ;b
  e  d  ;
  . d encode^SYNJSONE("jrslt","result")

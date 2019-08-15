@@ -1,4 +1,4 @@
-SYNFALG ;ven/gpl - fhir loader utilities ;2019-06-21  3:40 PM
+SYNFALG ;ven/gpl - fhir loader utilities ;Aug 15, 2019@15:24:08
  ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
  ;
  ; Authored by George P. Lilly 2017-2018
@@ -10,12 +10,7 @@ importAllergy(rtn,ien,args) ; entry point for loading Allergy for a patient
  ; calls the intake Allergy web service directly
  ;
  n grtn
- n root s root=$$setroot^SYNWD("fhir-intake")
  d wsIntakeAllergy(.args,,.grtn,ien)
- i $d(grtn) d  ; something was returned
- . k @root@(ien,"load","allergy")
- . m @root@(ien,"load","allergy")=grtn("allergy")
- . if $g(args("debug"))=1 m rtn=grtn
  s rtn("allergyStatus","status")=$g(grtn("status","status"))
  s rtn("allergyStatus","loaded")=+$g(grtn("status","loaded"))
  s rtn("allergyStatus","errors")=+$g(grtn("status","errors"))
@@ -188,10 +183,10 @@ wsIntakeAllergy(args,body,result,ien) ; web service entry (post)
  . . m eval("allergy",zi,"status")=RESTA
  . . d log(jlog,"Return from data loader was: "_myresult)
  . . if myresult=1 do  ;
- . . . s eval("status","loaded")=$g(eval("status","loaded"))+1
+ . . . s eval("allergy","status","loaded")=$g(eval("allergy","status","loaded"))+1
  . . . s eval("allergy",zi,"status","loadstatus")="loaded"
  . . else  d  ;
- . . . s eval("status","errors")=$g(eval("status","errors"))+1
+ . . . s eval("allergy","status","errors")=$g(eval("allergy","status","errors"))+1
  . . . s eval("allergy",zi,"status","loadstatus")="notLoaded"
  . . . s eval("allergy",zi,"status","loadMessage")=$g(RESTA)
  . . n root s root=$$setroot^SYNWD("fhir-intake")
@@ -205,12 +200,13 @@ wsIntakeAllergy(args,body,result,ien) ; web service entry (post)
  . m jrslt("eval")=eval
  m jrslt("allergyStatus")=eval("allergyStatus")
  set jrslt("result","status")="ok"
- set jrslt("result","loaded")=$g(eval("status","loaded"))
+ set jrslt("result","loaded")=$g(eval("allergy","status","loaded"))
+ set jrslt("result","errors")=$g(eval("allergy","status","errors"))
  i $g(ien)'="" d  ; called internally
- . m result=eval
+ . ;m result=eval
  . m result("status")=jrslt("result")
- . m result("dfn")=dfn
- . m result("ien")=ien
+ . ;m result("dfn")=dfn
+ . ;m result("ien")=ien
  . ;b
  e  d  ;
  . d encode^SYNJSONE("jrslt","result")

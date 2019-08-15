@@ -1,5 +1,5 @@
-SYNFAPT ;ven/gpl - fhir loader utilities ;2018-08-17  3:25 PM
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
+SYNFAPT ;ven/gpl - fhir loader utilities ;Aug 15, 2019@15:24:38
+ ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 1
  ;
  ; Authored by George P. Lilly 2017-2018
  ;
@@ -9,12 +9,7 @@ importAppointment(rtn,ien,args) ; entry point for loading Appointment for a pati
  ; calls the intake Appointment web service directly
  ;
  n grtn
- n root s root=$$setroot^SYNWD("fhir-intake")
  d wsIntakeAppointment(.args,,.grtn,ien)
- i $d(grtn) d  ; something was returned
- . k @root@(ien,"load","appointment")
- . m @root@(ien,"load","appointment")=grtn("appointment")
- . if $g(args("debug"))=1 m rtn=grtn
  s rtn("apptStatus","status")=$g(grtn("status","status"))
  s rtn("apptStatus","loaded")=$g(grtn("status","loaded"))
  s rtn("apptStatus","errors")=$g(grtn("status","errors"))

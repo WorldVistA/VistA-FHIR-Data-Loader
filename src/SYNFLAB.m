@@ -1,4 +1,4 @@
-SYNFLAB ;ven/gpl - fhir loader utilities ;Jul 16, 2019@14:00:52
+SYNFLAB ;ven/gpl - fhir loader utilities ;Aug 15, 2019@14:20:15
  ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
  ;
  ; Authored by George P. Lilly 2017-2018
@@ -222,13 +222,12 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . . ;new (DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPPROV,DHPLOC,DHPLOINC,DHPLAB,DUZ,DT,U,jlog,ien,zi,eval)
  . . ;LABADD(RETSTA,DHPPAT,DHPLOC,DHPTEST,DHPRSLT,DHPRSDT) ;Create lab test
  . . D LABADD^SYNDHP63(.RETSTA,DHPPAT,DHPLOC,DHPLAB,DHPOBS,DHPDTM,DHPLOINC)     ; labs update
- . . S ^ZZLABLOG(ien)=$G(RETSTA)
  . . d log(jlog,"Return from LABADD^ZZDHP63 was: "_$g(RETSTA))
  . . i $g(DEBUG)=1 ZWRITE RETSTA
  . . if +$g(RETSTA)=1 do  ;
- . . . s @eval@("status","loaded")=$g(@eval@("status","loaded"))+1
+ . . . s @eval@("labs","status","loaded")=$g(@eval@("labs","status","loaded"))+1
  . . . s @eval@("labs",zi,"status","loadstatus")="loaded"
- . . else  s @eval@("status","errors")=$g(@eval@("status","errors"))+1
+ . . else  s @eval@("labs","status","errors")=$g(@eval@("labs","status","errors"))+1
  ;
  if $get(args("debug"))=1 do  ;
  . m jrslt("source")=@json
@@ -236,8 +235,8 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . m jrslt("eval")=@eval
  m jrslt("labsStatus")=@eval@("labsStatus")
  set jrslt("result","status")="ok"
- set jrslt("result","loaded")=$g(@eval@("status","loaded"))
- set jrslt("result","errors")=$g(@eval@("status","errors"))
+ set jrslt("result","loaded")=$g(@eval@("labs","status","loaded"))
+ set jrslt("result","errors")=$g(@eval@("labs","status","errors"))
  i $g(ien)'="" d  ; called internally
  . ;m result=eval
  . m result("status")=jrslt("result")

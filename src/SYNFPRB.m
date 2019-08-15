@@ -1,5 +1,5 @@
-SYNFPRB ;ven/gpl - fhir loader utilities ;2018-08-17  3:27 PM
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
+SYNFPRB ;ven/gpl - fhir loader utilities ;Aug 15, 2019@15:23:24
+ ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 1
  ;
  ; Authored by George P. Lilly 2017-2018
  ;
@@ -9,12 +9,7 @@ importConditions(rtn,ien,args)  ; entry point for loading Problems for a patient
  ; calls the intake Conditions web service directly
  ;
  n grtn
- n root s root=$$setroot^SYNWD("fhir-intake")
  d wsIntakeConditions(.args,,.grtn,ien)
- i $d(grtn) d  ; something was returned
- . k @root@(ien,"load","conditions")
- . m @root@(ien,"load","conditions")=grtn("conditions")
- . if $g(args("debug"))=1 m rtn=grtn
  s rtn("conditionsStatus","status")=$g(grtn("status","status"))
  s rtn("conditionsStatus","loaded")=$g(grtn("status","loaded"))
  s rtn("conditionsStatus","errors")=$g(grtn("status","errors"))
@@ -216,10 +211,10 @@ wsIntakeConditions(args,body,result,ien)        ; web service entry (post)
  . . ;i $g(DEBUG)=1 ZWR RETSTA
  . . d log(jlog,"Return from data loader was: "_$g(RETSTA))
  . . if +$g(RETSTA)=1 do  ;
- . . . s eval("status","loaded")=$g(eval("status","loaded"))+1
+ . . . s eval("conditions","status","loaded")=$g(eval("conditions","status","loaded"))+1
  . . . s eval("conditions",zi,"status","loadstatus")="loaded"
  . . else  d  ;
- . . . s eval("status","errors")=$g(eval("status","errors"))+1
+ . . . s eval("conditions","status","errors")=$g(eval("conditions","status","errors"))+1
  . . . s eval("conditions",zi,"status","loadstatus")="notLoaded"
  . . . s eval("conditions",zi,"status","loadMessage")=$g(RETSTA)
  . . n root s root=$$setroot^SYNWD("fhir-intake")
@@ -232,12 +227,13 @@ wsIntakeConditions(args,body,result,ien)        ; web service entry (post)
  . m jrslt("eval")=eval
  m jrslt("conditionsStatus")=eval("conditionsStatus")
  set jrslt("result","status")="ok"
- set jrslt("result","loaded")=$g(eval("status","loaded"))
+ set jrslt("result","loaded")=$g(eval("conditions","status","loaded"))
+ set jrslt("result","errors")=$g(eval("conditions","status","errors"))
  i $g(ien)'="" d  ; called internally
- . m result=eval
+ . ;m result=eval
  . m result("status")=jrslt("result")
- . m result("dfn")=dfn
- . m result("ien")=ien
+ . ;m result("dfn")=dfn
+ . ;m result("ien")=ien
  . ;b
  e  d  ;
  . d encode^SYNJSONE("jrslt","result")

@@ -1,4 +1,4 @@
-SYNFPROC ;ven/gpl - fhir loader utilities ;Jul 16, 2019@14:04:39
+SYNFPROC ;ven/gpl - fhir loader utilities ;Aug 15, 2019@14:27:49
  ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
  ;
  ; Authored by George P. Lilly 2017-2018
@@ -142,10 +142,10 @@ wsIntakeProcedures(args,body,result,ien) ; web service entry (post)
  . . m @eval@("procedures",zi,"status")=RETSTA
  . . d log(jlog,"Return from data loader was: "_$g(RETSTA))
  . . if +$g(RETSTA)=1 do  ;
- . . . s @eval@("status","loaded")=$g(@eval@("status","loaded"))+1
+ . . . s @eval@("procedures","status","loaded")=$g(@eval@("procedures","status","loaded"))+1
  . . . s @eval@("procedures",zi,"status","loadstatus")="loaded"
  . . else  d  ;
- . . . s @eval@("status","errors")=$g(@eval@("status","errors"))+1
+ . . . s @eval@("procedures","status","errors")=$g(@eval@("procedures","status","errors"))+1
  . . . s @eval@("procedures",zi,"status","loadstatus")="notLoaded"
  . . . s @eval@("procedures",zi,"status","loadMessage")=$g(RETSTA)
  ;
@@ -155,13 +155,13 @@ wsIntakeProcedures(args,body,result,ien) ; web service entry (post)
  . m jrslt("eval")=@eval
  m jrslt("proceduresStatus")=@eval@("proceduresStatus")
  set jrslt("result","status")="ok"
- set jrslt("result","loaded")=$g(@eval@("status","loaded"))
- set jrslt("result","errors")=$g(@eval@("status","errors"))
+ set jrslt("result","loaded")=$g(@eval@("procedures","status","loaded"))
+ set jrslt("result","errors")=$g(@eval@("procedures","status","errors"))
  i $g(ien)'="" d  ; called internally
  . ;m result=@eval
  . m result("status")=jrslt("result")
- . m result("dfn")=dfn
- . m result("ien")=ien
+ . ;m result("dfn")=dfn
+ . ;m result("ien")=ien
  e  d  ;
  . d encode^SYNJSONE("jrslt","result")
  . set HTTPRSP("mime")="application/json"

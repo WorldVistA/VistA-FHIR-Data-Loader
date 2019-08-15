@@ -1,4 +1,4 @@
-SYNFENC ;ven/gpl - fhir loader utilities ;Jul 16, 2019@14:02:50
+SYNFENC ;ven/gpl - fhir loader utilities ;Aug 15, 2019@13:57:48
  ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
  ;
  ; Authored by George P. Lilly 2017-2019
@@ -205,10 +205,10 @@ wsIntakeEncounters(args,body,result,ien)        ; web service entry (post)
  . . . s @eval@("encounters",zi,"visitIen")=visitIen
  . . e  s visitIen=""
  . . if +$g(RETSTA)=1 do  ;
- . . . s @eval@("status","loaded")=$g(@eval@("status","loaded"))+1
+ . . . s @eval@("encounters","status","loaded")=$g(@eval@("encounters","status","loaded"))+1
  . . . s @eval@("encounters",zi,"status","loadstatus")="loaded"
  . . else  d  ;
- . . . s @eval@("status","errors")=$g(@eval@("status","errors"))+1
+ . . . s @eval@("encounters","status","errors")=$g(@eval@("encounters","status","errors"))+1
  . . . s @eval@("encounters",zi,"status","loadstatus")="notLoaded"
  . . . s @eval@("encounters",zi,"status","loadMessage")=$g(RETSTA)
  . . ;k @root@(ien,"load","encounters",zi)
@@ -220,8 +220,8 @@ wsIntakeEncounters(args,body,result,ien)        ; web service entry (post)
  . m jrslt("eval")=@eval
  m jrslt("encountersStatus")=@eval@("encountersStatus")
  set jrslt("result","status")="ok"
- set jrslt("result","loaded")=$g(@eval@("status","loaded"))
- set jrslt("result","errors")=$g(@eval@("status","errors"))
+ set jrslt("result","loaded")=$g(@eval@("encounters","status","loaded"))
+ set jrslt("result","errors")=$g(@eval@("encounters","status","errors"))
  i $g(ien)'="" d  ; called internally
  . ;m result=@eval
  . m result("status")=jrslt("result")

@@ -1,5 +1,5 @@
-SYNFIMM ;ven/gpl - fhir loader utilities ;2018-05-08  4:38 PM
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
+SYNFIMM ;ven/gpl - fhir loader utilities ;Aug 15, 2019@15:21:45
+ ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 1
  ;
  ; Authored by George P. Lilly 2017-2018
  ;
@@ -9,19 +9,11 @@ importImmu(rtn,ien,args) ; entry point for loading Immunizations for a patient
  ; calls the intake Immunizations web service directly
  ;
  n grtn
- n root s root=$$setroot^SYNWD("fhir-intake")
  d wsIntakeImmu(.args,,.grtn,ien)
- i $d(grtn) d  ; something was returned
- . k @root@(ien,"load","immunizations")
- . m @root@(ien,"load","immunizations")=grtn("immunizations")
- . if $g(args("debug"))=1 m rtn=grtn
  s rtn("immunizationsStatus","status")=$g(grtn("status","status"))
  s rtn("immunizationsStatus","loaded")=$g(grtn("status","loaded"))
  s rtn("immunizationsStatus","errors")=$g(grtn("status","errors"))
- ;b
- ;
- ;
- q
+ quit
  ;
 wsIntakeImmu(args,body,result,ien) ; web service entry (post)
  ; for intake of one or more Immunizations. input are fhir resources
@@ -38,7 +30,6 @@ wsIntakeImmu(args,body,result,ien) ; web service entry (post)
  . merge jtmp=BODY
  . do decode^SYNJSONE("jtmp","json")
  i '$d(json) q  ;
- m ^gpl("gjson")=json
  ;
  ; determine the patient
  ;
@@ -157,15 +148,16 @@ wsIntakeImmu(args,body,result,ien) ; web service entry (post)
  . . m eval("immunizations",zi,"status")=RETSTA
  . . d log(jlog,"Return from data loader was: "_$g(RETSTA))
  . . if +$g(RETSTA)=1 do  ;
- . . . s eval("status","loaded")=$g(eval("status","loaded"))+1
+ . . . s eval("immunizations","status","loaded")=$g(eval("immunizations","status","loaded"))+1
  . . . s eval("immunizations",zi,"status","loadstatus")="loaded"
  . . else  d  ;
- . . . s eval("status","errors")=$g(eval("status","errors"))+1
+ . . . s eval("immunizations","status","errors")=$g(eval("immunizations","status","errors"))+1
  . . . s eval("immunizations",zi,"status","loadstatus")="notLoaded"
  . . . s eval("immunizations",zi,"status","loadMessage")=$g(RETSTA)
- . . n root s root=$$setroot^SYNWD("fhir-intake")
- . . k @root@(ien,"load","immunizations",zi)
- . . m @root@(ien,"load","immunizations",zi)=eval("immunizations",zi)
+ ;
+ n root s root=$$setroot^SYNWD("fhir-intake")
+ k @root@(ien,"load","immunizations")
+ m @root@(ien,"load","immunizations")=eval("immunizations")
  ;
  if $get(args("debug"))=1 do  ;
  . m jrslt("source")=json
@@ -173,12 +165,11 @@ wsIntakeImmu(args,body,result,ien) ; web service entry (post)
  . m jrslt("eval")=eval
  m jrslt("immunizationsStatus")=eval("immunizationsStatus")
  set jrslt("result","status")="ok"
- set jrslt("result","loaded")=$g(eval("status","loaded"))
+ set jrslt("result","loaded")=$g(eval("immunizations","status","loaded"))
+ set jrslt("result","errors")=$g(eval("immunizations","status","errors"))
  i $g(ien)'="" d  ; called internally
- . m result=eval
+ . ;m result=eval
  . m result("status")=jrslt("result")
- . m result("dfn")=dfn
- . m result("ien")=ien
  . ;b
  e  d  ;
  . d encode^SYNJSONE("jrslt","result")

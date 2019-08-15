@@ -1,4 +1,4 @@
-SYNFVIT ;ven/gpl - fhir loader utilities ;Jul 16, 2019@14:01:49
+SYNFVIT ;ven/gpl - fhir loader utilities ;Aug 15, 2019@14:44:21
  ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
  ;
  ; Authored by George P. Lilly 2017-2018
@@ -190,7 +190,7 @@ wsIntakeVitals(args,body,result,ien) ; web service entry (post)
  . . d log(jlog,"Snomed Code not found for vitals code: "_obscode_" -- skipping")
  . . s @eval@("vitals",zi,"status","loadstatus")="cannotLoad"
  . . s @eval@("vitals",zi,"status","issue")="Snomed Code not found for vitals code: "_obscode_" -- skipping"
- . . s @eval@("status","errors")=$g(@eval@("status","errors"))+1
+ . . s @eval@("vitals","status","errors")=$g(@eval@("vitals","status","errors"))+1
  . s @eval@("vitals",zi,"parms","DHPSCT")=sct
  . d log(jlog,"Snomed Code is: "_sct)
  . s DHPSCT=sct
@@ -228,9 +228,9 @@ wsIntakeVitals(args,body,result,ien) ; web service entry (post)
  . . D VITUPD^SYNDHP61(.RETSTA,DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPPROV,DHPLOC)       ; vitals update
  . . d log(jlog,"Return from VITUPD^ZZDHP61 was: "_$g(RETSTA))
  . . if +$g(RETSTA)=1 do  ;
- . . . s @eval@("status","loaded")=$g(@eval@("status","loaded"))+1
+ . . . s @eval@("vitals","status","loaded")=$g(@eval@("vitals","status","loaded"))+1
  . . . s @eval@("vitals",zi,"status","loadstatus")="loaded"
- . . else  s @eval@("status","errors")=$g(@eval@("status","errors"))+1
+ . . else  s @eval@("vitals","status","errors")=$g(@eval@("vitals","status","errors"))+1
  ;
  if $get(args("debug"))=1 do  ;
  . m jrslt("source")=@json
@@ -238,8 +238,8 @@ wsIntakeVitals(args,body,result,ien) ; web service entry (post)
  . m jrslt("eval")=@eval
  m jrslt("vitalsStatus")=@eval@("vitalsStatus")
  set jrslt("result","status")="ok"
- set jrslt("result","loaded")=$g(@eval@("status","loaded"))
- set jrslt("result","errors")=$g(@eval@("status","errors"))
+ set jrslt("result","loaded")=$g(@eval@("vitals","status","loaded"))
+ set jrslt("result","errors")=$g(@eval@("vitals","status","errors"))
  i $g(ien)'="" d  ; called internally
  . ;m result=eval
  . m result("status")=jrslt("result")
