@@ -1,4 +1,4 @@
-SYNKIDS ; OSE/SMH - Synthea Installer ; May 2 2019
+SYNKIDS ; OSE/SMH - Synthea Installer ;2019-11-18  5:45 PM
  ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 2
  ;
  ; WARNING: THIS ROUTINE IS A BAD EXAMPLE FOR ANYBODY TRYING TO WRITE GOOD CODE.
@@ -21,7 +21,12 @@ TRAN ; [KIDS] - Transport from source system (BAD! SHOULD BE A FILEMAN FILE)
  M @XPDGREF@("loinc-lab-map")=@mapRoot
  QUIT
  ;
-PRE ; [KIDS] - Pre Install -- all for Cache
+PRE ; [KIDS] - Pre Install
+ ; Delete the global for the NETSERV HTTP ENDPOINT file
+ KILL ^RGNET(996.52)
+ SET ^RGNET(996.52,0)="NETSERV HTTP ENDPOINT^996.52^0^0"
+ ;
+ ; -- all for Cache
  D CACHEMAP("%web")
  D CACHEMAP("%wd")
  D CACHETLS
@@ -33,6 +38,7 @@ POST ; [KIDS] - Post Install
  DO POSTSYN
  DO POSTINTRO
  DO POSTMAP
+ DO EN^SYNGBLLD
  QUIT
  ;
 POSTMAP ; [Private] Add loinc-lab-map to the graph store
@@ -73,9 +79,18 @@ POSTSYN ; [Private] Restore SYN global
 POSTRO ; [Private] Download and Import RO Files
  D MES^XPDUTL("Downloading MASH...")
  D INSTALLRO("https://github.com/OSEHRA/VistA-FHIR-Data-Loader/releases/download/0.2/mash-graph-1p0.rsa")
+ ;
+ n v s v="1.1.1" ; MWS version
+ n vn s vn=$tr(v,".","0") ; version as number
+ ;
+ n cv  s cv=$p($t(+2^webinit),";",3) ; current version
+ n cvn s cvn=$tr(cv,".","0")         ; cv as number
+ ;
+ i cvn'<vn quit  ; if current version is greater or equal to the download version, quit
+ ;
  D MES^XPDUTL("Downloading MWS...")
- D INSTALLRO("https://github.com/shabiel/M-Web-Server/releases/download/1.0.4/webinit.rsa")
- D INSTALLRO("https://github.com/shabiel/M-Web-Server/releases/download/1.0.4/mws.rsa")
+ D INSTALLRO("https://github.com/shabiel/M-Web-Server/releases/download/"_v_"/webinit.rsa")
+ D INSTALLRO("https://github.com/shabiel/M-Web-Server/releases/download/"_v_"/mws.rsa")
  QUIT
  ;
 POSTWWW ; [Private] Initialize MWS
