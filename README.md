@@ -39,13 +39,13 @@ In order to install this, you need these patches:
  
  * https://foia-vista.osehra.org/Patches_By_Application/XU-KERNEL/XU-8_SEQ-546_PAT-672.kids (if not installed)
  * https://code.osehra.org/journal/download?items=1173,%201 (zip file, unzip and load PCE_STANDARDIZATION_1_0_T5.KID)
- * https://github.com/OSEHRA/VistA-FHIR-Data-Loader/releases/download/0.3/VISTA_FHIR_DATA_LOADER_BUNDLE_0P3.zip (zip file, unzip and load VISTA_FHIR_DATA_LOADER_BUNDLE_0P3.KID)
+ * https://github.com/OSEHRA/VistA-FHIR-Data-Loader/releases/download/0.4/VISTA_FHIR_DATA_LOADER_BUNDLE_0P4.KID.zip (zip file, unzip and load VISTA_FHIR_DATA_LOADER_BUNDLE_0P4.KID)
 
 As of the time of this writing, PCE STANDARIDZATION has not been officially
 released by the VA. That's why you need to obtain it from the Tech Journal. 
 
 ## Sample Install Transcript
-
+This install transcript is for an older version. Your version number may not match.
 ```
 VEHU>D ^XPDIL,^XPDI
 
