@@ -380,13 +380,7 @@ the verify code `SYNPROV123!!` that has the correct keys. You can use that
 to log-in.  Nagivate to SYNMENU.
 
 ```
-FOIA>D ^XUP
-
-Setting up programmer environment
-This is a TEST account.
-
-Access Code: *******
-FOIA>D ^XUP
+FOIA>KILL  D ^XUP
 
 Setting up programmer environment
 This is a TEST account.
