@@ -1,5 +1,4 @@
-SYNJSONE ;SLC/KCM -- Encode JSON;Feb 07, 2019@11:01 ; 6/28/19 3:26pm
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 10
+SYNJSONE ;SLC/KCM -- Encode JSON;Feb 07, 2019@11:01 ; 6/28/19 1:42pm
  ;
 ENCODE(VVROOT,VVJSON,VVERR) ; VVROOT (M structure) --> VVJSON (array of strings)
  ;
