@@ -1,5 +1,5 @@
-SYNKIDS ; OSE/SMH - Synthea Installer ; 6/28/19 2:57pm
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 1
+SYNKIDS ; OSE/SMH - Synthea Installer ;2019-11-18  5:45 PM
+ ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 2
  ;
 ENV ; [Fallthrough]
  QUIT
@@ -16,13 +16,14 @@ TRAN ; [KIDS] - Transport from source system (BAD! SHOULD BE A FILEMAN FILE)
  M @XPDGREF@("loinc-lab-map")=@mapRoot
  QUIT
  ;
-PRE ; [KIDS] - Pre Install -- all for Cache
+PRE ; [KIDS] - Pre Install
  QUIT
  ;
 POST ; [KIDS] - Post Install
  DO POSTSYN
  DO POSTINTR
  DO POSTMAP
+ DO EN^SYNGBLLD
  QUIT
  ;
 POSTMAP ; [Private] Add loinc-lab-map to the graph store

@@ -1,8 +1,9 @@
-SYNDHP65 ;DHP/AFHIL -fjf -  Write Procedures to VistA ; 12th Sept 2018
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 13
+SYNDHP65 ;DHP/AFHIL -fjf - HealthConcourse - Write Procedures to VistA ;2019-11-18  5:35 PM
+ ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 13
+ ;;
+ ;;Original routine authored by Andrew Thompson & Ferdinand Frankson of Perspecta 2017-2019
  ;
- ;
-PRCADD(RETSTA,DHPPAT,DHPVST,DHPCNT,DHPSCT,DHPDTM)
+PRCADD(RETSTA,DHPPAT,DHPVST,DHPCNT,DHPSCT,DHPDTM) ;Ingest Procedures
  ;
  ; Ingest Procedures into VistA
  ;

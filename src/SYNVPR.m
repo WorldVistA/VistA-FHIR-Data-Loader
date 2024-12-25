@@ -1,5 +1,5 @@
-SYNVPR  ; GPL/GPL - VPR viewing routines ;2019-08-07  3:57 PM
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 34
+SYNVPR  ; GPL/GPL - VPR viewing routines ;2019-08-01  10:20 AM
+ ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 13
  ;
  ; Authored by George P. Lilly 2013-2018
  ;

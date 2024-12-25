@@ -1,5 +1,5 @@
-SYNFVIT ;ven/gpl - fhir loader utilities ;Aug 15, 2019@14:44:21
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 10
+SYNFVIT ;ven/gpl - fhir loader utilities ;2018-05-08  4:23 PM
+ ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 13
  ;
  ; Authored by George P. Lilly 2017-2018
  ;

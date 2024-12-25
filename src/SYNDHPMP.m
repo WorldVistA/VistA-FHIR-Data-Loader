@@ -1,10 +1,9 @@
-SYNDHPMP ; AFHIL/FJF - HealthConcourse - terminology mapping ;03/26/2019
- ;;0.1;VISTA SYNTHETIC DATA LOADER;;Aug 17, 2018;Build 1
+SYNDHPMP ; AFHIL/FJF - HealthConcourse - terminology mapping ;2019-11-18  5:41 PM
+ ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 1
  ;;
  ;;Original routine authored by Andrew Thompson & Ferdinand Frankson of Perspecta 2017-2019
  ;
 MAP(MAP,CODE,DIR,IOE) ; Return a mapped code for a given code
- ; 
  ;--------------------------------------------------------------------
  ;
  ; Input:
@@ -28,13 +27,12 @@ MAP(MAP,CODE,DIR,IOE) ; Return a mapped code for a given code
  ;   IOE  - use internal or exernal mappings
  ;       I for internal SYN VistA(default)
  ;       H for external Health Concourse
- ; 
  ; Output:
  ;   1^map target code
  ;   or -1^exception
  ;
  ; -------------------------------------------------------------------
- ; 
+ ;
 MSTART ;
  ;
  N MAPA,MAPJ,MAPJ8,NODE,STA,RET,DOI,TAR,URL,C,P,SUB
@@ -45,21 +43,25 @@ MSTART ;
  I IOE'="I" D  Q STA_U_TAR
  .; call the terminology server
  .S RET=$$GETURL^XTHC10($$TRMURL(IOE),,"MAPJ")
+ .;w !!,RET
  .; check status of web call
  .I +RET'=200 S STA=-1,TAR=+RET_C_$P(RET,U,2) Q
+ .;W !!,RET
  .; check for result returned from exernal server
  .; change numbers in valueString attribute to string
  .D NTS("MAPJ")
- .; decode the JSON into M array 
+ .; decode the JSON into M array
  .D DECODE^XLFJSON("MAPJ","MAPA")
+ .;ZW MAPJ
+ .;ZW MAPA
  .I '$D(MAPA) S STA=-1,TAR="code not mapped" Q
  .; convert the number_" " back to a number
  .D RMS("MAPA")
  .S NODE="MAPA",TAR=""
  .F  S NODE=$Q(@NODE) Q:NODE=""  Q:TAR'=""  D
- ..Q:$QS(NODE,5)'="name"
- ..Q:@NODE'="code"
- ..S TAR=MAPA($QS(NODE,1),$QS(NODE,2),$QS(NODE,3),$QS(NODE,4),"valueString")
+ ..Q:$QS(NODE,6)'="code"
+ ..;Q:@NODE'="code"
+ ..S TAR=MAPA($QS(NODE,1),$QS(NODE,2),$QS(NODE,3),$QS(NODE,4),$QS(NODE,5),"code")
  .I TAR="" S STA=-1,TAR="code not mapped" Q
  ;I IOE'="I" Q 1_U_TAR
  ;
@@ -82,7 +84,7 @@ TRMURL(EXSRV) ; create url of mapping service
  ; once we have url - infuse it with mapping identifier and source code
  ; currently Health Concourse is only supported external server
  ; for additional servers add appropriate url builder below
- ; 
+ ;
  ; Health Concourse
  I EXSRV="H" D
  .S URL="https://terminology-service.dev.openplatform.healthcare/vista2/"_MAP_"?searchString="_CODE
@@ -145,7 +147,7 @@ T3V ;
  D DECODE^XLFJSON("MAPSV","MAPSVO")
  ; mh2sct vista
  S URLMV="https://terminology-service.dev.openplatform.healthcare/vista/mh2sct?searchString=PHQ-2"
- S RET=$$GETURL^XTHC10(URLMV,,"MAPMV") 
+ S RET=$$GETURL^XTHC10(URLMV,,"MAPMV")
  D DECODE^XLFJSON("MAPMV","MAPMVO")
  ;
  W !,URLSV,!!
@@ -163,7 +165,7 @@ T4V ;
  ; now scan json in MPASV to find string that look like numbers
  ; and convert them to strings by concateneating space
  D NTS("MAPSV")
- ; 
+ ;
  D DECODE^XLFJSON("MAPSV","MAPSVO")
  ; now that json decodon complete remove space
  ;D RMS("MAPSVO")
@@ -177,11 +179,33 @@ T4V ;
  D DECODE^XLFJSON("MAPMV","MAPMVO")
  ;
  W !,URLSV,!!
- ZW MAPSVO
+ ZWRITE MAPSVO
  w !!,URLMV,!!
- ZW MAPMVO
+ ZWRITE MAPMVO
  ;
  Q
+T5 ; new server (vista2) tests
+ ;
+T5V(code) ;
+ ;
+ ; sct2icd vista term server
+ ;
+ S URLSV="https://terminology-service.dev.openplatform.healthcare/vista/sct2icd?searchString="_code
+ S RET=$$GETURL^XTHC10(URLSV,,"MAPSV")
+ D DECODE^XLFJSON("MAPSV","MAPSVO")
+ ; sct2icd vista2 term server
+ S URLSV2="https://terminology-service.dev.openplatform.healthcare/vista2/sct2icd?searchString="_code
+ S RET=$$GETURL^XTHC10(URLSV,,"MAPSV2")
+ D DECODE^XLFJSON("MAPSV2","MAPSVO2")
+ ;
+ W !!,URLSV,!!
+ ZWRITE MAPSVO
+ w !!,URLSV2,!!
+ ZWRITE MAPSVO2
+ ;
+ Q
+ ;
+ ;
 NTS(JSONA) ; change numbers to string to accommodate XTHC10 quirk
  ;
  N N,VALUE
@@ -204,4 +228,3 @@ RMS(JSONA) ; convert numeric string to a number
  .S VALUE=+VALUE
  .S @N=VALUE
  Q
- 
