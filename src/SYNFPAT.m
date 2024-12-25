@@ -148,6 +148,8 @@ importPatient(rtn,ien) ; register and import a fhir patient (demographics only)
  d setIndex^SYNFUTL(ien,"DFN",zdfn)
  d setIndex^SYNFUTL(ien,"ICN",icn)
  ;
+ ; the following is for when this is used for RPMS
+ ; 
  I $G(^AUPNPAT(DFN,0))="" D FIXIHS()
  ;
  s rtn("dfn")=zdfn
