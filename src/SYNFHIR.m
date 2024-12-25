@@ -24,6 +24,8 @@ wsPostFHIR(ARGS,BODY,RESULT,ien)    ; recieve from addpatient
  . set gr=$name(@root@(ien,"json"))
  . merge json=BODY
  . do decode^SYNJSON("json",gr)
+  . s @root@("filename",ien)="" ; gpl
+ . kill BODY  ; remove it from symbol table as it is too big
  ;
  do indexFhir(ien)
  ;
@@ -331,6 +333,9 @@ FILE(directory) ; [Public] Load files from the file system; OPT: SYN LOAD FILES
  for  set file=$order(synfiles(file)) q:file=""  do
  . if file["Information" quit  ; We don't process information files yet...
  . ;
+ . if $d(@root@("filename",file)) d  q  ;
+ . . w !,"already loaded, quiting"
+ . ;
  . write "Loading ",file,"...",!
  . kill ^TMP("SYNFILE",$J)
  . new % set %=$$FTG^%ZISH(directory,file,$name(^TMP("SYNFILE",$J,1)),3)
@@ -349,6 +354,7 @@ FILE(directory) ; [Public] Load files from the file system; OPT: SYN LOAD FILES
  . new args,body,synjsonreturn,ien,root,gr
  . set root=$$setroot^SYNWD("fhir-intake")
  . set ien=$order(@root@(" "),-1)+1
+ . s @root@("filename",file,ien)=""
  . set gr=$name(@root@(ien,"json"))
  . s body=$na(^TMP("SYNFILE",$J))
  . do decode^SYNJSON(body,gr)
