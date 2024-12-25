@@ -548,6 +548,9 @@ WRITERXPS(PSODFN,DRUG,RXDATE) ; [$$/D Public] Create a new prescription for a pa
  ; Patient Status
  S PSONEW("PATIENT STATUS")=$$FIND1^DIC(53,,"QX","OPC")
  ;
+ ; MAIL EXEMPTION P#753
+ S PSOMAILX=""
+ ;
  ; File in 52
  D EN^PSON52(.PSONEW)
  ;
