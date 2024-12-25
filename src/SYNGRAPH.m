@@ -140,6 +140,7 @@ loincMap() ; create the lonic-lab-map
  ;
 covid(loinc) ; extrinsic returns the name of the lab test  in ^LAB(60, 
  ; for the loinc code
+ q -1  ; change the iens to match your covid tests before using this 
  n rt,rien,LAB
  s LAB(5091)="COVID-19 (PHRL)"
  s LAB(5092)="COVID-19 CONFIRMATORY"
