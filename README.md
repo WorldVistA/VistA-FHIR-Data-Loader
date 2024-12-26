@@ -3,6 +3,9 @@ This project lets you load data from Synthea (https://synthetichealth.github.io/
 into VistA to produce high quality synthetic patient data for development and testing.
 Other FHIR data sources are supportable; but are not supported at this time.
 
+DO NOT USE THIS SOFTWARE ON PRODUCTION SYSTEMS. This software is only used to
+create patients on test VistA systems.
+
 # Pre-installation Requirements
 The Installer DUZ must have the key XUMGR in order to be able to add users to
 the systems.
@@ -14,97 +17,140 @@ Here's a full list of the software you will need. We do not describe how to
 install this pre-requisites here.
 
 * Java (JDK only) 1.8 or above to run Synthea
-* Git to clone the Synthea Repository
 * Google Chrome or Mozilla Firefox to visualize Synthea Patients
-* InterSystems Caché with the VistA database loaded. This does not have to be
+* InterSystems IRIS with the VistA database loaded. This does not have to be
 on your own laptop; you can copy the generated Synthea Patients into the
 machine that hosts your VistA instance.
-
-# Outline of all steps needed for New Windows Machine (as of Aug 2019):
-
- * Enable Telnet (Windows 10 only; already enabled in Windows 7)
- * Install Java (JDK, not JRE)
- * Install Latest Git
- * Install Google Chrome
- * Download and Install InterSystems Caché
- * Download and configure FOIA VistA on Caché
- * Download and configure latest CPRS
- * Install PCE_STANDARDIZATION_1_0_T5.KID
- * Install VISTA_FHIR_DATA_LOADER_VA_VERSION_0P2.KID
- * Clone Synthea Repo
- * Run Synthea to Create Patients
- * Import Patients in VistA
- * View Imported patients using CPRS
 
 # Installation
 As of Aug 20th 2018, the official way to install this project is to use the latest
 KIDS build in [releases](https://github.com/OSEHRA/VistA-FHIR-Data-Loader/releases/latest).
 
-As of v0.2 (unlike v0.1), PCE STANDARDIZATION 1.0 is now required. In order to
-install this, you need these patches:
- 
- * https://code.osehra.org/journal/download?items=1173,%201 (zip file, unzip and load PCE_STANDARDIZATION_1_0_T5.KID)
- * https://github.com/OSEHRA/VistA-FHIR-Data-Loader/releases/download/0.4/VISTA_FHIR_DATA_LOADER_BUNDLE_0P4.KID.zip (zip file, unzip and load VISTA_FHIR_DATA_LOADER_BUNDLE_0P4.KID)
+The current version is 0.5.
 
-As of the time of this writing, PCE STANDARDIZATION has not been officially
-released by the VA. That's why you need to obtain it from the Tech Journal. 
+The installer must have the key XUMGR in order to be able to add users to the
+systems.
 
-The KIDS build needs to be unzipped first and then installed. The installer
-must have the key XUMGR in order to be able to add users to the systems.
+You need to install two KIDS builds: The Dataloader, and the FHIR Importer. See the 
+[releases](https://github.com/OSEHRA/VistA-FHIR-Data-Loader/releases/latest)
+for a link to the KIDS builds.
 
 ## Sample Install Transcript
 ```
-FOIA1907>d ^XPDIL,^XPDI
+VEHU>S DUZ=1
 
-Enter a Host File: /tmp/VISTA_FHIR_DATA_LOADER_VA_VERSION_0P2.KID
+VEHU>D ^XUP
 
-KIDS Distribution saved on Aug 15, 2019@16:39:40
-Comment: T6 - Counters fix, missing log fix, all bull fix
+Setting up programmer environment
+This is a TEST account.
+
+Terminal Type set to: C-VT100
+
+Select OPTION NAME:
+VEHU>D ^XPDIL,^XPDI
+Enter a Host File: /github/VistA-DataLoader/VistA/VISTA_DATALOADER_3P1T3.KID
+
+KIDS Distribution saved on Dec 23, 2024@22:50:58
+Comment: VISTA DATALOADER 3.1 v3
 
 This Distribution contains Transport Globals for the following Package(s):
-   VISTA FHIR DATA LOADER VA VERSION 0.2
-   ISI_DATA_LOADER 2.6
-   VISTA SYN DATA LOADER 0.2
+   VISTA DATALOADER 3.1
 Distribution OK!
 
 Want to Continue with Load? YES//
 Loading Distribution...
 
-   VISTA FHIR DATA LOADER VA VERSION 0.2
-   ISI_DATA_LOADER 2.6
-   VISTA SYN DATA LOADER 0.2
-Use INSTALL NAME: VISTA FHIR DATA LOADER VA VERSION 0.2 to install this Distribu
-tion.
+   VISTA DATALOADER 3.1
+Use INSTALL NAME: VISTA DATALOADER 3.1 to install this Distribution.
 
-Select INSTALL NAME: vista FHIR DATA LOADER VA VERSION 0.2       Loaded from Dis
-tribution    8/15/19@17:07:54
-     => T6 - Counters fix, missing log fix, all bull fix  ;Created on Aug 15,
+Select INSTALL NAME:    VISTA DATALOADER 3.1    12/26/24@20:33:49
+     => VISTA DATALOADER 3.1 v3  ;Created on Dec 23, 2024@22:50:58
 
-This Distribution was loaded on Aug 15, 2019@17:07:54 with header of
-   T6 - Counters fix, missing log fix, all bull fix  ;Created on Aug 15, 2019@16
-:39:40
+This Distribution was loaded on Dec 26, 2024@20:33:49 with header of
+   VISTA DATALOADER 3.1 v3  ;Created on Dec 23, 2024@22:50:58
    It consisted of the following Install(s):
-VISTA FHIR DATA LOADER VA VERSION 0.2ISI_DATA_LOADER 2.6VISTA SYN DATA LOADER 0.
-2
-Checking Install for Package VISTA FHIR DATA LOADER VA VERSION 0.2
+VISTA DATALOADER 3.1
+Checking Install for Package VISTA DATALOADER 3.1
 
-Install Questions for VISTA FHIR DATA LOADER VA VERSION 0.2
-
-
-Checking Install for Package ISI_DATA_LOADER 2.6
-
-Install Questions for ISI_DATA_LOADER 2.6
+Install Questions for VISTA DATALOADER 3.1
 
 Incoming Files:
 
 
    9001      ISI PT IMPORT TEMPLATE  (including data)
+Note:  You already have the 'ISI PT IMPORT TEMPLATE' File.
+I will OVERWRITE your data with mine.
 
 Want KIDS to Rebuild Menu Trees Upon Completion of Install? NO//
 
-Checking Install for Package VISTA SYN DATA LOADER 0.2
 
-Install Questions for VISTA SYN DATA LOADER 0.2
+Want KIDS to INHIBIT LOGONs during the install? NO//
+Want to DISABLE Scheduled Options, Menu Options, and Protocols? NO//
+
+Enter the Device you want to print the Install messages.
+You can queue the install by enter a 'Q' at the device prompt.
+Enter a '^' to abort the install.
+
+DEVICE: HOME// ;P-OTHER;  VMS
+
+
+ Install Started for VISTA DATALOADER 3.1 :
+               Dec 26, 2024@20:33:55
+
+Build Distribution Date: Dec 23, 2024
+
+ Installing Routines:..............................................................
+               Dec 26, 2024@20:33:55
+
+ Installing Data Dictionaries: ..
+               Dec 26, 2024@20:33:55
+
+ Installing Data:
+               Dec 26, 2024@20:33:55
+
+ Installing PACKAGE COMPONENTS:
+
+ Installing REMOTE PROCEDURE...........................
+
+ Installing OPTION..
+               Dec 26, 2024@20:33:55
+
+ Updating Routine file......
+
+ Updating KIDS files.......
+
+ VISTA DATALOADER 3.1 Installed.
+               Dec 26, 2024@20:33:55
+
+ NO Install Message sent
+VEHU>D ^XPDIL,^XPDI
+
+Enter a Host File: /github/VistA-FHIR-Data-Loader/kids/VISTA_SYN_DATA_LOADER_0P5
+T2.KID
+
+KIDS Distribution saved on Dec 26, 2024@20:10:20
+Comment: VISTA SYN DATA LOADER 0.5 v2
+
+This Distribution contains Transport Globals for the following Package(s):
+   VISTA SYN DATA LOADER 0.5
+Distribution OK!
+
+Want to Continue with Load? YES//
+Loading Distribution...
+
+   VISTA SYN DATA LOADER 0.5
+Use INSTALL NAME: VISTA SYN DATA LOADER 0.5 to install this Distribution.
+
+Select INSTALL NAME:    VISTA SYN DATA LOADER 0.5    12/26/24@20:34:01
+     => VISTA SYN DATA LOADER 0.5 v2  ;Created on Dec 26, 2024@20:10:20
+
+This Distribution was loaded on Dec 26, 2024@20:34:01 with header of
+   VISTA SYN DATA LOADER 0.5 v2  ;Created on Dec 26, 2024@20:10:20
+   It consisted of the following Install(s):
+VISTA SYN DATA LOADER 0.5
+Checking Install for Package VISTA SYN DATA LOADER 0.5
+
+Install Questions for VISTA SYN DATA LOADER 0.5
 
 Incoming Files:
 
@@ -121,98 +167,48 @@ Enter the Device you want to print the Install messages.
 You can queue the install by enter a 'Q' at the device prompt.
 Enter a '^' to abort the install.
 
-DEVICE: HOME// ;p-other;  Virtual Terminal
+DEVICE: HOME// ;p-other;  VMS
 
 
- Install Started for VISTA FHIR DATA LOADER VA VERSION 0.2 :
-               Aug 15, 2019@17:08:02
+ Install Started for VISTA SYN DATA LOADER 0.5 :
+               Dec 26, 2024@20:34:41
 
-Build Distribution Date: Aug 15, 2019
-
- Installing Routines:.
-               Aug 15, 2019@17:08:02
-
- Install Started for ISI_DATA_LOADER 2.6 :
-               Aug 15, 2019@17:08:02
-
-Build Distribution Date: Aug 15, 2019
-
- Installing Routines:..........................................................
-               Aug 15, 2019@17:08:03
-
- Installing Data Dictionaries: ..
-               Aug 15, 2019@17:08:03
-
- Installing Data:
-               Aug 15, 2019@17:08:03
-
- Installing PACKAGE COMPONENTS:
-
- Installing REMOTE PROCEDURE........................
-
- Installing OPTION..
-               Aug 15, 2019@17:08:03
-
- Updating Routine file......
-
- Updating KIDS files.....
-
- ISI_DATA_LOADER 2.6 Installed.
-               Aug 15, 2019@17:08:03
-
- No link to PACKAGE file
-
- NO Install Message sent
-
- Install Started for VISTA SYN DATA LOADER 0.2 :
-               Aug 15, 2019@17:08:03
-
-Build Distribution Date: Aug 15, 2019
+Build Distribution Date: Dec 26, 2024
 
  Installing Routines:............................................
-               Aug 15, 2019@17:08:03
+               Dec 26, 2024@20:34:41
 
  Running Pre-Install Routine: PRE^SYNKIDS.
 
  Installing Data Dictionaries: ..
-               Aug 15, 2019@17:08:03
+               Dec 26, 2024@20:34:41
 
  Installing PACKAGE COMPONENTS:
 
  Installing OPTION......
-               Aug 15, 2019@17:08:03
+               Dec 26, 2024@20:34:41
 
  Running Post-Install Routine: POST^SYNKIDS.
 Merging ^SYN global in. This takes time...
 
+
 Syn Patients Importer Init
-Provider 68
-Pharmacist 69
-Hospital Location 3
+Provider 520824660
+Pharmacist 520824661
+Hospital Location 23
 Fixing AMIE thingy
 Fixing IB ACTION TYPE file
-Setting up Outpatient Pharmacy 3
+Setting up Outpatient Pharmacy 1048
 Disabling Allergy Bulletins
 
  Updating Routine file......
 
  Updating KIDS files.....
 
- VISTA SYN DATA LOADER 0.2 Installed.
-               Aug 15, 2019@17:08:05
+ VISTA SYN DATA LOADER 0.5 Installed.
+               Dec 26, 2024@20:34:43
 
  No link to PACKAGE file
-
- NO Install Message sent
-
- Updating Routine file.....
-
- Updating KIDS files.......
-
- VISTA FHIR DATA LOADER VA VERSION 0.2 Installed.
-               Aug 15, 2019@17:08:05
-
- Not a production UCI
 
  NO Install Message sent
 ```
@@ -226,14 +222,13 @@ the menu options from the top level menu SYNMENU (which is installed as part of
 the KIDS build).
 
 ## Creating Synthetic Patients
-Open up your terminal/command line, and check that java and git are installed.
-Running `git --version` and `java -version` will verify that the commands are
-installed. `-p 10` means produce 10 patients.
+Open up your terminal/command line, and check that java is installed.  Running
+`java -version` will verify that it is installed. `-p 10` means produce 10
+patients.
 
 ```
-git clone https://github.com/synthetichealth/synthea.git
-cd synthea
-./run_synthea -p 10 # or ./run_synthea.bat -p 10 on Windows CMD
+wget https://github.com/synthetichealth/synthea/releases/download/master-branch-latest/synthea-with-dependencies.jar
+java -jar synthea-with-dependencies.jar -p 10
 ```
 
 Here's the output for reference:
@@ -359,19 +354,8 @@ BUILD SUCCESSFUL in 15s
 ## Visualizing Created Patients
 You can visualize created patients in order to be able to view their records
 in an easy to understand way. Instructions for doing that can be found in
-the [SyntheaPatientViz](https://github.com/OSEHRA-Sandbox/SyntheaPatientViz) 
-Repository. Here's an example on Windows/Powershell:
-
-```
- cd .\synthea\output\fhir\
- $folder=$PWD.Path
- del $folder/*.html
- $files = Get-ChildItem $folder -Filter *_*.json
- foreach ($f in $files) {
-  echo $f.FullName
-  Invoke-RestMethod -Uri https://code.osehra.org/synthea/synthea_upload.php -Method Post -InFile $f.FullName > ($f.FullName + ".html")
-}
-```
+the [SyntheaPatientViz](https://github.com/logicahealth/SyntheaPatientViz) 
+Repository. 
 
 ## Importing
 Kill your symbol table, and login as a user who holds the `LRLAB` and `LRVERIFY`
@@ -749,10 +733,6 @@ Enter response: 1// 4
 |  |  |  |--onset
 Col>   1 |Press <PF1>H for help| Line>      22 of 201  Screen>       1 of 10
 ```
-
-# How to contribute
-You can join the developers by sending a message to this mailing list:
-https://www.osehra.org/groups/synthetic-patient-data-project-group 
 
 # License
 All source code produced is under Apache 2.0.
