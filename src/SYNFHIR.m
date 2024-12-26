@@ -323,6 +323,8 @@ FILE(directory) ; [Public] Load files from the file system; OPT: SYN LOAD FILES
  . if '$data(DIRUT) set directory=Y
  quit:'$data(directory)
  ;
+ new root set root=$$setroot^SYNWD("fhir-intake")
+ ;
  ; Load files from directory
  new synfiles
  new synmask set synmask("*.json")=""
@@ -349,10 +351,9 @@ FILE(directory) ; [Public] Load files from the file system; OPT: SYN LOAD FILES
  . ; Now load the file into VistA
  . write "Ingesting ",file,"...",!
  . do
- .. new file,directory,synfiles
+ .. new file,directory,synfiles,root
  .. do KILL^XUSCLEAN ; VistA leaks like hell
- . new args,body,synjsonreturn,ien,root,gr
- . set root=$$setroot^SYNWD("fhir-intake")
+ . new args,body,synjsonreturn,ien,gr
  . set ien=$order(@root@(" "),-1)+1
  . s @root@("filename",file,ien)=""
  . set gr=$name(@root@(ien,"json"))
