@@ -1,7 +1,7 @@
 SYNFLAB ;ven/gpl - fhir loader utilities ;2018-05-08  4:23 PM
- ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 13
+ ;;0.3;VISTA SYNTHETIC DATA LOADER;;Dec 27, 2024;Build 12
  ;
- ; Authored by George P. Lilly 2017-2018
+ ; Authored by George P. Lilly 2017-2025
  ;
  q
  ;
@@ -47,7 +47,6 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  ;. s troot=$na(@root@(ien,"type","Observation"))
  i '$d(@troot) q 0  ;
  s json=$na(@root@(ien,"json"))
- ;m ^gpl("gjson")=@troot
  ;
  ; determine the patient
  ;
@@ -118,7 +117,6 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . do log(jlog,"code is: "_obscode)
  . set @eval@("labs",zi,"vars","code")=obscode
  . ;
- . s ^gpl("labs",obscode,labtype)=""
  . ;
  . new codesystem set codesystem=$get(@json@("entry",zi,"resource","code","coding",1,"system"))
  . do log(jlog,"code system is: "_codesystem)
@@ -184,13 +182,14 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . . s recien=$o(^LAB(60,"B",DHPLAB,""))
  . . d log(jlog,"VistA Lab is: "_vistalab)
  . ;
- . n xform s xform=$$GET1^DIQ(60,recien_",",410)
- . n dec s dec=0
- . i xform["S Q9=" d
- . . s dec=+$p($p(xform,"""",2),",",3)
- . ;i $l($p(DHPOBS,".",2))>1 d
- . i $l($p(DHPOBS,".",2))>0 d
- . . s DHPOBS=$s(dec<4:$j(DHPOBS,1,dec),dec>3:$j(DHPOBS,1,3),1:$j(DHPOBS,1,0)) ; fix results with too many decimal places
+ . ; the following was made obsolete by changes Sam made to the Lab Data Import
+ . ;n xform s xform=$$GET1^DIQ(60,recien_",",410)
+ . ;n dec s dec=0
+ . ;i xform["S Q9=" d
+ . ;. s dec=+$p($p(xform,"""",2),",",3)
+ . ;;i $l($p(DHPOBS,".",2))>1 d
+ . ;i $l($p(DHPOBS,".",2))>0 d
+ . ;. s DHPOBS=$s(dec<4:$j(DHPOBS,1,dec),dec>3:$j(DHPOBS,1,3),1:$j(DHPOBS,1,0)) ; fix results with too many decimal places
  . ; added for Covid tests
  . i DHPOBS="" d  ; no quant value
  . . n vtxt ; value text
@@ -205,12 +204,8 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . s @eval@("labs",zi,"parms","DHPOBS")=DHPOBS
  . d log(jlog,"Value is: "_DHPOBS)
  . ;
- . ;i DHPLOINC="2093-3" s DHPOBS=$J(DHPOBS,1,0) ;Total Cholesterol
- . ;i DHPLOINC="33914-3" s DHPOBS=$J(DHPOBS,1,0) ;Estimated Glomerular Filtration Rate
- . ;i DHPLOINC="18262-6" s DHPOBS=$J(DHPOBS,1,0) ;Low Density Cholesterol
- . ;i DHPLOINC="2085-9" s DHPOBS=$J(DHPOBS,1,0) ;High Density Cholesterol
- . ;i DHPLOINC="2571-8" s DHPOBS=$J(DHPOBS,1,0) ;Tryglycerides
- . ;i DHPLOINC="2339-0" s DHPOBS=$J(DHPOBS,1,0) ;Glucose
+ . i DHPLOINC="33914-3" d  q  ;
+ . . d log(jlog,"Skipping Estimated Glomerular Filtration Rate LOINC: 33914-3")
  . ;
  . s DHPUNT=unit
  . s @eval@("labs",zi,"parms","DHPUNT")=unit
