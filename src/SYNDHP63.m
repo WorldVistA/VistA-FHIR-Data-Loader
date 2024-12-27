@@ -1,5 +1,5 @@
 SYNDHP63 ;DHP/ART -  Write Lab Tests to VistA ;2019-11-18  3:35 PM
- ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 3
+ ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 12
  ;;Original routine authored by Andrew Thompson & Ferdinand Frankson of DXC Technology 2017-2018
  ;
  QUIT
@@ -44,10 +44,7 @@ LABADD(RETSTA,DHPPAT,DHPLOC,DHPTEST,DHPRSLT,DHPRSDT,DHPLOINC) ;Create lab test
  ; -- Check lab test date/time --
  S LABDTTM=$$HL7TFM^XLFDT(DHPRSDT)
  I $P(LABDTTM,".",2)="" S RETSTA="-1^Missing time for result date/time." QUIT
- ;chop off seconds
- S LABTM=$E($P(LABDTTM,".",2),1,4)
- S $P(LABDTTM,".",2)=LABTM
- S LABDTTM=$$HL7TFM^XLFDT($$FMTHL7^XLFDT(LABDTTM)) ;drop any trailing 0's in time
+ S LABDTTM=+LABDTTM ;drop any trailing 0's in time
  ;
  ;Get lab test name for LOINC code
  I $G(DHPLOINC)'="" D
