@@ -1,5 +1,5 @@
-SYNVPR  ; GPL/GPL - VPR viewing routines ;2019-08-01  10:20 AM
- ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 13
+SYNVPR  ; GPL/GPL - VPR viewing routines ;2019-08-07  3:57 PM
+ ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 12
  ;
  ; Authored by George P. Lilly 2013-2018
  ;
@@ -79,13 +79,14 @@ SELLOAD()      ; extrinsic which returns the part of the FHIR LOAD selected
  S ZT(9)="encounters"
  S ZT(10)="careplan"
  S ZT(11)="procedures"
+ S ZT(12)="panels"
  N DIR,DTOUT,DUOUT,DIRUT,DIROUT,X,Y,DA
  S DIR(0)="SO^"
- F ZI=1:1:11 S DIR(0)=DIR(0)_ZI_":"_ZT(ZI)_";"
+ F ZI=1:1:12 S DIR(0)=DIR(0)_ZI_":"_ZT(ZI)_";"
  S DIR("B")=1
  S DIR("L")="Please select clinical category to view: "
  S DIR("L",1)="1 all        6 labs          11 procedure"
- S DIR("L",2)="2 patient    7 meds          "
+ S DIR("L",2)="2 patient    7 meds          12 labPanels"
  S DIR("L",3)="3 allergy    8 immunizations"
  S DIR("L",4)="4 conditions 9 encounters"
  S DIR("L",5)="5 vitals     10 careplan"
