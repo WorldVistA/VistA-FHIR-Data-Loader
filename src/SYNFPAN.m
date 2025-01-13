@@ -29,6 +29,7 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  ; result is json and summarizes what was done
  ; args include patientId
  ; ien is specified for internal calls, where the json is already in a graph
+ D INITMAPS^SYNQLDM ; make sure the maps are deployed
  n root,troot
  s root=$$setroot^SYNWD("fhir-intake")
  ;
@@ -84,10 +85,11 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . ; determine the DiagnosticReport category and quit if not a lab panel
  . ;
  . ;new obstype set obstype=$get(@json@("entry",zi,"resource","category",1,"coding",1,"code"))
- . new obstype,obsdisplay s (obstype,obsdisplay)=""
+ . new obstype,obsdisplay,loinc s (obstype,obsdisplay,loinc)=""
  . if obstype="" do  ; category is missing, try mapping the code
  . . new trycode,trydisp,tryy
  . . set trycode=$g(@json@("entry",zi,"resource","code","coding",1,"code"))
+ . . set loinc=trycode
  . . set trydisp=$g(@json@("entry",zi,"resource","code","coding",1,"display"))
  . . ;b
  . . ;s tryy=$$loinc2sct(trycode)
@@ -96,13 +98,14 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . . ;if tryy'="" set obstype="panel"
  . . if trydisp["panel" d  ;
  . . . s obstype="panel"
- . . . s obsdisplay=trycode_" "_trydisp
+ . . . s obsdisplay=trycode_"^"_trydisp
  . . e  s obstype=obsdisplay
  . . ;d log(jlog,"Derived category is "_obstype)
  . ;
  . if obstype'="panel" do  quit  ;
  . . ;set @eval@("panels",zi,"vars","observationCategory")=obsdisplay
  . . ;do log(jlog,"DiagnosticReport Category is not panel, skipping")
+ . ;s ^gpl("panel",obsdisplay)=$g(^gpl("panel",obsdisplay))+1 quit
  . set @eval@("panels",zi,"vars","observationCategory")=obsdisplay
  . set @eval@("panels",zi,"vars","resourceType")=type
  . ;
@@ -125,26 +128,120 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . set @eval@("panel",zi,"vars","id")=id
  . d log(jlog,"ID is: "_id)
  . ;
- . q  ; add code to process DiagnosticReport results here
- . ; 
- . new obscode set obscode=$get(@json@("entry",zi,"resource","code","coding",1,"code"))
- . do log(jlog,"code is: "_obscode)
- . set @eval@("labs",zi,"vars","code")=obscode
+ . ;Here's the spec for uploading a panel:
+ . ;KBANTEST ;
+ . ;N %,SAM,RC
+ . ;S SAM("LAB_PANEL")="CHEM 7"
+ . ;S SAM("LAB_TEST","BUN")=10
+ . ;S SAM("LAB_TEST","CO2")=34
+ . ;S SAM("LAB_TEST","GLUCOSE")=180
+ . ;S SAM("PAT_SSN")="999504449"
+ . ;S SAM("RESULT_DT")="NOW"
+ . ;S SAM("LOCATION")="3E NORTH"
+ . ;S SAM("COLLECTION_SAMPLE")="BLOOD" ; optional
+ . ;S %=$$LAB^ISIIMP12(.RC,.SAM)
+ . ;ZWRITE RC
+ . ;QUIT
+ . ;
+ . ; starting the parameter array with the panel level elements
+ . ;
+ . n MISC ; parameter array
+ . ;
+ . ; lab panel
+ . ;
+ . N PANEL
+ . S PANEL=$$MAP^SYNQLDM(loinc,"vistapanel")
+ . d log(jlog,"VistA panel is: "_PANEL)
+ . S MISC("LAB_PANEL")=PANEL
+ . ;
+ . ; patient
+ . ;
+ . s MISC("PAT_SSN")=$$GET1^DIQ(2,dfn_",","SSN")
+ . ;
+ . ; result date/time
+ . ;
+ . new effdate set effdate=$get(@json@("entry",zi,"resource","effectiveDateTime"))
+ . do log(jlog,"effectiveDateTime is: "_effdate)
+ . set @eval@("panels",zi,"vars","effectiveDateTime")=effdate
+ . new fmtime s fmtime=$$fhirTfm^SYNFUTL(effdate)
+ . d log(jlog,"fileman dateTime is: "_fmtime)
+ . set @eval@("panels",zi,"vars","fmDateTime")=fmtime ;
+ . new hl7time s hl7time=$$fhirThl7^SYNFUTL(effdate)
+ . d log(jlog,"hl7 dateTime is: "_hl7time)
+ . set @eval@("panels",zi,"vars","hl7DateTime")=hl7time ;
+ . s MISC("RESULT_DT")=fmtime
+ . ;
+ . ; location
+ . ;
+ . s DHPLOC=$$MAP^SYNQLDM("OP","location")
+ . n DHPLOCIEN s DHPLOCIEN=$o(^SC("B",DHPLOC,""))
+ . if DHPLOCIEN="" S DHPLOCIEN=4
+ . ;s @eval@("labs",zi,"parms","DHPLOC")=DHPLOC
+ . d log(jlog,"Location for outpatient is: #"_DHPLOCIEN_" "_DHPLOC)
+ . s MISC("LOCATION")=DHPLOC
+ . ;
+ . ; collection sample
+ . ;
+ . n CSAMP
+ . S CSAMP=$$MAP^SYNQLDM(loinc,"csample")
+ . d log(jlog,"Collection sample is: "_CSAMP)
+ . s MISC("COLLECTION_SAMPLE")=CSAMP
+ . ;
+ . ;  ; add code to process DiagnosticReport results here
+ . ;
+ . n triples s triples=$na(@root@(ien))
+ . n atomptr s atomptr=$na(@json@("entry",zi,"resource","result"))
+ . n rien s rien=""
+ . n zj s zj=0
+ . f  s zj=$o(@atomptr@(zj)) q:+zj=0  d  ;
+ . . n atomdisp s atomdisp=$get(@atomptr@(zj,"display"))
+ . . n atomref s atomref=$get(@atomptr@(zj,"reference"))
+ . . s rien=$o(@triples@("SPO",atomref,"rien",""))
+ . . d log(jlog,zj_" result "_atomdisp_" rien="_rien)
+ . . ;
+ . . ; call one result lab
+ . . ;
+ . . n lablog s lablog=$na(@root@(ien,"load","lab",rien))
+ . . D ONELAB(.MISC,json,rien,zj,jlog,eval,lablog)
+ . . ;
+ . m @eval@("panels",zi,"vars","MISC")=MISC ;
+ q
+ ;
+ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
+ ;
+ d  ;
+ . new obscode set obscode=$get(@json@("entry",ien,"resource","code","coding",1,"code"))
+ . do log(jlog,"result "_zj_" code is: "_obscode)
+ . set @eval@("labs",zi,"vars",zj_" code")=obscode
  . ;
  . ;
- . new codesystem set codesystem=$get(@json@("entry",zi,"resource","code","coding",1,"system"))
- . do log(jlog,"code system is: "_codesystem)
- . set @eval@("labs",zi,"vars","codeSystem")=codesystem
+ . new codesystem set codesystem=$get(@json@("entry",ien,"resource","code","coding",1,"system"))
+ . do log(jlog,"result "_zj_" code system is: "_codesystem)
+ . set @eval@("labs",zi,"vars",zj_" codeSystem")=codesystem
  . ;
  . ; determine the value and units
  . ;
- . new value set value=$get(@json@("entry",zi,"resource","valueQuantity","value"))
- . do log(jlog,"value is: "_value)
- . set @eval@("labs",zi,"vars","value")=value
+ . new value set value=$get(@json@("entry",ien,"resource","valueQuantity","value"))
+ . do log(jlog,"result "_zj_" value is: "_value)
+ . set @eval@("labs",zi,"vars",zj_" value")=value
  . ;
- . new unit set unit=$get(@json@("entry",zi,"resource","valueQuantity","unit"))
- . do log(jlog,"units are: "_unit)
- . set @eval@("labs",zi,"vars","units")=unit
+ . ;new unit set unit=$get(@json@("entry",zi,"resource","valueQuantity","unit"))
+ . ;do log(jlog,"units are: "_unit)
+ . ;set @eval@("labs",zi,"vars","units")=unit
+ . ;
+ . ; add to MISCARY
+ . ;
+ . n VLAB ; VistA lab name
+ . s VLAB=$$MAP^SYNQLDM(obscode,"labs")
+ . i VLAB="" d  quit
+ . . do log(jlog,"result "_zj_" VistA Lab not found for loinc="_obscode)
+ . s MISCARY("LAB_TEST",VLAB)=value
+ . ;
+ . q
+ Q
+ ;
+MISC()
+ do  ;
  . ;
  . ; determine the effective date
  . ;
@@ -280,6 +377,35 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . d encode^SYNJSONE("jrslt","result")
  . set HTTPRSP("mime")="application/json"
  q 1
+ ;
+INITMAPS(LOC) ; initialize mapping table for panels
+ ;
+ ; This routine is called by INITMAPS^SYNQLDM - don't run it directly
+ ;
+ N MAP
+ ; vistapanel
+ S MAP="vistapanel"
+ ; Panel type is: 24321-2 Basic metabolic 2000 panel - Serum or Plasma
+ S @LOC@(MAP,"CODE","24321-2","BASIC METABOLIC PANEL")=""
+ ;  Panel type is: 51990-0 Basic metabolic panel - Blood
+ S @LOC@(MAP,"CODE","51990-051990-051990-0","BASIC METABOLIC PANEL")=""
+ ; Panel type is: 24357-6 Urinalysis macro (dipstick) panel - Urine
+ S @LOC@(MAP,"CODE","24357-6","URINALYSIS")=""
+ ; Panel type is: 57698-3 Lipid panel with direct LDL - Serum or Plasma
+ S @LOC@(MAP,"CODE","57698-3","LIPID")=""
+ ; Panel type is: 59453-1 Morse Fall Scale panel
+ S @LOC@(MAP,"CODE","59453-1","FALLSCALE")=""
+ ; Panel type is: 58410-2 CBC panel - Blood by Automated count
+ S @LOC@(MAP,"CODE","58410-2","CBC")=""
+ ; 
+ S MAP="csample"
+ S @LOC@(MAP,"CODE","24321-2","plasma")=""
+ S @LOC@(MAP,"CODE","24323-8","plasma")=""
+ S @LOC@(MAP,"CODE","57698-3","plasma")=""
+ S @LOC@(MAP,"CODE","24360-0","blood")=""
+ S @LOC@(MAP,"CODE","51990-0","blood")=""
+ S @LOC@(MAP,"CODE","58410-2","blood")=""
+ Q
  ;
 log(ary,txt) ; adds a text line to @ary@("log")
  s @ary@("log",$o(@ary@("log",""),-1)+1)=$g(txt)
