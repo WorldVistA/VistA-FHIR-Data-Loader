@@ -1,5 +1,5 @@
 SYNQLDM ; GPL/GPL - QRDA loader entry routines ;2018-08-17  3:25 PM
- ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 13
+ ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 12
  ;
  ; Authored by George P. Lilly 2016-2018
  ;
@@ -302,6 +302,7 @@ INITMAPS        ; initialize maps
  S @G@(MAP,"CODE",998671,4002473)=""
  S @G@(MAP,"CODE",998675,4002474)=""
  S @G@(MAP,"CODE",998679,4002475)=""
+ D INITMAPS^SYNFPAN(G)
  N ZI
  S ZI=""
  F  S ZI=$O(@G@(ZI)) Q:ZI=""  D  ;
