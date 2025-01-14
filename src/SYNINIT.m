@@ -1,5 +1,5 @@
 SYNINIT ;OSEHRA/SMH - Initilization Code for Synthetic Data Loader;May 23 2018
- ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019
+ ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 12
  ;
  ; (c) Sam Habiel 2018-2019
  ; Licensed under Apache 2.0.
@@ -15,6 +15,7 @@ EN ; [Public; called by KIDS; do everything in this file]
  D MES^XPDUTL("Fixing IB ACTION TYPE file") D IBACTION
  D MES^XPDUTL("Setting up Outpatient Pharmacy "_$$PHRSS())
  D MES^XPDUTL("Disabling Allergy Bulletins") D ALBUL
+ D MES^XPDUTL("Disable Late ACRP Related Bulletins") D ACRPBUL
  QUIT
  ;
 PROV(rePopulate) ;[Public $$] Create Generic Provider for Synthetic Patients
@@ -273,6 +274,13 @@ ALBUL ; [Public] Disable Allergy Bulletin
  I $D(DIERR) S $EC=",U1,"
  QUIT
  ;
+ACRPBUL ; [Public] Disable Late ACRP Related Bulletins
+ N FDA,DIERR
+ S FDA(43,"1,",217)="@"
+ D FILE^DIE("","FDA")
+ I $D(DIERR) S $EC=",U1,"
+ QUIT
+ ;
 TEST D EN^%ut($T(+0),3) QUIT
  ;
 TESTPROV ; @TEST Test adding a provider
@@ -308,24 +316,6 @@ TESTHL ; @TEST Test adding a clinic
  N DA,DIK S DA=HL,DIK="^SC(" D ^DIK
  S HL=$$HL(1)
  D CHKTF^%ut(HL>0)
- QUIT
- ;
-TESTLH ; @Test Load Handlers
- D DELHAND
- D LOADHAND
- ;
- N IEN
- S IEN=$O(^%web(17.6001,"B","POST","addpatient","wsPostFHIR^SYNFHIR",""))
- D CHKTF^%ut(IEN)
- K IEN
- S IEN=$O(^%web(17.6001,"B","GET","showfhir","wsShow^SYNFHIR",""))
- D CHKTF^%ut(IEN)
- K IEN
- S IEN=$O(^%web(17.6001,"B","GET","vpr/{dfn}","wsVPR^SYNVPR",""))
- D CHKTF^%ut(IEN)
- K IEN
- S IEN=$O(^%web(17.6001,"B","GET","global/{root}","wsGLOBAL^SYNVPR",""))
- D CHKTF^%ut(IEN)
  QUIT
  ;
 TESTAMIE ; @TEST AMIE
