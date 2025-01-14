@@ -7,7 +7,7 @@ SYNFHIR2 ;ven/gpl - fhir loader utilities ;2019-05-30  6:02 PM
  ;
 isLoaded(name) ; extrinsic which returns the ien of the patient name, -1 if not found
  ;
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNWD("fhir-intake")
  n fname,lname,rtn
  s rtn=-1
  if name["_" d  ;
@@ -25,7 +25,7 @@ SYNFARY(ZFARY,ien) ; INITIALIZE FILE NUMBERS AND OTHER USEFUL THINGS
  I $D(@ZFARY) Q  ; ALREADY INITIALIZED
  ;S @ZFARY@("C0XTFN")=172.101 ; TRIPLES FILE NUMBER
  ;S @ZFARY@("C0XSFN")=172.201 ; TRIPLES STRINGS FILE NUMBER
- N ROOT S ROOT=$$setroot^%wd("fhir-intake")
+ N ROOT S ROOT=$$setroot^SYNWD("fhir-intake")
  S @ZFARY@("C0XTN")=$NA(@ROOT@(ien))
  ;S @ZFARY@("C0XTN")=$NA(^C0X(101)) ; TRIPLES GLOBAL NAME
  ;S @ZFARY@("C0XSN")=$NA(^C0X(201)) ; STRING FILE GLOBAL NAME
@@ -49,7 +49,7 @@ TEST1()
  ;
 PANEL(ien) ;
  ;
- n root s root=$$setroot^%wd("fhir-intake")
+ n root s root=$$setroot^SYNWD("fhir-intake")
  n jroot s jroot=$na(@root@(ien,"json"))
  n lroot s lroot=$na(@root@(ien,"load","labs"))
  ;
@@ -79,7 +79,7 @@ PANEL(ien) ;
  . . n atomloinc s atomloinc=$g(@root@(ien,"json","entry",atomien,"resource","code","coding",1,"code"))
  . . n atomroot s atomroot=$na(@lroot@(atomien))
  . . n atomstat s atomstat=$g(@lroot@(atomien,"status","loadstatus"))
- . . n atomlog s atomlog=$g(@lroot@(atomien,"log",18))
+ . . n atomlog s atomlog=$g(@lroot@(atomien,"log",19))
  . . w !,"loinc: ",atomloinc," ",atomdisp," status: ",atomstat," ",atomlog
  q
  ;
