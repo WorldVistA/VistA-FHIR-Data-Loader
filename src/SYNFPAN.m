@@ -183,7 +183,7 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . ; collection sample
  . ;
  . n CSAMP
- . S CSAMP=$$MAP^SYNQLDM(loinc,"csample")
+ . S CSAMP=$$GET1^DIQ(95.3,$p(loinc,"-"),4)
  . d log(jlog,"Collection sample is: "_CSAMP)
  . s MISC("COLLECTION_SAMPLE")=CSAMP
  . ;
@@ -201,7 +201,7 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . . ;
  . . ; call one result lab
  . . ;
- . . n lablog s lablog=$na(@root@(ien,"load","lab",rien))
+ . . n lablog s lablog=$na(@root@(ien,"load","labs",rien))
  . . D ONELAB(.MISC,json,rien,zj,jlog,eval,lablog)
  . . ;
  . m @eval@("panels",zi,"vars","MISC")=MISC ;
@@ -211,18 +211,21 @@ ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
  ;
  d  ;
  . new obscode set obscode=$get(@json@("entry",ien,"resource","code","coding",1,"code"))
+ . do log(lablog,"result "_zj_" code is: "_obscode)
  . do log(jlog,"result "_zj_" code is: "_obscode)
  . set @eval@("labs",zi,"vars",zj_" code")=obscode
  . ;
  . ;
  . new codesystem set codesystem=$get(@json@("entry",ien,"resource","code","coding",1,"system"))
  . do log(jlog,"result "_zj_" code system is: "_codesystem)
+ . do log(lablog,"result "_zj_" code system is: "_codesystem)
  . set @eval@("labs",zi,"vars",zj_" codeSystem")=codesystem
  . ;
  . ; determine the value and units
  . ;
  . new value set value=$get(@json@("entry",ien,"resource","valueQuantity","value"))
  . do log(jlog,"result "_zj_" value is: "_value)
+ . do log(lablog,"result "_zj_" value is: "_value)
  . set @eval@("labs",zi,"vars",zj_" value")=value
  . ;
  . ;new unit set unit=$get(@json@("entry",zi,"resource","valueQuantity","unit"))
@@ -235,6 +238,9 @@ ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
  . s VLAB=$$MAP^SYNQLDM(obscode,"labs")
  . i VLAB="" d  quit
  . . do log(jlog,"result "_zj_" VistA Lab not found for loinc="_obscode)
+ . . do log(lablog,"result "_zj_" VistA Lab not found for loinc="_obscode)
+ . d log(jlog,"result "_zj_" VistA Lab for "_obscode_" is: "_VLAB)
+ . d log(lablog,"result "_zj_" VistA Lab for "_obscode_" is: "_VLAB)
  . s MISCARY("LAB_TEST",VLAB)=value
  . ;
  . q
