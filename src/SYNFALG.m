@@ -37,7 +37,6 @@ wsIntakeAllergy(args,body,result,ien) ; web service entry (post)
  ;i '$d(json) d getRandomAllergy(.json)
  ;
  i '$d(json) q  ;
- m ^gpl("gjson")=json
  ;
  ; determine the patient
  ;

@@ -242,7 +242,6 @@ addtag(tag,zien,zien2) ; add a tag to a graph
  q
  ;
 wssee(rtn,filter) ; web service for browsing files using the graph
- m ^gpl("filter")=filter
  n arg s arg=$g(filter("*"))
  i arg="" d toppage^%yottahtm(.rtn,.filter) q  ;
  ;i arg="@rewrite" d rewrite(.rtn) q  ;
@@ -286,7 +285,6 @@ wssee(rtn,filter) ; web service for browsing files using the graph
  n matches
  ;i arg["%20" s arg=$tr(arg,"%20"," ")
  d match("#"_arg,"matches")
- ;m ^gpl("matches")=matches
  ;i $d(matches) s rtn=$q(matches)
  i $$count("matches")>0 d  q  ; more than one match
  . d multout(.rtn,"matches")

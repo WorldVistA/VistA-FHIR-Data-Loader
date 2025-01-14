@@ -33,8 +33,6 @@ wsIntakeAppointment(args,body,result,ien)       ; web service entry (post)
  ;if '$d(json) d  ; if no appointment, get a random set of appointments
  ;. d getRandomApt(.json) ; get a random set of appointments
  i '$d(json) q  ;
- m ^gpl("gjson")=json
- ;b
  ;
  ; determine the patient
  ;
