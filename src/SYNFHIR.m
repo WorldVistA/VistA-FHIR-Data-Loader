@@ -1,5 +1,5 @@
 SYNFHIR ;ven/gpl - fhir loader utilities ;2019-05-30  6:02 PM
- ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 13
+ ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 12
  ;
  ; Authored by George P. Lilly 2017-2018
  ;
@@ -336,7 +336,7 @@ FILE(directory) ; [Public] Load files from the file system; OPT: SYN LOAD FILES
  . if file["Information" quit  ; We don't process information files yet...
  . ;
  . if $d(@root@("filename",file)) d  q  ;
- . . w !,"already loaded, quiting"
+ . . w !,file," is already loaded, quiting"
  . ;
  . write "Loading ",file,"...",!
  . kill ^TMP("SYNFILE",$J)
