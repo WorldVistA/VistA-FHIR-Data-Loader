@@ -47,8 +47,6 @@ wsUpdatePatient(ARGS,BODY,RESULT)    ; recieve from updatepatient
  ;
  ;
  do indexFhir(ien,"gr")
- ;k ^gpl("gr")
- ;m ^gpl("gr")=gr ; for debugging
  ;
  ;
  if $get(ARGS("returngraph"))=1 do  ;

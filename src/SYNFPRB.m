@@ -33,7 +33,6 @@ wsIntakeConditions(args,body,result,ien)        ; web service entry (post)
  . merge jtmp=BODY
  . do decode^SYNJSONE("jtmp","json")
  i '$d(json) q  ;
- m ^gpl("gjson")=json
  ;
  ; determine the patient
  ;

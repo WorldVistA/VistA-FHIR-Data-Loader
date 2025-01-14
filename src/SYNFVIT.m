@@ -44,7 +44,6 @@ wsIntakeVitals(args,body,result,ien) ; web service entry (post)
  ;. do decode^SYNJSONE("jtmp","json")
  s json=$na(@root@(ien,"json"))
  i '$d(json) q 0  ;
- ;m ^gpl("gjson")=json
  ;
  ; determine the patient
  ;
@@ -115,13 +114,6 @@ wsIntakeVitals(args,body,result,ien) ; web service entry (post)
  . do log(jlog,"code is: "_obscode)
  . set @eval@("vitals",zi,"vars","code")=obscode
  . ;
- . s ^gpl("vitals",obscode,vittype)=""
- . ; here's what we got so far:
- . ;^gpl("vitals","29463-7","Body Weight")=""
- . ;^gpl("vitals","39156-5","Body Mass Index")=""
- . ;^gpl("vitals","55284-4","Blood Pressure")=""
- . ;^gpl("vitals","8302-2","Body Height")=""
- . ;^gpl("vitals","8331-1","Oral temperature")=""
  . ;
  . new codesystem set codesystem=$get(@json@("entry",zi,"resource","code","coding",1,"system"))
  . do log(jlog,"code system is: "_codesystem)
@@ -266,12 +258,6 @@ loinc2sct(loinc) ; extrinsic returns a Snomed code for a Loinc code
  ; for vitals
  ; thanks to Ferdi for the Snomed mapping
  ;
- ; here's what we got so far:
- ;^gpl("vitals","29463-7","Body Weight")=""
- ;^gpl("vitals","39156-5","Body Mass Index")="" ; oops
- ;^gpl("vitals","55284-4","Blood Pressure")=""
- ;^gpl("vitals","8302-2","Body Height")=""
- ;^gpl("vitals","8331-1","Oral temperature")="" ;
  ;
  S SCTA("29463-7",27113001)="9^Body weight"
  S SCTA("8302-2",50373000)="8^Body height"
