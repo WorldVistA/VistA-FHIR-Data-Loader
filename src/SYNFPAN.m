@@ -183,6 +183,7 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . ;
  . n CSAMP
  . S CSAMP=$$GET1^DIQ(95.3,$p(loinc,"-"),4)
+ . I CSAMP["SER/PLAS" S CSAMP="SERUM"
  . d log(jlog,"Collection sample is: "_CSAMP)
  . s MISC("COLLECTION_SAMPLE")=CSAMP
  . ;
@@ -204,6 +205,38 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . . D ONELAB(.MISC,json,rien,zj,jlog,eval,lablog)
  . . ;
  . m @eval@("panels",zi,"vars","MISC")=MISC ;
+ . ;
+ . if $g(args("load"))=1 d  ; only load if told to
+ . . if $g(ien)'="" if $$loadStatus("panels",zi,ien)=1 do  quit  ;
+ . . . d log(jlog,"Panel already loaded, skipping")
+ . . d log(jlog,"Calling LAB^ISIIMP12 to add panel")
+ . . n RESTA,RC
+ . . s (RESTA,RC)=""
+ . . i $g(DEBUG)=1 ZWRITE MISC 
+ . . S RESTA=$$LAB^ISIIMP12(.RC,.MISC)
+ . . d log(jlog,"Return from LAB^ISIIMP12 was: "_$g(RESTA))
+ . . i $g(DEBUG)=1 ZWRITE RESTA
+ . . i $g(DEBUG)=1 ZWRITE RC
+ . . if +$g(RETSTA)=1 do  ;
+ . . . s @eval@("panels","status","loaded")=$g(@eval@("panels","status","loaded"))+1
+ . . . s @eval@("panels",zi,"status","loadstatus")="loaded"
+ . . else  s @eval@("panels","status","errors")=$g(@eval@("panels","status","errors"))+1
+ ;
+ if $get(args("debug"))=1 do  ;
+ . m jrslt("source")=@json
+ . m jrslt("args")=args
+ . m jrslt("eval")=@eval
+ m jrslt("labsStatus")=@eval@("labsStatus")
+ set jrslt("result","status")="ok"
+ set jrslt("result","loaded")=$g(@eval@("panels","status","loaded"))
+ set jrslt("result","errors")=$g(@eval@("labs","status","errors"))
+ i $g(ien)'="" d  ; called internally
+ . ;m result=eval
+ . m result("status")=jrslt("result")
+ . ;b
+ e  d  ;
+ . d encode^SYNJSONE("jrslt","result")
+ . set HTTPRSP("mime")="application/json"
  q
  ;
 ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
@@ -242,7 +275,6 @@ ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
  . d log(lablog,"result "_zj_" VistA Lab for "_obscode_" is: "_VLAB)
  . s MISCARY("LAB_TEST",VLAB)=value
  . ;
- . q
  Q
  ;
 MISC()
@@ -351,37 +383,7 @@ MISC()
  . ;i vistalab="INFLUENZA B RNA" Q  ; likewise
  . ;i vistalab="METAPNEUMOVIRUS RNA" Q  ; likewise
  . ;
- . if $g(args("load"))=1 d  ; only load if told to
- . . ;new (DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPPROV,DHPLOC,DHPLOINC,DHPLAB)
- . . if $g(ien)'="" if $$loadStatus("labs",zi,ien)=1 do  quit  ;
- . . . d log(jlog,"Lab already loaded, skipping")
- . . d log(jlog,"Calling LABADD^SYNDHP63 to add lab")
- . . ;new (DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPPROV,DHPLOC,DHPLOINC,DHPLAB,DUZ,DT,U,jlog,ien,zi,eval)
- . . ;LABADD(RETSTA,DHPPAT,DHPLOC,DHPTEST,DHPRSLT,DHPRSDT) ;Create lab test
- . . D LABADD^SYNDHP63(.RETSTA,DHPPAT,DHPLOC,DHPLAB,DHPOBS,DHPDTM,DHPLOINC)     ; labs update
- . . d log(jlog,"Return from LABADD^ZZDHP63 was: "_$g(RETSTA))
- . . i $g(DEBUG)=1 ZWRITE RETSTA
- . . if +$g(RETSTA)=1 do  ;
- . . . s @eval@("labs","status","loaded")=$g(@eval@("labs","status","loaded"))+1
- . . . s @eval@("labs",zi,"status","loadstatus")="loaded"
- . . else  s @eval@("labs","status","errors")=$g(@eval@("labs","status","errors"))+1
- ;
- if $get(args("debug"))=1 do  ;
- . m jrslt("source")=@json
- . m jrslt("args")=args
- . m jrslt("eval")=@eval
- m jrslt("labsStatus")=@eval@("labsStatus")
- set jrslt("result","status")="ok"
- set jrslt("result","loaded")=$g(@eval@("labs","status","loaded"))
- set jrslt("result","errors")=$g(@eval@("labs","status","errors"))
- i $g(ien)'="" d  ; called internally
- . ;m result=eval
- . m result("status")=jrslt("result")
- . ;b
- e  d  ;
- . d encode^SYNJSONE("jrslt","result")
- . set HTTPRSP("mime")="application/json"
- q 1
+ q
  ;
 INITMAPS(LOC) ; initialize mapping table for panels
  ;
@@ -393,7 +395,7 @@ INITMAPS(LOC) ; initialize mapping table for panels
  ; Panel type is: 24321-2 Basic metabolic 2000 panel - Serum or Plasma
  S @LOC@(MAP,"CODE","24321-2","BASIC METABOLIC PANEL")=""
  ;  Panel type is: 51990-0 Basic metabolic panel - Blood
- S @LOC@(MAP,"CODE","51990-051990-051990-0","BASIC METABOLIC PANEL")=""
+ S @LOC@(MAP,"CODE","51990-0","BASIC METABOLIC PANEL")=""
  ; Panel type is: 24357-6 Urinalysis macro (dipstick) panel - Urine
  S @LOC@(MAP,"CODE","24357-6","URINALYSIS")=""
  ; Panel type is: 57698-3 Lipid panel with direct LDL - Serum or Plasma
@@ -453,6 +455,8 @@ testall ; run the panels import on all imported patients
  . q:ien=""
  . s cnt=cnt+1
  . s filter("dfn")=dfn
+ . s filter("load")=1
+ . s filter("debug")=1
  . k reslt
  . d wsIntakePanels(.filter,,.reslt,ien)
  q
