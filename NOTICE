@@ -1,18 +1,16 @@
-Code in the ISI Data Loader (not in this repo but included in the KIDS build
-and is required to run this software) is (c) 2012 Johns Hopkins University.
-It's licensed under Apache 2.0. For the purposes of licensing, it's considered
-a library used by the software.
+Code in the ISI Data Loader (not in this repo but required to run this
+software) is (c) 2012 Johns Hopkins University. It's licensed under Apache
+2.0. For the purposes of licensing, it's considered a library used by the
+software.
 
 Code in this repository has the following copyrights:
 
-Copyright 2017-2019 Perspecta
+Copyright 2017-2019 DXC Techonology (subsequently Perspecta)
+Copyright 2018      Larry G. Carlson
 Copyright 2018-2019 Sam Habiel
-Copyright 2017-2019 George Lilly
+Copyright 2017-2023 George Lilly
+Copyright 2024-2025 DocMe360 LLC
 
 All of the code in this project is new and not derived from any other projects.
-
-Code authored by Ferdinand Frankson and Andrew Thompson (c) Perspecta.
-Code authored by George Lilly (c) George Lilly
-Code authored by Sam Habiel (c) Sam Habiel.
 
 All code is licensed under the Apache 2.0 license.

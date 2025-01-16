@@ -1,6 +1,21 @@
 SYNKIDS ; OSE/SMH - Synthea Installer ;2019-11-18  5:45 PM
  ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 12
  ;
+ ; Copyright (c) 2018-2019 Sam Habiel 
+ ; Copyright (c) 2025 DocMe360 LLC
+ ;
+ ;Licensed under the Apache License, Version 2.0 (the "License");
+ ;you may not use this file except in compliance with the License.
+ ;You may obtain a copy of the License at
+ ;
+ ;    http://www.apache.org/licenses/LICENSE-2.0
+ ;
+ ;Unless required by applicable law or agreed to in writing, software
+ ;distributed under the License is distributed on an "AS IS" BASIS,
+ ;WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ;See the License for the specific language governing permissions and
+ ;limitations under the License.
+ ;
 ENV ; [KIDS] Env check
  ; Don't install if user doesn't hold XUMGR -- needed for creating Syn providers
  I '$D(^XUSEC("XUMGR",DUZ)) W "Must hold key XUMGR",!! S XPDQUIT=1
