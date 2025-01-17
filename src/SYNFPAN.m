@@ -65,32 +65,32 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . s result("panels",1,"log",1)="Error, patient not found.. terminating"
  ;
  ;
- new zi s zi=0
- for  set zi=$order(@troot@(zi)) quit:+zi=0  do  ;
+ new SYNZI s SYNZI=0
+ for  set SYNZI=$order(@troot@(SYNZI)) quit:+SYNZI=0  do  ;
  . ;
  . ; define a place to log the processing of this entry
  . ;
- . new jlog set jlog=$name(@eval@("panels",zi))
- . k @jlog
+ . new jlog set jlog=$name(@eval@("panels",SYNZI))
+ . ;k @jlog
  . ;
  . ; insure that the resourceType is DiagnosticReports
  . ;
- . new type set type=$get(@json@("entry",zi,"resource","resourceType"))
+ . new type set type=$get(@json@("entry",SYNZI,"resource","resourceType"))
  . ;if type'="DiagnosticReport" do  quit  ;
  . q:type'="DiagnosticReport"
- . ;. ;set @eval@("panels",zi,"vars","resourceType")=type
+ . ;. ;set @eval@("panels",SYNZI,"vars","resourceType")=type
  . ;. ;do log(jlog,"Resource type not DiagnosticReport, skipping entry")
- . ;set @eval@("panels",zi,"vars","resourceType")=type
+ . ;set @eval@("panels",SYNZI,"vars","resourceType")=type
  . ;
  . ; determine the DiagnosticReport category and quit if not a lab panel
  . ;
- . ;new obstype set obstype=$get(@json@("entry",zi,"resource","category",1,"coding",1,"code"))
+ . ;new obstype set obstype=$get(@json@("entry",SYNZI,"resource","category",1,"coding",1,"code"))
  . new obstype,obsdisplay,loinc s (obstype,obsdisplay,loinc)=""
  . if obstype="" do  ; category is missing, try mapping the code
  . . new trycode,trydisp,tryy
- . . set trycode=$g(@json@("entry",zi,"resource","code","coding",1,"code"))
+ . . set trycode=$g(@json@("entry",SYNZI,"resource","code","coding",1,"code"))
  . . set loinc=trycode
- . . set trydisp=$g(@json@("entry",zi,"resource","code","coding",1,"display"))
+ . . set trydisp=$g(@json@("entry",SYNZI,"resource","code","coding",1,"display"))
  . . ;b
  . . ;s tryy=$$loinc2sct(trycode)
  . . ;if tryy="" d  quit  ;
@@ -103,28 +103,28 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . . ;d log(jlog,"Derived category is "_obstype)
  . ;
  . if obstype'="panel" do  quit  ;
- . . ;set @eval@("panels",zi,"vars","observationCategory")=obsdisplay
+ . . ;set @eval@("panels",SYNZI,"vars","observationCategory")=obsdisplay
  . . ;do log(jlog,"DiagnosticReport Category is not panel, skipping")
- . set @eval@("panels",zi,"vars","observationCategory")=obsdisplay
- . set @eval@("panels",zi,"vars","resourceType")=type
+ . set @eval@("panels",SYNZI,"vars","observationCategory")=obsdisplay
+ . set @eval@("panels",SYNZI,"vars","resourceType")=type
  . ;
  . ; see if this resource has already been loaded. if so, skip it
  . ;
- . if $g(ien)'="" if $$loadStatus("panels",zi,ien)=1 do  quit  ;
+ . if $g(ien)'="" if $$loadStatus("panels",SYNZI,ien)=1 do  quit  ;
  . . d log(jlog,"Panel already loaded, skipping")
  . ;
  . ; determine Panel type, code, coding system, and display text
  . ;
- . new paneltype set paneltype=$get(@json@("entry",zi,"resource","code","text"))
- . if paneltype="" set paneltype=$get(@json@("entry",zi,"resource","code","coding",1,"display"))
+ . new paneltype set paneltype=$get(@json@("entry",SYNZI,"resource","code","text"))
+ . if paneltype="" set paneltype=$get(@json@("entry",SYNZI,"resource","code","coding",1,"display"))
  . ;do log(jlog,"Panel type is: "_paneltype)
  . do log(jlog,"Panel type is: "_obsdisplay)
- . set @eval@("panel",zi,"vars","type")=obsdisplay
+ . set @eval@("panel",SYNZI,"vars","type")=obsdisplay
  . ;
  . ; determine the id of the resource
  . ;
- . new id set id=$get(@json@("entry",zi,"resource","id"))
- . set @eval@("panel",zi,"vars","id")=id
+ . new id set id=$get(@json@("entry",SYNZI,"resource","id"))
+ . set @eval@("panel",SYNZI,"vars","id")=id
  . d log(jlog,"ID is: "_id)
  . ;
  . ;Here's the spec for uploading a panel:
@@ -159,15 +159,15 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . ;
  . ; result date/time
  . ;
- . new effdate set effdate=$get(@json@("entry",zi,"resource","effectiveDateTime"))
+ . new effdate set effdate=$get(@json@("entry",SYNZI,"resource","effectiveDateTime"))
  . do log(jlog,"effectiveDateTime is: "_effdate)
- . set @eval@("panels",zi,"vars","effectiveDateTime")=effdate
+ . set @eval@("panels",SYNZI,"vars","effectiveDateTime")=effdate
  . new fmtime s fmtime=$$fhirTfm^SYNFUTL(effdate)
  . d log(jlog,"fileman dateTime is: "_fmtime)
- . set @eval@("panels",zi,"vars","fmDateTime")=fmtime ;
+ . set @eval@("panels",SYNZI,"vars","fmDateTime")=fmtime ;
  . new hl7time s hl7time=$$fhirThl7^SYNFUTL(effdate)
  . d log(jlog,"hl7 dateTime is: "_hl7time)
- . set @eval@("panels",zi,"vars","hl7DateTime")=hl7time ;
+ . set @eval@("panels",SYNZI,"vars","hl7DateTime")=hl7time ;
  . s MISC("RESULT_DT")=fmtime
  . ;
  . ; location
@@ -175,7 +175,7 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . s DHPLOC=$$MAP^SYNQLDM("OP","location")
  . n DHPLOCIEN s DHPLOCIEN=$o(^SC("B",DHPLOC,""))
  . if DHPLOCIEN="" S DHPLOCIEN=4
- . ;s @eval@("labs",zi,"parms","DHPLOC")=DHPLOC
+ . ;s @eval@("labs",SYNZI,"parms","DHPLOC")=DHPLOC
  . d log(jlog,"Location for outpatient is: #"_DHPLOCIEN_" "_DHPLOC)
  . s MISC("LOCATION")=DHPLOC
  . ;
@@ -190,7 +190,7 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . ;  ; add code to process DiagnosticReport results here
  . ;
  . n triples s triples=$na(@root@(ien))
- . n atomptr s atomptr=$na(@json@("entry",zi,"resource","result"))
+ . n atomptr s atomptr=$na(@json@("entry",SYNZI,"resource","result"))
  . n rien s rien=""
  . n zj s zj=0
  . f  s zj=$o(@atomptr@(zj)) q:+zj=0  d  ;
@@ -204,10 +204,10 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . . n lablog s lablog=$na(@root@(ien,"load","labs",rien))
  . . D ONELAB(.MISC,json,rien,zj,jlog,eval,lablog)
  . . ;
- . m @eval@("panels",zi,"vars","MISC")=MISC ;
+ . m @eval@("panels",SYNZI,"vars","MISC")=MISC ;
  . ;
  . if $g(args("load"))=1 d  ; only load if told to
- . . if $g(ien)'="" if $$loadStatus("panels",zi,ien)=1 do  quit  ;
+ . . if $g(ien)'="" if $$loadStatus("panels",SYNZI,ien)=1 do  quit  ;
  . . . d log(jlog,"Panel already loaded, skipping")
  . . d log(jlog,"Calling LAB^ISIIMP12 to add panel")
  . . n RESTA,RC
@@ -217,10 +217,11 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . . d log(jlog,"Return from LAB^ISIIMP12 was: "_$g(RESTA))
  . . i $g(DEBUG)=1 ZWRITE RESTA
  . . i $g(DEBUG)=1 ZWRITE RC
- . . if +$g(RETSTA)=1 do  ;
+ . . if +$g(RESTA)=1 do  ;
  . . . s @eval@("panels","status","loaded")=$g(@eval@("panels","status","loaded"))+1
- . . . s @eval@("panels",zi,"status","loadstatus")="loaded"
+ . . . s @eval@("panels",SYNZI,"status","loadstatus")="loaded"
  . . else  s @eval@("panels","status","errors")=$g(@eval@("panels","status","errors"))+1
+ . ;b
  ;
  if $get(args("debug"))=1 do  ;
  . m jrslt("source")=@json
@@ -245,24 +246,29 @@ ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
  . new obscode set obscode=$get(@json@("entry",ien,"resource","code","coding",1,"code"))
  . do log(lablog,"result "_zj_" code is: "_obscode)
  . do log(jlog,"result "_zj_" code is: "_obscode)
- . set @eval@("labs",zi,"vars",zj_" code")=obscode
+ . set @eval@("labs",SYNZI,"vars",zj_" code")=obscode
  . ;
  . ;
  . new codesystem set codesystem=$get(@json@("entry",ien,"resource","code","coding",1,"system"))
  . do log(jlog,"result "_zj_" code system is: "_codesystem)
  . do log(lablog,"result "_zj_" code system is: "_codesystem)
- . set @eval@("labs",zi,"vars",zj_" codeSystem")=codesystem
+ . set @eval@("labs",SYNZI,"vars",zj_" codeSystem")=codesystem
  . ;
  . ; determine the value and units
  . ;
  . new value set value=$get(@json@("entry",ien,"resource","valueQuantity","value"))
+ . if value="" d  ;
+ . . new sctcode,scttxt
+ . . s sctcode=$get(@json@("entry",ien,"resource","valueCodeableConcept","coding",1,"code"))
+ . . s scttxt=$get(@json@("entry",ien,"resource","valueCodeableConcept","coding",1,"display"))
+ . . s value=sctcode_"^"_scttxt
  . do log(jlog,"result "_zj_" value is: "_value)
  . do log(lablog,"result "_zj_" value is: "_value)
- . set @eval@("labs",zi,"vars",zj_" value")=value
+ . set @eval@("labs",SYNZI,"vars",zj_" value")=value
  . ;
- . ;new unit set unit=$get(@json@("entry",zi,"resource","valueQuantity","unit"))
+ . ;new unit set unit=$get(@json@("entry",SYNZI,"resource","valueQuantity","unit"))
  . ;do log(jlog,"units are: "_unit)
- . ;set @eval@("labs",zi,"vars","units")=unit
+ . ;set @eval@("labs",SYNZI,"vars","units")=unit
  . ;
  . ; add to MISCARY
  . ;
@@ -282,43 +288,43 @@ MISC()
  . ;
  . ; determine the effective date
  . ;
- . new effdate set effdate=$get(@json@("entry",zi,"resource","effectiveDateTime"))
+ . new effdate set effdate=$get(@json@("entry",SYNZI,"resource","effectiveDateTime"))
  . do log(jlog,"effectiveDateTime is: "_effdate)
- . set @eval@("labs",zi,"vars","effectiveDateTime")=effdate
+ . set @eval@("labs",SYNZI,"vars","effectiveDateTime")=effdate
  . new fmtime s fmtime=$$fhirTfm^SYNFUTL(effdate)
  . d log(jlog,"fileman dateTime is: "_fmtime)
- . set @eval@("labs",zi,"vars","fmDateTime")=fmtime ;
+ . set @eval@("labs",SYNZI,"vars","fmDateTime")=fmtime ;
  . new hl7time s hl7time=$$fhirThl7^SYNFUTL(effdate)
  . d log(jlog,"hl7 dateTime is: "_hl7time)
- . set @eval@("labs",zi,"vars","hl7DateTime")=hl7time ;
+ . set @eval@("labs",SYNZI,"vars","hl7DateTime")=hl7time ;
  . ;
  . ; set up to call the data loader
  . ;
  . n RETSTA,DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPPROV,DHPLOC,DHPLOINC
  . ;
  . s DHPPAT=$$dfn2icn^SYNFUTL(dfn)
- . s @eval@("labs",zi,"parms","DHPPAT")=DHPPAT
+ . s @eval@("labs",SYNZI,"parms","DHPPAT")=DHPPAT
  . ;
  . ;n vistalab s vistalab=$$MAP^SYNQLDM(obscode)
  . s DHPLOINC=obscode
  . d log(jlog,"LOINC code is: "_DHPLOINC)
- . s @eval@("labs",zi,"parms","DHPLOINC")=DHPLOINC
+ . s @eval@("labs",SYNZI,"parms","DHPLOINC")=DHPLOINC
  . ;
  . n vistalab s vistalab=$$graphmap^SYNGRAPH("loinc-lab-map",obscode)
  . i +vistalab=-1 s vistalab=$$graphmap^SYNGRAPH("loinc-lab-map"," "_obscode)
  . i +vistalab=-1 s vistalab=$$covid^SYNGRAPH(obscode)
  . i +vistalab'=-1 d
  .. d log(jlog,"Lab found in graph: "_vistalab)
- .. s @eval@("labs",zi,"parms","vistalab")=vistalab
+ .. s @eval@("labs",SYNZI,"parms","vistalab")=vistalab
  . if +vistalab=-1 s vistalab=labtype
  . s vistalab=$$TRIM^XLFSTR(vistalab) ; get rid of trailing blanks
  . ;n sct s sct=$$loinc2sct(obscode) ; find the snomed code
  . ;i vistalab="" d  quit
  . ;. d log(jlog,"VistA lab not found for loinc code: "_obscode_" "_labtype_" -- skipping")
- . ;. s @eval@("labs",zi,"status","loadstatus")="cannotLoad"
- . ;. s @eval@("labs",zi,"status","issue")="VistA lab not found for loinc code: "_obscode_" "_labtype_" -- skipping"
+ . ;. s @eval@("labs",SYNZI,"status","loadstatus")="cannotLoad"
+ . ;. s @eval@("labs",SYNZI,"status","issue")="VistA lab not found for loinc code: "_obscode_" "_labtype_" -- skipping"
  . ;. s @eval@("status","errors")=$g(@eval@("status","errors"))+1
- . s @eval@("labs",zi,"parms","DHPLAB")=vistalab
+ . s @eval@("labs",SYNZI,"parms","DHPLAB")=vistalab
  . d log(jlog,"VistA Lab is: "_vistalab)
  . s DHPLAB=vistalab
  . ;
@@ -341,7 +347,7 @@ MISC()
  . ; added for Covid tests
  . i DHPOBS="" d  ; no quant value
  . . n vtxt ; value text
- . . s vtxt=$get(@json@("entry",zi,"resource","valueCodeableConcept","text"))
+ . . s vtxt=$get(@json@("entry",SYNZI,"resource","valueCodeableConcept","text"))
  . . ;i vtxt["Negative" s DHPOBS="Negative" ; 260385009
  . . i vtxt["Negative" s DHPOBS="Not Detected" ; 260385009
  . . ;i vtxt["Positive" s DHPOBS="Positive" ; 10828004
@@ -349,33 +355,33 @@ MISC()
  . . i vtxt["Detected" s DHPOBS="DETECTED" ; 260373001
  . . i vtxt["Not detected" s DHPOBS="Not Detected" ; 260415000
  . . i vtxt["Confirmed" s DHPOBS="CONFIRMED" ; 
- . s @eval@("labs",zi,"parms","DHPOBS")=DHPOBS
+ . s @eval@("labs",SYNZI,"parms","DHPOBS")=DHPOBS
  . d log(jlog,"Value is: "_DHPOBS)
  . ;
  . i DHPLOINC="33914-3" d  q  ;
  . . d log(jlog,"Skipping Estimated Glomerular Filtration Rate LOINC: 33914-3")
  . ;
  . s DHPUNT=unit
- . s @eval@("labs",zi,"parms","DHPUNT")=unit
+ . s @eval@("labs",SYNZI,"parms","DHPUNT")=unit
  . d log(jlog,"Units are: "_unit)
  . ;
  . s DHPDTM=hl7time
- . s @eval@("labs",zi,"parms","DHPDTM")=hl7time
+ . s @eval@("labs",SYNZI,"parms","DHPDTM")=hl7time
  . d log(jlog,"HL7 DateTime is: "_hl7time)
  . ;
  . s DHPPROV=$$MAP^SYNQLDM("OP","provider")
  . n DHPPROVIEN s DHPPROVIEN=$o(^VA(200,"B",DHPPROV,""))
  . if DHPPROVIEN="" S DHPPROVIEN=3
- . s @eval@("labs",zi,"parms","DHPPROV")=DHPPROVIEN
+ . s @eval@("labs",SYNZI,"parms","DHPPROV")=DHPPROVIEN
  . d log(jlog,"Provider for outpatient is: #"_DHPPROVIEN_" "_DHPPROV)
  . ;
  . s DHPLOC=$$MAP^SYNQLDM("OP","location")
  . n DHPLOCIEN s DHPLOCIEN=$o(^SC("B",DHPLOC,""))
  . if DHPLOCIEN="" S DHPLOCIEN=4
- . s @eval@("labs",zi,"parms","DHPLOC")=DHPLOC
+ . s @eval@("labs",SYNZI,"parms","DHPLOC")=DHPLOC
  . d log(jlog,"Location for outpatient is: #"_DHPLOCIEN_" "_DHPLOC)
  . ;
- . s @eval@("labs",zi,"status","loadstatus")="readyToLoad"
+ . s @eval@("labs",SYNZI,"status","loadstatus")="readyToLoad"
  . ;
  . ;i vistalab="PDW" q  ; skipping because it hangs - gpl wvehr 1/7/21
  . ;i vistalab="SGPT" q  ; skipping it hangs loinc 1742-6 - gpl wvehr 1/7/21
