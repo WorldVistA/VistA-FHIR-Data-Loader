@@ -280,18 +280,18 @@ ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
  . . do log(lablog,"result "_zj_" VistA Lab not found for loinc="_obscode)
  . d log(jlog,"result "_zj_" VistA Lab for "_obscode_" is: "_VLAB)
  . d log(lablog,"result "_zj_" VistA Lab for "_obscode_" is: "_VLAB)
- . s MISCARY("LAB_TEST",VLAB)=value
+ . i $l(value)<12 s MISCARY("LAB_TEST",VLAB)=value
  . ;
  Q
  ;
 ADJUST(ZV) ; adjust the value for specific text based values
  ;
- s:ZV["Brown" ZV="BROWN" Q  ;
- s:ZV["Redish" ZV="REDISH" Q  ;
- s:ZV["Cloudy" ZV="CLOUDY" Q  ;
- s:ZV["Translucent" ZV="BROWN" Q  ;
- s:ZV["Foul" ZV="FOUL" Q  ;
- i ZV["= +" d  q  ;
+ s:ZV["Brown" ZV="BROWN"
+ s:ZV["Redish" ZV="REDISH"
+ s:ZV["Cloudy" ZV="CLOUDY"
+ s:ZV["Translucent" ZV="BROWN"
+ s:ZV["Foul" ZV="FOUL"
+ i ZV["= +" d  ;
  . n ZV1,ZV2
  . S ZV1=$P(ZV,"= ",2)
  . S ZV=$P(ZV1," (",1)
