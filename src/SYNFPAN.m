@@ -262,6 +262,7 @@ ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
  . . s sctcode=$get(@json@("entry",ien,"resource","valueCodeableConcept","coding",1,"code"))
  . . s scttxt=$get(@json@("entry",ien,"resource","valueCodeableConcept","coding",1,"display"))
  . . s value=sctcode_"^"_scttxt
+ . . d ADJUST(.value)
  . do log(jlog,"result "_zj_" value is: "_value)
  . do log(lablog,"result "_zj_" value is: "_value)
  . set @eval@("labs",SYNZI,"vars",zj_" value")=value
@@ -281,6 +282,19 @@ ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
  . d log(lablog,"result "_zj_" VistA Lab for "_obscode_" is: "_VLAB)
  . s MISCARY("LAB_TEST",VLAB)=value
  . ;
+ Q
+ ;
+ADJUST(ZV) ; adjust the value for specific text based values
+ ;
+ s:ZV["Brown" ZV="BROWN" Q  ;
+ s:ZV["Redish" ZV="REDISH" Q  ;
+ s:ZV["Cloudy" ZV="CLOUDY" Q  ;
+ s:ZV["Translucent" ZV="BROWN" Q  ;
+ s:ZV["Foul" ZV="FOUL" Q  ;
+ i ZV["= +" d  q  ;
+ . n ZV1,ZV2
+ . S ZV1=$P(ZV,"= ",2)
+ . S ZV=$P(ZV1," (",1)
  Q
  ;
 MISC()
