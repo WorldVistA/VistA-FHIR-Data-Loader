@@ -291,10 +291,12 @@ ADJUST(ZV) ; adjust the value for specific text based values
  s:ZV["Cloudy" ZV="CLOUDY"
  s:ZV["Translucent" ZV="BROWN"
  s:ZV["Foul" ZV="FOUL"
- i ZV["= +" d  ;
- . n ZV1,ZV2
- . S ZV1=$P(ZV,"= ",2)
- . S ZV=$P(ZV1," (",1)
+ s:ZV["not detected in urine" ZV="NEG"
+ s:ZV["Finding of bilirubin in urine" ZV="1+"
+ i ZV["++++" S ZV="4+" Q
+ i ZV["+++"  S ZV="3+" Q
+ i ZV["++"   S ZV="2+" Q
+ i ZV["+"    S ZV="1+" Q
  Q
  ;
 MISC()
