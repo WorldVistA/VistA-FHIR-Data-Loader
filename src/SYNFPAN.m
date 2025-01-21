@@ -303,6 +303,7 @@ ADJUST(ZV) ; adjust the value for specific text based values
  s:ZV["Foul" ZV="FOUL"
  s:ZV["not detected in urine" ZV="NEG"
  s:ZV["Finding of bilirubin in urine" ZV="1+"
+ i ZV["trace" S ZV="TRACE"
  i ZV["++++" S ZV="4+" Q
  i ZV["+++"  S ZV="3+" Q
  i ZV["++"   S ZV="2+" Q
