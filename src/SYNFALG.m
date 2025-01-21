@@ -34,8 +34,6 @@ wsIntakeAllergy(args,body,result,ien) ; web service entry (post)
  . merge jtmp=BODY
  . do decode^SYNJSONE("jtmp","json")
  ;
- ;i '$d(json) d getRandomAllergy(.json)
- ;
  i '$d(json) q  ;
  ;
  ; determine the patient
@@ -258,27 +256,6 @@ testone(reslt,doload) ; run the allergy import on one imported patient
  . k reslt
  . d wsIntakeAllergy(.filter,,.reslt,ien)
  . s done=1
- q
- ;
-getRandomAllergy(ary) ; make a web service call to get random allergies
- n srvr
- s srvr="http://postfhir.vistaplex.org:9080/"
- i srvr["postfhir.vistaplex.org" s srvr="http://138.197.70.229:9080/"
- i $g(^%WURL)["http://postfhir.vistaplex.org:9080" d  q  ;
- . s srvr="localhost:9080/"
- . n url
- . s url=srvr_"randomAllergy"
- . n ok,r1
- . s ok=$$%^%WC(.r1,"GET",url)
- . i '$d(r1) q  ;
- . d decode^SYNJSONE("r1","ary")
- n url
- s url=srvr_"randomAllergy"
- n ret,json,jtmp
- s ret=$$GETURL^XTHC10(url,,"jtmp")
- d assemble^SYNFPUL("jtmp","json")
- i '$d(json) q  ;
- d decode^SYNJSONE("json","ary")
  q
  ;
 ISGMR(CDE) ; extrinsic return the ien and allergy name in GMR ALLERGIES if any

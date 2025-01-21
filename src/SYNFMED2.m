@@ -215,27 +215,6 @@ testone(reslt,doload)   ; run the meds import on one imported patient
  . s done=1
  q
  ;
-getRandomMeds(ary) ; make a web service call to get random allergies
- n srvr
- s srvr="http://postfhir.vistaplex.org:9080/"
- i srvr["postfhir.vistaplex.org" s srvr="http://138.197.70.229:9080/"
- i $g(^%WURL)["http://postfhir.vistaplex.org:9080" d  q  ;
- . s srvr="localhost:9080/"
- . n url
- . s url=srvr_"randommeds"
- . n ok,r1
- . s ok=$$%^%WC(.r1,"GET",url)
- . i '$d(r1) q  ;
- . d decode^SYNJSONE("r1","ary")
- n url
- s url=srvr_"randommeds"
- n ret,json,jtmp
- s ret=$$GETURL^XTHC10(url,,"jtmp")
- d assemble^SYNFPUL("jtmp","json")
- i '$d(json) q  ;
- d decode^SYNJSONE("json","ary")
- q
- ;
 medsum ; search all loaded patients and catelog the procedure codes
  n root,json,ien,table
  s root=$$setroot^SYNWD("fhir-intake")

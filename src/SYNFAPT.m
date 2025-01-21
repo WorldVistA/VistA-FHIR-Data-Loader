@@ -30,8 +30,6 @@ wsIntakeAppointment(args,body,result,ien)       ; web service entry (post)
  . s args("load")=0
  . merge jtmp=BODY
  . do decode^SYNJSONE("jtmp","json")
- ;if '$d(json) d  ; if no appointment, get a random set of appointments
- ;. d getRandomApt(.json) ; get a random set of appointments
  i '$d(json) q  ;
  ;
  ; determine the patient
@@ -206,26 +204,5 @@ testone(reslt,doload)   ; run the appointment import on imported patient
  . d wsIntakeAppointment(.filter,,.reslt,ien)
  . ;zwr reslt
  . s done=1
- q
- ;
-getRandomApt(ary)       ; make a web service call to get random appointments
- n srvr
- s srvr="http://postfhir.vistaplex.org:9080/"
- i srvr["postfhir.vistaplex.org" s srvr="http://138.197.70.229:9080/"
- i $g(^%WURL)["http://postfhir.vistaplex.org:9080" d  q  ;
- . s srvr="localhost:9080/"
- . n url
- . s url=srvr_"randomappointment"
- . n ok,r1
- . s ok=$$%^%WC(.r1,"GET",url)
- . i '$d(r1) q  ;
- . d decode^SYNJSONE("r1","ary")
- n url
- s url=srvr_"randomAllergy"
- n ret,json,jtmp
- s ret=$$GETURL^XTHC10(url,,"jtmp")
- d assemble^SYNFPUL("jtmp","json")
- i '$d(json) q  ;
- d decode^SYNJSONE("json","ary")
  q
  ;
