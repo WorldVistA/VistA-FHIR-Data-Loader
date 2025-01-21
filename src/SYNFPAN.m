@@ -64,6 +64,7 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  i $g(dfn)="" do  quit 0  ; need the patient
  . s result("panels",1,"log",1)="Error, patient not found.. terminating"
  ;
+ n FMDATES S FMDATES="" ; array of fileman date/times to avoid collisions
  ;
  new SYNZI s SYNZI=0
  for  set SYNZI=$order(@troot@(SYNZI)) quit:+SYNZI=0  do  ;
@@ -85,6 +86,8 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . ; determine the DiagnosticReport category and quit if not a lab panel
  . ;
  . ;new obstype set obstype=$get(@json@("entry",SYNZI,"resource","category",1,"coding",1,"code"))
+ . new catcode set catcode=$get(@json@("entry",SYNZI,"resource","category",1,"coding",1,"code"))
+ . q:catcode'["LAB"
  . new obstype,obsdisplay,loinc s (obstype,obsdisplay,loinc)=""
  . if obstype="" do  ; category is missing, try mapping the code
  . . new trycode,trydisp,tryy
@@ -163,6 +166,12 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . do log(jlog,"effectiveDateTime is: "_effdate)
  . set @eval@("panels",SYNZI,"vars","effectiveDateTime")=effdate
  . new fmtime s fmtime=$$fhirTfm^SYNFUTL(effdate)
+ . ; time adjustment to avoid duplicates
+ . i $d(FMTIME(fmtime)) d  ;
+ . . ZWR FMTIME
+ . . n i s i=fmtime
+ . . f fmtime=i:.000001 q:'$d(FMTIME(fmtime))
+ . s FMTIME(fmtime)=""
  . d log(jlog,"fileman dateTime is: "_fmtime)
  . set @eval@("panels",SYNZI,"vars","fmDateTime")=fmtime ;
  . new hl7time s hl7time=$$fhirThl7^SYNFUTL(effdate)
@@ -474,6 +483,7 @@ testall ; run the panels import on all imported patients
  n cnt s cnt=0
  f  s dfn=$o(@indx@(dfn)) q:+dfn=0  q:cnt>0  d  ;
  . s ien=$o(@indx@(dfn,""))
+ . s ien=3
  . w !,"ien= "_ien
  . q:ien=""
  . s cnt=cnt+1
