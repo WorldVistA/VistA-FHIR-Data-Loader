@@ -184,6 +184,7 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . n CSAMP
  . S CSAMP=$$GET1^DIQ(95.3,$p(loinc,"-"),4)
  . I CSAMP["SER/PLAS" S CSAMP="SERUM"
+ . I CSAMP["Whole blood" S CSAMP="BLOOD"
  . d log(jlog,"Collection sample is: "_CSAMP)
  . s MISC("COLLECTION_SAMPLE")=CSAMP
  . ;
@@ -421,9 +422,9 @@ INITMAPS(LOC) ; initialize mapping table for panels
  ; Panel type is: 24357-6 Urinalysis macro (dipstick) panel - Urine
  S @LOC@(MAP,"CODE","24357-6","URINALYSIS")=""
  ; Panel type is: 57698-3 Lipid panel with direct LDL - Serum or Plasma
- S @LOC@(MAP,"CODE","57698-3","LIPID")=""
+ S @LOC@(MAP,"CODE","57698-3","LIPID PROFILE")=""
  ; Panel type is: 59453-1 Morse Fall Scale panel
- S @LOC@(MAP,"CODE","59453-1","FALLSCALE")=""
+ ;S @LOC@(MAP,"CODE","59453-1","FALLSCALE")=""
  ; Panel type is: 58410-2 CBC panel - Blood by Automated count
  S @LOC@(MAP,"CODE","58410-2","CBC")=""
  ; 
