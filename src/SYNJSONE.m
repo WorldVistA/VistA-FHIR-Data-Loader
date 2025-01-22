@@ -138,7 +138,7 @@ UCODE(C) ; Return \u00nn representation of decimal character value
  Q "\u"_$E(H,$L(H)-3,$L(H))
  ;
 ERRX(ID,VAL) ; Set the appropriate error message
- D ERRXSYNJSON(ID,$G(VAL))
+ D ERRX^SYNJSON(ID,$G(VAL))
  Q
  ;
  ; Portions of this code are public domain, but it was extensively modified
