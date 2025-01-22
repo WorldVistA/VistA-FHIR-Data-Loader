@@ -244,7 +244,7 @@ REALCHAR(C,KEY) ; Return actual character from escaped
  Q C
  ;
 ERRX(ID,VAL) ; Set the appropriate error message
- D ERRXSYNJSON(ID,$G(VAL))
+ D ERRX^SYNJSON(ID,$G(VAL))
  Q
  ;
  ; Portions of this code are public domain, but it was extensively modified

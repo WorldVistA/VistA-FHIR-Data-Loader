@@ -64,7 +64,6 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  i $g(dfn)="" do  quit 0  ; need the patient
  . s result("panels",1,"log",1)="Error, patient not found.. terminating"
  ;
- n FMDATES S FMDATES="" ; array of fileman date/times to avoid collisions
  ;
  new SYNZI s SYNZI=0
  for  set SYNZI=$order(@troot@(SYNZI)) quit:+SYNZI=0  do  ;
@@ -167,11 +166,11 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . set @eval@("panels",SYNZI,"vars","effectiveDateTime")=effdate
  . new fmtime s fmtime=$$fhirTfm^SYNFUTL(effdate)
  . ; time adjustment to avoid duplicates
- . i $d(FMTIME(fmtime)) d  ;
- . . ZWR FMTIME
- . . n i s i=fmtime
- . . f fmtime=i:.000001 q:'$d(FMTIME(fmtime))
- . s FMTIME(fmtime)=""
+ . ;i $d(FMTIME(fmtime)) d  ;
+ . ;. ;ZWR FMTIME
+ . ;. n i s i=fmtime
+ . ;. f fmtime=i:.000001 q:'$d(FMTIME(fmtime))
+ . ;s FMTIME(fmtime)=""
  . d log(jlog,"fileman dateTime is: "_fmtime)
  . set @eval@("panels",SYNZI,"vars","fmDateTime")=fmtime ;
  . new hl7time s hl7time=$$fhirThl7^SYNFUTL(effdate)
@@ -293,7 +292,7 @@ ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
  . i $l(value)<12 s MISCARY("LAB_TEST",VLAB)=value
  . ;
  . d log(lablog,"Return from LAB^ISIIMP12 was: 1^Part of a Lab Panel "_SYNZI)
- . s @eval@("labs",SYNZI,"status","loadstatus")="loaded"
+ . s @eval@("labs",ien,"status","loadstatus")="loaded"
  Q
  ;
 ADJUST(ZV) ; adjust the value for specific text based values
