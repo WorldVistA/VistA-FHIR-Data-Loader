@@ -292,6 +292,8 @@ ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
  . d log(lablog,"result "_zj_" VistA Lab for "_obscode_" is: "_VLAB)
  . i $l(value)<12 s MISCARY("LAB_TEST",VLAB)=value
  . ;
+ . d log(lablog,"Return from LAB^ISIIMP12 was: 1^Part of a Lab Panel "_SYNZI)
+ . s @eval@("labs",SYNZI,"status","loadstatus")="loaded"
  Q
  ;
 ADJUST(ZV) ; adjust the value for specific text based values
@@ -484,7 +486,7 @@ testall ; run the panels import on all imported patients
  n cnt s cnt=0
  f  s dfn=$o(@indx@(dfn)) q:+dfn=0  q:cnt>0  d  ;
  . s ien=$o(@indx@(dfn,""))
- . s ien=3
+ . s ien=4
  . w !,"ien= "_ien
  . q:ien=""
  . s cnt=cnt+1

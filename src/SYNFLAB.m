@@ -31,6 +31,8 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  ; ien is specified for internal calls, where the json is already in a graph
  n root,troot
  s root=$$setroot^SYNWD("fhir-intake")
+ ; first intake all the lab panels
+ d wsIntakePanels^SYNFPAN(.args,,.result,ien)
  ;
  n jtmp,json,jrslt,eval
  ;i $g(ien)'="" if $$loadStatus("labs","",ien)=1 d  q  ;
