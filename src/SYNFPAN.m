@@ -235,7 +235,7 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  set jrslt("result","loaded")=$g(@eval@("panels","status","loaded"))
  set jrslt("result","errors")=$g(@eval@("labs","status","errors"))
  m result("status")=jrslt("result")
- q
+ q 0
  ;
 ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
  ;
