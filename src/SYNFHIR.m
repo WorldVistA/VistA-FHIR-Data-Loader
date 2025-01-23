@@ -381,6 +381,11 @@ FILE(directory) ; [Public] Load files from the file system; OPT: SYN LOAD FILES
  . write ?60,synreturn("labsStatus","errors")
  . write !
  . ;
+ . write "Lab Panels"
+ . write ?30,$g(synreturn("panelsStatus","loaded"))
+ . write ?60,$g(synreturn("panelsStatus","errors"))
+ . write !
+ . ;
  . write "Meds"
  . write ?30,synreturn("medsStatus","loaded")
  . write ?60,synreturn("medsStatus","errors")

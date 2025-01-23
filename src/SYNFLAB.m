@@ -19,7 +19,9 @@ importLabs(rtn,ien,args) ; entry point for loading labs for a patient
  s rtn("labsStatus","status")=$g(grtn("status","status"))
  s rtn("labsStatus","loaded")=$g(grtn("status","loaded"))
  s rtn("labsStatus","errors")=$g(grtn("status","errors"))
- ;b
+ s rtn("panelsStatus","loaded")=$g(grtn("status","panelsLoaded"))
+ s rtn("panelsStatus","errors")=$g(grtn("status","panelsErrors"))
+;b
  ;
  ;
  q
@@ -32,7 +34,8 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  n root,troot
  s root=$$setroot^SYNWD("fhir-intake")
  ; first intake all the lab panels
- d wsIntakePanels^SYNFPAN(.args,,.result,ien)
+ ;d wsIntakePanels^SYNFPAN(.args,,.result,ien)
+ d importPanels^SYNFPAN(.result,ien,.args)
  ;
  n jtmp,json,jrslt,eval
  ;i $g(ien)'="" if $$loadStatus("labs","",ien)=1 d  q  ;

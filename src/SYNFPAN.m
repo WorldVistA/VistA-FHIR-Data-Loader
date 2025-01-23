@@ -115,12 +115,12 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . if paneltype="" set paneltype=$get(@json@("entry",SYNZI,"resource","code","coding",1,"display"))
  . ;do log(jlog,"Panel type is: "_paneltype)
  . do log(jlog,"Panel type is: "_obsdisplay)
- . set @eval@("panel",SYNZI,"vars","type")=obsdisplay
+ . set @eval@("panels",SYNZI,"vars","type")=obsdisplay
  . ;
  . ; determine the id of the resource
  . ;
  . new id set id=$get(@json@("entry",SYNZI,"resource","id"))
- . set @eval@("panel",SYNZI,"vars","id")=id
+ . set @eval@("panels",SYNZI,"vars","id")=id
  . d log(jlog,"ID is: "_id)
  . ;
  . ;Here's the spec for uploading a panel:
@@ -281,6 +281,7 @@ ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
  . ;
  . d log(lablog,"Return from LAB^ISIIMP12 was: 1^Part of a Lab Panel "_SYNZI)
  . s @eval@("labs",ien,"status","loadstatus")="loaded"
+ . s @eval@("labs","status","loaded")=$g(@eval@("labs","status","loaded"))+1
  Q
  ;
 ADJUST(ZV) ; adjust the value for specific text based values
