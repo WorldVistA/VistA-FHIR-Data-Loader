@@ -38,10 +38,6 @@ wsIntakeVitals(args,body,result,ien) ; web service entry (post)
  . ;d getIntakeFhir^SYNFHIR("json",,"Observation",ien,1)
  . s troot=$na(@root@(ien,"type","Observation"))
  . s eval=$na(@root@(ien,"load"))
- e  q 0  ; sending json to this routine in BODY is not supported
- ;. ;s args("load")=0
- ;. merge jtmp=BODY
- ;. do decode^SYNJSONE("jtmp","json")
  s json=$na(@root@(ien,"json"))
  i '$d(json) q 0  ;
  ;
@@ -235,13 +231,7 @@ wsIntakeVitals(args,body,result,ien) ; web service entry (post)
  set jrslt("result","status")="ok"
  set jrslt("result","loaded")=$g(@eval@("vitals","status","loaded"))
  set jrslt("result","errors")=$g(@eval@("vitals","status","errors"))
- i $g(ien)'="" d  ; called internally
- . ;m result=eval
- . m result("status")=jrslt("result")
- . ;b
- e  d  ;
- . d encode^SYNJSONE("jrslt","result")
- . set HTTPRSP("mime")="application/json"
+ m result("status")=jrslt("result")
  q 1
  ;
 log(ary,txt) ; adds a text line to @ary@("log")

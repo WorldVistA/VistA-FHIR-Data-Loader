@@ -28,10 +28,6 @@ wsIntakeConditions(args,body,result,ien)        ; web service entry (post)
  ;. s result("conditionsStatus","status")="alreadyLoaded"
  i $g(ien)'="" d  ; internal call
  . d getIntakeFhir^SYNFHIR("json",,"Condition",ien,1)
- e  d  ;
- . s args("load")=0
- . merge jtmp=BODY
- . do decode^SYNJSONE("jtmp","json")
  i '$d(json) q  ;
  ;
  ; determine the patient
@@ -228,15 +224,7 @@ wsIntakeConditions(args,body,result,ien)        ; web service entry (post)
  set jrslt("result","status")="ok"
  set jrslt("result","loaded")=$g(eval("conditions","status","loaded"))
  set jrslt("result","errors")=$g(eval("conditions","status","errors"))
- i $g(ien)'="" d  ; called internally
- . ;m result=eval
- . m result("status")=jrslt("result")
- . ;m result("dfn")=dfn
- . ;m result("ien")=ien
- . ;b
- e  d  ;
- . d encode^SYNJSONE("jrslt","result")
- . set HTTPRSP("mime")="application/json"
+ m result("status")=jrslt("result")
  q
  ;
 log(ary,txt)    ; adds a text line to @ary@("log")

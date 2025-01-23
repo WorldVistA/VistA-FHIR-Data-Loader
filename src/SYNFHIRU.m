@@ -34,7 +34,7 @@ wsUpdatePatient(ARGS,BODY,RESULT)    ; recieve from updatepatient
  . s HTTPERR=400
  ;
  n gr1,zi,cnt,rien ; initial entries
- do decode^SYNJSONE("json","gr1")
+ do DECODE^XLFJSON("json","gr1")
  ;
  ; shift resource numbers to fit in graph
  ;
@@ -80,7 +80,7 @@ wsUpdatePatient(ARGS,BODY,RESULT)    ; recieve from updatepatient
  . do importCarePlan^SYNFCP(.return,ien,.ARGS)
  ;
  k SYNBUNDLE
- do encode^SYNJSONE("return","RESULT")
+ do ENCODE^XLFJSON("return","RESULT")
  set HTTPRSP("mime")="application/json"
  ;
  quit 1

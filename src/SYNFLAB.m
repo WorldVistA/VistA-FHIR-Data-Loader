@@ -44,9 +44,6 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  e  q 0  ; sending not decoded json in BODY to this routine is not done
  ; todo: locate the patient and add the labs in BODY to the graph
  ;. ;s args("load")=0
- ;. merge jtmp=BODY
- ;. do decode^SYNJSONE("jtmp","json")
- ;. s troot=$na(@root@(ien,"type","Observation"))
  i '$d(@troot) q 0  ;
  s json=$na(@root@(ien,"json"))
  ;
@@ -260,13 +257,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  set jrslt("result","status")="ok"
  set jrslt("result","loaded")=$g(@eval@("labs","status","loaded"))
  set jrslt("result","errors")=$g(@eval@("labs","status","errors"))
- i $g(ien)'="" d  ; called internally
- . ;m result=eval
- . m result("status")=jrslt("result")
- . ;b
- e  d  ;
- . d encode^SYNJSONE("jrslt","result")
- . set HTTPRSP("mime")="application/json"
+ m result("status")=jrslt("result")
  q 1
  ;
 log(ary,txt) ; adds a text line to @ary@("log")

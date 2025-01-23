@@ -1,5 +1,5 @@
-SYNFENC ;ven/gpl - fhir loader utilities ;2019-07-23  3:28 PM
- ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 13
+SYNFENC ;ven/gpl - fhir loader utilities ;Aug 15, 2019@13:57:48
+ ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 12
  ;
  ; Authored by George P. Lilly 2017-2019
  ;
@@ -222,13 +222,7 @@ wsIntakeEncounters(args,body,result,ien)        ; web service entry (post)
  set jrslt("result","status")="ok"
  set jrslt("result","loaded")=$g(@eval@("encounters","status","loaded"))
  set jrslt("result","errors")=$g(@eval@("encounters","status","errors"))
- i $g(ien)'="" d  ; called internally
- . ;m result=@eval
- . m result("status")=jrslt("result")
- . ;b
- e  d  ;
- . d encode^SYNJSONE("jrslt","result")
- . set HTTPRSP("mime")="application/json"
+ m result("status")=jrslt("result")
  q
  ;
 log(ary,txt)    ; adds a text line to @ary@("log")

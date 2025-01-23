@@ -1,5 +1,5 @@
-SYNFIMM ;ven/gpl - fhir loader utilities ;2018-05-08  4:38 PM
- ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 13
+SYNFIMM ;ven/gpl - fhir loader utilities ;Aug 15, 2019@15:21:45
+ ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 12
  ;
  ; Authored by George P. Lilly 2017-2018
  ;
@@ -25,10 +25,6 @@ wsIntakeImmu(args,body,result,ien) ; web service entry (post)
  ;. s result("immunizationsStatus","status")="alreadyLoaded"
  i $g(ien)'="" d  ; internal call
  . d getIntakeFhir^SYNFHIR("json",,"Immunization",ien,1)
- e  d  ;
- . s args("load")=0
- . merge jtmp=BODY
- . do decode^SYNJSONE("jtmp","json")
  i '$d(json) q  ;
  ;
  ; determine the patient
@@ -167,13 +163,7 @@ wsIntakeImmu(args,body,result,ien) ; web service entry (post)
  set jrslt("result","status")="ok"
  set jrslt("result","loaded")=$g(eval("immunizations","status","loaded"))
  set jrslt("result","errors")=$g(eval("immunizations","status","errors"))
- i $g(ien)'="" d  ; called internally
- . ;m result=eval
- . m result("status")=jrslt("result")
- . ;b
- e  d  ;
- . d encode^SYNJSONE("jrslt","result")
- . set HTTPRSP("mime")="application/json"
+ m result("status")=jrslt("result")
  q
  ;
 log(ary,txt) ; adds a text line to @ary@("log")
