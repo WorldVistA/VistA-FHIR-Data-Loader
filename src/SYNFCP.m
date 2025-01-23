@@ -1,5 +1,5 @@
-SYNFCP ;ven/gpl - fhir loader utilities ;2018-08-17  3:27 PM
- ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 13
+SYNFCP ;ven/gpl - fhir loader utilities ;Aug 15, 2019@14:28:47
+ ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 12
  ;
  ; Authored by George P. Lilly 2017-2019
  ;
@@ -364,15 +364,7 @@ wsIntakeCareplan(args,body,result,ien)        ; web service entry (post)
  set jrslt("result","status")="ok"
  set jrslt("result","loaded")=$g(@eval@("careplan","status","loaded"))
  set jrslt("result","errors")=$g(@eval@("careplan","status","errors"))
- i $g(ien)'="" d  ; called internally
- . ;m result=@eval
- . m result("status")=jrslt("result")
- . ;m result("dfn")=dfn
- . ;m result("ien")=ien
- . ;b
- e  d  ;
- . d encode^SYNJSONE("jrslt","result")
- . set HTTPRSP("mime")="application/json"
+ m result("status")=jrslt("result")
  q
  ;
 log(ary,txt)    ; adds a text line to @ary@("log")

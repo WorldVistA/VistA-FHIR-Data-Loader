@@ -23,7 +23,7 @@ wsPostFHIR(ARGS,BODY,RESULT,ien)    ; recieve from addpatient
  . set ien=$order(@root@(" "),-1)+1
  . set gr=$name(@root@(ien,"json"))
  . merge json=BODY
- . do decode^SYNJSON("json",gr)
+ . do DECODE^XLFJSON("json",gr)
   . s @root@("filename",ien)="" ; gpl
  . kill BODY  ; remove it from symbol table as it is too big
  ;
@@ -56,7 +56,7 @@ wsPostFHIR(ARGS,BODY,RESULT,ien)    ; recieve from addpatient
  . do importProcedures^SYNFPROC(.return,ien,.ARGS)
  . do importCarePlan^SYNFCP(.return,ien,.ARGS)
  ;
- do encode^SYNJSON("return","RESULT")
+ do ENCODE^XLFJSON("return","RESULT")
  set HTTPRSP("mime")="application/json"
  ;
  quit 1
@@ -183,35 +183,6 @@ clearIndexes(gn)        ; kill the indexes
  k @gn@("OPS")
  q
  ;
-wsShow(rtn,filter)      ; web service to show the fhir
- new type set type=$get(filter("type"))
- new root set root=$$setroot^SYNWD("fhir-intake")
- ;
- new ien set ien=$g(filter("ien"))
- if ien="" d  ;
- . n icn
- . s icn=$g(filter("icn"))
- . q:icn=""
- . s ien=$o(@root@("ICN",icn,""))
- if ien="" d  ;
- . n dfn
- . s dfn=$g(filter("dfn"))
- . q:dfn=""
- . s ien=$o(@root@("DFN",dfn,""))
- if ien="" quit  ;
- ;
- new jroot set jroot=$name(@root@(ien,"json"))
- ;
- new jtmp,juse
- set juse=jroot
- if type'="" do  ;
- . do getIntakeFhir("jtmp",$g(filter("bundle")),type,ien,1)
- . ;do getIntakeFhir("jtmp",,type,ien,1)
- . set juse="jtmp"
- do encode^SYNJSON(juse,"rtn")
- s HTTPRSP("mime")="application/json"
- quit
- ;
 getIntakeFhir(rtn,id,type,ien,plain)    ; returns fhir vars for patient bundle=id resourceType type
  ; id is the bundle date range to be returned, optional
  ; if id is not passed, all resources of the type are returned
@@ -256,7 +227,7 @@ fhir2graph(in,out)      ; transforms fhir to a graph
  ; detects if json parser has been run and will run it if not
  ;
  new json
- if $ql($q(@in@("")))<2 do decode^SYNJSON(in,"json") set in="json"
+ if $ql($q(@in@("")))<2 do DECODE^XLFJSON(in,"json") set in="json"
  ;
  new rootj
  set rootj=$na(@in@("entry"))
@@ -358,14 +329,14 @@ FILE(directory) ; [Public] Load files from the file system; OPT: SYN LOAD FILES
  . s @root@("filename",file,ien)=""
  . set gr=$name(@root@(ien,"json"))
  . s body=$na(^TMP("SYNFILE",$J))
- . do decode^SYNJSON(body,gr)
+ . do DECODE^XLFJSON(body,gr)
  . ;merge body=^TMP("SYNFILE",$J) ;don't need to merge because we decoded
  . ;new % set %=$$wsPostFHIR(.args,.body,.synjsonreturn) ; % always comes out as 1. We will ignore it.
  . new % set %=$$wsPostFHIR(.args,.body,.synjsonreturn,ien) ; % always comes out as 1. We will ignore it.
  . ;
  . ; Get the status back from JSON
  . new synreturn,synjsonerror
- . do decode^SYNJSON($na(synjsonreturn),$na(synreturn),$na(synjsonerror))
+ . do DECODE^XLFJSON($na(synjsonreturn),$na(synreturn),$na(synjsonerror))
  . if $data(synjsonerror) write "There is an error decoding the return. Debug me." quit
  . ;
  . if $get(synreturn("loadMessage"))["Duplicate" write "Patient Already Loaded",! quit

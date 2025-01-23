@@ -29,10 +29,6 @@ wsIntakeAllergy(args,body,result,ien) ; web service entry (post)
  ;. s result("allergytatus","status")="alreadyLoaded"
  i $g(ien)'="" d  ; internal call
  . d getIntakeFhir^SYNFHIR("json",,"AllergyIntolerance",ien,1)
- e  d  ;
- . ;s args("load")=0
- . merge jtmp=BODY
- . do decode^SYNJSONE("jtmp","json")
  ;
  i '$d(json) q  ;
  ;
@@ -199,15 +195,7 @@ wsIntakeAllergy(args,body,result,ien) ; web service entry (post)
  set jrslt("result","status")="ok"
  set jrslt("result","loaded")=$g(eval("allergy","status","loaded"))
  set jrslt("result","errors")=$g(eval("allergy","status","errors"))
- i $g(ien)'="" d  ; called internally
- . ;m result=eval
- . m result("status")=jrslt("result")
- . ;m result("dfn")=dfn
- . ;m result("ien")=ien
- . ;b
- e  d  ;
- . d encode^SYNJSONE("jrslt","result")
- . set HTTPRSP("mime")="application/json"
+ m result("status")=jrslt("result")
  q
  ;
 USERNAME() ; extrinsic returns the name of the user

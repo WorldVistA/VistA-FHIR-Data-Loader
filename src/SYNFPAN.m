@@ -41,13 +41,7 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . ;b
  . s eval=$na(@root@(ien,"load")) ; move eval to the graph
  . k @eval
- . ;d getIntakeFhir^SYNFHIR("json",,"Observation",ien,1)
- e  q 0  ; sending not decoded json in BODY to this routine is not done
  ; todo: locate the patient and add the labs in BODY to the graph
- ;. ;s args("load")=0
- ;. merge jtmp=BODY
- ;. do decode^SYNJSONE("jtmp","json")
- ;. s troot=$na(@root@(ien,"type","Observation"))
  i '$d(@troot) q 0  ;
  s json=$na(@root@(ien,"json"))
  ;
@@ -240,13 +234,7 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  set jrslt("result","status")="ok"
  set jrslt("result","loaded")=$g(@eval@("panels","status","loaded"))
  set jrslt("result","errors")=$g(@eval@("labs","status","errors"))
- i $g(ien)'="" d  ; called internally
- . ;m result=eval
- . m result("status")=jrslt("result")
- . ;b
- e  d  ;
- . d encode^SYNJSONE("jrslt","result")
- . set HTTPRSP("mime")="application/json"
+ m result("status")=jrslt("result")
  q
  ;
 ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
@@ -417,7 +405,7 @@ MISC()
  . ;i vistalab="INFLUENZA B RNA" Q  ; likewise
  . ;i vistalab="METAPNEUMOVIRUS RNA" Q  ; likewise
  . ;
- q
+ q 0
  ;
 INITMAPS(LOC) ; initialize mapping table for panels
  ;

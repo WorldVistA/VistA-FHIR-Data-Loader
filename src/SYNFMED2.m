@@ -150,15 +150,7 @@ wsIntakeMeds(args,body,result,ien)      ; web service entry (post)
  set jrslt("result","status")="ok"
  set jrslt("result","loaded")=$g(@eval@("meds","status","loaded"))
  set jrslt("result","errors")=$g(@eval@("meds","status","errors"))
- i $g(ien)'="" d  ; called internally
- . ;m result=@eval
- . m result("status")=jrslt("result")
- . ;m result("dfn")=dfn
- . ;m result("ien")=ien
- . ;b
- e  d  ;
- . d encode^SYNJSONE("jrslt","result")
- . set HTTPRSP("mime")="application/json"
+ m result("status")=jrslt("result")
  q
  ;
 log(ary,txt)    ; adds a text line to @ary@("log")

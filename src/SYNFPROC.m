@@ -1,5 +1,5 @@
-SYNFPROC ;ven/gpl - fhir loader utilities ;2018-08-17  3:28 PM
- ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 13
+SYNFPROC ;ven/gpl - fhir loader utilities ;Aug 15, 2019@14:27:49
+ ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 12
  ;
  ; Authored by George P. Lilly 2017-2018
  ;
@@ -162,9 +162,6 @@ wsIntakeProcedures(args,body,result,ien) ; web service entry (post)
  . m result("status")=jrslt("result")
  . ;m result("dfn")=dfn
  . ;m result("ien")=ien
- e  d  ;
- . d encode^SYNJSONE("jrslt","result")
- . set HTTPRSP("mime")="application/json"
  q
  ;
 log(ary,txt)  ; adds a text line to @ary@("log")
