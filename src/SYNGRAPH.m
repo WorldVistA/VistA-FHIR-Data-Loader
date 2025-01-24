@@ -1,5 +1,5 @@
 SYNFGRAPH       ;ven/gpl - fhir loader utilities ;2018-08-17  3:26 PM
- ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 13
+ ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 12
  ;
  ; Authored by George P. Lilly 2017-2018
  ;
@@ -81,45 +81,6 @@ getGraphMap(rtn,graph,ipred,iobj,opred,oobj) ; retrieve a section of the graph
  . m @rtn=@groot@(gien)
  i $d(@rtn) q 1
  q "-1^No Match"
- ;
-getGraph(url,gname) ; get a graph from a web service
- ;
- q:'$d(gname)
- i $$rootOf^SYNWD(gname)'=-1 d  q  ;
- . w !,"error, graph exists: "_gname
- n root s root=$$setroot^SYNWD(gname)
- n %,json,grf
- s %=$$%^%WC(.json,"GET",url)
- w !,"result= ",%
- i '$d(json) d  q  ;
- . w !,"error, nothing returned"
- d decode^SYNJSONE("json","grf")
- m @root=grf
- n indx,rindx
- s indx=$o(@root@(0))
- s rindx=$na(@root@(indx))
- s @root@("index","root")=rindx
- d index(rindx)
- q
- ;
-wsGetGraph(RTN,FILTER) ; web service returns the requested graph FILTER("graph")="graph"
- ; this is the server side of getGraph above
- n graph s graph=$g(FILTER("graph"))
- i graph="" d  q  ;
- . s RTN="-1^please specify a graph"
- ;n root s root=$$rootOf^SYNWD(graph)
- n root s root=$$setroot^SYNWD(graph)
- i +root=-1 d  q  ;
- . s RTN="-1^graph not found"
- ;
- ;n json
- ;s json=$$setroot^SYNWD(graph_"-json")
- ;i +json'=-1 s RTN=json q  ;
- ;s json=$$setroot^SYNWD(graph_"-json")
- S RTN=$na(^TMP("SYNOUT",$J))
- K @RTN
- d encode^SYNJSONE(root,RTN)
- q
  ;
 loincMap() ; create the lonic-lab-map
  n root s root=$$setroot^SYNWD("loinc-lab-map")
