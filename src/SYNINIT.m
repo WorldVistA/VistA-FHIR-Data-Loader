@@ -56,7 +56,7 @@ PROV(rePopulate) ;[Public $$] Create Generic Provider for Synthetic Patients
  S C0XFDA(200,"?+1,",20.4)="123456"
  ;
  ; Primary Menu
- S C0XFDA(200,"?+1,",201)="`"_$$FIND1^DIC(19,,"QX","XUCORE","B")
+ S C0XFDA(200,"?+1,",201)="`"_$$FIND1^DIC(19,,"QX","SYNMENU","B")
  ;
  ; Secondary Menu (CPRS, etc)
  S C0XFDA(200.03,"?+5,?+1,",.01)="`"_$$FIND1^DIC(19,,"QX","OR CPRS GUI CHART","B")
@@ -126,7 +126,7 @@ PHARM(rePopulate) ;[Public $$] Create Generic Provider for Synthetic Patients
  S C0XFDA(200,"?+1,",20.4)="123456"
  ;
  ; Primary Menu
- S C0XFDA(200,"?+1,",201)="`"_$$FIND1^DIC(19,,"QX","XUCORE","B")
+ S C0XFDA(200,"?+1,",201)="`"_$$FIND1^DIC(19,,"QX","SYNMENU","B")
  ;
  ; Secondary Menu (CPRS, etc)
  S C0XFDA(200.03,"?+5,?+1,",.01)="`"_$$FIND1^DIC(19,,"QX","OR CPRS GUI CHART","B")
