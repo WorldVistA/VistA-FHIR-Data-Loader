@@ -45,6 +45,7 @@ wsPostFHIR(ARGS,BODY,RESULT,ien)    ; recieve from addpatient
  ;
  if rdfn'="" do  ; patient creation was successful
  . if $g(ARGS("load"))="" s ARGS("load")=1
+ . new DIQUIET set DIQUIET=1 ; Fileman don't talk
  . do importLabs^SYNFLAB(.return,ien,.ARGS)
  . do importVitals^SYNFVIT(.return,ien,.ARGS)
  . do importEncounters^SYNFENC(.return,ien,.ARGS)
@@ -307,7 +308,7 @@ FILE(directory) ; [Public] Load files from the file system; OPT: SYN LOAD FILES
  . if file["Information" quit  ; We don't process information files yet...
  . ;
  . if $d(@root@("filename",file)) d  q  ;
- . . w !,file," is already loaded, quiting"
+ . . w !,file," is already loaded.",!
  . ;
  . write "Loading ",file,"...",!
  . kill ^TMP("SYNFILE",$J)
@@ -342,6 +343,7 @@ FILE(directory) ; [Public] Load files from the file system; OPT: SYN LOAD FILES
  . if $get(synreturn("loadMessage"))["Duplicate" write "Patient Already Loaded",! quit
  . ;
  . write "Loaded with following data: ",!
+ . write "File: ",file,!
  . write "DFN: ",synreturn("dfn"),?20,"ICN: ",synreturn("icn"),?50,"Graph Store IEN: ",synreturn("ien"),!
  . write "--------------------------------------------------------------------------",!
  . write "Type",?30,"Loaded?",?60,"Error",!
