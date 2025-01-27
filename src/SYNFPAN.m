@@ -29,7 +29,7 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  ; result is json and summarizes what was done
  ; args include patientId
  ; ien is specified for internal calls, where the json is already in a graph
- D INITMAPS^SYNQLDM ; make sure the maps are deployed
+ ;
  n root,troot
  s root=$$setroot^SYNWD("fhir-intake")
  ;
@@ -215,11 +215,11 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . . d log(jlog,"Calling LAB^ISIIMP12 to add panel")
  . . n RESTA,RC
  . . s (RESTA,RC)=""
- . . i $g(DEBUG)=1 ZWRITE MISC 
+ . . ;i $g(DEBUG)=1 ZWRITE MISC 
  . . S RESTA=$$LAB^ISIIMP12(.RC,.MISC)
  . . d log(jlog,"Return from LAB^ISIIMP12 was: "_$g(RESTA))
- . . i $g(DEBUG)=1 ZWRITE RESTA
- . . i $g(DEBUG)=1 ZWRITE RC
+ . . ;i $g(DEBUG)=1 ZWRITE RESTA
+ . . ;i $g(DEBUG)=1 ZWRITE RC
  . . if +$g(RESTA)=1 do  ;
  . . . s @eval@("panels","status","loaded")=$g(@eval@("panels","status","loaded"))+1
  . . . s @eval@("panels",SYNZI,"status","loadstatus")="loaded"
@@ -423,18 +423,9 @@ INITMAPS(LOC) ; initialize mapping table for panels
  S @LOC@(MAP,"CODE","24357-6","URINALYSIS")=""
  ; Panel type is: 57698-3 Lipid panel with direct LDL - Serum or Plasma
  S @LOC@(MAP,"CODE","57698-3","LIPID PROFILE")=""
- ; Panel type is: 59453-1 Morse Fall Scale panel
- ;S @LOC@(MAP,"CODE","59453-1","FALLSCALE")=""
  ; Panel type is: 58410-2 CBC panel - Blood by Automated count
  S @LOC@(MAP,"CODE","58410-2","CBC")=""
  ; 
- S MAP="csample"
- S @LOC@(MAP,"CODE","24321-2","plasma")=""
- S @LOC@(MAP,"CODE","24323-8","plasma")=""
- S @LOC@(MAP,"CODE","57698-3","plasma")=""
- S @LOC@(MAP,"CODE","24360-0","blood")=""
- S @LOC@(MAP,"CODE","51990-0","blood")=""
- S @LOC@(MAP,"CODE","58410-2","blood")=""
  Q
  ;
 log(ary,txt) ; adds a text line to @ary@("log")
@@ -507,7 +498,7 @@ panelsum ; summary of panel tests for patient ien pien
  . . . s table(loinc_" "_text)=1
  . . . w !,"patient= "_zzi_" entry= "_zi,!
  . . . n rptary m rptary=@root@(zzi,"json","entry",zi,"resource")
- . . . zwrite rptary
- zwrite table
+ . . . ;zwrite rptary
+ ;zwrite table
  q
  ;
