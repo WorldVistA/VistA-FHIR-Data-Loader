@@ -243,7 +243,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . . ;LABADD(RETSTA,DHPPAT,DHPLOC,DHPTEST,DHPRSLT,DHPRSDT) ;Create lab test
  . . D LABADD^SYNDHP63(.RETSTA,DHPPAT,DHPLOC,DHPLAB,DHPOBS,DHPDTM,DHPLOINC)     ; labs update
  . . d log(jlog,"Return from LABADD^ZZDHP63 was: "_$g(RETSTA))
- . . i $g(DEBUG)=1 ZWRITE RETSTA
+ . . ;i $g(DEBUG)=1 ZWRITE RETSTA
  . . if +$g(RETSTA)=1 do  ;
  . . . s @eval@("labs","status","loaded")=$g(@eval@("labs","status","loaded"))+1
  . . . s @eval@("labs",zi,"status","loadstatus")="loaded"
