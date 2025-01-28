@@ -181,14 +181,14 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . . s recien=$o(^LAB(60,"B",DHPLAB,""))
  . . d log(jlog,"VistA Lab is: "_vistalab)
  . ;
- . ; the following was made obsolete by changes Sam made to the Lab Data Import
- . ;n xform s xform=$$GET1^DIQ(60,recien_",",410)
- . ;n dec s dec=0
- . ;i xform["S Q9=" d
- . ;. s dec=+$p($p(xform,"""",2),",",3)
- . ;;i $l($p(DHPOBS,".",2))>1 d
- . ;i $l($p(DHPOBS,".",2))>0 d
- . ;. s DHPOBS=$s(dec<4:$j(DHPOBS,1,dec),dec>3:$j(DHPOBS,1,3),1:$j(DHPOBS,1,0)) ; fix results with too many decimal places
+ . ; Collection sample
+ . ;
+ . n CSAMP
+ . S CSAMP=$$GET1^DIQ(95.3,$p(loinc,"-"),4)
+ . I CSAMP["SER/PLAS" S CSAMP="SERUM"
+ . I CSAMP["Whole blood" S CSAMP="BLOOD"
+ . d log(jlog,"Collection sample is: "_CSAMP)
+ . ;
  . ; added for Covid tests
  . i DHPOBS="" d  ; no quant value
  . . n vtxt ; value text
@@ -241,7 +241,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . . d log(jlog,"Calling LABADD^SYNDHP63 to add lab")
  . . ;new (DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPPROV,DHPLOC,DHPLOINC,DHPLAB,DUZ,DT,U,jlog,ien,zi,eval)
  . . ;LABADD(RETSTA,DHPPAT,DHPLOC,DHPTEST,DHPRSLT,DHPRSDT) ;Create lab test
- . . D LABADD^SYNDHP63(.RETSTA,DHPPAT,DHPLOC,DHPLAB,DHPOBS,DHPDTM,DHPLOINC)     ; labs update
+ . . D LABADD^SYNDHP63(.RETSTA,DHPPAT,DHPLOC,DHPLAB,DHPOBS,DHPDTM,DHPLOINC,CSAMP)     ; labs update
  . . d log(jlog,"Return from LABADD^ZZDHP63 was: "_$g(RETSTA))
  . . ;i $g(DEBUG)=1 ZWRITE RETSTA
  . . if +$g(RETSTA)=1 do  ;
@@ -324,7 +324,7 @@ labsum ; summary of lab tests for patient ien pien
  . . . s table(loinc_" "_text)=1
  . . . w !,"patient= "_zzi_" entry= "_zi,!
  . . . n rptary m rptary=@root@(zzi,"json","entry",zi,"resource")
- . . . zwrite rptary
- zwrite table
+ . . . ;zwrite rptary
+ ;zwrite table
  q
  ;
