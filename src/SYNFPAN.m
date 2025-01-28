@@ -40,8 +40,11 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . s troot=$na(@root@(ien,"type","DiagnosticReport"))
  . ;b
  . s eval=$na(@root@(ien,"load")) ; move eval to the graph
- . k @eval
+ . ;k @eval  ; this is to clear the load log during testing
  ; todo: locate the patient and add the labs in BODY to the graph
+ ;   this is for the use case when we are processing an update to
+ ;   the patient rather than the initial load
+ ;
  i '$d(@troot) q 0  ;
  s json=$na(@root@(ien,"json"))
  ;
@@ -67,7 +70,7 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . new jlog set jlog=$name(@eval@("panels",SYNZI))
  . ;k @jlog
  . ;
- . ; insure that the resourceType is DiagnosticReports
+ . ; ensure that the resourceType is DiagnosticReports
  . ;
  . new type set type=$get(@json@("entry",SYNZI,"resource","resourceType"))
  . ;if type'="DiagnosticReport" do  quit  ;
@@ -80,29 +83,10 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . ;
  . ;new obstype set obstype=$get(@json@("entry",SYNZI,"resource","category",1,"coding",1,"code"))
  . new catcode set catcode=$get(@json@("entry",SYNZI,"resource","category",1,"coding",1,"code"))
- . q:catcode'["LAB"
- . new obstype,obsdisplay,loinc s (obstype,obsdisplay,loinc)=""
- . if obstype="" do  ; category is missing, try mapping the code
- . . new trycode,trydisp,tryy
- . . set trycode=$g(@json@("entry",SYNZI,"resource","code","coding",1,"code"))
- . . set loinc=trycode
- . . set trydisp=$g(@json@("entry",SYNZI,"resource","code","coding",1,"display"))
- . . ;b
- . . ;s tryy=$$loinc2sct(trycode)
- . . ;if tryy="" d  quit  ;
- . . ;. d log(jlog,"Cannot determin DiagnosticReport Category ; code is: "_trycode_" "_trydisp)
- . . ;if tryy'="" set obstype="panel"
- . . if trydisp["panel" d  ;
- . . . s obstype="panel"
- . . . s obsdisplay=trycode_"^"_trydisp
- . . e  s obstype=obsdisplay
- . . ;d log(jlog,"Derived category is "_obstype)
- . ;
- . if obstype'="panel" do  quit  ;
- . . ;set @eval@("panels",SYNZI,"vars","observationCategory")=obsdisplay
- . . ;do log(jlog,"DiagnosticReport Category is not panel, skipping")
- . set @eval@("panels",SYNZI,"vars","observationCategory")=obsdisplay
- . set @eval@("panels",SYNZI,"vars","resourceType")=type
+ . q:$$UP^XLFSTR(catcode)'["LAB"
+ . new loinc s loinc=""
+ . set loinc=$g(@json@("entry",SYNZI,"resource","code","coding",1,"code"))
+ . d log(jlog,"Panel loinc code is  "_loinc)
  . ;
  . ; see if this resource has already been loaded. if so, skip it
  . ;
@@ -113,9 +97,9 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . ;
  . new paneltype set paneltype=$get(@json@("entry",SYNZI,"resource","code","text"))
  . if paneltype="" set paneltype=$get(@json@("entry",SYNZI,"resource","code","coding",1,"display"))
- . ;do log(jlog,"Panel type is: "_paneltype)
- . do log(jlog,"Panel type is: "_obsdisplay)
- . set @eval@("panels",SYNZI,"vars","type")=obsdisplay
+ . do log(jlog,"Panel type is: "_paneltype)
+ . ;do log(jlog,"Panel type is: "_obsdisplay)
+ . set @eval@("panels",SYNZI,"vars","type")=paneltype
  . ;
  . ; determine the id of the resource
  . ;
@@ -239,27 +223,26 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  ;
 ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
  ;
- d  ;
- . new obscode set obscode=$get(@json@("entry",ien,"resource","code","coding",1,"code"))
- . do log(lablog,"result "_zj_" code is: "_obscode)
- . do log(jlog,"result "_zj_" code is: "_obscode)
- . set @eval@("labs",SYNZI,"vars",zj_" code")=obscode
- . ;
- . ;
- . new codesystem set codesystem=$get(@json@("entry",ien,"resource","code","coding",1,"system"))
- . do log(jlog,"result "_zj_" code system is: "_codesystem)
- . do log(lablog,"result "_zj_" code system is: "_codesystem)
- . set @eval@("labs",SYNZI,"vars",zj_" codeSystem")=codesystem
- . ;
- . ; determine the value and units
- . ;
- . new value set value=$get(@json@("entry",ien,"resource","valueQuantity","value"))
- . if value="" d  ;
- . . new sctcode,scttxt
- . . s sctcode=$get(@json@("entry",ien,"resource","valueCodeableConcept","coding",1,"code"))
- . . s scttxt=$get(@json@("entry",ien,"resource","valueCodeableConcept","coding",1,"display"))
- . . s value=sctcode_"^"_scttxt
- . . d ADJUST(.value)
+ new obscode set obscode=$get(@json@("entry",ien,"resource","code","coding",1,"code"))
+ do log(lablog,"result "_zj_" code is: "_obscode)
+ do log(jlog,"result "_zj_" code is: "_obscode)
+ set @eval@("labs",SYNZI,"vars",zj_" code")=obscode
+ ;
+ ;
+ new codesystem set codesystem=$get(@json@("entry",ien,"resource","code","coding",1,"system"))
+ do log(jlog,"result "_zj_" code system is: "_codesystem)
+ do log(lablog,"result "_zj_" code system is: "_codesystem)
+ set @eval@("labs",SYNZI,"vars",zj_" codeSystem")=codesystem
+ ;
+ ; determine the value and units
+ ;
+ new value set value=$get(@json@("entry",ien,"resource","valueQuantity","value"))
+ if value="" d  ;
+ . new sctcode,scttxt
+ . s sctcode=$get(@json@("entry",ien,"resource","valueCodeableConcept","coding",1,"code"))
+ . s scttxt=$get(@json@("entry",ien,"resource","valueCodeableConcept","coding",1,"display"))
+ . s value=sctcode_"^"_scttxt
+ . d ADJUST(.value)
  . do log(jlog,"result "_zj_" value is: "_value)
  . do log(lablog,"result "_zj_" value is: "_value)
  . set @eval@("labs",SYNZI,"vars",zj_" value")=value
@@ -277,7 +260,7 @@ ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
  . . do log(lablog,"result "_zj_" VistA Lab not found for loinc="_obscode)
  . d log(jlog,"result "_zj_" VistA Lab for "_obscode_" is: "_VLAB)
  . d log(lablog,"result "_zj_" VistA Lab for "_obscode_" is: "_VLAB)
- . i $l(value)<12 s MISCARY("LAB_TEST",VLAB)=value
+ . s MISCARY("LAB_TEST",VLAB)=value
  . ;
  . d log(lablog,"Return from LAB^ISIIMP12 was: 1^Part of a Lab Panel "_SYNZI)
  . s @eval@("labs",ien,"status","loadstatus")="loaded"
@@ -299,114 +282,6 @@ ADJUST(ZV) ; adjust the value for specific text based values
  i ZV["++"   S ZV="2+" Q
  i ZV["+"    S ZV="1+" Q
  Q
- ;
-MISC()
- do  ;
- . ;
- . ; determine the effective date
- . ;
- . new effdate set effdate=$get(@json@("entry",SYNZI,"resource","effectiveDateTime"))
- . do log(jlog,"effectiveDateTime is: "_effdate)
- . set @eval@("labs",SYNZI,"vars","effectiveDateTime")=effdate
- . new fmtime s fmtime=$$fhirTfm^SYNFUTL(effdate)
- . d log(jlog,"fileman dateTime is: "_fmtime)
- . set @eval@("labs",SYNZI,"vars","fmDateTime")=fmtime ;
- . new hl7time s hl7time=$$fhirThl7^SYNFUTL(effdate)
- . d log(jlog,"hl7 dateTime is: "_hl7time)
- . set @eval@("labs",SYNZI,"vars","hl7DateTime")=hl7time ;
- . ;
- . ; set up to call the data loader
- . ;
- . n RETSTA,DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPPROV,DHPLOC,DHPLOINC
- . ;
- . s DHPPAT=$$dfn2icn^SYNFUTL(dfn)
- . s @eval@("labs",SYNZI,"parms","DHPPAT")=DHPPAT
- . ;
- . ;n vistalab s vistalab=$$MAP^SYNQLDM(obscode)
- . s DHPLOINC=obscode
- . d log(jlog,"LOINC code is: "_DHPLOINC)
- . s @eval@("labs",SYNZI,"parms","DHPLOINC")=DHPLOINC
- . ;
- . n vistalab s vistalab=$$graphmap^SYNGRAPH("loinc-lab-map",obscode)
- . i +vistalab=-1 s vistalab=$$graphmap^SYNGRAPH("loinc-lab-map"," "_obscode)
- . i +vistalab=-1 s vistalab=$$covid^SYNGRAPH(obscode)
- . i +vistalab'=-1 d
- .. d log(jlog,"Lab found in graph: "_vistalab)
- .. s @eval@("labs",SYNZI,"parms","vistalab")=vistalab
- . if +vistalab=-1 s vistalab=labtype
- . s vistalab=$$TRIM^XLFSTR(vistalab) ; get rid of trailing blanks
- . ;n sct s sct=$$loinc2sct(obscode) ; find the snomed code
- . ;i vistalab="" d  quit
- . ;. d log(jlog,"VistA lab not found for loinc code: "_obscode_" "_labtype_" -- skipping")
- . ;. s @eval@("labs",SYNZI,"status","loadstatus")="cannotLoad"
- . ;. s @eval@("labs",SYNZI,"status","issue")="VistA lab not found for loinc code: "_obscode_" "_labtype_" -- skipping"
- . ;. s @eval@("status","errors")=$g(@eval@("status","errors"))+1
- . s @eval@("labs",SYNZI,"parms","DHPLAB")=vistalab
- . d log(jlog,"VistA Lab is: "_vistalab)
- . s DHPLAB=vistalab
- . ;
- . s DHPOBS=value
- . s recien=$o(^LAB(60,"B",DHPLAB,""))
- . i recien="" d  ; oops lab test not found!!
- . . S DHPLAB=$$UP^XLFSTR(DHPLAB)
- . . s vistalab=DHPLAB
- . . s recien=$o(^LAB(60,"B",DHPLAB,""))
- . . d log(jlog,"VistA Lab is: "_vistalab)
- . ;
- . ; the following was made obsolete by changes Sam made to the Lab Data Import
- . ;n xform s xform=$$GET1^DIQ(60,recien_",",410)
- . ;n dec s dec=0
- . ;i xform["S Q9=" d
- . ;. s dec=+$p($p(xform,"""",2),",",3)
- . ;;i $l($p(DHPOBS,".",2))>1 d
- . ;i $l($p(DHPOBS,".",2))>0 d
- . ;. s DHPOBS=$s(dec<4:$j(DHPOBS,1,dec),dec>3:$j(DHPOBS,1,3),1:$j(DHPOBS,1,0)) ; fix results with too many decimal places
- . ; added for Covid tests
- . i DHPOBS="" d  ; no quant value
- . . n vtxt ; value text
- . . s vtxt=$get(@json@("entry",SYNZI,"resource","valueCodeableConcept","text"))
- . . ;i vtxt["Negative" s DHPOBS="Negative" ; 260385009
- . . i vtxt["Negative" s DHPOBS="Not Detected" ; 260385009
- . . ;i vtxt["Positive" s DHPOBS="Positive" ; 10828004
- . . i vtxt["Positive" s DHPOBS="DETECTED" ; 10828004
- . . i vtxt["Detected" s DHPOBS="DETECTED" ; 260373001
- . . i vtxt["Not detected" s DHPOBS="Not Detected" ; 260415000
- . . i vtxt["Confirmed" s DHPOBS="CONFIRMED" ; 
- . s @eval@("labs",SYNZI,"parms","DHPOBS")=DHPOBS
- . d log(jlog,"Value is: "_DHPOBS)
- . ;
- . i DHPLOINC="33914-3" d  q  ;
- . . d log(jlog,"Skipping Estimated Glomerular Filtration Rate LOINC: 33914-3")
- . ;
- . s DHPUNT=unit
- . s @eval@("labs",SYNZI,"parms","DHPUNT")=unit
- . d log(jlog,"Units are: "_unit)
- . ;
- . s DHPDTM=hl7time
- . s @eval@("labs",SYNZI,"parms","DHPDTM")=hl7time
- . d log(jlog,"HL7 DateTime is: "_hl7time)
- . ;
- . s DHPPROV=$$MAP^SYNQLDM("OP","provider")
- . n DHPPROVIEN s DHPPROVIEN=$o(^VA(200,"B",DHPPROV,""))
- . if DHPPROVIEN="" S DHPPROVIEN=3
- . s @eval@("labs",SYNZI,"parms","DHPPROV")=DHPPROVIEN
- . d log(jlog,"Provider for outpatient is: #"_DHPPROVIEN_" "_DHPPROV)
- . ;
- . s DHPLOC=$$MAP^SYNQLDM("OP","location")
- . n DHPLOCIEN s DHPLOCIEN=$o(^SC("B",DHPLOC,""))
- . if DHPLOCIEN="" S DHPLOCIEN=4
- . s @eval@("labs",SYNZI,"parms","DHPLOC")=DHPLOC
- . d log(jlog,"Location for outpatient is: #"_DHPLOCIEN_" "_DHPLOC)
- . ;
- . s @eval@("labs",SYNZI,"status","loadstatus")="readyToLoad"
- . ;
- . ;i vistalab="PDW" q  ; skipping because it hangs - gpl wvehr 1/7/21
- . ;i vistalab="SGPT" q  ; skipping it hangs loinc 1742-6 - gpl wvehr 1/7/21
- . ;i vistalab="INFLUENZA A RNA" Q  ; likewise
- . ;i vistalab="INFLUENZA B RNA" Q  ; likewise
- . ;i vistalab="METAPNEUMOVIRUS RNA" Q  ; likewise
- . ;
- q 0
  ;
 INITMAPS(LOC) ; initialize mapping table for panels
  ;
