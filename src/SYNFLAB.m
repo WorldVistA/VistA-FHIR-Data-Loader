@@ -184,7 +184,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . ; Collection sample
  . ;
  . n CSAMP
- . S CSAMP=$$GET1^DIQ(95.3,$p(loinc,"-"),4)
+ . S CSAMP=$$GET1^DIQ(95.3,$p(obscode,"-"),4)
  . I CSAMP["SER/PLAS" S CSAMP="SERUM"
  . I CSAMP["Whole blood" S CSAMP="BLOOD"
  . d log(jlog,"Collection sample is: "_CSAMP)
