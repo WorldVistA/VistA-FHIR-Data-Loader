@@ -262,6 +262,12 @@ ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
  . do log(jlog,"result "_zj_" VistA Lab not found for loinc="_obscode)
  . do log(lablog,"result "_zj_" VistA Lab not found for loinc="_obscode)
  . i $g(DEBUG2) W !,"result "_zj_" VistA Lab not found for loinc="_obscode
+ ;
+ ; Check if lab is member of a panel; if not, don't add, lab filer will file it later
+ I '$$PMEM^ISIIMPU7(MISCARY("LAB_PANEL"),VLAB) d  quit
+ . do log(jlog,"result "_zj_" Lab "_VLAB_" not in Panel "_MISCARY("LAB_PANEL"))
+ . do log(lablog,"result "_zj_" Lab "_VLAB_" not in Panel "_MISCARY("LAB_PANEL"))
+ ; 
  d log(jlog,"result "_zj_" VistA Lab for "_obscode_" is: "_VLAB)
  d log(lablog,"result "_zj_" VistA Lab for "_obscode_" is: "_VLAB)
  i $g(DEBUG2) W !,"result "_zj_" VistA Lab for "_obscode_" is: "_VLAB
