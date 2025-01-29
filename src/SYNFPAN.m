@@ -130,6 +130,8 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . ;
  . N PANEL
  . S PANEL=$$MAP^SYNQLDM(loinc,"vistapanel")
+ . i PANEL="" do  quit
+ . . s @eval@("panels","status","errors")=$g(@eval@("panels","status","errors"))+1
  . d log(jlog,"VistA panel is: "_PANEL)
  . S MISC("LAB_PANEL")=PANEL
  . ;
@@ -178,10 +180,11 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . ;
  . n triples s triples=$na(@root@(ien))
  . n atomptr s atomptr=$na(@json@("entry",SYNZI,"resource","result"))
+ . n atomdisp s atomdisp=""
  . n rien s rien=""
  . n zj s zj=0
  . f  s zj=$o(@atomptr@(zj)) q:+zj=0  d  ;
- . . n atomdisp s atomdisp=$get(@atomptr@(zj,"display"))
+ . . s atomdisp=$get(@atomptr@(zj,"display"))
  . . n atomref s atomref=$get(@atomptr@(zj,"reference"))
  . . s rien=$o(@triples@("SPO",atomref,"rien",""))
  . . d log(jlog,zj_" result "_atomdisp_" rien="_rien)
@@ -204,11 +207,10 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . . d log(jlog,"Return from LAB^ISIIMP12 was: "_$g(RESTA))
  . . ;i $g(DEBUG)=1 ZWRITE RESTA
  . . ;i $g(DEBUG)=1 ZWRITE RC
- . . if +$g(RESTA)=1 do  ;
+ . . if +RESTA=1 do  ;
  . . . s @eval@("panels","status","loaded")=$g(@eval@("panels","status","loaded"))+1
  . . . s @eval@("panels",SYNZI,"status","loadstatus")="loaded"
  . . else  s @eval@("panels","status","errors")=$g(@eval@("panels","status","errors"))+1
- . ;b
  ;
  if $get(args("debug"))=1 do  ;
  . m jrslt("source")=@json
@@ -219,7 +221,7 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  set jrslt("result","loaded")=$g(@eval@("panels","status","loaded"))
  set jrslt("result","errors")=$g(@eval@("labs","status","errors"))
  m result("status")=jrslt("result")
- q 0
+ q:$Q 0 Q
  ;
 ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
  ;
@@ -228,6 +230,7 @@ ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
  do log(jlog,"result "_zj_" code is: "_obscode)
  set @eval@("labs",SYNZI,"vars",zj_" code")=obscode
  ;
+ I $G(DEBUG2) W !,obscode," ",atomdisp
  ;
  new codesystem set codesystem=$get(@json@("entry",ien,"resource","code","coding",1,"system"))
  do log(jlog,"result "_zj_" code system is: "_codesystem)
@@ -258,8 +261,10 @@ ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
  i VLAB="" d  quit
  . do log(jlog,"result "_zj_" VistA Lab not found for loinc="_obscode)
  . do log(lablog,"result "_zj_" VistA Lab not found for loinc="_obscode)
+ . i $g(DEBUG2) W !,"result "_zj_" VistA Lab not found for loinc="_obscode
  d log(jlog,"result "_zj_" VistA Lab for "_obscode_" is: "_VLAB)
  d log(lablog,"result "_zj_" VistA Lab for "_obscode_" is: "_VLAB)
+ i $g(DEBUG2) W !,"result "_zj_" VistA Lab for "_obscode_" is: "_VLAB
  s MISCARY("LAB_TEST",VLAB)=value
  ;
  d log(lablog,"Return from LAB^ISIIMP12 was: 1^Part of a Lab Panel "_SYNZI)
@@ -281,6 +286,7 @@ ADJUST(ZV) ; adjust the value for specific text based values
  i ZV["+++"  S ZV="3+" Q
  i ZV["++"   S ZV="2+" Q
  i ZV["+"    S ZV="1+" Q
+ I $G(DEBUG2) W !,"ZV= ",ZV
  Q
  ;
 INITMAPS(LOC) ; initialize mapping table for panels
@@ -340,7 +346,7 @@ testall ; run the panels import on all imported patients
  n cnt s cnt=0
  f  s dfn=$o(@indx@(dfn)) q:+dfn=0  q:cnt>0  d  ;
  . s ien=$o(@indx@(dfn,""))
- . s ien=4
+ . s ien=9
  . w !,"ien= "_ien
  . q:ien=""
  . s cnt=cnt+1

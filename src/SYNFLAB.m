@@ -72,9 +72,9 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . ;
  . new type set type=$get(@json@("entry",zi,"resource","resourceType"))
  . if type'="Observation" do  quit  ;
- . . set @eval@("labs",zi,"vars","resourceType")=type
- . . do log(jlog,"Resource type not Observation, skipping entry")
- . set @eval@("labs",zi,"vars","resourceType")=type
+ . . ;set @eval@("labs",zi,"vars","resourceType")=type
+ . . ;do log(jlog,"Resource type not Observation, skipping entry")
+ . ;set @eval@("labs",zi,"vars","resourceType")=type
  . ;
  . ; determine the Observation category and quit if not labs
  . ;
@@ -90,8 +90,8 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . . d log(jlog,"Derived category is "_obstype)
  . ;
  . if obstype'="laboratory" do  quit  ;
- . . set @eval@("labs",zi,"vars","observationCategory")=obstype
- . . do log(jlog,"Observation Category is not laboratory, skipping")
+ . . ;set @eval@("labs",zi,"vars","observationCategory")=obstype
+ . . ;do log(jlog,"Observation Category is not laboratory, skipping")
  . set @eval@("labs",zi,"vars","observationCategory")=obstype
  . ;
  . ; see if this resource has already been loaded. if so, skip it
@@ -188,6 +188,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . I CSAMP["SER/PLAS" S CSAMP="SERUM"
  . I CSAMP["Whole blood" S CSAMP="BLOOD"
  . d log(jlog,"Collection sample is: "_CSAMP)
+ . s @eval@("labs",zi,"parms","DHPCSAMP")=CSAMP
  . ;
  . ; added for Covid tests
  . i DHPOBS="" d  ; no quant value
@@ -242,7 +243,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . . ;new (DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPPROV,DHPLOC,DHPLOINC,DHPLAB,DUZ,DT,U,jlog,ien,zi,eval)
  . . ;LABADD(RETSTA,DHPPAT,DHPLOC,DHPTEST,DHPRSLT,DHPRSDT) ;Create lab test
  . . D LABADD^SYNDHP63(.RETSTA,DHPPAT,DHPLOC,DHPLAB,DHPOBS,DHPDTM,DHPLOINC,CSAMP)     ; labs update
- . . d log(jlog,"Return from LABADD^ZZDHP63 was: "_$g(RETSTA))
+ . . d log(jlog,"Return from LABADD^SYNDHP63 was: "_$g(RETSTA))
  . . ;i $g(DEBUG)=1 ZWRITE RETSTA
  . . if +$g(RETSTA)=1 do  ;
  . . . s @eval@("labs","status","loaded")=$g(@eval@("labs","status","loaded"))+1
