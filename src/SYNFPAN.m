@@ -16,9 +16,9 @@ importPanels(rtn,ien,args) ; entry point for loading lab panels for a patient
  ;. m @root@(ien,"load","panels")=grtn("panels")
  ;. if $g(args("debug"))=1 m rtn=grtn
  if $g(args("debug"))=1 m rtn=grtn
- s rtn("panelStatus","status")=$g(grtn("status","status"))
- s rtn("panelStatus","loaded")=$g(grtn("status","loaded"))
- s rtn("panelStatus","errors")=$g(grtn("status","errors"))
+ s rtn("panelStatus","status")=grtn("status","status")
+ s rtn("panelStatus","loaded")=grtn("status","loaded")
+ s rtn("panelStatus","errors")=grtn("status","errors")
  ;b
  ;
  ;
@@ -47,6 +47,11 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  ;
  i '$d(@troot) q 0  ;
  s json=$na(@root@(ien,"json"))
+ ;
+ ; Initialize counters
+ s result("status","status")="NotStarted"
+ s @eval@("panels","status","errors")=0
+ s @eval@("panels","status","loaded")=0
  ;
  ; determine the patient
  ;
@@ -208,9 +213,9 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . . ;i $g(DEBUG)=1 ZWRITE RESTA
  . . ;i $g(DEBUG)=1 ZWRITE RC
  . . if +RESTA=1 do  ;
- . . . s @eval@("panels","status","loaded")=$g(@eval@("panels","status","loaded"))+1
+ . . . s @eval@("panels","status","loaded")=@eval@("panels","status","loaded")+1
  . . . s @eval@("panels",SYNZI,"status","loadstatus")="loaded"
- . . else  s @eval@("panels","status","errors")=$g(@eval@("panels","status","errors"))+1
+ . . else  s @eval@("panels","status","errors")=@eval@("panels","status","errors")+1
  ;
  if $get(args("debug"))=1 do  ;
  . m jrslt("source")=@json
@@ -218,8 +223,8 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . m jrslt("eval")=@eval
  m jrslt("labsStatus")=@eval@("labsStatus")
  set jrslt("result","status")="ok"
- set jrslt("result","loaded")=$g(@eval@("panels","status","loaded"))
- set jrslt("result","errors")=$g(@eval@("labs","status","errors"))
+ set jrslt("result","loaded")=@eval@("panels","status","loaded")
+ set jrslt("result","errors")=@eval@("panels","status","errors")
  m result("status")=jrslt("result")
  q:$Q 0 Q
  ;
