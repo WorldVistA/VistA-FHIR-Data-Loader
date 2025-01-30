@@ -251,6 +251,17 @@ ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
  . s scttxt=$get(@json@("entry",ien,"resource","valueCodeableConcept","coding",1,"display"))
  . s value=sctcode_"^"_scttxt
  . d ADJUST(.value)
+ else  d  ;
+ . ;
+ . ; source: https://doi.org/10.30574/gscbps.2023.22.2.0091
+ . ;
+ . if obscode="5792-7" d  ; Glucose
+ . . n x s x=value
+ . . s value=$s(x<100:"NEG",x<250:"TRACE",x<500:"1+",x<1000:"2+",x<2000:"3+",1:"4+")
+ . if obscode="5804-0" d  ; Protein
+ . . n x s x=value
+ . . s value=$s(x<15:"NEG",x<30:"TRACE",x<100:"1+",x<300:"2+",x<1000:"3+",1:"4+")
+ ;
  do log(jlog,"result "_zj_" value is: "_value)
  do log(lablog,"result "_zj_" value is: "_value)
  set @eval@("labs",SYNZI,"vars",zj_" value")=value
@@ -306,7 +317,7 @@ ADJUST(ZV) ; adjust the value for specific text based values
  i ZV["167287002^Urine ketones not detected (finding)" S ZV="NEG" Q
  i ZV["314137006^Nitrite detected in urine (finding)" S ZV="1+" Q
  i ZV["394712000^Urine leukocyte test one plus (finding)" S ZV="1+" Q
- i ZV["167336003^Urine microscopy: no casts (finding)" S ZV="NEG" Q
+ i ZV["167336003^Urine microscopy: no casts (finding)" S ZV="NoneObs" Q
  i ZV["276409005^Mucus in urine (finding)" S ZV="1+" Q
  i ZV["365691004^Finding of presence of bacteria (finding)" S ZV="1+" Q
  I $G(DEBUG2) W !,"ZV= ",ZV
@@ -369,7 +380,7 @@ testall ; run the panels import on all imported patients
  n cnt s cnt=0
  f  s dfn=$o(@indx@(dfn)) q:+dfn=0  q:cnt>0  d  ;
  . s ien=$o(@indx@(dfn,""))
- . s ien=10
+ . s ien=153
  . w !,"ien= "_ien
  . q:ien=""
  . s cnt=cnt+1
