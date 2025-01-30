@@ -136,7 +136,7 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . N PANEL
  . S PANEL=$$MAP^SYNQLDM(loinc,"vistapanel")
  . i PANEL="" do  quit
- . . d log(jlog,"Panel with loinc "_loinc_" has no mapping to a VistA Lab Panel")
+ . . d log(jlog,"-1^Panel with loinc "_loinc_" has no mapping to a VistA Lab Panel")
  . . s @eval@("panels","status","errors")=@eval@("panels","status","errors")+1
  . d log(jlog,"VistA panel is: "_PANEL)
  . S MISC("LAB_PANEL")=PANEL
@@ -251,7 +251,9 @@ ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
  . s sctcode=$get(@json@("entry",ien,"resource","valueCodeableConcept","coding",1,"code"))
  . s scttxt=$get(@json@("entry",ien,"resource","valueCodeableConcept","coding",1,"display"))
  . s value=sctcode_"^"_scttxt
+ . do log(jlog,"result "_zj_" value before adjust is: "_value)
  . d ADJUST(.value)
+ . do log(jlog,"result "_zj_" value after adjust is: "_value)
  else  d  ;
  . ;
  . ; source: https://doi.org/10.30574/gscbps.2023.22.2.0091
@@ -292,11 +294,22 @@ ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
  ;
  d log(lablog,"Return from LAB^ISIIMP12 was: 1^Part of a Lab Panel "_SYNZI)
  s @eval@("labs",ien,"status","loadstatus")="loaded"
- s @eval@("labs","status","loaded")=$g(@eval@("labs","status","loaded"))+1
+ s @eval@("labs","status","loaded")=@eval@("labs","status","loaded")+1
  Q
  ;
 ADJUST(ZV) ; adjust the value for specific text based values
  ;
+ i ZV["314137006^Nitrite detected in urine (finding)" S ZV="NEG" Q
+ i ZV["394712000^Urine leukocyte test one plus (finding)" S ZV="1+" Q
+ i ZV["276409005^Mucus in urine (finding)" S ZV="1+" Q
+ i ZV["167287002^Urine ketones not detected (finding)" S ZV="NEG" Q
+ i ZV["167336003^Urine microscopy: no casts (finding)" S ZV="NoneObs" Q
+ i ZV["365691004^Finding of presence of bacteria (finding)" S ZV="1+" Q
+ i ZV["+" D  Q
+ . i ZV["++++" S ZV="4+" Q
+ . i ZV["+++"  S ZV="3+" Q
+ . i ZV["++"   S ZV="2+" Q
+ . i ZV["+"    S ZV="1+" Q
  s:ZV["Brown" ZV="BROWN"
  s:ZV["Redish" ZV="REDISH"
  s:ZV["Cloudy" ZV="CLOUDY"
@@ -305,23 +318,6 @@ ADJUST(ZV) ; adjust the value for specific text based values
  s:ZV["not detected in urine" ZV="NEG"
  s:ZV["Finding of bilirubin in urine" ZV="1+"
  i ZV["trace" S ZV="TRACE"
- i ZV["++++" S ZV="4+" Q
- i ZV["+++"  S ZV="3+" Q
- i ZV["++"   S ZV="2+" Q
- i ZV["+"    S ZV="1+" Q
- i ZV["167287002^Urine ketones not detected (finding)" S ZV="NEG" Q
- i ZV["314137006^Nitrite detected in urine (finding)" S ZV="NEG" Q
- i ZV["394712000^Urine leukocyte test one plus (finding)" S ZV="1+" Q
- i ZV["167336003^Urine microscopy: no casts (finding)" S ZV="NEG" Q
- i ZV["276409005^Mucus in urine (finding)" S ZV="1+" Q
- i ZV["365691004^Finding of presence of bacteria (finding)" S ZV="1+" Q
- i ZV["167287002^Urine ketones not detected (finding)" S ZV="NEG" Q
- i ZV["314137006^Nitrite detected in urine (finding)" S ZV="1+" Q
- i ZV["394712000^Urine leukocyte test one plus (finding)" S ZV="1+" Q
- i ZV["167336003^Urine microscopy: no casts (finding)" S ZV="NoneObs" Q
- i ZV["276409005^Mucus in urine (finding)" S ZV="1+" Q
- i ZV["365691004^Finding of presence of bacteria (finding)" S ZV="1+" Q
- I $G(DEBUG2) W !,"ZV= ",ZV
  Q
  ;
 INITMAPS(LOC) ; initialize mapping table for panels
@@ -333,7 +329,7 @@ INITMAPS(LOC) ; initialize mapping table for panels
  S MAP="vistapanel"
  ; Panel type is: 24321-2 Basic metabolic 2000 panel - Serum or Plasma
  S @LOC@(MAP,"CODE","24321-2","BASIC METABOLIC PANEL")=""
- ;  Panel type is: 51990-0 Basic metabolic panel - Blood
+ ; Panel type is: 51990-0 Basic metabolic panel - Blood
  S @LOC@(MAP,"CODE","51990-0","BASIC METABOLIC PANEL")=""
  ; Panel type is: 24357-6 Urinalysis macro (dipstick) panel - Urine
  S @LOC@(MAP,"CODE","24357-6","URINALYSIS")=""

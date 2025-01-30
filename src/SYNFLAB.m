@@ -30,9 +30,6 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  ; ien is specified for internal calls, where the json is already in a graph
  n root,troot
  s root=$$setroot^SYNWD("fhir-intake")
- ; first intake all the lab panels
- ;d wsIntakePanels^SYNFPAN(.args,,.result,ien)
- d importPanels^SYNFPAN(.result,ien,.args)
  ;
  n jtmp,json,jrslt,eval
  ;i $g(ien)'="" if $$loadStatus("labs","",ien)=1 d  q  ;
@@ -46,6 +43,14 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  ;. ;s args("load")=0
  i '$d(@troot) q 0  ;
  s json=$na(@root@(ien,"json"))
+ ;
+ ; Initialize counters
+ s result("status","status")="NotStarted"
+ s @eval@("labs","status","errors")=0
+ s @eval@("labs","status","loaded")=0
+ ;
+ ; first intake all the lab panels
+ d importPanels^SYNFPAN(.result,ien,.args)
  ;
  ; determine the patient
  ;
@@ -246,9 +251,9 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . . d log(jlog,"Return from LABADD^SYNDHP63 was: "_$g(RETSTA))
  . . ;i $g(DEBUG)=1 ZWRITE RETSTA
  . . if +$g(RETSTA)=1 do  ;
- . . . s @eval@("labs","status","loaded")=$g(@eval@("labs","status","loaded"))+1
+ . . . s @eval@("labs","status","loaded")=@eval@("labs","status","loaded")+1
  . . . s @eval@("labs",zi,"status","loadstatus")="loaded"
- . . else  s @eval@("labs","status","errors")=$g(@eval@("labs","status","errors"))+1
+ . . else  s @eval@("labs","status","errors")=@eval@("labs","status","errors")+1
  ;
  if $get(args("debug"))=1 do  ;
  . m jrslt("source")=@json
@@ -256,8 +261,8 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . m jrslt("eval")=@eval
  m jrslt("labsStatus")=@eval@("labsStatus")
  set jrslt("result","status")="ok"
- set jrslt("result","loaded")=$g(@eval@("labs","status","loaded"))
- set jrslt("result","errors")=$g(@eval@("labs","status","errors"))
+ set jrslt("result","loaded")=@eval@("labs","status","loaded")
+ set jrslt("result","errors")=@eval@("labs","status","errors")
  m result("status")=jrslt("result")
  q 1
  ;
