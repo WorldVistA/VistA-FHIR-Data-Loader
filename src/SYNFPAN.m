@@ -136,7 +136,8 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . N PANEL
  . S PANEL=$$MAP^SYNQLDM(loinc,"vistapanel")
  . i PANEL="" do  quit
- . . s @eval@("panels","status","errors")=$g(@eval@("panels","status","errors"))+1
+ . . d log(jlog,"Panel with loinc "_loinc_" has no mapping to a VistA Lab Panel")
+ . . s @eval@("panels","status","errors")=@eval@("panels","status","errors")+1
  . d log(jlog,"VistA panel is: "_PANEL)
  . S MISC("LAB_PANEL")=PANEL
  . ;
