@@ -297,6 +297,18 @@ ADJUST(ZV) ; adjust the value for specific text based values
  i ZV["+++"  S ZV="3+" Q
  i ZV["++"   S ZV="2+" Q
  i ZV["+"    S ZV="1+" Q
+ i ZV["167287002^Urine ketones not detected (finding)" S ZV="NEG" Q
+ i ZV["314137006^Nitrite detected in urine (finding)" S ZV="NEG" Q
+ i ZV["394712000^Urine leukocyte test one plus (finding)" S ZV="1+" Q
+ i ZV["167336003^Urine microscopy: no casts (finding)" S ZV="NEG" Q
+ i ZV["276409005^Mucus in urine (finding)" S ZV="1+" Q
+ i ZV["365691004^Finding of presence of bacteria (finding)" S ZV="1+" Q
+ i ZV["167287002^Urine ketones not detected (finding)" S ZV="NEG" Q
+ i ZV["314137006^Nitrite detected in urine (finding)" S ZV="1+" Q
+ i ZV["394712000^Urine leukocyte test one plus (finding)" S ZV="1+" Q
+ i ZV["167336003^Urine microscopy: no casts (finding)" S ZV="NEG" Q
+ i ZV["276409005^Mucus in urine (finding)" S ZV="1+" Q
+ i ZV["365691004^Finding of presence of bacteria (finding)" S ZV="1+" Q
  I $G(DEBUG2) W !,"ZV= ",ZV
  Q
  ;
@@ -357,7 +369,7 @@ testall ; run the panels import on all imported patients
  n cnt s cnt=0
  f  s dfn=$o(@indx@(dfn)) q:+dfn=0  q:cnt>0  d  ;
  . s ien=$o(@indx@(dfn,""))
- . s ien=9
+ . s ien=10
  . w !,"ien= "_ien
  . q:ien=""
  . s cnt=cnt+1
