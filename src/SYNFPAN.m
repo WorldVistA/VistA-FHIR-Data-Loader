@@ -137,6 +137,7 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . S PANEL=$$MAP^SYNQLDM(loinc,"vistapanel")
  . i PANEL="" do  quit
  . . d log(jlog,"-1^Panel with loinc "_loinc_" has no mapping to a VistA Lab Panel")
+ . . i '$d(@eval@("panels","status","errors")) s @eval@("panels","status","errors")=0
  . . s @eval@("panels","status","errors")=@eval@("panels","status","errors")+1
  . d log(jlog,"VistA panel is: "_PANEL)
  . S MISC("LAB_PANEL")=PANEL
@@ -294,6 +295,7 @@ ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
  ;
  d log(lablog,"Return from LAB^ISIIMP12 was: 1^Part of a Lab Panel "_SYNZI)
  s @eval@("labs",ien,"status","loadstatus")="loaded"
+ i '$d(@eval@("labs","status","loaded")) s @eval@("labs","status","loaded")=0
  s @eval@("labs","status","loaded")=@eval@("labs","status","loaded")+1
  Q
  ;
@@ -337,6 +339,8 @@ INITMAPS(LOC) ; initialize mapping table for panels
  S @LOC@(MAP,"CODE","57698-3","LIPID PROFILE")=""
  ; Panel type is: 58410-2 CBC panel - Blood by Automated count
  S @LOC@(MAP,"CODE","58410-2","CBC")=""
+ ; Panel type is: 24323-8 Comprehensive metabolic 2000 panel - Serum or Plasma
+ S @LOC@(MAP,"CODE","24323-8","CMP")=""
  ; 
  Q
  ;
@@ -377,7 +381,7 @@ testall ; run the panels import on all imported patients
  n cnt s cnt=0
  f  s dfn=$o(@indx@(dfn)) q:+dfn=0  q:cnt>0  d  ;
  . s ien=$o(@indx@(dfn,""))
- . s ien=153
+ . s ien=10
  . w !,"ien= "_ien
  . q:ien=""
  . s cnt=cnt+1
