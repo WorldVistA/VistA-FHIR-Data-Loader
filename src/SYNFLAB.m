@@ -128,7 +128,26 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . ;
  . ; determine the value and units
  . ;
- . new value set value=$get(@json@("entry",zi,"resource","valueQuantity","value"))
+ . new value set value=$get(@json@("entry",ien,"resource","valueQuantity","value"))
+ . if value="" d  ;
+ . . new sctcode,scttxt
+ . . s sctcode=$get(@json@("entry",ien,"resource","valueCodeableConcept","coding",1,"code"))
+ . . s scttxt=$get(@json@("entry",ien,"resource","valueCodeableConcept","coding",1,"display"))
+ . . s value=sctcode_"^"_scttxt
+ . . do log(jlog,"value before adjust is: "_value)
+ . . d ADJUST^SYNFPAN(.value)
+ . . do log(jlog,"value after adjust is: "_value)
+ . else  d  ;
+ . . ;
+ . . ; source: https://doi.org/10.30574/gscbps.2023.22.2.0091
+ . . ;
+ . . if obscode="5792-7" d  ; Glucose
+ . . . n x s x=value
+ . . . s value=$s(x<100:"NEG",x<250:"TRACE",x<500:"1+",x<1000:"2+",x<2000:"3+",1:"4+")
+ . . if obscode="5804-0" d  ; Protein
+ . . . n x s x=value
+ . . . s value=$s(x<15:"NEG",x<30:"TRACE",x<100:"1+",x<300:"2+",x<1000:"3+",1:"4+")
+ . ;
  . do log(jlog,"value is: "_value)
  . set @eval@("labs",zi,"vars","value")=value
  . ;
@@ -163,28 +182,29 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . n vistalab s vistalab=$$graphmap^SYNGRAPH("loinc-lab-map",obscode)
  . i +vistalab=-1 s vistalab=$$graphmap^SYNGRAPH("loinc-lab-map"," "_obscode)
  . i +vistalab=-1 s vistalab=$$covid^SYNGRAPH(obscode)
+ . i +vistalab=-1 s vistalab=$$MAP^SYNQLDM(obscode,"labs")
  . i +vistalab'=-1 d
  .. d log(jlog,"Lab found in graph: "_vistalab)
  .. s @eval@("labs",zi,"parms","vistalab")=vistalab
  . if +vistalab=-1 s vistalab=labtype
  . s vistalab=$$TRIM^XLFSTR(vistalab) ; get rid of trailing blanks
  . ;n sct s sct=$$loinc2sct(obscode) ; find the snomed code
- . ;i vistalab="" d  quit
- . ;. d log(jlog,"VistA lab not found for loinc code: "_obscode_" "_labtype_" -- skipping")
- . ;. s @eval@("labs",zi,"status","loadstatus")="cannotLoad"
- . ;. s @eval@("labs",zi,"status","issue")="VistA lab not found for loinc code: "_obscode_" "_labtype_" -- skipping"
- . ;. s @eval@("status","errors")=$g(@eval@("status","errors"))+1
+ . i vistalab="" d  quit
+ . . d log(jlog,"VistA lab not found for loinc code: "_obscode_" "_labtype_" -- skipping")
+ . . s @eval@("labs",zi,"status","loadstatus")="cannotLoad"
+ . . s @eval@("labs",zi,"status","issue")="VistA lab not found for loinc code: "_obscode_" "_labtype_" -- skipping"
+ . . s @eval@("status","errors")=$g(@eval@("status","errors"))+1
  . s @eval@("labs",zi,"parms","DHPLAB")=vistalab
  . d log(jlog,"VistA Lab is: "_vistalab)
  . s DHPLAB=vistalab
  . ;
  . s DHPOBS=value
- . s recien=$o(^LAB(60,"B",DHPLAB,""))
- . i recien="" d  ; oops lab test not found!!
- . . S DHPLAB=$$UP^XLFSTR(DHPLAB)
- . . s vistalab=DHPLAB
- . . s recien=$o(^LAB(60,"B",DHPLAB,""))
- . . d log(jlog,"VistA Lab is: "_vistalab)
+ . ;s recien=$o(^LAB(60,"B",DHPLAB,""))
+ . ;i recien="" d  ; oops lab test not found!!
+ . ;. S DHPLAB=$$UP^XLFSTR(DHPLAB)
+ . ;. s vistalab=DHPLAB
+ . ;. s recien=$o(^LAB(60,"B",DHPLAB,""))
+ . ;. d log(jlog,"VistA Lab is: "_vistalab)
  . ;
  . ; Collection sample
  . ;
@@ -192,6 +212,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . S CSAMP=$$GET1^DIQ(95.3,$p(obscode,"-"),4)
  . I CSAMP["SER/PLAS" S CSAMP="SERUM"
  . I CSAMP["Whole blood" S CSAMP="BLOOD"
+ . I CSAMP["Urine Sediment" S CSAMP="URINE"
  . d log(jlog,"Collection sample is: "_CSAMP)
  . s @eval@("labs",zi,"parms","DHPCSAMP")=CSAMP
  . ;
