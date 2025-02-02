@@ -180,6 +180,7 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . S CSAMP=$$GET1^DIQ(95.3,$p(loinc,"-"),4)
  . I CSAMP["SER/PLAS" S CSAMP="SERUM"
  . I CSAMP["Whole blood" S CSAMP="BLOOD"
+ . I CSAMP["Urine Sediment" S CSAMP="URINE"
  . d log(jlog,"Collection sample is: "_CSAMP)
  . s MISC("COLLECTION_SAMPLE")=CSAMP
  . ;
