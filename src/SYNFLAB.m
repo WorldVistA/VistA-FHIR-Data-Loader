@@ -73,7 +73,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . ;
  . new jlog set jlog=$name(@eval@("labs",zi))
  . ;
- . ; insure that the resourceType is Observation
+ . ; ensure that the resourceType is Observation
  . ;
  . new type set type=$get(@json@("entry",zi,"resource","resourceType"))
  . if type'="Observation" do  quit  ;
@@ -128,11 +128,11 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . ;
  . ; determine the value and units
  . ;
- . new value set value=$get(@json@("entry",ien,"resource","valueQuantity","value"))
+ . new value set value=$get(@json@("entry",zi,"resource","valueQuantity","value"))
  . if value="" d  ;
  . . new sctcode,scttxt
- . . s sctcode=$get(@json@("entry",ien,"resource","valueCodeableConcept","coding",1,"code"))
- . . s scttxt=$get(@json@("entry",ien,"resource","valueCodeableConcept","coding",1,"display"))
+ . . s sctcode=$get(@json@("entry",zi,"resource","valueCodeableConcept","coding",1,"code"))
+ . . s scttxt=$get(@json@("entry",zi,"resource","valueCodeableConcept","coding",1,"display"))
  . . s value=sctcode_"^"_scttxt
  . . do log(jlog,"value before adjust is: "_value)
  . . d ADJUST^SYNFPAN(.value)
@@ -149,7 +149,10 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . . . s value=$s(x<15:"NEG",x<30:"TRACE",x<100:"1+",x<300:"2+",x<1000:"3+",1:"4+")
  . ;
  . i value="" d  quit
- . . do log(jlog,"value is null, quitting")
+ . . do log(jlog,"-1: value is null, quitting")
+ . . s @eval@("labs",zi,"status","loadstatus")="cannotLoad"
+ . . s @eval@("labs",zi,"status","issue")="Lab value not found for loinc code: "_obscode_" "_labtype
+ . . s @eval@("labs","status","errors")=@eval@("labs","status","errors")+1
  . do log(jlog,"value is: "_value)
  . set @eval@("labs",zi,"vars","value")=value
  . ;
@@ -181,6 +184,12 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . d log(jlog,"LOINC code is: "_DHPLOINC)
  . s @eval@("labs",zi,"parms","DHPLOINC")=DHPLOINC
  . ;
+ . ; TODO: Add a separate counter for skipped items
+ . i DHPLOINC="33914-3" d  q  ;
+ . . d log(jlog,"Skipping Estimated Glomerular Filtration Rate LOINC: 33914-3")
+ . . s @eval@("labs","status","loaded")=@eval@("labs","status","loaded")+1
+ . . s @eval@("labs",zi,"status","loadstatus")="skipped"
+ . ;
  . n vistalab s vistalab=$$graphmap^SYNGRAPH("loinc-lab-map",obscode)
  . i +vistalab=-1 s vistalab=$$graphmap^SYNGRAPH("loinc-lab-map"," "_obscode)
  . i +vistalab=-1 s vistalab=$$covid^SYNGRAPH(obscode)
@@ -195,7 +204,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . . d log(jlog,"VistA lab not found for loinc code: "_obscode_" "_labtype_" -- skipping")
  . . s @eval@("labs",zi,"status","loadstatus")="cannotLoad"
  . . s @eval@("labs",zi,"status","issue")="VistA lab not found for loinc code: "_obscode_" "_labtype_" -- skipping"
- . . s @eval@("status","errors")=$g(@eval@("status","errors"))+1
+ . . s @eval@("labs","status","errors")=@eval@("labs","status","errors")+1
  . s @eval@("labs",zi,"parms","DHPLAB")=vistalab
  . d log(jlog,"VistA Lab is: "_vistalab)
  . s DHPLAB=vistalab
@@ -231,9 +240,6 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . . i vtxt["Confirmed" s DHPOBS="CONFIRMED" ; 
  . s @eval@("labs",zi,"parms","DHPOBS")=DHPOBS
  . d log(jlog,"Value is: "_DHPOBS)
- . ;
- . i DHPLOINC="33914-3" d  q  ;
- . . d log(jlog,"Skipping Estimated Glomerular Filtration Rate LOINC: 33914-3")
  . ;
  . s DHPUNT=unit
  . s @eval@("labs",zi,"parms","DHPUNT")=unit

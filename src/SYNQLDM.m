@@ -219,7 +219,7 @@ INITMAPS        ; initialize maps
  ;S @G@(MAP,"CODE","185349003","99381")=""
  ; labs
  S MAP="labs"
- S @G@(MAP,"CODE","89577-1","TROPONIN")=""
+ S @G@(MAP,"CODE","89579-7","TROPONIN")=""
  S @G@(MAP,"CODE","2502-3","IRON SATURATION")=""
  S @G@(MAP,"CODE","2500-7","TIBC")=""
  S @G@(MAP,"CODE","2498-4","IRON")=""
@@ -306,6 +306,7 @@ INITMAPS        ; initialize maps
  S @G@(MAP,"CODE","786-4","MCHC")=""
  S @G@(MAP,"CODE","787-2","MCV")=""
  S @G@(MAP,"CODE","789-8","RBC")=""
+ S @G@(MAP,"CODE","20570-8","HCT")=""
  ; gmr allergies snomed to vuid
  S MAP="gmr-allergies"
  S @G@(MAP,"CODE",419474003,4636980)=""

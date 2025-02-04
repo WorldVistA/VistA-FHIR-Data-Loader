@@ -295,9 +295,11 @@ FILE(directory) ; [Public] Load files from the file system; OPT: SYN LOAD FILES
  . N DIR,X,Y,DA,DIRUT,DTOUT,DUOUT,DIROUT
  . S DIR(0)="F^0:1024"
  . S DIR("A")="Enter directory from which to load Synthea Patients (FHIR DSTU3 or R4)"
+ . I $G(^TMP($T(+0),$J))'="" S DIR("B")=^($J)
  . D ^DIR
  . W !
  . if '$data(DIRUT) set directory=Y
+ . S ^TMP($T(+0),$J)=Y
  quit:'$data(directory)
  ;
  new root set root=$$setroot^SYNWD("fhir-intake")
@@ -331,13 +333,15 @@ FILE(directory) ; [Public] Load files from the file system; OPT: SYN LOAD FILES
  .. if file["Information" quit  ; We don't process information files yet...
  .. set count=count+1
  .. write count,". ",file,!
- .. write:$d(@root@("filename",file)) "    (already loaded)",!
+ .. if $d(@root@("filename",file)) write "    (already loaded)",!
+ .. ; Set default selection to the first unloaded file
+ .. else  if '$data(DIR("B")) set DIR("B")=count
  .. set filesbynumber(count)=file
  . S DIR(0)="L^1:"_count
  . D ^DIR
  . if $data(DIRUT) set quit=1 quit
  . new fulllist set fulllist=""
- . ; deal with 255 character limit in ^DIR; but hopefully we won't hit the 32k limit
+ . ; deal with 255 character limit in ^DIR; but hopefully we won't hit the 32k Cache string limit
  . new i for i=0:1 quit:'$data(Y(i))  set fulllist=fulllist_Y(i)  quit:$length(fulllist)>32000
  . ; remove trailing comma
  . set $extract(fulllist,$length(fulllist))=""
