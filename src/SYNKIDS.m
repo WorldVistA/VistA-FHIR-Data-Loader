@@ -1,11 +1,10 @@
 SYNKIDS ; OSE/SMH - Synthea Installer ;2019-11-18  5:45 PM
- ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 2
+ ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 12
  ;
-ENV ; [Fallthrough]
+ENV ; [KIDS] Env check
+ ; Don't install if user doesn't hold XUMGR -- needed for creating Syn providers
+ I '$D(^XUSEC("XUMGR",DUZ)) S XPDQUIT=1
  QUIT
- ;
-CACHE() Q $L($SY,",")'=2
-GTM() Q $P($SY,",")=47
  ;
 TRAN ; [KIDS] - Transport from source system (BAD! SHOULD BE A FILEMAN FILE)
  M @XPDGREF@("SYN")=^SYN
@@ -17,23 +16,16 @@ TRAN ; [KIDS] - Transport from source system (BAD! SHOULD BE A FILEMAN FILE)
  QUIT
  ;
 PRE ; [KIDS] - Pre Install
+ ; Don't install if user doesn't hold XUMGR -- needed for creating Syn providers
+ I '$D(^XUSEC("XUMGR",DUZ)) S XPDQUIT=1
  QUIT
  ;
 POST ; [KIDS] - Post Install
  DO POSTSYN
- DO POSTINTR
  DO POSTMAP
  DO EN^SYNGBLLD
+ D ^SYNINIT
  QUIT
- ;
-POSTMAP ; [Private] Add loinc-lab-map to the graph store
- new root set root=$$setroot^SYNWD("loinc-lab-map")
- kill @root
- merge @root=@XPDGREF@("loinc-lab-map")
- new rindx set rindx=$name(@root@("graph","map"))
- set @root@("index","root")=rindx
- do index^SYNGRAPH(rindx)
- quit
  ;
 POSTSYN ; [Private] Restore SYN global
  ; Resore data from saved global
@@ -43,7 +35,7 @@ POSTSYN ; [Private] Restore SYN global
  . K ^SYN("2002.030","sct2icd"),^("sct2icdnine"),^("sct2os5") ; **NAKED**
  . M ^SYN=@XPDGREF@("SYN")
  ;
- ; Install OS5 codes
+ ; Install OS5 codes (CPT codes replacement since CPT is copyrighted)
  I $D(XPDGREF)#2,$D(@XPDGREF@("OS5")) D
  . N SYNF F SYNF=81,757,757.001,757.01,757.02,757.1,757.21 DO  ; for each file
  .. N SYNCR S SYNCR=$$ROOT^DILFD(SYNF,,1) ; closed reference
@@ -56,25 +48,14 @@ POSTSYN ; [Private] Restore SYN global
  ... ; Add new data
  ... M @SYNCR@(SYNI)=@XPDGREF@("OS5",SYNF,SYNI)
  ... N DA,DIK S DA=SYNI,DIK=SYNOR D IX1^DIK
- ;
- ; Initialize Synthea
- D ^SYNINIT
  QUIT
  ;
-POSTINTR ; [Private] Append Users to Intro Text
- N L S L=$O(^XTV(8989.3,1,"INTRO"," "),-1)+1
- I $G(^XTV(8989.3,1,"INTRO",L-1,0))["SYNPHARM123!!" QUIT  ; don't add again
- S ^XTV(8989.3,1,"INTRO",L,0)=" "
- S L=L+1
- S ^XTV(8989.3,1,"INTRO",L,0)=" SYN USER      ACCESS CODE       VERIFY CODE         ELECTRONIC SIGNATURE"
- S L=L+1
- S ^XTV(8989.3,1,"INTRO",L,0)=" --------      -----------       -----------         --------------------"
- S L=L+1
- S ^XTV(8989.3,1,"INTRO",L,0)=" PROVIDER,UNK  SYNPROV123        SYNPROV123!!        123456"
- S L=L+1
- S ^XTV(8989.3,1,"INTRO",L,0)=" PHARMACIST,U  SYNPHARM123       SYNPHARM123!!       123456"
- ;
- S $P(^XTV(8989.3,1,"INTRO",0),U,3,4)=L_U_L
- ;
- QUIT
+POSTMAP ; [Private] Add loinc-lab-map to the graph store
+ new root set root=$$setroot^SYNWD("loinc-lab-map")
+ kill @root
+ merge @root=@XPDGREF@("loinc-lab-map")
+ new rindx set rindx=$name(@root@("graph","map"))
+ set @root@("index","root")=rindx
+ do index^SYNGRAPH(rindx)
+ quit
  ;
