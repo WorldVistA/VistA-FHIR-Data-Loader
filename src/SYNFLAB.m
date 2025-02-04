@@ -148,6 +148,8 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . . . n x s x=value
  . . . s value=$s(x<15:"NEG",x<30:"TRACE",x<100:"1+",x<300:"2+",x<1000:"3+",1:"4+")
  . ;
+ . i value="" d  quit
+ . . do log(jlog,"value is null, quitting")
  . do log(jlog,"value is: "_value)
  . set @eval@("labs",zi,"vars","value")=value
  . ;

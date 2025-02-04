@@ -267,9 +267,12 @@ ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
  . . n x s x=value
  . . s value=$s(x<15:"NEG",x<30:"TRACE",x<100:"1+",x<300:"2+",x<1000:"3+",1:"4+")
  ;
- do log(jlog,"result "_zj_" value is: "_value)
- do log(lablog,"result "_zj_" value is: "_value)
- set @eval@("labs",SYNZI,"vars",zj_" value")=value
+ i value="" d  quit
+ . do log(jlog,"result "_zj_" value is null, quitting")
+ . do log(lablog,"result "_zj_" value is null, quitting")
+ do log(jlog,"result "_zj_" value is: "_value) 
+ do log(lablog,"result "_zj_" value is: "_value) 
+ set @eval@("labs",SYNZI,"vars",zj_" value")=value 
  ;
  ;new unit set unit=$get(@json@("entry",SYNZI,"resource","valueQuantity","unit"))
  ;do log(jlog,"units are: "_unit)
@@ -302,6 +305,7 @@ ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
  ;
 ADJUST(ZV) ; adjust the value for specific text based values
  ;
+ i ZV["^",$L(ZV)=1 S ZV="" Q
  i ZV["314137006^Nitrite detected in urine (finding)" S ZV="NEG" Q
  i ZV["394712000^Urine leukocyte test one plus (finding)" S ZV="1+" Q
  i ZV["276409005^Mucus in urine (finding)" S ZV="1+" Q
