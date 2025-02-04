@@ -219,6 +219,9 @@ INITMAPS        ; initialize maps
  ;S @G@(MAP,"CODE","185349003","99381")=""
  ; labs
  S MAP="labs"
+ S @G@(MAP,"CODE","2502-3","IRON SATURATION")=""
+ S @G@(MAP,"CODE","2500-7","TIBC")=""
+ S @G@(MAP,"CODE","2498-4","IRON")=""
  S @G@(MAP,"CODE","2085-9","HDL")=""
  S @G@(MAP,"CODE","34714-6","PT/INR")=""
  S @G@(MAP,"CODE","2093-3","CHOLESTEROL")=""

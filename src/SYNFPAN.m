@@ -73,7 +73,7 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . ; define a place to log the processing of this entry
  . ;
  . new jlog set jlog=$name(@eval@("panels",SYNZI))
- . ;k @jlog
+ . k @jlog
  . ;
  . ; ensure that the resourceType is DiagnosticReports
  . ;
@@ -342,6 +342,12 @@ INITMAPS(LOC) ; initialize mapping table for panels
  S @LOC@(MAP,"CODE","58410-2","CBC")=""
  ; Panel type is: 24323-8 Comprehensive metabolic 2000 panel - Serum or Plasma
  S @LOC@(MAP,"CODE","24323-8","CMP")=""
+ ; Panel type is: 50190-8 Iron and Iron binding capacity panel - Serum or Plasma
+ S @LOC@(MAP,"CODE","50190-8","IRON GROUP")=""
+ ; Panel type is: 75689-0 Iron panel - Serum or Plasma
+ ;S @LOC@(MAP,"CODE","75689-0","IRON GROUP")=""
+ ;  Panel type is:  89577-1 Troponin I.cardiac panel - Serum or Plasma by High sensitivity method
+ ;S @LOC@(MAP,"CODE"," 89577-1","TROPONIN")=""
  ; 
  Q
  ;
@@ -382,7 +388,7 @@ testall ; run the panels import on all imported patients
  n cnt s cnt=0
  f  s dfn=$o(@indx@(dfn)) q:+dfn=0  q:cnt>0  d  ;
  . s ien=$o(@indx@(dfn,""))
- . s ien=10
+ . s ien=196
  . w !,"ien= "_ien
  . q:ien=""
  . s cnt=cnt+1
