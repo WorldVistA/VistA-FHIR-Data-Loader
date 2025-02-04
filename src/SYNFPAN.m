@@ -340,6 +340,8 @@ INITMAPS(LOC) ; initialize mapping table for panels
  S @LOC@(MAP,"CODE","51990-0","BASIC METABOLIC PANEL")=""
  ; Panel type is: 24357-6 Urinalysis macro (dipstick) panel - Urine
  S @LOC@(MAP,"CODE","24357-6","URINALYSIS")=""
+ ; Panel type is: 24356-8 Urinalysis complete panel - Urine
+ S @LOC@(MAP,"CODE","24356-8","URINALYSIS")=""
  ; Panel type is: 57698-3 Lipid panel with direct LDL - Serum or Plasma
  S @LOC@(MAP,"CODE","57698-3","LIPID PROFILE")=""
  ; Panel type is: 58410-2 CBC panel - Blood by Automated count
@@ -366,23 +368,6 @@ loadStatus(typ,zx,zien) ; extrinsic return 1 if resource was loaded
  i $g(zx)="" i $d(@root@(zien,"load",typ)) s rt=1 q rt
  i $get(@root@(zien,"load",typ,zx,"status","loadstatus"))="loaded" s rt=1
  q rt
-loinc2sct(loinc) ; extrinsic returns a Snomed code for a Loinc code
- ; for labs
- ; thanks to Ferdi for the Snomed mapping
- ;
- ;
- S SCTA("29463-7",27113001)="9^Body weight"
- S SCTA("8302-2",50373000)="8^Body height"
- S SCTA("55284-4",75367002)="1^Blood pressure"
- S SCTA(78564009)="5^Pulse rate"
- S SCTA("8331-1",386725007)="2^Body Temperature"
- S SCTA(86290005)="3^Respiration"
- S SCTA(48094003)="10^Abdominal girth measurement"
- S SCTA(21727005)="11^Audiometry"
- S SCTA(252465000)="21^Pulse oximetry"
- S SCTA(22253000)="22^Pain"
- ;
- q $o(SCTA(loinc,""))
  ;
 testall ; run the panels import on all imported patients
  new root s root=$$setroot^SYNWD("fhir-intake")

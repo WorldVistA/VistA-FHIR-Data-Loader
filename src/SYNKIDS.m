@@ -16,8 +16,6 @@ TRAN ; [KIDS] - Transport from source system (BAD! SHOULD BE A FILEMAN FILE)
  QUIT
  ;
 PRE ; [KIDS] - Pre Install
- ; Don't install if user doesn't hold XUMGR -- needed for creating Syn providers
- I '$D(^XUSEC("XUMGR",DUZ)) S XPDQUIT=1
  QUIT
  ;
 POST ; [KIDS] - Post Install
