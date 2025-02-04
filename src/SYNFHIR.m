@@ -286,7 +286,12 @@ wsLoadStatus(rtn,filter) ; displays the load status
  ;
 FILE(directory) ; [Public] Load files from the file system; OPT: SYN LOAD FILES
  ;
+ I '$D(^XUSEC("LRLAB",DUZ)) W !,"You need LRLAB and LRVERIFY keys; quiting.",! QUIT
+ I '$D(^XUSEC("LRVERIFY",DUZ)) W !,"You need LRLAB and LRVERIFY keys; quiting.",! QUIT
+ ;
+ new interactive set interactive=0
  if '$data(directory) do
+ . set interactive=1
  . N DIR,X,Y,DA,DIRUT,DTOUT,DUOUT,DIROUT
  . S DIR(0)="F^0:1024"
  . S DIR("A")="Enter directory from which to load Synthea Patients (FHIR DSTU3 or R4)"
@@ -302,6 +307,48 @@ FILE(directory) ; [Public] Load files from the file system; OPT: SYN LOAD FILES
  new synmask set synmask("*.json")=""
  new % set %=$$LIST^%ZISH(directory,$na(synmask),$na(synfiles))
  if '% write "Failed to read any files. Check directory.",! quit
+ ;
+ new quit set quit=0
+ new singlemultiple set singlemultiple="M"
+ if interactive do  quit:quit
+ . ; Single or multiple patients
+ . N DIR,X,Y,DA,DIRUT,DTOUT,DUOUT,DIROUT
+ . S DIR(0)="SA^S:Single;M:Multiple"
+ . S DIR("A")="Do you want to import a [S]ingle or [M]ultiple patients? "
+ . S DIR("B")="S"
+ . D ^DIR
+ . if $data(DIRUT) set quit=1 quit
+ . set singlemultiple=Y
+ . quit:singlemultiple="M"
+ . write !!
+ . ;
+ . ; If single, pick which one
+ . K DIR,X,Y,DA,DIRUT,DTOUT,DUOUT,DIROUT
+ . new file set file=""
+ . new count set count=0
+ . new filesbynumber
+ . for  set file=$order(synfiles(file)) q:file=""  do
+ .. if file["Information" quit  ; We don't process information files yet...
+ .. set count=count+1
+ .. write count,". ",file,!
+ .. write:$d(@root@("filename",file)) "    (already loaded)",!
+ .. set filesbynumber(count)=file
+ . S DIR(0)="L^1:"_count
+ . D ^DIR
+ . if $data(DIRUT) set quit=1 quit
+ . new fulllist set fulllist=""
+ . ; deal with 255 character limit in ^DIR; but hopefully we won't hit the 32k limit
+ . new i for i=0:1 quit:'$data(Y(i))  set fulllist=fulllist_Y(i)  quit:$length(fulllist)>32000
+ . ; remove trailing comma
+ . set $extract(fulllist,$length(fulllist))=""
+ . ; reconstitute synfiles
+ . kill synfiles
+ . new num for i=1:1:$length(fulllist,",") set num=$piece(fulllist,",",i),file=filesbynumber(num),synfiles(file)=""
+ . write !!
+ ;
+ N ZTQUEUED S ZTQUEUED=1 ; prevents the lab rollover call from talking
+ N ZTREQ ; Sets, don't want it kept
+ D ^LROLOVER
  ;
  new file set file=""
  for  set file=$order(synfiles(file)) q:file=""  do
@@ -327,12 +374,10 @@ FILE(directory) ; [Public] Load files from the file system; OPT: SYN LOAD FILES
  .. do KILL^XUSCLEAN ; VistA leaks like hell
  . new args,body,synjsonreturn,ien,gr
  . set ien=$order(@root@(" "),-1)+1
- . s @root@("filename",file,ien)=""
+ . set @root@("filename",file,ien)=""
  . set gr=$name(@root@(ien,"json"))
- . s body=$na(^TMP("SYNFILE",$J))
+ . set body=$na(^TMP("SYNFILE",$J))
  . do DECODE^XLFJSON(body,gr)
- . ;merge body=^TMP("SYNFILE",$J) ;don't need to merge because we decoded
- . ;new % set %=$$wsPostFHIR(.args,.body,.synjsonreturn) ; % always comes out as 1. We will ignore it.
  . new % set %=$$wsPostFHIR(.args,.body,.synjsonreturn,ien) ; % always comes out as 1. We will ignore it.
  . ;
  . ; Get the status back from JSON

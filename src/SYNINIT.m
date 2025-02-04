@@ -45,11 +45,8 @@ PROV(rePopulate) ;[Public $$] Create Generic Provider for Synthetic Patients
  S C0XFDA(200.051,"?+10,?+1,",.01)="LRLAB"
  S C0XFDA(200.051,"?+11,?+1,",.01)="LRVERIFY"
  ;
- ; Access and Verify Codes so we can log in as the provider if we want to
- ; We must pre-hash them as that's not in the IT
+ ; Access Code to activate mailbox for provider
  S C0XFDA(200,"?+1,",2)=$$EN^XUSHSH("SYNPROV123") ; ac
- S C0XFDA(200,"?+1,",11)=$$EN^XUSHSH("SYNPROV123!!") ; vc
- S C0XFDA(200,"?+1,",7.2)=1 ; verify code never expires
  ;
  ; Electronic Signature
  ; Input transform hashes this guy
@@ -77,10 +74,6 @@ PROV(rePopulate) ;[Public $$] Create Generic Provider for Synthetic Patients
  N DIC S DIC(0)="" ; An XREF in File 200 requires this.
  D UPDATE^DIE("E",$NA(C0XFDA),$NA(C0XIEN),$NA(C0XERR)) ; Typical UPDATE
  I $D(DIERR) S $EC=",U1,"
- ;
- ; Fix verify code change date to the far future
- N FDA
- S FDA(200,C0XIEN(1)_",",11.2)=$$FMTH^XLFDT($$FMADD^XLFDT(DT,3000))
  ;
  ; Signature block. Do this as internal values to prevent name check in 20.2.
  S FDA(200,C0XIEN(1)_",",20.2)="SYNTHETIC PROVIDER, MD"
@@ -115,11 +108,9 @@ PHARM(rePopulate) ;[Public $$] Create Generic Provider for Synthetic Patients
  S C0XFDA(200.051,"?+3,?+1,",.01)="PSORPH"
  S C0XFDA(200.051,"?+4,?+1,",.01)="ORELSE"
  ;
- ; Access and Verify Codes so we can log in as the provider if we want to
+ ; Access Code to activate mailbox for provider
  ; We must pre-hash them as that's not in the IT
  S C0XFDA(200,"?+1,",2)=$$EN^XUSHSH("SYNPHARM123") ; ac
- S C0XFDA(200,"?+1,",11)=$$EN^XUSHSH("SYNPHARM123!!") ; vc
- S C0XFDA(200,"?+1,",7.2)=1 ; verify code never expires
  ;
  ; Electronic Signature
  ; Input transform hashes this guy
@@ -144,10 +135,6 @@ PHARM(rePopulate) ;[Public $$] Create Generic Provider for Synthetic Patients
  N DIC S DIC(0)="" ; An XREF in File 200 requires this.
  D UPDATE^DIE("E",$NA(C0XFDA),$NA(C0XIEN),$NA(C0XERR)) ; Typical UPDATE
  I $D(DIERR) S $EC=",U1,"
- ;
- ; Fix verify code change date to the far future
- N FDA
- S FDA(200,C0XIEN(1)_",",11.2)=$$FMTH^XLFDT($$FMADD^XLFDT(DT,3000))
  ;
  ; Signature block. Do this as internal values to prevent name check in 20.2.
  S FDA(200,C0XIEN(1)_",",20.2)="SYNTHETIC PHARMACIST, RPH"
