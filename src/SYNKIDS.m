@@ -3,7 +3,7 @@ SYNKIDS ; OSE/SMH - Synthea Installer ;2019-11-18  5:45 PM
  ;
 ENV ; [KIDS] Env check
  ; Don't install if user doesn't hold XUMGR -- needed for creating Syn providers
- I '$D(^XUSEC("XUMGR",DUZ)) S XPDQUIT=1
+ I '$D(^XUSEC("XUMGR",DUZ)) W "Must hold key XUMGR",!! S XPDQUIT=1
  QUIT
  ;
 TRAN ; [KIDS] - Transport from source system (BAD! SHOULD BE A FILEMAN FILE)
