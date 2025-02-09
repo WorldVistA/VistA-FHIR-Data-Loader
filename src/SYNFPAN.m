@@ -189,6 +189,7 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . n triples s triples=$na(@root@(ien))
  . n atomptr s atomptr=$na(@json@("entry",SYNZI,"resource","result"))
  . n atomdisp s atomdisp=""
+ . n success s success="" ; array of labs to be marked as loaded on success
  . n rien s rien=""
  . n zj s zj=0
  . f  s zj=$o(@atomptr@(zj)) q:+zj=0  d  ;
@@ -200,7 +201,7 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . . ; call one result lab
  . . ;
  . . n lablog s lablog=$na(@root@(ien,"load","labs",rien))
- . . D ONELAB(.MISC,json,rien,zj,jlog,eval,lablog)
+ . . D ONELAB(.MISC,json,rien,zj,jlog,eval,lablog,.success)
  . . ;
  . m @eval@("panels",SYNZI,"vars","MISC")=MISC ;
  . ;
@@ -218,6 +219,7 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . . if +RESTA=1 do  ;
  . . . s @eval@("panels","status","loaded")=@eval@("panels","status","loaded")+1
  . . . s @eval@("panels",SYNZI,"status","loadstatus")="loaded"
+ . . . d SUCCESS(SYNZI,.success,eval,ien) ; mark labs as loaded
  . . else  s @eval@("panels","status","errors")=@eval@("panels","status","errors")+1
  ;
  if $get(args("debug"))=1 do  ;
@@ -231,7 +233,21 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  m result("status")=jrslt("result")
  q:$Q 0 Q
  ;
-ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
+SUCCESS(SYNZI,success,eval,ien) ; after a panel has loaded, mark the successful lab tests as loaded
+ ;
+ n root s root=$$setroot^SYNWD("fhir-intake")
+ ;
+ n sucien s sucien=""
+ f  s sucien=$o(success(sucien)) q:sucien=""  d  ;
+ . n lablog s lablog=$na(@root@(ien,"load","labs",sucien))
+ . d log(lablog,"Return from LAB^ISIIMP12 was: 1^Part of a Lab Panel "_SYNZI)
+ . s @eval@("labs",sucien,"status","loadstatus")="loaded"
+ . i '$d(@eval@("labs","status","loaded")) s @eval@("labs","status","loaded")=0
+ . s @eval@("labs","status","loaded")=@eval@("labs","status","loaded")+1
+ ;
+ Q
+ ;
+ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog,callbak)
  ;
  new obscode set obscode=$get(@json@("entry",ien,"resource","code","coding",1,"code"))
  do log(lablog,"result "_zj_" code is: "_obscode)
@@ -297,10 +313,9 @@ ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog)
  i $g(DEBUG2) W !,"result "_zj_" VistA Lab for "_obscode_" is: "_VLAB
  s MISCARY("LAB_TEST",VLAB)=value
  ;
- d log(lablog,"Return from LAB^ISIIMP12 was: 1^Part of a Lab Panel "_SYNZI)
- s @eval@("labs",ien,"status","loadstatus")="loaded"
- i '$d(@eval@("labs","status","loaded")) s @eval@("labs","status","loaded")=0
- s @eval@("labs","status","loaded")=@eval@("labs","status","loaded")+1
+ s callbak(ien,VLAB)="" ; call back pointer to be used if panel is successful to mark the lab as loaded
+ ;
+ ;
  Q
  ;
 ADJUST(ZV) ; adjust the value for specific text based values
