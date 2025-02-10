@@ -1,7 +1,7 @@
 SYNINIT ;OSEHRA/SMH - Initilization Code for Synthetic Data Loader;May 23 2018
- ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 12
+ ;;0.6;VISTA SYN DATA LOADER;;Feb 10, 2025
  ;
- ; Copyright (c) 2018-2019 Sam Habiel 
+ ; Copyright (c) 2018-2019 Sam Habiel
  ; Copyright (c) 2025 DocMe360 LLC
  ;
  ;Licensed under the Apache License, Version 2.0 (the "License");

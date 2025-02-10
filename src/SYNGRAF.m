@@ -1,5 +1,5 @@
 SYNGRAF        ;ven/gpl - mash graph utilities ; 9/24/17 4:33pm
- ;;1.0;norelease;;feb 27, 2017;Build 10
+ ;;0.6;VISTA SYN DATA LOADER;;Feb 10, 2025
  ;
  ; Copyright (c) 2017-2018 George P. Lilly
  ;
@@ -57,7 +57,7 @@ purgegraph(graph) ; delete a graph
  do UPDATE^DIE("","fda","","%yerr")
  if '$data(%yerr) quit 1
  zwr %yerr
- quit 0 
+ quit 0
  ;
 insert2graph(ary,graph,replace) ; insert a new entry to a graph
  ; ary is passed by name, graph is the name of the graph
@@ -65,19 +65,19 @@ insert2graph(ary,graph,replace) ; insert a new entry to a graph
  new root set root=$$setroot(graph)
  new groot set groot=$name(@root@("graph"))
  new id set id=$order(@ary@(""))
- if replace=1 kill @groot@(id) 
+ if replace=1 kill @groot@(id)
  merge @groot=@ary
  quit
  ;
 nameThis(altname) ; returns the id to be used for altname
- ; this will eventually use the context graph and the 
+ ; this will eventually use the context graph and the
  ; local variable context to query the altname and obtain an id
  new result
  if $data(context) set result=$$queryContext(context,"id",altname) q result
  if altname="background-dd-map" set result="sbform" quit result
  quit altname
  ;
-getThis(rary,fn,nocache) ; find a file and read it into rary array  
+getThis(rary,fn,nocache) ; find a file and read it into rary array
  new ary
  if '$g(nocache) do fromCache("ary",fn)
  if $d(ary) do  quit  ;
@@ -98,7 +98,7 @@ getThis(rary,fn,nocache) ; find a file and read it into rary array
  kill @tmp
  quit
  ;
-queryContext(context,pred,obj) ; look up project specific 
+queryContext(context,pred,obj) ; look up project specific
  ; names and values from the context graph
  ; tbd
  quit obj

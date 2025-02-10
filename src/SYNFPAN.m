@@ -1,5 +1,5 @@
 SYNFPAN ;ven/gpl - fhir loader utilities ;2018-05-08  4:23 PM
- ;;0.3;VISTA SYNTHETIC DATA LOADER;;Dec 27, 2024;Build 12
+ ;;0.6;VISTA SYN DATA LOADER;;Feb 10, 2025
  ;
  ; Copyright (c) 2025 DocMe360 LLC
  ;
@@ -223,7 +223,7 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . . d log(jlog,"Calling LAB^ISIIMP12 to add panel")
  . . n RESTA,RC
  . . s (RESTA,RC)=""
- . . ;i $g(DEBUG)=1 ZWRITE MISC 
+ . . ;i $g(DEBUG)=1 ZWRITE MISC
  . . S RESTA=$$LAB^ISIIMP12(.RC,.MISC)
  . . d log(jlog,"Return from LAB^ISIIMP12 was: "_$g(RESTA))
  . . ;i $g(DEBUG)=1 ZWRITE RESTA
@@ -298,9 +298,9 @@ ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog,callbak)
  i value="" d  quit
  . do log(jlog,"result "_zj_" value is null, quitting")
  . do log(lablog,"result "_zj_" value is null, quitting")
- do log(jlog,"result "_zj_" value is: "_value) 
- do log(lablog,"result "_zj_" value is: "_value) 
- set @eval@("labs",SYNZI,"vars",zj_" value")=value 
+ do log(jlog,"result "_zj_" value is: "_value)
+ do log(lablog,"result "_zj_" value is: "_value)
+ set @eval@("labs",SYNZI,"vars",zj_" value")=value
  ;
  ;new unit set unit=$get(@json@("entry",SYNZI,"resource","valueQuantity","unit"))
  ;do log(jlog,"units are: "_unit)
@@ -319,7 +319,7 @@ ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog,callbak)
  I '$$PMEM^ISIIMPU7(MISCARY("LAB_PANEL"),VLAB) d  quit
  . do log(jlog,"result "_zj_" Lab "_VLAB_" not in Panel "_MISCARY("LAB_PANEL"))
  . do log(lablog,"result "_zj_" Lab "_VLAB_" not in Panel "_MISCARY("LAB_PANEL"))
- ; 
+ ;
  d log(jlog,"result "_zj_" VistA Lab for "_obscode_" is: "_VLAB)
  d log(lablog,"result "_zj_" VistA Lab for "_obscode_" is: "_VLAB)
  i $g(DEBUG2) W !,"result "_zj_" VistA Lab for "_obscode_" is: "_VLAB
@@ -381,7 +381,7 @@ INITMAPS(LOC) ; initialize mapping table for panels
  ;S @LOC@(MAP,"CODE","75689-0","IRON GROUP")=""
  ;  Panel type is:  89577-1 Troponin I.cardiac panel - Serum or Plasma by High sensitivity method
  ;S @LOC@(MAP,"CODE"," 89577-1","TROPONIN")=""
- ; 
+ ;
  Q
  ;
 log(ary,txt) ; adds a text line to @ary@("log")
