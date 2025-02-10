@@ -28,7 +28,7 @@ DO NOT USE THIS SOFTWARE ON PRODUCTION SYSTEMS. This software is only used to
 create patients on test VistA systems.
 
 This software was only tested on VEHU systems. FOIA VistAs (completely empty)
-may work, but need to be tested first.
+may work, but needs to be tested first.
 
 The code is located at the Github repo at https://github.com/WorldVistA/VistA-FHIR-Data-Loader
 
@@ -149,11 +149,14 @@ Patch Components:
  Patch Installation:
  -------------------
  Pre/Post Installation Overview:
- You must have key XUMGR before starting install.
+ Check Pre-install instructions.
   
   
  Pre-Installation Instructions:
  You must have key XUMGR before starting install.
+
+ Check the README for two configuration issues found in VEHU instances. They
+ must be fixed PRIOR to installing.
   
   
  Installation Instructions:

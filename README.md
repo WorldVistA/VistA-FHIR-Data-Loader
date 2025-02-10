@@ -1,7 +1,8 @@
 # VistA FHIR Data Loader Project
-This project lets you load data from Synthea (https://synthetichealth.github.io/synthea/) 
-into VistA to produce high quality synthetic patient data for development and testing.
-Other FHIR data sources are supportable; but are not supported at this time.
+This project lets you load data from Synthea
+(https://synthetichealth.github.io/synthea/) into VistA to produce high quality
+synthetic patient data for development and testing.  Other FHIR data sources
+are supportable; but are not supported at this time.
 
 DO NOT USE THIS SOFTWARE ON PRODUCTION SYSTEMS. This software is only used to
 create patients on test VistA systems.
@@ -9,6 +10,7 @@ create patients on test VistA systems.
 # Pre-installation Requirements
 The Installer DUZ must have the key XUMGR in order to be able to add users to
 the systems.
+
 Disk Space Requirements: We never actually measured how much disk space the
 package and each patient takes. However, from experience, loading about 400
 full patient histories takes up 100 GB.
@@ -23,17 +25,64 @@ on your own laptop; you can copy the generated Synthea Patients into the
 machine that hosts your VistA instance.
 
 # Installation
-As of Aug 20th 2018, the official way to install this project is to use the latest
-KIDS build in [releases](https://github.com/OSEHRA/VistA-FHIR-Data-Loader/releases/latest).
+As of Aug 20th 2018, the official way to install this project is to use the
+latest KIDS build in
+[releases](https://github.com/OSEHRA/VistA-FHIR-Data-Loader/releases/latest).
 
-The current version is 0.5.
+The current version is 0.6.
 
 The installer must have the key XUMGR in order to be able to add users to the
 systems.
 
-You need to install two KIDS builds: The Dataloader, and the FHIR Importer. See the 
+You need to install two KIDS builds: The Dataloader, and the FHIR Importer. See
+the
 [releases](https://github.com/OSEHRA/VistA-FHIR-Data-Loader/releases/latest)
 for a link to the KIDS builds.
+
+# Pre-Install Warnings on VEHU
+This code exercises so much of the VistA system, that it requires a fully
+configured VistA system. The Post-install does a lot of configuration
+(Providers, Hospital Locations, Services) but there are some items we cannot
+fix that have to do with the configuration of institutions:
+
+- If you see error `<UNDEFINED>VISN+4^SDTMPHLB` during the install, this is
+  because your INSTITUTION entry does not have an ASSOCIATION of type "VISN".
+  You should add such an association and choose a VISN. E.g.:
+```
+>>D P^DI
+
+
+VA FileMan 22.2
+
+
+Select OPTION: INQUIRE TO FILE ENTRIES
+
+
+
+Output from what File: INSTITUTION// 4  INSTITUTION  (5053 entries)
+Select INSTITUTION NAME: `500  CAMP MASTER  NY  VAMC  500
+Another one:
+Standard Captioned Output? Yes//   (Yes)
+Include COMPUTED fields:  (N/Y/R/B): NO//  - No record number (IEN), no Computed Fields
+
+NAME: CAMP MASTER                       STATE: NEW YORK                         DISTRICT: 2                             SHORT NAME: CAMP
+  VA TYPE CODE: HOSP                    REGION: 1                               STATUS: National
+  STREET ADDR. 1: VA MEDICAL CENTER     STREET ADDR. 2: 1 3RD sT.               CITY: ALBANY                            ZIP: 12180-0097
+  FACILITY TYPE: VAMC                   DOMAIN: GOLD.VAINNOVATION.US
+>>>ASSOCIATIONS: VISN                      PARENT OF ASSOCIATION: VISN 2
+  LOCATION TIMEZONE: EASTERN            COUNTRY: USA                            STATION NUMBER: 500
+  OFFICIAL VA NAME: ALBANY VA MEDICAL CENTER                                    AGENCY CODE: VA                         REPORTING STATION: CAMP MASTER
+  POINTER TO AGENCY: VA
+EFFECTIVE DATE: JUL 1,2000              REALIGNED TO: ALBANY, NY (VAMC)
+EFFECTIVE DATE: APR 3,2002              NAME (CHANGED FROM): ALBANY
+CODING SYSTEM: VASTANUM                 ID: 500
+  FACILITY DEA NUMBER: FS3232321        MULTI-DIVISION FACILITY: YES            CURRENT LOCATION: YES
+```
+
+- If you see error `<UNDEFINED>SITE+12^VASITE` during the import, this is
+  because `STATION NUMBER (TIME SENSITIVE)` entry `7` points to an invalid
+  `MEDICAL CENTER DIVISION`. Edit entry `7` with Fileman and pick any valid
+  `MEDICAL CENTER DIVISION`.
 
 ## Sample Install Transcript
 ```
