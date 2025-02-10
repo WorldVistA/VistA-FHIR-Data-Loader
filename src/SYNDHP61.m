@@ -1,5 +1,5 @@
 SYNDHP61 ; Write To VistA ;5/4/18  10:43
- ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 13
+ ;;0.6;VISTA SYN DATA LOADER;;Feb 10, 2025
  ;;Original routine authored by Andrew Thompson & Ferdinand Frankson of DXC Technology 2017-2018
  ;
  ; Copyright (c) 2017-2018 DXC Technology (now Perspecta)
@@ -113,7 +113,7 @@ SI2IMP(SCT,OBS) ; convert metric units to imperial
 PROBUPD(RETSTA,DHPPAT,DHPSCT,DHPSDES,DHPROV,DHPDTM,DHPRID) ; problems update
  ;
  ; Alternate entry for creating problem/condition if snomed code does not map to icd code, so can't use DATA2PCE
- ; 
+ ;
  ; Input:
  ;  DHPPAT -   patient ICN                (mandatory)
  ;  DHPSCT -   SNOMED CT code             (mandatory)
@@ -338,7 +338,7 @@ ENCTUPD(RETSTA,DHPPAT,STARTDT,ENDDT,ENCPROV,CLINIC,SCTDX,SCTCPT) ;Encounter upda
  .S DHPCPT=$$MAP^SYNDHPMP("sct2os5",SCTCPT)
  .S DHPCPT=$P(DHPCPT,U,1)
  .I '$D(^ICPT("B",DHPCPT)) S DHPCPT=""
- .I DHPCPT="" S DHPCPT="6456Q" 
+ .I DHPCPT="" S DHPCPT="6456Q"
  ;
  I DHPCPT="" S RETSTA="-1^SNOMED CT CODE "_SCTCPT_" not mapped" Q
  ; create root array

@@ -1,7 +1,7 @@
 SYNVPR  ; GPL/GPL - VPR viewing routines ;2019-08-07  3:57 PM
- ;;0.2;VISTA SYN DATA LOADER;;Feb 07, 2019;Build 12
+ ;;0.6;VISTA SYN DATA LOADER;;Feb 10, 2025
  ;
- ; Copyright (c) 2017-2018 George P. Lilly 
+ ; Copyright (c) 2017-2018 George P. Lilly
  ; Copyright (c) 2025 DocMe360 LLC
  ;
  ;Licensed under the Apache License, Version 2.0 (the "License");

@@ -1,5 +1,5 @@
 SYNDHP91 ;DHP/fjf - HealthConcourse - Write care plans to VistA ;11/07/2018
- ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 47
+ ;;0.6;VISTA SYN DATA LOADER;;Feb 10, 2025
  ;;
  ;;Original routine authored by Andrew Thompson & Ferdinand Frankson of Perspecta 2017-2019
  ; Copyright (c) 2017-2019 DXC Technology (now Perspecta)
@@ -30,9 +30,9 @@ SYNDHP91 ;DHP/fjf - HealthConcourse - Write care plans to VistA ;11/07/2018
  ; 1.   Use data2pce to ingest careplans, activities & goals
  ; a.   Encounter
  ; b.   CarePlan points to encounter and the goals
- ; i.   V standard codes (SNOMED CT) - classification 
+ ; i.   V standard codes (SNOMED CT) - classification
  ; c.   Goals - has text goal - points to condition/problems (reason for goal)
- ; i.   Use Healthfactors 
+ ; i.   Use Healthfactors
  ; ii.  Create goals HF category - config - add to configuration utility this will be for problem
  ; iii. For each goal create a health factor if doesn't already exist (laygo) (text from c above)
  ; iv.  Code which references the problem list
@@ -53,9 +53,9 @@ SYNDHP91 ;DHP/fjf - HealthConcourse - Write care plans to VistA ;11/07/2018
  ;
  ; HF for cat for careplan
  ; HF for careplan (use healthfactor manager
- ; HF for activity 
+ ; HF for activity
  ; pass to DATA2PCE
- ; 
+ ;
  ;
  ; -------- Create Care Plan for Patient
  ;
@@ -107,7 +107,7 @@ CPLUPDT(RETSTA,DHPPAT,DHPVST,DHPCAT,DHPACT,DHPGOL,DHPSCT,DHPSDT,DHPEDT) ;  updat
  S ADDST=$P(DHPSCT,U,3)
  ;
  ; Call HF manager and retrieve HF for careplan category data or
- ;   add category HF and return data if it doesn't already exist 
+ ;   add category HF and return data if it doesn't already exist
  S CATDAT=$$HFCPCAT^SYNFHF(CATCD,CATTX)
  ;
  ; Call HF manager and retrieve HF for careplan
@@ -115,13 +115,13 @@ CPLUPDT(RETSTA,DHPPAT,DHPVST,DHPCAT,DHPACT,DHPGOL,DHPSCT,DHPSDT,DHPEDT) ;  updat
  S HFCAP=$$HFCP^SYNFHF(CATCD,CATTX,CATDAT)
  ;
  ; Call HF manager and retrieve HF for careplan addresses data or
- ;   add addresses HF and return data if it doesn't already exist 
+ ;   add addresses HF and return data if it doesn't already exist
  S ADDDAT=$$HFADDR^SYNFHF(ADDCD,ADDTX,CATDAT)
  ;
  ; create encounter array
  ;
  K ENCDATA
- ; 
+ ;
  ;
  ; Careplan health factor
  ;
@@ -147,7 +147,7 @@ CPLUPDT(RETSTA,DHPPAT,DHPVST,DHPCAT,DHPACT,DHPGOL,DHPSCT,DHPSDT,DHPEDT) ;  updat
  ..S ENCDATA("HEALTH FACTOR",I+2,"HEALTH FACTOR")=+HFACT
  ..S ENCDATA("HEALTH FACTOR",I+2,"EVENT D/T")=DHPSDT
  ..S ENCDATA("HEALTH FACTOR",I+2,"COMMENT")="Start: "_DHPSDT_" End: "_DHPEDT_" Status: "_ACTSTA
- ; 
+ ;
 GOLS ; careplan goals
  ;
  F J=1:1:$L(DHPGOL,U) D
@@ -172,7 +172,7 @@ T1 ;
  D VARS
  D CPLUPDT(.ZXC,DHPPAT,DHPVST,DHPCAT,DHPACT,DHPGOL,DHPSCT,DHPSDT,DHPEDT)
  Q
- ; 
+ ;
  ;s q=""""
  ;
  ;w q
@@ -202,7 +202,7 @@ VARS ;
  S DHPGOL=DHPGOL_"~in-progress^15777000~Glucose [Mass/volume] in Blood < 108~in-progress^15777000"
  S DHPGOL=DHPGOL_"~Hemoglobin A1c total in Blood < 7.0~in-progress"
  Q
- ; 
+ ;
 EVARS ;
  S ENCDATA("IVARS","DHPACT")=DHPACT
  S ENCDATA("IVARS","DHPCAT")=DHPCAT

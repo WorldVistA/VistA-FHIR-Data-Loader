@@ -1,8 +1,8 @@
 SYNFLAB ;ven/gpl - fhir loader utilities ;2018-05-08  4:23 PM
- ;;0.3;VISTA SYNTHETIC DATA LOADER;;Dec 27, 2024;Build 12
+ ;;0.6;VISTA SYN DATA LOADER;;Feb 10, 2025
  ;
  ; Copyright (c) 2017-2022 George P. Lilly
- ; Copyright (c) 2018-2019 Sam Habiel 
+ ; Copyright (c) 2018-2019 Sam Habiel
  ; Copyright (c) 2025 DocMe360 LLC
  ;
  ;Licensed under the Apache License, Version 2.0 (the "License");
@@ -250,7 +250,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . . i vtxt["Positive" s DHPOBS="DETECTED" ; 10828004
  . . i vtxt["Detected" s DHPOBS="DETECTED" ; 260373001
  . . i vtxt["Not detected" s DHPOBS="Not Detected" ; 260415000
- . . i vtxt["Confirmed" s DHPOBS="CONFIRMED" ; 
+ . . i vtxt["Confirmed" s DHPOBS="CONFIRMED" ;
  . s @eval@("labs",zi,"parms","DHPOBS")=DHPOBS
  . d log(jlog,"Value is: "_DHPOBS)
  . ;
