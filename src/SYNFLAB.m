@@ -60,7 +60,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  ; Initialize counters
  s result("status","status")="NotStarted"
  s @eval@("labs","status","errors")=0
- s @eval@("labs","status","loaded")=0
+ i '$d(@eval@("labs","status","loaded")) s @eval@("labs","status","loaded")=0
  ;
  ; first intake all the lab panels
  d importPanels^SYNFPAN(.result,ien,.args)
@@ -162,10 +162,8 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . . . s value=$s(x<15:"NEG",x<30:"TRACE",x<100:"1+",x<300:"2+",x<1000:"3+",1:"4+")
  . ;
  . i value="" d  quit
- . . do log(jlog,"-1: value is null, quitting")
- . . s @eval@("labs",zi,"status","loadstatus")="cannotLoad"
  . . s @eval@("labs",zi,"status","issue")="Lab value not found for loinc code: "_obscode_" "_labtype
- . . s @eval@("labs","status","errors")=@eval@("labs","status","errors")+1
+ . . d fail(jlog,eval,zi,"Error, value is null, quitting") 
  . do log(jlog,"value is: "_value)
  . set @eval@("labs",zi,"vars","value")=value
  . ;
@@ -210,25 +208,18 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . i +vistalab'=-1 d
  .. d log(jlog,"Lab found in graph: "_vistalab)
  .. s @eval@("labs",zi,"parms","vistalab")=vistalab
- . if +vistalab=-1 s vistalab=labtype
+ . if +vistalab=-1 s vistalab=""
  . s vistalab=$$TRIM^XLFSTR(vistalab) ; get rid of trailing blanks
  . ;n sct s sct=$$loinc2sct(obscode) ; find the snomed code
  . i vistalab="" d  quit
  . . d log(jlog,"VistA lab not found for loinc code: "_obscode_" "_labtype_" -- skipping")
- . . s @eval@("labs",zi,"status","loadstatus")="cannotLoad"
  . . s @eval@("labs",zi,"status","issue")="VistA lab not found for loinc code: "_obscode_" "_labtype_" -- skipping"
- . . s @eval@("labs","status","errors")=@eval@("labs","status","errors")+1
+ . . d fail(jlog,eval,zi,"Error - VistA lab not found for loinc code: "_obscode_" "_labtype_" -- skipping")
  . s @eval@("labs",zi,"parms","DHPLAB")=vistalab
  . d log(jlog,"VistA Lab is: "_vistalab)
  . s DHPLAB=vistalab
  . ;
  . s DHPOBS=value
- . ;s recien=$o(^LAB(60,"B",DHPLAB,""))
- . ;i recien="" d  ; oops lab test not found!!
- . ;. S DHPLAB=$$UP^XLFSTR(DHPLAB)
- . ;. s vistalab=DHPLAB
- . ;. s recien=$o(^LAB(60,"B",DHPLAB,""))
- . ;. d log(jlog,"VistA Lab is: "_vistalab)
  . ;
  . ; Collection sample
  . ;
@@ -276,19 +267,10 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . ;
  . s @eval@("labs",zi,"status","loadstatus")="readyToLoad"
  . ;
- . ;i vistalab="PDW" q  ; skipping because it hangs - gpl wvehr 1/7/21
- . ;i vistalab="SGPT" q  ; skipping it hangs loinc 1742-6 - gpl wvehr 1/7/21
- . ;i vistalab="INFLUENZA A RNA" Q  ; likewise
- . ;i vistalab="INFLUENZA B RNA" Q  ; likewise
- . ;i vistalab="METAPNEUMOVIRUS RNA" Q  ; likewise
- . ;
  . if $g(args("load"))=1 d  ; only load if told to
- . . ;new (DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPPROV,DHPLOC,DHPLOINC,DHPLAB)
  . . if $g(ien)'="" if $$loadStatus("labs",zi,ien)=1 do  quit  ;
  . . . d log(jlog,"Lab already loaded, skipping")
  . . d log(jlog,"Calling LABADD^SYNDHP63 to add lab")
- . . ;new (DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPPROV,DHPLOC,DHPLOINC,DHPLAB,DUZ,DT,U,jlog,ien,zi,eval)
- . . ;LABADD(RETSTA,DHPPAT,DHPLOC,DHPTEST,DHPRSLT,DHPRSDT) ;Create lab test
  . . D LABADD^SYNDHP63(.RETSTA,DHPPAT,DHPLOC,DHPLAB,DHPOBS,DHPDTM,DHPLOINC,CSAMP)     ; labs update
  . . d log(jlog,"Return from LABADD^SYNDHP63 was: "_$g(RETSTA))
  . . ;i $g(DEBUG)=1 ZWRITE RETSTA
@@ -307,6 +289,14 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  set jrslt("result","errors")=@eval@("labs","status","errors")
  m result("status")=jrslt("result")
  q 1
+ ;
+fail(jlog,eval,zrien,zmsg) ; standard way to mark a lab as failed and increment error count
+ ;
+ s @eval@("labs",zrien,"status","loadstatus")="readyToLoad"
+ d log(jlog,"Return: -1^"_zmsg)
+ s @eval@("labs","status","errors")=@eval@("labs","status","errors")+1
+ ;
+ q
  ;
 log(ary,txt) ; adds a text line to @ary@("log")
  s @ary@("log",$o(@ary@("log",""),-1)+1)=$g(txt)
