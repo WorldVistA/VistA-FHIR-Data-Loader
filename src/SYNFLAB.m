@@ -196,12 +196,6 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . d log(jlog,"LOINC code is: "_DHPLOINC)
  . s @eval@("labs",zi,"parms","DHPLOINC")=DHPLOINC
  . ;
- . ; TODO: Add a separate counter for skipped items
- . i DHPLOINC="33914-3" d  q  ;
- . . d log(jlog,"Skipping Estimated Glomerular Filtration Rate LOINC: 33914-3")
- . . s @eval@("labs","status","loaded")=@eval@("labs","status","loaded")+1
- . . s @eval@("labs",zi,"status","loadstatus")="skipped"
- . ;
  . n vistalab s vistalab=$$graphmap^SYNGRAPH("loinc-lab-map",obscode)
  . i +vistalab=-1 s vistalab=$$graphmap^SYNGRAPH("loinc-lab-map"," "_obscode)
  . i +vistalab=-1 s vistalab=$$covid^SYNGRAPH(obscode)
@@ -229,7 +223,8 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . I CSAMP["SER/PLAS" S CSAMP="SERUM"
  . I CSAMP["Whole blood" S CSAMP="BLOOD"
  . I CSAMP["Urine Sediment" S CSAMP="URINE"
- . I obscode["5902-2" S CSAMP="PLASMA"
+ . I CSAMP["Platelet poor plasma" S CSAMP="PLASMA"
+ . I CSAMP["Blood arterial" S CSAMP="ARTERIAL BLOOD"
  . d log(jlog,"Collection sample is: "_CSAMP)
  . s @eval@("labs",zi,"parms","DHPCSAMP")=CSAMP
  . ;
