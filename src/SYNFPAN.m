@@ -148,9 +148,7 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . N PANEL
  . S PANEL=$$MAP^SYNQLDM(loinc,"vistapanel")
  . i PANEL="" do  quit
- . . d log(jlog,"-1^Panel with loinc "_loinc_" has no mapping to a VistA Lab Panel")
- . . i '$d(@eval@("panels","status","errors")) s @eval@("panels","status","errors")=0
- . . s @eval@("panels","status","errors")=@eval@("panels","status","errors")+1
+ . . d fail(jlog,eval,SYNZI,"Return: -1^Panel with loinc "_loinc_" has no mapping to a VistA Lab Panel")
  . d log(jlog,"VistA panel is: "_PANEL)
  . S MISC("LAB_PANEL")=PANEL
  . ;
@@ -193,6 +191,7 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . I CSAMP["SER/PLAS" S CSAMP="SERUM"
  . I CSAMP["Whole blood" S CSAMP="BLOOD"
  . I CSAMP["Urine Sediment" S CSAMP="URINE"
+ . I loinc["5902-2" S CSAMP="PLASMA"
  . d log(jlog,"Collection sample is: "_CSAMP)
  . s MISC("COLLECTION_SAMPLE")=CSAMP
  . ;
@@ -225,14 +224,15 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . . s (RESTA,RC)=""
  . . ;i $g(DEBUG)=1 ZWRITE MISC
  . . S RESTA=$$LAB^ISIIMP12(.RC,.MISC)
- . . d log(jlog,"Return from LAB^ISIIMP12 was: "_$g(RESTA))
+ . . ;
  . . ;i $g(DEBUG)=1 ZWRITE RESTA
  . . ;i $g(DEBUG)=1 ZWRITE RC
  . . if +RESTA=1 do  ;
+ . . . d log(jlog,"Return from LAB^ISIIMP12 was: "_$g(RESTA))
  . . . s @eval@("panels","status","loaded")=@eval@("panels","status","loaded")+1
  . . . s @eval@("panels",SYNZI,"status","loadstatus")="loaded"
  . . . d SUCCESS(SYNZI,.success,eval,ien) ; mark labs as loaded
- . . else  s @eval@("panels","status","errors")=@eval@("panels","status","errors")+1
+ . . else  d fail(jlog,eval,SYNZI,"Return from LAB^ISIIMP12 was: "_$g(RESTA))
  ;
  if $get(args("debug"))=1 do  ;
  . m jrslt("source")=@json
@@ -333,6 +333,7 @@ ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog,callbak)
 ADJUST(ZV) ; adjust the value for specific text based values
  ;
  i ZV["^",$L(ZV)=1 S ZV="" Q
+ i ZV["394717006^Urine leukocytes not detected (finding)" S ZV="NEG" Q
  i ZV["314137006^Nitrite detected in urine (finding)" S ZV="NEG" Q
  i ZV["394712000^Urine leukocyte test one plus (finding)" S ZV="1+" Q
  i ZV["276409005^Mucus in urine (finding)" S ZV="1+" Q
@@ -380,9 +381,20 @@ INITMAPS(LOC) ; initialize mapping table for panels
  ; Panel type is: 75689-0 Iron panel - Serum or Plasma
  ;S @LOC@(MAP,"CODE","75689-0","IRON GROUP")=""
  ;  Panel type is:  89577-1 Troponin I.cardiac panel - Serum or Plasma by High sensitivity method
- ;S @LOC@(MAP,"CODE"," 89577-1","TROPONIN")=""
+ ;S @LOC@(MAP,"CODE","89577-1","TROPONIN")=""
+ ;  Panel type is:  34528-0 PT panel - Platelet poor plasma by Coagulation assay
+ S @LOC@(MAP,"CODE","34528-0","COAGULATION (PT & PTT)")=""
  ;
  Q
+ ;
+fail(jlog,eval,zrien,zmsg) ; standard way to mark a lab as failed and increment error count
+ ;
+ s @eval@("panels",zrien,"status","loadstatus")="readyToLoad"
+ d log(jlog,zmsg)
+ i '$d(@eval@("panels","status","errors")) s @eval@("panels","status","errors")=0
+ s @eval@("panels","status","errors")=@eval@("panels","status","errors")+1
+ ;
+ q
  ;
 log(ary,txt) ; adds a text line to @ary@("log")
  s @ary@("log",$o(@ary@("log",""),-1)+1)=$g(txt)

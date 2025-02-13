@@ -150,6 +150,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . . do log(jlog,"value before adjust is: "_value)
  . . d ADJUST^SYNFPAN(.value)
  . . do log(jlog,"value after adjust is: "_value)
+ . . i value["^" s value=""
  . else  d  ;
  . . ;
  . . ; source: https://doi.org/10.30574/gscbps.2023.22.2.0091
@@ -228,6 +229,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . I CSAMP["SER/PLAS" S CSAMP="SERUM"
  . I CSAMP["Whole blood" S CSAMP="BLOOD"
  . I CSAMP["Urine Sediment" S CSAMP="URINE"
+ . I obscode["5902-2" S CSAMP="PLASMA"
  . d log(jlog,"Collection sample is: "_CSAMP)
  . s @eval@("labs",zi,"parms","DHPCSAMP")=CSAMP
  . ;
