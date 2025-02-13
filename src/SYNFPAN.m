@@ -191,7 +191,8 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . I CSAMP["SER/PLAS" S CSAMP="SERUM"
  . I CSAMP["Whole blood" S CSAMP="BLOOD"
  . I CSAMP["Urine Sediment" S CSAMP="URINE"
- . I loinc["5902-2" S CSAMP="PLASMA"
+ . I CSAMP["Platelet poor plasma" S CSAMP="PLASMA"
+ . I CSAMP["Blood arterial" S CSAMP="ARTERIAL BLOOD"
  . d log(jlog,"Collection sample is: "_CSAMP)
  . s MISC("COLLECTION_SAMPLE")=CSAMP
  . ;
@@ -212,7 +213,7 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . . ; call one result lab
  . . ;
  . . n lablog s lablog=$na(@root@(ien,"load","labs",rien))
- . . D ONELAB(.MISC,json,rien,zj,jlog,eval,lablog,.success)
+ . . D ONELAB(.MISC,json,rien,zj,jlog,eval,lablog,.success,atomdisp)
  . . ;
  . m @eval@("panels",SYNZI,"vars","MISC")=MISC ;
  . ;
@@ -259,7 +260,7 @@ SUCCESS(SYNZI,success,eval,ien) ; after a panel has loaded, mark the successful 
  ;
  Q
  ;
-ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog,callbak)
+ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog,callbak,atomdisp)
  ;
  new obscode set obscode=$get(@json@("entry",ien,"resource","code","coding",1,"code"))
  do log(lablog,"result "_zj_" code is: "_obscode)
@@ -294,6 +295,8 @@ ONELAB(MISCARY,json,ien,zj,jlog,eval,lablog,callbak)
  . if obscode="5804-0" d  ; Protein
  . . n x s x=value
  . . s value=$s(x<15:"NEG",x<30:"TRACE",x<100:"1+",x<300:"2+",x<1000:"3+",1:"4+")
+ . if atomdisp["[Presence]" d  ; Various presence values
+ . . s value=$s(value=0:"NEG",1:value)
  ;
  i value="" d  quit
  . do log(jlog,"result "_zj_" value is null, quitting")
