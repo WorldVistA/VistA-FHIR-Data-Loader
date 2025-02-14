@@ -383,10 +383,12 @@ INITMAPS(LOC) ; initialize mapping table for panels
  S @LOC@(MAP,"CODE","50190-8","IRON GROUP")=""
  ; Panel type is: 75689-0 Iron panel - Serum or Plasma
  ;S @LOC@(MAP,"CODE","75689-0","IRON GROUP")=""
- ;  Panel type is:  89577-1 Troponin I.cardiac panel - Serum or Plasma by High sensitivity method
+ ; Panel type is:  89577-1 Troponin I.cardiac panel - Serum or Plasma by High sensitivity method
  ;S @LOC@(MAP,"CODE","89577-1","TROPONIN")=""
- ;  Panel type is:  34528-0 PT panel - Platelet poor plasma by Coagulation assay
- S @LOC@(MAP,"CODE","34528-0","COAGULATION (PT & PTT)")=""
+ ; Panel type is:  34528-0 PT panel - Platelet poor plasma by Coagulation assay
+ S @LOC@(MAP,"CODE","34528-0","COAG PROFILE")=""
+ ; Panel type is: 24339-4 Gas panel - Venous blood
+ S @LOC@(MAP,"CODE","24339-4","BLOOD GASES")=""
  ;
  Q
  ;
