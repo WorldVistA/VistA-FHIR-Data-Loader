@@ -327,6 +327,9 @@ INITMAPS        ; initialize maps
  S @G@(MAP,"CODE","19123-9","MAGNESIUM")=""
  S @G@(MAP,"CODE","788-0","RDW-CV")=""
  S @G@(MAP,"CODE","33914-3","COMPUTED CREATININE CLEARANCE")=""
+ S @G@(MAP,"CODE","3173-2","PTT")=""
+ S @G@(MAP,"CODE","2276-4","FERRITIN")=""
+ S @G@(MAP,"CODE","2746-6","PH ")="" ; not a typo, it really has a space
  ; gmr allergies snomed to vuid
  S MAP="gmr-allergies"
  S @G@(MAP,"CODE",419474003,4636980)=""
