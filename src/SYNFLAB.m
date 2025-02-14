@@ -222,6 +222,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . S CSAMP=$$GET1^DIQ(95.3,$p(obscode,"-"),4)
  . I CSAMP["SER/PLAS" S CSAMP="SERUM"
  . I CSAMP["Whole blood" S CSAMP="BLOOD"
+ . I CSAMP["Blood venous" S CSAMP="BLOOD"
  . I CSAMP["Urine Sediment" S CSAMP="URINE"
  . I CSAMP["Platelet poor plasma" S CSAMP="PLASMA"
  . I CSAMP["Blood arterial" S CSAMP="ARTERIAL BLOOD"
