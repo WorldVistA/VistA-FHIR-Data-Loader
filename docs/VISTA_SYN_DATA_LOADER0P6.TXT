@@ -237,7 +237,6 @@ The second line of each of these routines now looks like:
  ;;0.6;VISTA SYN DATA LOADER;;Feb 10, 2025
 
 The checksums below are new checksums, and can be checked with CHECK1^XTSUMBLD.
-
 SYNBSTS1  value = 23719108
 SYNDHP61  value = 185734883
 SYNDHP62  value = 320910059
@@ -256,11 +255,11 @@ SYNFHF    value = 20953883
 SYNFHIR   value = 312663621
 SYNFHIRU  value = 110282879
 SYNFIMM   value = 85189609
-SYNFLAB   value = 228415244
+SYNFLAB   value = 206778604
 SYNFMED   value = 233658760
 SYNFMED2  value = 101686490
 SYNFMEDT  value = 73289095
-SYNFPAN   value = 107779293
+SYNFPAN   value = 108132831
 SYNFPAT   value = 140645865
 SYNFPR2   value = 127784673
 SYNFPRB   value = 152995973
@@ -274,6 +273,6 @@ SYNGRAPH  value = 23895941
 SYNINIT   value = 97424199
 SYNKIDS   value = 7541202
 SYNLINIT  value = 177228782
-SYNQLDM   value = 200160704
+SYNQLDM   value = 212622202
 SYNVPR    value = 238319332
 SYNWD     value = 4935809
