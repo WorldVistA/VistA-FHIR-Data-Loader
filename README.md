@@ -505,7 +505,6 @@ Please select clinical category to view:
 
 Enter response: 1// 4
 
-```
                            PATIENT 101084 conditions
 ^SYNGRAPH(2002.801,2,2,"load","conditions")
 |--3
