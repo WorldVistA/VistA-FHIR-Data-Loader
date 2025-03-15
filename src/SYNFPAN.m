@@ -1,5 +1,5 @@
 SYNFPAN ;ven/gpl - fhir loader utilities ;2018-05-08  4:23 PM
- ;;0.6;VISTA SYN DATA LOADER;;Feb 10, 2025
+ ;;0.6;VISTA SYN DATA LOADER;;Feb 10, 2025;Build 16
  ;
  ; Copyright (c) 2025 DocMe360 LLC
  ;
@@ -366,6 +366,14 @@ INITMAPS(LOC) ; initialize mapping table for panels
  N MAP
  ; vistapanel
  S MAP="vistapanel"
+ ; CBC W Differential panel, method unspecified - Blood (69742-5) -> CBC
+ S @LOC@(MAP,"CODE","69742-5","CBC")=""
+ ; Auto Differential panel - Blood (57023-4) -> DIFFERENTIAL COUNT
+ S @LOC@(MAP,"CODE","57023-4","DIFFERENTIAL COUNT")=""
+ ; Gas panel - Arterial blood (24336-0) -> GAS PANEL - ARTERIAL
+ S @LOC@(MAP,"CODE","24366-0","GAS PANEL - ARTERIAL")=""
+ ; Gas panel - Venous blood (24339-4) -> BLOOD GASES
+ S @LOC@(MAP,"CODE","24339-4","BLOOD GASES")=""
  ; Panel type is: 24321-2 Basic metabolic 2000 panel - Serum or Plasma
  S @LOC@(MAP,"CODE","24321-2","BASIC METABOLIC PANEL")=""
  ; Panel type is: 51990-0 Basic metabolic panel - Blood
