@@ -100,9 +100,12 @@ wsIntakePanels(args,body,result,ien) ; web service entry (post)
  . ;
  . ;new obstype set obstype=$get(@json@("entry",SYNZI,"resource","category",1,"coding",1,"code"))
  . new catcode set catcode=$get(@json@("entry",SYNZI,"resource","category",1,"coding",1,"code"))
- . q:$$UP^XLFSTR(catcode)'["LAB"
+ . new notpanel s notpanel=0 ; assume it's a lab panel
+ . if $$UP^XLFSTR(catcode)'["LAB" set notpanel=1
  . new loinc s loinc=""
  . set loinc=$g(@json@("entry",SYNZI,"resource","code","coding",1,"code"))
+ . if loinc["24336-0" set notpanel=0
+ . q:notpanel
  . d log(jlog,"Panel loinc code is  "_loinc)
  . ;
  . ; see if this resource has already been loaded. if so, skip it
@@ -371,7 +374,7 @@ INITMAPS(LOC) ; initialize mapping table for panels
  ; Auto Differential panel - Blood (57023-4) -> DIFFERENTIAL COUNT
  S @LOC@(MAP,"CODE","57023-4","DIFFERENTIAL COUNT")=""
  ; Gas panel - Arterial blood (24336-0) -> GAS PANEL - ARTERIAL
- S @LOC@(MAP,"CODE","24366-0","GAS PANEL - ARTERIAL")=""
+ S @LOC@(MAP,"CODE","24336-0","GAS PANEL - ARTERIAL")=""
  ; Gas panel - Venous blood (24339-4) -> BLOOD GASES
  S @LOC@(MAP,"CODE","24339-4","BLOOD GASES")=""
  ; Panel type is: 24321-2 Basic metabolic 2000 panel - Serum or Plasma
