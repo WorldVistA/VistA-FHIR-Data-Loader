@@ -396,8 +396,6 @@ INITMAPS(LOC) ; initialize mapping table for panels
  ;S @LOC@(MAP,"CODE","89577-1","TROPONIN")=""
  ; Panel type is:  34528-0 PT panel - Platelet poor plasma by Coagulation assay
  S @LOC@(MAP,"CODE","34528-0","COAG PROFILE")=""
- ; Panel type is: 24339-4 Gas panel - Venous blood
- S @LOC@(MAP,"CODE","24339-4","BLOOD GASES")=""
  ;
  Q
  ;

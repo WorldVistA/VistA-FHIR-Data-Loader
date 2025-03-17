@@ -335,9 +335,9 @@ INITMAPS        ; initialize maps
  ; "Erythrocytes [#/volume] in Blood","26453-1",5.6994 -> RBC (part of CBC)
  S @G@(MAP,"CODE","26453-1","RBC")=""
  ; "Hemoglobin","718-7",14.748 -> HGB (part of CBC)
- S @G@(MAP,"CODE","718-7","HGB")=""
+ ;S @G@(MAP,"CODE","718-7","HGB")="" ; duplicate
  ; "Hematocrit","20570-8",43.417 -> HCT (part of CBC)
- S @G@(MAP,"CODE","20570-8","HCT")=""
+ ;S @G@(MAP,"CODE","20570-8","HCT")="" ; duplicate
  ; "MCV","30428-7",89.107 -> MCV (part of CBC)
  S @G@(MAP,"CODE","30428-7","MCV")=""
  ; "RBC Distribution Width","30385-9",13.191 -> RDW (part of CBC)
@@ -380,7 +380,7 @@ INITMAPS        ; initialize maps
  ; "Bicarbonate [Moles/volume] in Venous blood","14627-4",22.593 (BICARBONATE (SBC)) (PROBABLY NOT AN EXACT MATCH)
  S @G@(MAP,"CODE","14627-4","BICARBONATE (SBC)")=""
  ; "Carbon dioxide, total [Moles/volume] in Venous blood","2027-1",1.3999 (CO2CT.)
- S @G@(MAP,"CODE","2027-1","CO2CT.")=""
+ S @G@(MAP,"CODE","2027-1","CO2CT")=""
  ;
  ; gmr allergies snomed to vuid
  S MAP="gmr-allergies"
