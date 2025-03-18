@@ -379,8 +379,8 @@ INITMAPS        ; initialize maps
  S @G@(MAP,"CODE","2705-2","PO2")=""
  ; "Bicarbonate [Moles/volume] in Venous blood","14627-4",22.593 (BICARBONATE (SBC)) (PROBABLY NOT AN EXACT MATCH)
  S @G@(MAP,"CODE","14627-4","BICARBONATE (SBC)")=""
- ; "Carbon dioxide, total [Moles/volume] in Venous blood","2027-1",1.3999 (CO2CT.)
- ;S @G@(MAP,"CODE","2027-1","CO2CT")="" ; causes crash at  PMEM+9^ISIIMPU7, Null subscripts not allowed
+ ; "Carbon dioxide, total [Moles/volume] in Venous blood","2027-1",1.3999 (CO2CT. (TCO2))
+ S @G@(MAP,"CODE","2027-1","CO2CT. (TCO2)")=""
  ;
  ; gmr allergies snomed to vuid
  S MAP="gmr-allergies"
