@@ -11,8 +11,17 @@ Use menu option “Edit cosmic tests [LRDIECOSMIC]”.
 
 - Add lab tests “LEUCOCYTE ESTERASE, URINE” and “NITRITE, URINE” to “URINALYSIS” panel
 - Add lab tests “CO2”, “SGOT”, and “COMPUTED CREATININE CLEARANCE” to “COMPREHENSIVE METABOLIC PANEL”
+- Add lab test "COMPUTED CREATININE CLEARANCE" to "BASIC METABOLIC PANEL"
 - Add lab test “INR” to “COAG PROFILE” panel
 - Add lab test “RDW-CV” to “CBC” panel
+- Add the following tests to "DIFFERENTIAL COUNT":
+    - NEUTROPHILS %
+    - NEUTROPHILS ABSOLUTE
+    - LYMPH ABS.
+    - MONO ABS.
+    - EOSINO, ABSOLUTE
+    - BASOPHILS, ABSOLUTE
+
 
 # Data Name Changes
 Use option “Modify an existing data name [LRWU6]”.
@@ -29,3 +38,10 @@ Use option “Modify an existing data name [LRWU6]”.
   to change VistA units to match. Change from 0-999 with 1 decimal place to 0-1
   with 3 decimal places.
 - INR Range needs to be from .8 to 20, NOT .9 to 20.
+
+# Misc Changes
+- URINE PH lab test has "PH" Synonym. Remove it using Fileman.
+- A bunch of tests point to accession area ZZ GAS that is missing a numeric
+  identifier. While it's best to repoint the tests to another accession area,
+  for expediency, using Fileman, edit 68 (Accession) > .4 Numeric Identifier
+  and put in any value.

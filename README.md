@@ -30,8 +30,6 @@ As of Aug 20th 2018, the official way to install this project is to use the
 latest KIDS build in
 [releases](https://github.com/WorldVistA/VistA-FHIR-Data-Loader/releases/latest).
 
-The current version is 0.6.
-
 The installer must have the key XUMGR in order to be able to add users to the
 systems.
 

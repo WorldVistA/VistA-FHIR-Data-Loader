@@ -1,0 +1,279 @@
+$TXT Created by HABIEL,SAM (KIDS) on Thursday, 03/18/25 at 14:07
+=============================================================================
+Run Date: MAR 18, 2025                     Designation: VISTA SYN DATA LOADER 0.7
+Package : VISTA SYN DATA LOADER            Priority: Optional
+Version : 0.7                              Status: Released
+=============================================================================
+
+Subject: VISTA SYN DATA LOADER 0.7
+
+Category: 
+  - Routine
+  - Other
+
+Required Builds:
+  - PX*1.0*211
+  - XU*8.0*672
+  - XU*8.0*680
+  - ETS*1.0*1
+  - VISTA DATALOADER 3.1
+
+Description:
+============
+This project lets you load data from Synthea (https://synthetichealth.github.io/synthea/) 
+into VistA to produce high quality synthetic patient data for development and testing.
+Other FHIR data sources are supportable; but are not supported at this time.
+
+DO NOT USE THIS SOFTWARE ON PRODUCTION SYSTEMS. This software is only used to
+create patients on test VistA systems.
+
+This software was only tested on VEHU systems. FOIA VistAs (completely empty)
+may work, but needs to be tested first.
+
+The code is located at the Github repo at https://github.com/WorldVistA/VistA-FHIR-Data-Loader
+
+Detailed Install and Usage instructions can be found at the README.md in the Github repo.
+
+Version History
+---------------
+- 0.7 (March 2025) Adds support for 3 extra panels
+- 0.6 (February 2025) Adds support for importing lab panels, as well as making
+  various general improvements
+- 0.5 (December 2024) Gets the software working again with the lastest Synthea and VistA
+- 0.4 (November 2019) First VA version (no Web Server, use File System, run on Cache instead of GT.M)
+- 0.3 (July 2019) Lots of bug fixes; FHIR3 -> FHIR4 support; VA version changes
+- 0.2 (January 2019) Lots of bug fixes
+- 0.1 (May 2018) Initial Prototype version
+
+License
+-------
+Software licensed under Apache 2.0.
+
+Patch Components:
+-----------------
+  
+  
+ Files & Fields Associated:
+  
+ File Name (Number)          Field Name (Number)       New/Modified/Deleted
+ ------------------          -------------------       --------------------
+ GRAPH (2002.801)             ALL                      NEW
+  
+ Forms Associated:
+  
+ Form Name                   File Number               New/Modified/Deleted
+ ---------                   -----------               --------------------
+ N/A
+  
+  
+ Mail Groups Associated:
+  
+ Mail Group Name             New/Modified/Deleted
+ ---------------             --------------------
+ N/A
+  
+  
+ Options Associated:
+  
+ Option Name                 Type                      New/Modified/Deleted
+ -----------                 ----                      --------------------
+ SYN FHIR JSON               RUN ROUTINE               NEW
+ SYN LOAD FILES              RUN ROUTINE               NEW
+ SYN LOAD LOG                RUN ROUTINE               NEW
+ SYN VPR                     RUN ROUTINE               NEW
+ SYNMENU                     MENU                      NEW
+
+  
+ Protocols Associated:
+  
+ Protocol Name               New/Modified/Deleted
+ -------------               --------------------
+ N/A
+ 
+ 
+ Security Keys Associated: 
+  
+ Security Key Name
+ -----------------
+ N/A
+  
+ Templates Associated:
+  
+ Template Name         Type    File Name (Number)      New/Modified/Deleted
+ -------------         ----    ------------------      --------------------
+ N/A
+  
+  
+ Remote Procedures Associated:
+  
+ Remote Procedure Name         New/Modified/Deleted
+ ---------------------         --------------------
+ N/A 
+  
+ Parameter Definitions Associated:
+  
+ Parameter Name              New/Modified/Deleted
+ --------------              --------------------
+ N/A
+  
+  
+ Additional Information:
+ -----------------------
+  
+ New Service Requests (NSRs):
+ N/A
+  
+  
+ Patient Safety Issues (PSIs):
+ N/A
+  
+  
+ Defect Tracking System Ticket(s) & Overview:
+ N/A
+
+ Test Sites:
+ -----------
+ VEHU instances
+  
+ Software and Documentation Retrieval Instructions:
+ --------------------------------------------------
+ The software can be found at https://github.com/WorldVistA/VistA-FHIR-Data-Loader/releases.
+ The software is only a KIDS build for VistA; no GUI components are supplied.
+
+ Documentation only consists of the README found here: https://github.com/WorldVistA/VistA-FHIR-Data-Loader/
+  
+ Host File Name                 Description          
+ ---------------------------------------------------------------------
+ VISTA_SYN_DATA_LOADER0P7.KID   v0.7 (v2 - final) KIDS build
+  
+  
+ Patch Installation:
+ -------------------
+ Pre/Post Installation Overview:
+ Check Pre-install instructions.
+  
+  
+ Pre-Installation Instructions:
+ You must have key XUMGR before starting install.
+
+ Check the README for two configuration issues found in VEHU instances. They
+ must be fixed PRIOR to installing.
+  
+  
+ Installation Instructions:
+  
+ 1. If the release is provided using PackMan, choose the PackMan message 
+    containing this build. Then select the INSTALL/CHECK MESSAGE PackMan 
+    option to load the build.
+  
+    If this release is provided using a Host file, use the Load a 
+    Distribution option contained on the Kernel Installation and 
+    Distribution System Menu to load the Host file.
+  
+ 2. From the Kernel Installation and Distribution System Menu, select the
+    Installation Menu.  From this menu, 
+  
+  A. Select the Verify Checksums in Transport Global option to confirm 
+     the integrity of the routines that are in the transport global. When 
+     prompted for the INSTALL NAME enter the patch or build name (ex.  
+     <XXX*X.X*XX> or XXXXX BUILD X.X).
+  
+         NOTE: Using <spacebar><enter> will not bring up a Multi-Package 
+               build even if it was loaded immediately before this step. It 
+               will only bring up the last patch in the build.
+  
+  B. Select the Backup a Transport Global option to create a backup 
+     message of any routines exported with this patch   
+
+  C. You may also elect to use the following options: 
+          i.  Print Transport Global - This option will allow you to view
+              the components of the KIDS build.
+          ii. Compare Transport Global to Current System - This option will
+              allow you to view all changes that will be made when this patch
+              is installed.  It compares all of the components of this patch,
+              such as routines, DDs, templates, etc.
+  
+  D. Select the Install Package(s) option and choose the patch to install.
+  
+     i.  If prompted 'Want KIDS to Rebuild Menu Trees Upon Completion of
+         Install? NO//', answer NO.
+  
+    ii. When prompted 'Want KIDS to INHIBIT LOGONs during the install? 
+        NO//', answer NO.
+   
+   iii. When prompted 'Want to DISABLE Scheduled Options, Menu Options, 
+        and Protocols? NO//', answer NO.
+   
+        a. When prompted 'Enter options you wish to mark as 'Out Of
+           Order':', press the Enter key.
+  
+        b. When prompted 'Enter protocols you wish to mark as 'Out Of
+           Order':', press the Enter key.
+  
+        c. When prompted 'Delay Install (Minutes):  (0 - 60): 0//',
+           answer 0.
+ 
+ 
+ Post-Installation Instructions:
+ None.
+  
+  
+ Back-Out/Roll Back Plan:
+ ------------------------
+ The BEST way to be able to rollback is to have a back-up of your VistA instance;
+ once you start importing patients, its impossible to undo the import of patients.
+
+ To remove the software:
+  - DISUSER users:
+  	- PROVIDER,UNKNOWN SYNTHEA
+	- PHARMACIST,UNKNOWN SYNTHEA
+  - To remove the sofware:
+  	- Delete all routines SYN*
+  	- Delete all OPTIONs SYN*
+  - Delete file GRAPH (2002.801)
+
+Routine Information:
+====================
+The second line of each of these routines now looks like:
+ ;;0.6;VISTA SYN DATA LOADER;;Feb 10, 2025
+
+The checksums below are new checksums, and can be checked with CHECK1^XTSUMBLD.
+SYNBSTS1  value = 23719108
+SYNDHP61  value = 185734883
+SYNDHP62  value = 320910059
+SYNDHP63  value = 14204584
+SYNDHP65  value = 6067311
+SYNDHP69  value = 6678721
+SYNDHP91  value = 44208923
+SYNDHPMP  value = 6062548
+SYNFALG   value = 116203091
+SYNFALG2  value = 63968388
+SYNFAPT   value = 74861012
+SYNFCP    value = 325718062
+SYNFENC   value = 172237190
+SYNFGR    value = 47371315
+SYNFHF    value = 20953883
+SYNFHIR   value = 312663621
+SYNFHIRU  value = 110282879
+SYNFIMM   value = 85189609
+SYNFLAB   value = 206778604
+SYNFMED   value = 233658760
+SYNFMED2  value = 101686490
+SYNFMEDT  value = 73289095
+SYNFPAN   value = 108132831
+SYNFPAT   value = 140645865
+SYNFPR2   value = 127784673
+SYNFPRB   value = 152995973
+SYNFPROC  value = 94893822
+SYNFTIU   value = 6953053
+SYNFUTL   value = 56126778
+SYNFVIT   value = 142184500
+SYNGBLLD  value = 215472509
+SYNGRAF   value = 33767817
+SYNGRAPH  value = 23895941
+SYNINIT   value = 97424199
+SYNKIDS   value = 7541202
+SYNLINIT  value = 177228782
+SYNQLDM   value = 244191966
+SYNVPR    value = 238319332
+SYNWD     value = 4935809
