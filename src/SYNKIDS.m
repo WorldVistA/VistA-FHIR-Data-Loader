@@ -1,5 +1,5 @@
 SYNKIDS ; OSE/SMH - Synthea Installer ;2019-11-18  5:45 PM
- ;;0.6;VISTA SYN DATA LOADER;;Feb 10, 2025
+ ;;0.7;VISTA SYN DATA LOADER;;Mar 18, 2025
  ;
  ; Copyright (c) 2018-2019 Sam Habiel
  ; Copyright (c) 2025 DocMe360 LLC

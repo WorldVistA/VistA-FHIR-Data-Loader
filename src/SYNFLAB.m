@@ -1,5 +1,5 @@
 SYNFLAB ;ven/gpl - fhir loader utilities ;2018-05-08  4:23 PM
- ;;0.6;VISTA SYN DATA LOADER;;Feb 10, 2025
+ ;;0.7;VISTA SYN DATA LOADER;;Mar 18, 2025
  ;
  ; Copyright (c) 2017-2022 George P. Lilly
  ; Copyright (c) 2018-2019 Sam Habiel
@@ -164,7 +164,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . ;
  . i value="" d  quit
  . . s @eval@("labs",zi,"status","issue")="Lab value not found for loinc code: "_obscode_" "_labtype
- . . d fail(jlog,eval,zi,"Error, value is null, quitting") 
+ . . d fail(jlog,eval,zi,"Error, value is null, quitting")
  . do log(jlog,"value is: "_value)
  . set @eval@("labs",zi,"vars","value")=value
  . ;

@@ -1,5 +1,5 @@
 SYNFGR  ;ven/gpl - fhir loader utilities ;2018-08-17  3:27 PM
- ;;0.6;VISTA SYN DATA LOADER;;Feb 10, 2025
+ ;;0.7;VISTA SYN DATA LOADER;;Mar 18, 2025
  ;
  ; Copyright (c) 2017-2018 George P. Lilly
  ;

@@ -1,5 +1,5 @@
 SYNGBLLD ; HC/ART - HealthConcourse - DHP load data in ^SYN("2002.030" global ;02/04/2019
- ;;0.6;VISTA SYN DATA LOADER;;Feb 10, 2025
+ ;;0.7;VISTA SYN DATA LOADER;;Mar 18, 2025
  ;
  ; Original routine authored by Andrew Thompson & Ferdinand Frankson of Perspecta 2017-2019
  ;

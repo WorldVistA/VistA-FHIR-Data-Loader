@@ -1,5 +1,5 @@
 SYNFALG2 ;ven/gpl - fhir loader utilities ; 2/20/18 4:11am
- ;;0.6;VISTA SYN DATA LOADER;;Feb 10, 2025
+ ;;0.7;VISTA SYN DATA LOADER;;Mar 18, 2025
  ;
  ; Copyright (c) 2017-2018 George P. Lilly
  ; Copyright (c) 2018 Sam Habiel
