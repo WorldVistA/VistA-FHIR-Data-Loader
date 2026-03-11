@@ -1,7 +1,20 @@
 SYNFPRB ;ven/gpl - fhir loader utilities ;2018-08-17  3:27 PM
- ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 13
+ ;;0.7;VISTA SYN DATA LOADER;;Mar 18, 2025
  ;
- ; Authored by George P. Lilly 2017-2018
+ ; Copyright (c) 2017-2018 George P. Lilly
+ ;
+ ;Licensed under the Apache License, Version 2.0 (the "License");
+ ;you may not use this file except in compliance with the License.
+ ;You may obtain a copy of the License at
+ ;
+ ;    http://www.apache.org/licenses/LICENSE-2.0
+ ;
+ ;Unless required by applicable law or agreed to in writing, software
+ ;distributed under the License is distributed on an "AS IS" BASIS,
+ ;WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ;See the License for the specific language governing permissions and
+ ;limitations under the License.
+ ;
  ;
  q
  ;
@@ -28,12 +41,7 @@ wsIntakeConditions(args,body,result,ien)        ; web service entry (post)
  ;. s result("conditionsStatus","status")="alreadyLoaded"
  i $g(ien)'="" d  ; internal call
  . d getIntakeFhir^SYNFHIR("json",,"Condition",ien,1)
- e  d  ;
- . s args("load")=0
- . merge jtmp=BODY
- . do decode^SYNJSONE("jtmp","json")
  i '$d(json) q  ;
- m ^gpl("gjson")=json
  ;
  ; determine the patient
  ;
@@ -229,15 +237,7 @@ wsIntakeConditions(args,body,result,ien)        ; web service entry (post)
  set jrslt("result","status")="ok"
  set jrslt("result","loaded")=$g(eval("conditions","status","loaded"))
  set jrslt("result","errors")=$g(eval("conditions","status","errors"))
- i $g(ien)'="" d  ; called internally
- . ;m result=eval
- . m result("status")=jrslt("result")
- . ;m result("dfn")=dfn
- . ;m result("ien")=ien
- . ;b
- e  d  ;
- . d encode^SYNJSONE("jrslt","result")
- . set HTTPRSP("mime")="application/json"
+ m result("status")=jrslt("result")
  q
  ;
 log(ary,txt)    ; adds a text line to @ary@("log")

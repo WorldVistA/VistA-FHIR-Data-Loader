@@ -1,7 +1,20 @@
 SYNFVIT ;ven/gpl - fhir loader utilities ;2018-05-08  4:23 PM
- ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 13
+ ;;0.7;VISTA SYN DATA LOADER;;Mar 18, 2025
  ;
- ; Authored by George P. Lilly 2017-2018
+ ; Copyright (c) 2017-2018 George P. Lilly
+ ;
+ ;Licensed under the Apache License, Version 2.0 (the "License");
+ ;you may not use this file except in compliance with the License.
+ ;You may obtain a copy of the License at
+ ;
+ ;    http://www.apache.org/licenses/LICENSE-2.0
+ ;
+ ;Unless required by applicable law or agreed to in writing, software
+ ;distributed under the License is distributed on an "AS IS" BASIS,
+ ;WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ;See the License for the specific language governing permissions and
+ ;limitations under the License.
+ ;
  ;
  q
  ;
@@ -38,13 +51,8 @@ wsIntakeVitals(args,body,result,ien) ; web service entry (post)
  . ;d getIntakeFhir^SYNFHIR("json",,"Observation",ien,1)
  . s troot=$na(@root@(ien,"type","Observation"))
  . s eval=$na(@root@(ien,"load"))
- e  q 0  ; sending json to this routine in BODY is not supported
- ;. ;s args("load")=0
- ;. merge jtmp=BODY
- ;. do decode^SYNJSONE("jtmp","json")
  s json=$na(@root@(ien,"json"))
  i '$d(json) q 0  ;
- ;m ^gpl("gjson")=json
  ;
  ; determine the patient
  ;
@@ -115,13 +123,6 @@ wsIntakeVitals(args,body,result,ien) ; web service entry (post)
  . do log(jlog,"code is: "_obscode)
  . set @eval@("vitals",zi,"vars","code")=obscode
  . ;
- . s ^gpl("vitals",obscode,vittype)=""
- . ; here's what we got so far:
- . ;^gpl("vitals","29463-7","Body Weight")=""
- . ;^gpl("vitals","39156-5","Body Mass Index")=""
- . ;^gpl("vitals","55284-4","Blood Pressure")=""
- . ;^gpl("vitals","8302-2","Body Height")=""
- . ;^gpl("vitals","8331-1","Oral temperature")=""
  . ;
  . new codesystem set codesystem=$get(@json@("entry",zi,"resource","code","coding",1,"system"))
  . do log(jlog,"code system is: "_codesystem)
@@ -243,13 +244,7 @@ wsIntakeVitals(args,body,result,ien) ; web service entry (post)
  set jrslt("result","status")="ok"
  set jrslt("result","loaded")=$g(@eval@("vitals","status","loaded"))
  set jrslt("result","errors")=$g(@eval@("vitals","status","errors"))
- i $g(ien)'="" d  ; called internally
- . ;m result=eval
- . m result("status")=jrslt("result")
- . ;b
- e  d  ;
- . d encode^SYNJSONE("jrslt","result")
- . set HTTPRSP("mime")="application/json"
+ m result("status")=jrslt("result")
  q 1
  ;
 log(ary,txt) ; adds a text line to @ary@("log")
@@ -266,17 +261,11 @@ loinc2sct(loinc) ; extrinsic returns a Snomed code for a Loinc code
  ; for vitals
  ; thanks to Ferdi for the Snomed mapping
  ;
- ; here's what we got so far:
- ;^gpl("vitals","29463-7","Body Weight")=""
- ;^gpl("vitals","39156-5","Body Mass Index")="" ; oops
- ;^gpl("vitals","55284-4","Blood Pressure")=""
- ;^gpl("vitals","8302-2","Body Height")=""
- ;^gpl("vitals","8331-1","Oral temperature")="" ;
  ;
  S SCTA("29463-7",27113001)="9^Body weight"
  S SCTA("8302-2",50373000)="8^Body height"
  S SCTA("55284-4",75367002)="1^Blood pressure"
- S SCTA("85354-9",75367002)="1^Blood pressure" 
+ S SCTA("85354-9",75367002)="1^Blood pressure"
  S SCTA("8867-4",78564009)="5^Pulse rate"
  S SCTA("8331-1",386725007)="2^Body Temperature"
  S SCTA("9279-1",86290005)="3^Respiration"

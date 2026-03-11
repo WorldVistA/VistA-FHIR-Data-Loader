@@ -1,7 +1,8 @@
 # VistA FHIR Data Loader Project
-This project lets you load data from Synthea (https://synthetichealth.github.io/synthea/) 
-into VistA to produce high quality synthetic patient data for development and testing.
-Other FHIR data sources are supportable; but are not supported at this time.
+This project lets you load data from Synthea
+(https://synthetichealth.github.io/synthea/) into VistA to produce high quality
+synthetic patient data for development and testing.  Other FHIR data sources
+are supportable; but are not supported at this time.
 
 DO NOT USE THIS SOFTWARE ON PRODUCTION SYSTEMS. This software is only used to
 create patients on test VistA systems.
@@ -11,7 +12,9 @@ For lab ingestion troubleshooting and accession-area remediation, see
 
 # Pre-installation Requirements
 The Installer DUZ must have the key XUMGR in order to be able to add users to
-the systems.
+the systems. You will be blocked from installing if you don't have that
+security key.
+
 Disk Space Requirements: We never actually measured how much disk space the
 package and each patient takes. However, from experience, loading about 400
 full patient histories takes up 100 GB.
@@ -19,24 +22,68 @@ full patient histories takes up 100 GB.
 Here's a full list of the software you will need. We do not describe how to
 install this pre-requisites here.
 
-* Java (JDK only) 1.8 or above to run Synthea
+* Java (JDK only) 11 or newer LTS versions to run Synthea
 * Google Chrome or Mozilla Firefox to visualize Synthea Patients
 * InterSystems IRIS with the VistA database loaded. This does not have to be
 on your own laptop; you can copy the generated Synthea Patients into the
 machine that hosts your VistA instance.
 
 # Installation
-As of Aug 20th 2018, the official way to install this project is to use the latest
-KIDS build in [releases](https://github.com/OSEHRA/VistA-FHIR-Data-Loader/releases/latest).
-
-The current version is 0.5.
+As of Aug 20th 2018, the official way to install this project is to use the
+latest KIDS build in
+[releases](https://github.com/WorldVistA/VistA-FHIR-Data-Loader/releases/latest).
 
 The installer must have the key XUMGR in order to be able to add users to the
 systems.
 
-You need to install two KIDS builds: The Dataloader, and the FHIR Importer. See the 
-[releases](https://github.com/OSEHRA/VistA-FHIR-Data-Loader/releases/latest)
+You need to install two KIDS builds: The Dataloader, and the FHIR Importer. See
+the [releases](https://github.com/WorldVistA/VistA-FHIR-Data-Loader/releases/latest)
 for a link to the KIDS builds.
+
+# Pre-Install Warnings on VEHU
+This code exercises so much of the VistA system, that it requires a fully
+configured VistA system. The Post-install does a lot of configuration
+(Providers, Hospital Locations, Services) but there are some items we cannot
+fix that have to do with the configuration of institutions:
+
+- If you see error `<UNDEFINED>VISN+4^SDTMPHLB` during the install, this is
+  because your INSTITUTION entry does not have an ASSOCIATION of type "VISN".
+  You should add such an association and choose a VISN. E.g.:
+```
+>>D P^DI
+
+
+VA FileMan 22.2
+
+
+Select OPTION: INQUIRE TO FILE ENTRIES
+
+
+
+Output from what File: INSTITUTION// 4  INSTITUTION  (5053 entries)
+Select INSTITUTION NAME: `500  CAMP MASTER  NY  VAMC  500
+Another one:
+Standard Captioned Output? Yes//   (Yes)
+Include COMPUTED fields:  (N/Y/R/B): NO//  - No record number (IEN), no Computed Fields
+
+NAME: CAMP MASTER                       STATE: NEW YORK                         DISTRICT: 2                             SHORT NAME: CAMP
+  VA TYPE CODE: HOSP                    REGION: 1                               STATUS: National
+  STREET ADDR. 1: VA MEDICAL CENTER     STREET ADDR. 2: 1 3RD sT.               CITY: ALBANY                            ZIP: 12180-0097
+  FACILITY TYPE: VAMC                   DOMAIN: GOLD.VAINNOVATION.US
+>>>ASSOCIATIONS: VISN                      PARENT OF ASSOCIATION: VISN 2
+  LOCATION TIMEZONE: EASTERN            COUNTRY: USA                            STATION NUMBER: 500
+  OFFICIAL VA NAME: ALBANY VA MEDICAL CENTER                                    AGENCY CODE: VA                         REPORTING STATION: CAMP MASTER
+  POINTER TO AGENCY: VA
+EFFECTIVE DATE: JUL 1,2000              REALIGNED TO: ALBANY, NY (VAMC)
+EFFECTIVE DATE: APR 3,2002              NAME (CHANGED FROM): ALBANY
+CODING SYSTEM: VASTANUM                 ID: 500
+  FACILITY DEA NUMBER: FS3232321        MULTI-DIVISION FACILITY: YES            CURRENT LOCATION: YES
+```
+
+- If you see error `<UNDEFINED>SITE+12^VASITE` during the import, this is
+  because `STATION NUMBER (TIME SENSITIVE)` entry `7` points to an invalid
+  `MEDICAL CENTER DIVISION`. Edit entry `7` with Fileman and pick any valid
+  `MEDICAL CENTER DIVISION`.
 
 ## Sample Install Transcript
 ```
@@ -51,7 +98,7 @@ Terminal Type set to: C-VT100
 
 Select OPTION NAME:
 VEHU>D ^XPDIL,^XPDI
-Enter a Host File: /github/VistA-DataLoader/VistA/VISTA_DATALOADER_3P1T3.KID
+Enter a Host File: /github/VistA-DataLoader/VistA/VISTA_DATALOADER_3P1.KID
 
 KIDS Distribution saved on Dec 23, 2024@22:50:58
 Comment: VISTA DATALOADER 3.1 v3
@@ -128,32 +175,31 @@ Build Distribution Date: Dec 23, 2024
  NO Install Message sent
 VEHU>D ^XPDIL,^XPDI
 
-Enter a Host File: /github/VistA-FHIR-Data-Loader/kids/VISTA_SYN_DATA_LOADER_0P5
-T2.KID
+Enter a Host File: /github/VistA-FHIR-Data-Loader/kids/VISTA_SYN_DATA_LOADER_0P6.KID
 
 KIDS Distribution saved on Dec 26, 2024@20:10:20
-Comment: VISTA SYN DATA LOADER 0.5 v2
+Comment: VISTA SYN DATA LOADER 0.6 v4
 
 This Distribution contains Transport Globals for the following Package(s):
-   VISTA SYN DATA LOADER 0.5
+   VISTA SYN DATA LOADER 0.6
 Distribution OK!
 
 Want to Continue with Load? YES//
 Loading Distribution...
 
-   VISTA SYN DATA LOADER 0.5
-Use INSTALL NAME: VISTA SYN DATA LOADER 0.5 to install this Distribution.
+   VISTA SYN DATA LOADER 0.6
+Use INSTALL NAME: VISTA SYN DATA LOADER 0.6 to install this Distribution.
 
-Select INSTALL NAME:    VISTA SYN DATA LOADER 0.5    12/26/24@20:34:01
-     => VISTA SYN DATA LOADER 0.5 v2  ;Created on Dec 26, 2024@20:10:20
+Select INSTALL NAME:    VISTA SYN DATA LOADER 0.6    12/26/24@20:34:01
+     => VISTA SYN DATA LOADER 0.6 v4  ;Created on Dec 26, 2024@20:10:20
 
 This Distribution was loaded on Dec 26, 2024@20:34:01 with header of
-   VISTA SYN DATA LOADER 0.5 v2  ;Created on Dec 26, 2024@20:10:20
+   VISTA SYN DATA LOADER 0.6 v4  ;Created on Dec 26, 2024@20:10:20
    It consisted of the following Install(s):
-VISTA SYN DATA LOADER 0.5
-Checking Install for Package VISTA SYN DATA LOADER 0.5
+VISTA SYN DATA LOADER 0.6
+Checking Install for Package VISTA SYN DATA LOADER 0.6
 
-Install Questions for VISTA SYN DATA LOADER 0.5
+Install Questions for VISTA SYN DATA LOADER 0.6
 
 Incoming Files:
 
@@ -173,7 +219,7 @@ Enter a '^' to abort the install.
 DEVICE: HOME// ;p-other;  VMS
 
 
- Install Started for VISTA SYN DATA LOADER 0.5 :
+ Install Started for VISTA SYN DATA LOADER 0.6 :
                Dec 26, 2024@20:34:41
 
 Build Distribution Date: Dec 26, 2024
@@ -208,7 +254,7 @@ Disabling Allergy Bulletins
 
  Updating KIDS files.....
 
- VISTA SYN DATA LOADER 0.5 Installed.
+ VISTA SYN DATA LOADER 0.6 Installed.
                Dec 26, 2024@20:34:43
 
  No link to PACKAGE file
@@ -361,10 +407,14 @@ the [SyntheaPatientViz](https://github.com/logicahealth/SyntheaPatientViz)
 Repository. 
 
 ## Importing
-Kill your symbol table, and login as a user who holds the `LRLAB` and `LRVERIFY`
-keys. The installer creates a provider with the access code `SYNPROV123` and
-the verify code `SYNPROV123!!` that has the correct keys. You can use that
-to log-in.  Nagivate to SYNMENU.
+Before starting importing, if you are using a copy of the VEHU database,
+look at [VEHU Lab Package Config](docs/vehu-lab-package-config.md) to improve
+the results of the lab import.
+
+The software creates a `SYNMENU` option that contains all the user facing
+interface to load Synthetic Patients from Synthea.
+
+Login as a user who holds the `LRLAB` and `LRVERIFY` keys. Nagivate to SYNMENU.
 
 ```
 FOIA>KILL  D ^XUP
@@ -392,204 +442,46 @@ Select Synthetic Patients Importer Menu <TEST ACCOUNT> Option:
 ```
 
 The first menu option is for you to load patients; the second and third menus
-are to help you debug the load. Let's start by loading the patients we just
-created:
+are to help you debug the load. Here's how to use it. Note that starting with v0.6
+the default mode is one patient at a time, as shown below. You can still choose to
+load all patients in a specific directory by typing "M".
 
 ```
 Select Synthetic Patients Importer Menu <TEST ACCOUNT> Option: 1  Load Patients
 from Filesystem
 Enter directory from which to load Synthea Patients (FHIR DSTU3 or R4): C:\Users
 \User\synthea\output\fhir
-Loading Alden634_Ortiz186_f1bf603b-add2-4fd3-8328-87d42678d106.json...
-Ingesting Alden634_Ortiz186_f1bf603b-add2-4fd3-8328-87d42678d106.json...
+
+Do you want to import a [S]ingle or [M]ultiple patients? S// ingle
+
+1. Agatha2_Konopelski743_29085255-8836-8d3a-bfb2-c53a523025cf.json
+2. Bea654_Alejandrina481_Zemlak964_f2bd762c-0466-7ebc-4647-a7cf53458be8.json
+3. Carmen818_Renner328_357f85a6-652f-68df-4d5e-9335a6bf67a4.json
+4. Carson894_Huels583_3d86dfcb-0147-ab7d-3f74-78a36e1f2dc6.json
+5. Charles364_Sipes176_9aa9f581-6788-5397-3da9-4b60c47bc58c.json
+6. Refugio197_Adams676_7047cf31-18d8-55b9-96ef-3181fc1e6ce6.json
+7. Thelma273_Manda751_Stiedemann542_aae8b213-233f-2afd-fb9b-43cca5a58f57.json
+
+Enter a list or range of numbers (1-7): 1// 
+
+Loading Agatha2_Konopelski743_29085255-8836-8d3a-bfb2-c53a523025cf.json...
+Ingesting Agatha2_Konopelski743_29085255-8836-8d3a-bfb2-c53a523025cf.json...
 Loaded with following data:
-DFN: 1              ICN: 1050779984V938828        Graph Store IEN: 1
---------------------------------------------------------------------------
-Type                          Loaded?                       Error
-ADR/Allergy                   0                             0
-Appointments
-Care Plans                    3
-Problems                      4                             1
-Encounters                    9                             3
-Immunization                  10
-Labs                          28                            4
-Meds                          4
-Procedures                    2
-Vitals                        21                            12
-
-Loading Alicia629_Gálvez271_4ddaea7e-530f-42c4-b9bf-c8ddcb4f89c8.json...
-Ingesting Alicia629_Gálvez271_4ddaea7e-530f-42c4-b9bf-c8ddcb4f89c8.json...
-Loaded with following data:
-DFN: 2              ICN: 1801934432V959527        Graph Store IEN: 2
---------------------------------------------------------------------------
-Type                          Loaded?                       Error
-ADR/Allergy                   0                             0
-Appointments
-Care Plans                    7
-Problems                      7                             2
-Encounters                    34                            2
-Immunization                  6
-Labs                          27                            7
-Meds                          8
-Procedures                    10                            68
-Vitals                        9                             6
-
-Loading Bo157_Balistreri607_3baf7f93-5a9c-440c-ab00-f2e9705a6d26.json...
-Ingesting Bo157_Balistreri607_3baf7f93-5a9c-440c-ab00-f2e9705a6d26.json...
-Loaded with following data:
-DFN: 3              ICN: 2260908635V993173        Graph Store IEN: 3
---------------------------------------------------------------------------
-Type                          Loaded?                       Error
-ADR/Allergy                   0                             0
-Appointments
-Care Plans                                                  1
-Problems                      1                             3
-Encounters                    13                            1
-Immunization                  13
-Labs                          24                            10
-Meds
-Procedures                    6
-Vitals                        32                            20
-
-Loading Catharine355_Luettgen772_ae49675c-d363-45f8-bf7f-c1e3d8ea6a86.json...
-Ingesting Catharine355_Luettgen772_ae49675c-d363-45f8-bf7f-c1e3d8ea6a86.json...
-
-No refills allowed on this narcotic drug.
- Loaded with following data:
-DFN: 4              ICN: 9712588764V722272        Graph Store IEN: 4
---------------------------------------------------------------------------
-Type                          Loaded?                       Error
-ADR/Allergy                   0                             0
-Appointments
-Care Plans                    1                             1
-Problems                      5                             3
-Encounters                    14                            4
-Immunization                  13
-Labs                          24                            10
-Meds                          4
-Procedures                    7                             1
-Vitals                        31                            20
-
-Loading Dolores502_Blanda868_6d0a63ac-2485-42c8-aced-4c1f43533519.json...
-Ingesting Dolores502_Blanda868_6d0a63ac-2485-42c8-aced-4c1f43533519.json...
-Loaded with following data:
-DFN: 5              ICN: 1707938753V493604        Graph Store IEN: 5
---------------------------------------------------------------------------
-Type                          Loaded?                       Error
-ADR/Allergy                   0                             0
-Appointments
-Care Plans                    6
-Problems                      12                            3
-Encounters                    55                            5
-Immunization                  5
-Labs                          32                            13
-Meds                          5
-Procedures                    15                            183
-Vitals                        13                            8
-
-Loading Ewa95_Douglas31_990d6019-ec49-4f41-a136-b590ab1ca0bd.json...
-Ingesting Ewa95_Douglas31_990d6019-ec49-4f41-a136-b590ab1ca0bd.json...
-Loaded with following data:
-DFN: 6              ICN: 2074153525V922746        Graph Store IEN: 6
+File: Agatha2_Konopelski743_29085255-8836-8d3a-bfb2-c53a523025cf.json
+DFN: 101084         ICN: 2168542776V639758        Graph Store IEN: 2
 --------------------------------------------------------------------------
 Type                          Loaded?                       Error
 ADR/Allergy                   0                             0
 Appointments
 Care Plans
-Problems
-Encounters                    3
-Immunization                  7
-Labs                          9                             2
-Meds
-Procedures
-Vitals                        9                             3
-
-Loading Josh874_McCullough561_8d2d408d-3633-4fe0-96ec-7cdbda27d824.json...
-Ingesting Josh874_McCullough561_8d2d408d-3633-4fe0-96ec-7cdbda27d824.json...
-Loaded with following data:
-DFN: 7              ICN: 2176211877V820918        Graph Store IEN: 7
---------------------------------------------------------------------------
-Type                          Loaded?                       Error
-ADR/Allergy                   0                             0
-Appointments
-Care Plans                    4                             1
-Problems                      12                            2
-Encounters                    18                            11
-Immunization                  11                            1
-Labs                          212                           122
-Meds                          12
-Procedures                    24                            6
-Vitals                        30                            18
-
-Loading Lakeshia836_O'Hara248_29aea4fc-a14d-4767-9b04-e3ad0cb9bfdc.json...
-Ingesting Lakeshia836_O'Hara248_29aea4fc-a14d-4767-9b04-e3ad0cb9bfdc.json...
-
-No refills allowed on this narcotic drug.
- Loaded with following data:
-DFN: 8              ICN: 1151359466V320852        Graph Store IEN: 8
---------------------------------------------------------------------------
-Type                          Loaded?                       Error
-ADR/Allergy                   0                             0
-Appointments
-Care Plans                    2
-Problems                      2                             1
-Encounters                    24                            1
-Immunization                  10
-Labs                          18                            4
-Meds                          8
-Procedures                    5                             44
-Vitals                        18                            12
-
-Loading Marcell728_Heathcote539_2031beeb-1dc8-4dbe-a88f-4129b9a7b10b.json...
-Ingesting Marcell728_Heathcote539_2031beeb-1dc8-4dbe-a88f-4129b9a7b10b.json...
-Loaded with following data:
-DFN: 9              ICN: 9111518904V096652        Graph Store IEN: 9
---------------------------------------------------------------------------
-Type                          Loaded?                       Error
-ADR/Allergy                   0                             0
-Appointments
-Care Plans                    2
-Problems                      5                             1
-Encounters                    11                            3
-Immunization                  10
-Labs                          87                            10
-Meds                          1
-Procedures                    12
-Vitals                        21                            14
-
-Loading Rafael239_Casárez469_c381dbf2-3d29-4b11-8ddf-7ab6284ab25b.json...
-Ingesting Rafael239_Casárez469_c381dbf2-3d29-4b11-8ddf-7ab6284ab25b.json...
-Loaded with following data:
-DFN: 10             ICN: 3033904878V810223        Graph Store IEN: 10
---------------------------------------------------------------------------
-Type                          Loaded?                       Error
-ADR/Allergy                   0                             0
-Appointments
-Care Plans                    2
-Problems                      4                             1
-Encounters                    41                            3
-Immunization                  13
-Labs                          15                            9
+Problems                      1                             3
+Encounters                    14
+Immunization                  23                            4
+Labs                          10                            1
+Lab Panels                    1                             0
 Meds                          2
-Procedures                    9
-Vitals                        30                            22
-
-Loading Samira471_Roberts511_4194a71b-6b63-4ce2-9688-4044b2bdb97b.json...
-Ingesting Samira471_Roberts511_4194a71b-6b63-4ce2-9688-4044b2bdb97b.json...
-Loaded with following data:
-DFN: 11             ICN: 1537507155V261598        Graph Store IEN: 11
---------------------------------------------------------------------------
-Type                          Loaded?                       Error
-ADR/Allergy                   0                             0
-Appointments
-Care Plans                    4                             1
-Problems                      6                             3
-Encounters                    27                            4
-Immunization                  11
-Labs                          24                            10
-Meds                          7
-Procedures                    8                             42
-Vitals                        24                            16
+Procedures                                                  3
+Vitals                        78                            47
 ```
 
 ## Examining the Status of Load
@@ -597,47 +489,47 @@ As you can see, the project is far from perfect in its ability to load data
 from Synthea generated FHIR. The menu options `View Ingested Patients' FHIR JSON [SYN FHIR JSON]`
 and `Load Log [SYN LOAD LOG]` help you diagnose failed loading issues.
 
-For example, 3 problems failed to load for DFN 11. Let's find out why.
+For example, 3 problems failed to load for DFN 101084. Let's find out why.
 Most of the time, we can just look at the load log to figure out what happened.
 
 ```
 Select Synthetic Patients Importer Menu <TEST ACCOUNT> Option: 2  Load Log
-Select PATIENT NAME: `11  ROBERTS511,SAMIRA471        7-27-63    999129657     N
-O     NON-VETERAN (OTHER)      
+Select PATIENT NAME:    KONOPELSKI743,AGATHA2        6-27-20    999512521     NO
+     NON-VETERAN (OTHER)
 
 1 all        6 labs          11 procedure
-2 patient    7 meds          
+2 patient    7 meds          12 labPanels
 3 allergy    8 immunizations
 4 conditions 9 encounters
 5 vitals     10 careplan
-Please select clinical category to view: 
+Please select clinical category to view:
 
 Enter response: 1// 4
 
-                             PATIENT 11 conditions
-^SYNGRAPH(2002.801,2,11,"load","conditions")
-|--5
+                           PATIENT 101084 conditions
+^SYNGRAPH(2002.801,2,2,"load","conditions")
+|--3
 |  |--log
-|  |  |--1 reference encounter ID is : b4f323c6-4bae-4e06-b401-404904b52a25
-|  |  |--2 visit ien is: -1
-|  |  |--3 visit date is:
-|  |  |--4 code is: 59621000
-|  |  |--5 icd code type is: icd9
-|  |  |--6 icd mapping is: 1^401.9
-|  |  |--7 onsetDateTime is: 1981-09-19T11:47:57-04:00
-|  |  |--8 fileman onsetDateTime is: 2810919.114757
-|  |  |--9 hl7 onsetDateTime is: 19810919114757-0400
-|  |  |--10 no abatementDateTime
-|  |  |--11 reference encounter ID is : b4f323c6-4bae-4e06-b401-404904b52a25
-|  |  |--12 visit ien is: -1
-|  |  |--13 Provider NPI for outpatient is: 9990000348
-|  |  |--14 Calling PRBUPDT^SYNDHP62 to add snomed condition
-|  |  |--15 Return from data loader was: -1^Visit not found
+|  |  |--1 reference encounter ID is : cac21819-560d-9fe0-ddd4-ee76d9454545
+|  |  |--2 visit ien is: 15103
+|  |  |--3 visit date is: 3200627.0458
+|  |  |--4 code is: 314529007
+|  |  |--5 icd code type is: icd10
+|  |  |--6 icd mapping is: 1^Z76.89
+|  |  |--7 onsetDateTime is: 2020-06-27T04:58:36-04:00
+|  |  |--8 fileman onsetDateTime is: 3200627.045836
+|  |  |--9 hl7 onsetDateTime is: 20200627045836-0400
+|  |  |--10 abatementDateTime is: 2020-08-01T04:58:36-04:00
+|  |  |--11 fileman abatementDateTime is: 3200801.045836
+|  |  |--12 hl7 abatementDateTime is: 20200801045836-0400
+|  |  |--13 reference encounter ID is : cac21819-560d-9fe0-ddd4-ee76d9454545
+|  |  |--14 visit ien is: 15103
+|  |  |--15 Provider NPI for outpatient is: 9990000348
+|  |  |--16 Calling PRBUPDT^SYNDHP62 to add snomed condition
+|  |  |--17 Return from data loader was: 1^15103
 |  |--parms
 |  |  |--DHPCLNST I
-|  |  |--DHPONS 19810919114757-0400
-|  |  |--DHPPAT 1537507155V261598
-Col>   1 |Press <PF1>H for help| Line>      22 of 486  Screen>       1 of 23
+Col>   1 |Press <PF1>H for help| Line>      22 of 204  Screen>       1 of 10
 ```
 
 Now you can use Up/Down and Page Up/Page Down to browse the log. Alternately,
@@ -647,9 +539,10 @@ You can also get the original FHIR from Synthea that got imported for
 reference: 
 
 ```
-Select Synthetic Patients Importer Menu <TEST ACCOUNT> Option: 3  View Ingested Patients' FHIR JSON
-Select PATIENT NAME:    ROBERTS511,SAMIRA471        7-27-63    999129657     NO 
-    NON-VETERAN (OTHER)      
+Select Synthetic Patients Importer Menu <TEST ACCOUNT> Option: 3  View Ingested
+Patients' FHIR JSON
+Select PATIENT NAME:    KONOPELSKI743,AGATHA2        6-27-20    999512521     NO
+     NON-VETERAN (OTHER)
 
 1 all         7 MedicationRequest 13 ExplanationOfBenefit
 2 Patient     8 Immunization      14 ImagingStudy
@@ -657,34 +550,32 @@ Select PATIENT NAME:    ROBERTS511,SAMIRA471        7-27-63    999129657     NO
 4 Condition   10 CarePlan         16 Organization
 5 Observation 11 Procedure
 6 Claim       12 DiagnosticReport
-Please select clinical category to view: 
+Please select clinical category to view:
 
-Enter response: 1//4
-
-                             PATIENT 11 Condition
-^TMP("SYNFHIR",315)
+Enter response: 1// 4
+^TMP("SYNFHIR",254)
 |--Condition
 |  |--entry
-|  |  |--5
-|  |  |  |--fullUrl urn:uuid:77e2f26c-a99d-4e10-a4c9-2ef462fae82f
+|  |  |--3
+|  |  |  |--fullUrl urn:uuid:f1acc549-fa8f-ff23-2881-4dcd1df7fcb2
 |  |  |  |--request
 |  |  |  |  |--method POST
 |  |  |  |  |--url Condition
 |  |  |  |--resource
+|  |  |  |  |--abatementDateTime 2020-08-01T04:58:36-04:00
+|  |  |  |  |--category
+|  |  |  |  |  |--1
+|  |  |  |  |  |  |--coding
+|  |  |  |  |  |  |  |--1
+|  |  |  |  |  |  |  |  |--code encounter-diagnosis
+|  |  |  |  |  |  |  |  |--display Encounter Diagnosis
+|  |  |  |  |  |  |  |  |--system http://terminology.hl7.org/CodeSystem/conditio
 |  |  |  |  |--clinicalStatus
 |  |  |  |  |  |--coding
 |  |  |  |  |  |  |--1
-|  |  |  |  |  |  |  |--code active
+|  |  |  |  |  |  |  |--code resolved
 |  |  |  |  |  |  |  |--system http://terminology.hl7.org/CodeSystem/condition-c
-|  |  |  |  |--code
-|  |  |  |  |  |--coding
-|  |  |  |  |  |  |--1
-|  |  |  |  |  |  |  |--code 59621000
-|  |  |  |  |  |  |  |  |--\s
-|  |  |  |  |  |  |  |--display Hypertension
-|  |  |  |  |  |  |  |--system http://snomed.info/sct
-|  |  |  |  |  |--text Hypertension
-Col>   1 |Press <PF1>H for help| Line>      22 of 296  Screen>       1 of 14
+Col>   1 |Press <PF1>H for help| Line>      22 of 175  Screen>       1 of 8
 ```
 
 As before, you can use F1-F1-P to print the document from the browser.
@@ -700,8 +591,8 @@ just patients imported using this importer.
 Here's an example:
 
 ```
-Select PATIENT NAME:    ROBERTS511,SAMIRA471        7-27-63    999129657     NO
-    NON-VETERAN (OTHER)
+Select PATIENT NAME:    KONOPELSKI743,AGATHA2        6-27-20    999512521     NO
+     NON-VETERAN (OTHER)
 
 1 all          6 labs          11 appointments 16 factors
 2 demographics 7 meds          12 documents    17 skinTests
@@ -711,30 +602,30 @@ Select PATIENT NAME:    ROBERTS511,SAMIRA471        7-27-63    999129657     NO
 Please select clinical category to view:
 
 Enter response: 1// 4
-                              PATIENT 11 problems
+                            PATIENT 101084 problems
 |--results
-|--  : timeZone^-0400
+|--  : timeZone^-0500
 |--  : version^1.13
 |  |--problems
-|  |--  : total^6
+|  |--  : total^1
 |  |  |--problem
 |  |  |  |--codingSystem
 |  |  |  |--  : value^10D
 |  |  |  |--entered
-|  |  |  |--  : value^3190815.170926
+|  |  |  |--  : value^3250218
 |  |  |  |--facility
-|  |  |  |--  : code^050
-|  |  |  |--  : name^PLATINUM
+|  |  |  |--  : code^500
+|  |  |  |--  : name^CAMP MASTER
 |  |  |  |--icd
-|  |  |  |--  : value^R69.
+|  |  |  |--  : value^Z76.89
 |  |  |  |--icdd
-|  |  |  |--  : value^Illness, unspecified
+|  |  |  |--  : value^Persons encountering health services in other specified ci
 |  |  |  |--id
-|  |  |  |--  : value^53
+|  |  |  |--  : value^2004
+|  |  |  |--location
+|  |  |  |--  : value^GENERAL MEDICINE
 |  |  |  |--name
-|  |  |  |--  : value^Miscarriage in first trimester (SCT 19169002)
-|  |  |  |--onset
-Col>   1 |Press <PF1>H for help| Line>      22 of 201  Screen>       1 of 10
+Col>   1 |Press <PF1>H for help| Line>      22 of 39   Screen>       1 of 2
 ```
 
 # License

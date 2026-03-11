@@ -1,8 +1,21 @@
 SYNFLAB ;ven/gpl - fhir loader utilities ;2018-05-08  4:23 PM
- ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 13
+ ;;0.7;VISTA SYN DATA LOADER;;Mar 18, 2025
  ;
- ; Authored by George P. Lilly 2017-2018
+ ; Copyright (c) 2017-2022 George P. Lilly
+ ; Copyright (c) 2018-2019 Sam Habiel
+ ; Copyright (c) 2025 DocMe360 LLC
  ;
+ ;Licensed under the Apache License, Version 2.0 (the "License");
+ ;you may not use this file except in compliance with the License.
+ ;You may obtain a copy of the License at
+ ;
+ ;    http://www.apache.org/licenses/LICENSE-2.0
+ ;
+ ;Unless required by applicable law or agreed to in writing, software
+ ;distributed under the License is distributed on an "AS IS" BASIS,
+ ;WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ;See the License for the specific language governing permissions and
+ ;limitations under the License.
  q
  ;
 importLabs(rtn,ien,args) ; entry point for loading labs for a patient
@@ -16,12 +29,11 @@ importLabs(rtn,ien,args) ; entry point for loading labs for a patient
  ;. m @root@(ien,"load","labs")=grtn("labs")
  ;. if $g(args("debug"))=1 m rtn=grtn
  if $g(args("debug"))=1 m rtn=grtn
- s rtn("labsStatus","status")=$g(grtn("status","status"))
- s rtn("labsStatus","loaded")=$g(grtn("status","loaded"))
- s rtn("labsStatus","errors")=$g(grtn("status","errors"))
- ;b
- ;
- ;
+ s rtn("labsStatus","status")=grtn("status","status")
+ s rtn("labsStatus","loaded")=grtn("status","loaded")
+ s rtn("labsStatus","errors")=grtn("status","errors")
+ s rtn("panelsStatus","loaded")=grtn("panelStatus","loaded")
+ s rtn("panelsStatus","errors")=grtn("panelStatus","errors")
  q
  ;
 wsIntakeLabs(args,body,result,ien) ; web service entry (post)
@@ -42,12 +54,16 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  e  q 0  ; sending not decoded json in BODY to this routine is not done
  ; todo: locate the patient and add the labs in BODY to the graph
  ;. ;s args("load")=0
- ;. merge jtmp=BODY
- ;. do decode^SYNJSONE("jtmp","json")
- ;. s troot=$na(@root@(ien,"type","Observation"))
  i '$d(@troot) q 0  ;
  s json=$na(@root@(ien,"json"))
- ;m ^gpl("gjson")=@troot
+ ;
+ ; Initialize counters
+ s result("status","status")="NotStarted"
+ s @eval@("labs","status","errors")=0
+ i '$d(@eval@("labs","status","loaded")) s @eval@("labs","status","loaded")=0
+ ;
+ ; first intake all the lab panels
+ d importPanels^SYNFPAN(.result,ien,.args)
  ;
  ; determine the patient
  ;
@@ -70,13 +86,13 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . ;
  . new jlog set jlog=$name(@eval@("labs",zi))
  . ;
- . ; insure that the resourceType is Observation
+ . ; ensure that the resourceType is Observation
  . ;
  . new type set type=$get(@json@("entry",zi,"resource","resourceType"))
  . if type'="Observation" do  quit  ;
- . . set @eval@("labs",zi,"vars","resourceType")=type
- . . do log(jlog,"Resource type not Observation, skipping entry")
- . set @eval@("labs",zi,"vars","resourceType")=type
+ . . ;set @eval@("labs",zi,"vars","resourceType")=type
+ . . ;do log(jlog,"Resource type not Observation, skipping entry")
+ . ;set @eval@("labs",zi,"vars","resourceType")=type
  . ;
  . ; determine the Observation category and quit if not labs
  . ;
@@ -92,8 +108,8 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . . d log(jlog,"Derived category is "_obstype)
  . ;
  . if obstype'="laboratory" do  quit  ;
- . . set @eval@("labs",zi,"vars","observationCategory")=obstype
- . . do log(jlog,"Observation Category is not laboratory, skipping")
+ . . ;set @eval@("labs",zi,"vars","observationCategory")=obstype
+ . . ;do log(jlog,"Observation Category is not laboratory, skipping")
  . set @eval@("labs",zi,"vars","observationCategory")=obstype
  . ;
  . ; see if this resource has already been loaded. if so, skip it
@@ -118,7 +134,6 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . do log(jlog,"code is: "_obscode)
  . set @eval@("labs",zi,"vars","code")=obscode
  . ;
- . s ^gpl("labs",obscode,labtype)=""
  . ;
  . new codesystem set codesystem=$get(@json@("entry",zi,"resource","code","coding",1,"system"))
  . do log(jlog,"code system is: "_codesystem)
@@ -127,6 +142,29 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . ; determine the value and units
  . ;
  . new value set value=$get(@json@("entry",zi,"resource","valueQuantity","value"))
+ . if value="" d  ;
+ . . new sctcode,scttxt
+ . . s sctcode=$get(@json@("entry",zi,"resource","valueCodeableConcept","coding",1,"code"))
+ . . s scttxt=$get(@json@("entry",zi,"resource","valueCodeableConcept","coding",1,"display"))
+ . . s value=sctcode_"^"_scttxt
+ . . do log(jlog,"value before adjust is: "_value)
+ . . d ADJUST^SYNFPAN(.value)
+ . . do log(jlog,"value after adjust is: "_value)
+ . . i value["^" s value=""
+ . else  d  ;
+ . . ;
+ . . ; source: https://doi.org/10.30574/gscbps.2023.22.2.0091
+ . . ;
+ . . if obscode="5792-7" d  ; Glucose
+ . . . n x s x=value
+ . . . s value=$s(x<100:"NEG",x<250:"TRACE",x<500:"1+",x<1000:"2+",x<2000:"3+",1:"4+")
+ . . if obscode="5804-0" d  ; Protein
+ . . . n x s x=value
+ . . . s value=$s(x<15:"NEG",x<30:"TRACE",x<100:"1+",x<300:"2+",x<1000:"3+",1:"4+")
+ . ;
+ . i value="" d  quit
+ . . s @eval@("labs",zi,"status","issue")="Lab value not found for loinc code: "_obscode_" "_labtype
+ . . d fail(jlog,eval,zi,"Error, value is null, quitting")
  . do log(jlog,"value is: "_value)
  . set @eval@("labs",zi,"vars","value")=value
  . ;
@@ -161,36 +199,36 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . n vistalab s vistalab=$$graphmap^SYNGRAPH("loinc-lab-map",obscode)
  . i +vistalab=-1 s vistalab=$$graphmap^SYNGRAPH("loinc-lab-map"," "_obscode)
  . i +vistalab=-1 s vistalab=$$covid^SYNGRAPH(obscode)
+ . i +vistalab=-1 s vistalab=$$MAP^SYNQLDM(obscode,"labs")
  . i +vistalab'=-1 d
  .. d log(jlog,"Lab found in graph: "_vistalab)
  .. s @eval@("labs",zi,"parms","vistalab")=vistalab
- . if +vistalab=-1 s vistalab=labtype
+ . if +vistalab=-1 s vistalab=""
  . s vistalab=$$TRIM^XLFSTR(vistalab) ; get rid of trailing blanks
  . ;n sct s sct=$$loinc2sct(obscode) ; find the snomed code
- . ;i vistalab="" d  quit
- . ;. d log(jlog,"VistA lab not found for loinc code: "_obscode_" "_labtype_" -- skipping")
- . ;. s @eval@("labs",zi,"status","loadstatus")="cannotLoad"
- . ;. s @eval@("labs",zi,"status","issue")="VistA lab not found for loinc code: "_obscode_" "_labtype_" -- skipping"
- . ;. s @eval@("status","errors")=$g(@eval@("status","errors"))+1
+ . i vistalab="" d  quit
+ . . d log(jlog,"VistA lab not found for loinc code: "_obscode_" "_labtype_" -- skipping")
+ . . s @eval@("labs",zi,"status","issue")="VistA lab not found for loinc code: "_obscode_" "_labtype_" -- skipping"
+ . . d fail(jlog,eval,zi,"Error - VistA lab not found for loinc code: "_obscode_" "_labtype_" -- skipping")
  . s @eval@("labs",zi,"parms","DHPLAB")=vistalab
  . d log(jlog,"VistA Lab is: "_vistalab)
  . s DHPLAB=vistalab
  . ;
  . s DHPOBS=value
- . s recien=$o(^LAB(60,"B",DHPLAB,""))
- . i recien="" d  ; oops lab test not found!!
- . . S DHPLAB=$$UP^XLFSTR(DHPLAB)
- . . s vistalab=DHPLAB
- . . s recien=$o(^LAB(60,"B",DHPLAB,""))
- . . d log(jlog,"VistA Lab is: "_vistalab)
  . ;
- . n xform s xform=$$GET1^DIQ(60,recien_",",410)
- . n dec s dec=0
- . i xform["S Q9=" d
- . . s dec=+$p($p(xform,"""",2),",",3)
- . ;i $l($p(DHPOBS,".",2))>1 d
- . i $l($p(DHPOBS,".",2))>0 d
- . . s DHPOBS=$s(dec<4:$j(DHPOBS,1,dec),dec>3:$j(DHPOBS,1,3),1:$j(DHPOBS,1,0)) ; fix results with too many decimal places
+ . ; Collection sample
+ . ;
+ . n CSAMP
+ . S CSAMP=$$GET1^DIQ(95.3,$p(obscode,"-"),4)
+ . I CSAMP["SER/PLAS" S CSAMP="SERUM"
+ . I CSAMP["Whole blood" S CSAMP="BLOOD"
+ . I CSAMP["Blood venous" S CSAMP="BLOOD"
+ . I CSAMP["Urine Sediment" S CSAMP="URINE"
+ . I CSAMP["Platelet poor plasma" S CSAMP="PLASMA"
+ . I CSAMP["Blood arterial" S CSAMP="ARTERIAL BLOOD"
+ . d log(jlog,"Collection sample is: "_CSAMP)
+ . s @eval@("labs",zi,"parms","DHPCSAMP")=CSAMP
+ . ;
  . ; added for Covid tests
  . i DHPOBS="" d  ; no quant value
  . . n vtxt ; value text
@@ -201,16 +239,9 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . . i vtxt["Positive" s DHPOBS="DETECTED" ; 10828004
  . . i vtxt["Detected" s DHPOBS="DETECTED" ; 260373001
  . . i vtxt["Not detected" s DHPOBS="Not Detected" ; 260415000
- . . i vtxt["Confirmed" s DHPOBS="CONFIRMED" ; 
+ . . i vtxt["Confirmed" s DHPOBS="CONFIRMED" ;
  . s @eval@("labs",zi,"parms","DHPOBS")=DHPOBS
  . d log(jlog,"Value is: "_DHPOBS)
- . ;
- . ;i DHPLOINC="2093-3" s DHPOBS=$J(DHPOBS,1,0) ;Total Cholesterol
- . ;i DHPLOINC="33914-3" s DHPOBS=$J(DHPOBS,1,0) ;Estimated Glomerular Filtration Rate
- . ;i DHPLOINC="18262-6" s DHPOBS=$J(DHPOBS,1,0) ;Low Density Cholesterol
- . ;i DHPLOINC="2085-9" s DHPOBS=$J(DHPOBS,1,0) ;High Density Cholesterol
- . ;i DHPLOINC="2571-8" s DHPOBS=$J(DHPOBS,1,0) ;Tryglycerides
- . ;i DHPLOINC="2339-0" s DHPOBS=$J(DHPOBS,1,0) ;Glucose
  . ;
  . s DHPUNT=unit
  . s @eval@("labs",zi,"parms","DHPUNT")=unit
@@ -234,14 +265,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . ;
  . s @eval@("labs",zi,"status","loadstatus")="readyToLoad"
  . ;
- . ;i vistalab="PDW" q  ; skipping because it hangs - gpl wvehr 1/7/21
- . ;i vistalab="SGPT" q  ; skipping it hangs loinc 1742-6 - gpl wvehr 1/7/21
- . ;i vistalab="INFLUENZA A RNA" Q  ; likewise
- . ;i vistalab="INFLUENZA B RNA" Q  ; likewise
- . ;i vistalab="METAPNEUMOVIRUS RNA" Q  ; likewise
- . ;
  . if $g(args("load"))=1 d  ; only load if told to
- . . ;new (DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPPROV,DHPLOC,DHPLOINC,DHPLAB)
  . . if $g(ien)'="" if $$loadStatus("labs",zi,ien)=1 do  quit  ;
  . . . d log(jlog,"Lab already loaded, skipping")
  . . d log(jlog,"Calling LABADD^SYNDHP63 to add lab")
@@ -267,16 +291,18 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . m jrslt("eval")=@eval
  m jrslt("labsStatus")=@eval@("labsStatus")
  set jrslt("result","status")="ok"
- set jrslt("result","loaded")=$g(@eval@("labs","status","loaded"))
- set jrslt("result","errors")=$g(@eval@("labs","status","errors"))
- i $g(ien)'="" d  ; called internally
- . ;m result=eval
- . m result("status")=jrslt("result")
- . ;b
- e  d  ;
- . d encode^SYNJSONE("jrslt","result")
- . set HTTPRSP("mime")="application/json"
+ set jrslt("result","loaded")=@eval@("labs","status","loaded")
+ set jrslt("result","errors")=@eval@("labs","status","errors")
+ m result("status")=jrslt("result")
  q 1
+ ;
+fail(jlog,eval,zrien,zmsg) ; standard way to mark a lab as failed and increment error count
+ ;
+ s @eval@("labs",zrien,"status","loadstatus")="readyToLoad"
+ d log(jlog,"Return: -1^"_zmsg)
+ s @eval@("labs","status","errors")=@eval@("labs","status","errors")+1
+ ;
+ q
  ;
 log(ary,txt) ; adds a text line to @ary@("log")
  s @ary@("log",$o(@ary@("log",""),-1)+1)=$g(txt)
@@ -293,12 +319,6 @@ loinc2sct(loinc) ; extrinsic returns a Snomed code for a Loinc code
  ; for labs
  ; thanks to Ferdi for the Snomed mapping
  ;
- ; here's what we got so far:
- ;^gpl("labs","29463-7","Body Weight")=""
- ;^gpl("labs","39156-5","Body Mass Index")="" ; oops
- ;^gpl("labs","55284-4","Blood Pressure")=""
- ;^gpl("labs","8302-2","Body Height")=""
- ;^gpl("labs","8331-1","Oral temperature")="" ;
  ;
  S SCTA("29463-7",27113001)="9^Body weight"
  S SCTA("8302-2",50373000)="8^Body height"
@@ -348,7 +368,7 @@ labsum ; summary of lab tests for patient ien pien
  . . . s table(loinc_" "_text)=1
  . . . w !,"patient= "_zzi_" entry= "_zi,!
  . . . n rptary m rptary=@root@(zzi,"json","entry",zi,"resource")
- . . . zwrite rptary
- zwrite table
+ . . . ;zwrite rptary
+ ;zwrite table
  q
  ;

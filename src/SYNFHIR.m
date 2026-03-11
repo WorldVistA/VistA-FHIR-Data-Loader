@@ -1,7 +1,21 @@
 SYNFHIR ;ven/gpl - fhir loader utilities ;2019-05-30  6:02 PM
- ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 13
+ ;;0.7;VISTA SYN DATA LOADER;;Mar 18, 2025
  ;
- ; Authored by George P. Lilly 2017-2018
+ ; Copyright (c) 2017-2018 George P. Lilly
+ ; Copyright (c) 2019 Sam Habiel
+ ; Copyright (c) 2025 DocMe360 LLC
+ ;
+ ;Licensed under the Apache License, Version 2.0 (the "License");
+ ;you may not use this file except in compliance with the License.
+ ;You may obtain a copy of the License at
+ ;
+ ;    http://www.apache.org/licenses/LICENSE-2.0
+ ;
+ ;Unless required by applicable law or agreed to in writing, software
+ ;distributed under the License is distributed on an "AS IS" BASIS,
+ ;WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ;See the License for the specific language governing permissions and
+ ;limitations under the License.
  ;
  q
  ;
@@ -23,7 +37,7 @@ wsPostFHIR(ARGS,BODY,RESULT,ien)    ; recieve from addpatient
  . set ien=$order(@root@(" "),-1)+1
  . set gr=$name(@root@(ien,"json"))
  . merge json=BODY
- . do decode^SYNJSON("json",gr)
+ . do DECODE^XLFJSON("json",gr)
   . s @root@("filename",ien)="" ; gpl
  . kill BODY  ; remove it from symbol table as it is too big
  ;
@@ -45,6 +59,7 @@ wsPostFHIR(ARGS,BODY,RESULT,ien)    ; recieve from addpatient
  ;
  if rdfn'="" do  ; patient creation was successful
  . if $g(ARGS("load"))="" s ARGS("load")=1
+ . new DIQUIET set DIQUIET=1 ; Fileman don't talk
  . do importLabs^SYNFLAB(.return,ien,.ARGS)
  . do importVitals^SYNFVIT(.return,ien,.ARGS)
  . do importEncounters^SYNFENC(.return,ien,.ARGS)
@@ -56,7 +71,7 @@ wsPostFHIR(ARGS,BODY,RESULT,ien)    ; recieve from addpatient
  . do importProcedures^SYNFPROC(.return,ien,.ARGS)
  . do importCarePlan^SYNFCP(.return,ien,.ARGS)
  ;
- do encode^SYNJSON("return","RESULT")
+ do ENCODE^XLFJSON("return","RESULT")
  set HTTPRSP("mime")="application/json"
  ;
  quit 1
@@ -183,35 +198,6 @@ clearIndexes(gn)        ; kill the indexes
  k @gn@("OPS")
  q
  ;
-wsShow(rtn,filter)      ; web service to show the fhir
- new type set type=$get(filter("type"))
- new root set root=$$setroot^SYNWD("fhir-intake")
- ;
- new ien set ien=$g(filter("ien"))
- if ien="" d  ;
- . n icn
- . s icn=$g(filter("icn"))
- . q:icn=""
- . s ien=$o(@root@("ICN",icn,""))
- if ien="" d  ;
- . n dfn
- . s dfn=$g(filter("dfn"))
- . q:dfn=""
- . s ien=$o(@root@("DFN",dfn,""))
- if ien="" quit  ;
- ;
- new jroot set jroot=$name(@root@(ien,"json"))
- ;
- new jtmp,juse
- set juse=jroot
- if type'="" do  ;
- . do getIntakeFhir("jtmp",$g(filter("bundle")),type,ien,1)
- . ;do getIntakeFhir("jtmp",,type,ien,1)
- . set juse="jtmp"
- do encode^SYNJSON(juse,"rtn")
- s HTTPRSP("mime")="application/json"
- quit
- ;
 getIntakeFhir(rtn,id,type,ien,plain)    ; returns fhir vars for patient bundle=id resourceType type
  ; id is the bundle date range to be returned, optional
  ; if id is not passed, all resources of the type are returned
@@ -256,7 +242,7 @@ fhir2graph(in,out)      ; transforms fhir to a graph
  ; detects if json parser has been run and will run it if not
  ;
  new json
- if $ql($q(@in@("")))<2 do decode^SYNJSON(in,"json") set in="json"
+ if $ql($q(@in@("")))<2 do DECODE^XLFJSON(in,"json") set in="json"
  ;
  new rootj
  set rootj=$na(@in@("entry"))
@@ -314,13 +300,20 @@ wsLoadStatus(rtn,filter) ; displays the load status
  ;
 FILE(directory) ; [Public] Load files from the file system; OPT: SYN LOAD FILES
  ;
+ I '$D(^XUSEC("LRLAB",DUZ)) W !,"You need LRLAB and LRVERIFY keys; quiting.",! QUIT
+ I '$D(^XUSEC("LRVERIFY",DUZ)) W !,"You need LRLAB and LRVERIFY keys; quiting.",! QUIT
+ ;
+ new interactive set interactive=0
  if '$data(directory) do
+ . set interactive=1
  . N DIR,X,Y,DA,DIRUT,DTOUT,DUOUT,DIROUT
  . S DIR(0)="F^0:1024"
  . S DIR("A")="Enter directory from which to load Synthea Patients (FHIR DSTU3 or R4)"
+ . I $G(^TMP($T(+0),$J))'="" S DIR("B")=^($J)
  . D ^DIR
  . W !
  . if '$data(DIRUT) set directory=Y
+ . S ^TMP($T(+0),$J)=Y
  quit:'$data(directory)
  ;
  new root set root=$$setroot^SYNWD("fhir-intake")
@@ -331,12 +324,56 @@ FILE(directory) ; [Public] Load files from the file system; OPT: SYN LOAD FILES
  new % set %=$$LIST^%ZISH(directory,$na(synmask),$na(synfiles))
  if '% write "Failed to read any files. Check directory.",! quit
  ;
+ new quit set quit=0
+ new singlemultiple set singlemultiple="M"
+ if interactive do  quit:quit
+ . ; Single or multiple patients
+ . N DIR,X,Y,DA,DIRUT,DTOUT,DUOUT,DIROUT
+ . S DIR(0)="SA^S:Single;M:Multiple"
+ . S DIR("A")="Do you want to import a [S]ingle or [M]ultiple patients? "
+ . S DIR("B")="S"
+ . D ^DIR
+ . if $data(DIRUT) set quit=1 quit
+ . set singlemultiple=Y
+ . quit:singlemultiple="M"
+ . write !!
+ . ;
+ . ; If single, pick which one
+ . K DIR,X,Y,DA,DIRUT,DTOUT,DUOUT,DIROUT
+ . new file set file=""
+ . new count set count=0
+ . new filesbynumber
+ . for  set file=$order(synfiles(file)) q:file=""  do
+ .. if file["Information" quit  ; We don't process information files yet...
+ .. set count=count+1
+ .. write count,". ",file,!
+ .. if $d(@root@("filename",file)) write "    (already loaded)",!
+ .. ; Set default selection to the first unloaded file
+ .. else  if '$data(DIR("B")) set DIR("B")=count
+ .. set filesbynumber(count)=file
+ . S DIR(0)="L^1:"_count
+ . D ^DIR
+ . if $data(DIRUT) set quit=1 quit
+ . new fulllist set fulllist=""
+ . ; deal with 255 character limit in ^DIR; but hopefully we won't hit the 32k Cache string limit
+ . new i for i=0:1 quit:'$data(Y(i))  set fulllist=fulllist_Y(i)  quit:$length(fulllist)>32000
+ . ; remove trailing comma
+ . set $extract(fulllist,$length(fulllist))=""
+ . ; reconstitute synfiles
+ . kill synfiles
+ . new num for i=1:1:$length(fulllist,",") set num=$piece(fulllist,",",i),file=filesbynumber(num),synfiles(file)=""
+ . write !!
+ ;
+ N ZTQUEUED S ZTQUEUED=1 ; prevents the lab rollover call from talking
+ N ZTREQ ; Sets, don't want it kept
+ D ^LROLOVER
+ ;
  new file set file=""
  for  set file=$order(synfiles(file)) q:file=""  do
  . if file["Information" quit  ; We don't process information files yet...
  . ;
  . if $d(@root@("filename",file)) d  q  ;
- . . w !,"already loaded, quiting"
+ . . w !,file," is already loaded.",!
  . ;
  . write "Loading ",file,"...",!
  . kill ^TMP("SYNFILE",$J)
@@ -355,22 +392,21 @@ FILE(directory) ; [Public] Load files from the file system; OPT: SYN LOAD FILES
  .. do KILL^XUSCLEAN ; VistA leaks like hell
  . new args,body,synjsonreturn,ien,gr
  . set ien=$order(@root@(" "),-1)+1
- . s @root@("filename",file,ien)=""
+ . set @root@("filename",file,ien)=""
  . set gr=$name(@root@(ien,"json"))
- . s body=$na(^TMP("SYNFILE",$J))
- . do decode^SYNJSON(body,gr)
- . ;merge body=^TMP("SYNFILE",$J) ;don't need to merge because we decoded
- . ;new % set %=$$wsPostFHIR(.args,.body,.synjsonreturn) ; % always comes out as 1. We will ignore it.
+ . set body=$na(^TMP("SYNFILE",$J))
+ . do DECODE^XLFJSON(body,gr)
  . new % set %=$$wsPostFHIR(.args,.body,.synjsonreturn,ien) ; % always comes out as 1. We will ignore it.
  . ;
  . ; Get the status back from JSON
  . new synreturn,synjsonerror
- . do decode^SYNJSON($na(synjsonreturn),$na(synreturn),$na(synjsonerror))
+ . do DECODE^XLFJSON($na(synjsonreturn),$na(synreturn),$na(synjsonerror))
  . if $data(synjsonerror) write "There is an error decoding the return. Debug me." quit
  . ;
  . if $get(synreturn("loadMessage"))["Duplicate" write "Patient Already Loaded",! quit
  . ;
  . write "Loaded with following data: ",!
+ . write "File: ",file,!
  . write "DFN: ",synreturn("dfn"),?20,"ICN: ",synreturn("icn"),?50,"Graph Store IEN: ",synreturn("ien"),!
  . write "--------------------------------------------------------------------------",!
  . write "Type",?30,"Loaded?",?60,"Error",!
@@ -408,6 +444,11 @@ FILE(directory) ; [Public] Load files from the file system; OPT: SYN LOAD FILES
  . write "Labs"
  . write ?30,synreturn("labsStatus","loaded")
  . write ?60,synreturn("labsStatus","errors")
+ . write !
+ . ;
+ . write "Lab Panels"
+ . write ?30,$g(synreturn("panelsStatus","loaded"))
+ . write ?60,$g(synreturn("panelsStatus","errors"))
  . write !
  . ;
  . write "Meds"

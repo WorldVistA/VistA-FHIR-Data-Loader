@@ -1,7 +1,20 @@
 SYNQLDM ; GPL/GPL - QRDA loader entry routines ;2018-08-17  3:25 PM
- ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 13
+ ;;0.7;VISTA SYN DATA LOADER;;Mar 18, 2025
  ;
- ; Authored by George P. Lilly 2016-2018
+ ; Copyright (c) 2016-2018 George P. Lilly
+ ; Copyright (c) 2025 DocMe360 LLC
+ ;
+ ;Licensed under the Apache License, Version 2.0 (the "License");
+ ;you may not use this file except in compliance with the License.
+ ;You may obtain a copy of the License at
+ ;
+ ;    http://www.apache.org/licenses/LICENSE-2.0
+ ;
+ ;Unless required by applicable law or agreed to in writing, software
+ ;distributed under the License is distributed on an "AS IS" BASIS,
+ ;WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ;See the License for the specific language governing permissions and
+ ;limitations under the License.
  ;
  Q
  ;
@@ -219,9 +232,18 @@ INITMAPS        ; initialize maps
  ;S @G@(MAP,"CODE","185349003","99381")=""
  ; labs
  S MAP="labs"
- S @G@(MAP,"CODE","2085-9","HDL CHOLESTEROL")=""
+ S @G@(MAP,"CODE","32776-7","URINE BLOOD")=""
+ S @G@(MAP,"CODE","5794-3","URINE BLOOD")=""
+ S @G@(MAP,"CODE","5902-2","PROTIME")=""
+ S @G@(MAP,"CODE","6301-6","INR")=""
+ S @G@(MAP,"CODE","10839-9","TROPONIN")=""
+ S @G@(MAP,"CODE","89579-7","TROPONIN")=""
+ S @G@(MAP,"CODE","2502-3","IRON SATURATION")=""
+ S @G@(MAP,"CODE","2500-7","TIBC")=""
+ S @G@(MAP,"CODE","2498-4","IRON")=""
+ S @G@(MAP,"CODE","2085-9","HDL")=""
  S @G@(MAP,"CODE","34714-6","PT/INR")=""
- S @G@(MAP,"CODE","2093-3","CHOLESTEROL, TOTAL")=""
+ S @G@(MAP,"CODE","2093-3","CHOLESTEROL")=""
  S @G@(MAP,"CODE","12773-8","LDL CHOLESTEROL")=""
  S @G@(MAP,"CODE","13457-7","LDL CHOLESTEROL")=""
  S @G@(MAP,"CODE","13056-7","PLATELET COUNT")=""
@@ -235,11 +257,131 @@ INITMAPS        ; initialize maps
  S @G@(MAP,"CODE","20447-9","HIV 1 RNA")=""
  S @G@(MAP,"CODE","19080-1","PREGNANCY TEST")=""
  S @G@(MAP,"CODE","10674-0","HEPATITIS B SURFACE ANTIGEN")=""
- S @G@(MAP,"CODE","2093-3","CHOLESTEROL, TOTAL")=""
+ S @G@(MAP,"CODE","2093-3","CHOLESTEROL")=""
  S @G@(MAP,"CODE","12951-0","TRIGLYCERIDES")=""
  S @G@(MAP,"CODE","11268-0","STREPTOZYME")=""
  S @G@(MAP,"CODE","13217-5","CHLAMYDIA CULTURE")=""
  S @G@(MAP,"CODE","14463-4","CHLAMYDIA CULTURE")=""
+ S @G@(MAP,"CODE","1742-6","ALT")=""
+ S @G@(MAP,"CODE","1751-7","ALBUMIN")=""
+ S @G@(MAP,"CODE","17861-6","CALCIUM")=""
+ S @G@(MAP,"CODE","18262-6","LDL CHOLESTEROL")=""
+ S @G@(MAP,"CODE","1920-8","SGOT")=""
+ S @G@(MAP,"CODE","1975-2","TOT. BIL")=""
+ S @G@(MAP,"CODE","2028-9","CO2")=""
+ S @G@(MAP,"CODE","20454-5","URINE PROTEIN")=""
+ S @G@(MAP,"CODE","20505-4","URINE BILIRUBIN")=""
+ S @G@(MAP,"CODE","20565-8","CO2")=""
+ S @G@(MAP,"CODE","2069-3","CHLORIDE")=""
+ S @G@(MAP,"CODE","2075-0","CHLORIDE")=""
+ S @G@(MAP,"CODE","21000-5","RDW")=""
+ S @G@(MAP,"CODE","2160-0","CREATININE")=""
+ S @G@(MAP,"CODE","2339-0","GLUCOSE")=""
+ S @G@(MAP,"CODE","2345-7","GLUCOSE")=""
+ S @G@(MAP,"CODE","2514-8","URINE KETONES")=""
+ S @G@(MAP,"CODE","25428-4","URINE GLUCOSE")=""
+ S @G@(MAP,"CODE","2571-8","TRIGLYCERIDE")=""
+ S @G@(MAP,"CODE","2823-3","POTASSIUM")=""
+ S @G@(MAP,"CODE","2885-2","TOT PROT")=""
+ S @G@(MAP,"CODE","2947-0","SODIUM")=""
+ S @G@(MAP,"CODE","2951-2","SODIUM")=""
+ S @G@(MAP,"CODE","3094-0","UREA NITROGEN")=""
+ ;S @G@(MAP,"CODE","32167-9","N/A")=""
+ ;S @G@(MAP,"CODE","32207-3","N/A")=""
+ S @G@(MAP,"CODE","32623-1","MPV")=""
+ ;S @G@(MAP,"CODE","33914-3","SKIP - CALCULATED")=""
+ ;S @G@(MAP,"CODE","34533-0","N/A")=""
+ S @G@(MAP,"CODE","38483-4","CREATININE")=""
+ ;S @G@(MAP,"CODE","44261-6","SKIP - NOT A LAB TEST")=""
+ S @G@(MAP,"CODE","4544-3","HCT")=""
+ S @G@(MAP,"CODE","49765-1","CALCIUM")=""
+ S @G@(MAP,"CODE","5767-9","APPEARANCE")=""
+ S @G@(MAP,"CODE","5770-3","URINE BILIRUBIN")=""
+ S @G@(MAP,"CODE","5778-6","URINE COLOR")=""
+ S @G@(MAP,"CODE","5792-7","URINE GLUCOSE")=""
+ S @G@(MAP,"CODE","5797-6","URINE KETONES")=""
+ S @G@(MAP,"CODE","5799-2","LEUCOCYTE ESTERASE, URINE")=""
+ S @G@(MAP,"CODE","5802-4","NITRITE, URINE")=""
+ S @G@(MAP,"CODE","5821-4","URINE WBC/HPF")=""
+ S @G@(MAP,"CODE","13945-1","URINE RBC/HPF")=""
+ S @G@(MAP,"CODE","5787-7","EPITH CELLS")=""
+ S @G@(MAP,"CODE","24124-0","URINE CASTS")=""
+ S @G@(MAP,"CODE","8247-9","URINE MUCUS")=""
+ S @G@(MAP,"CODE","5769-5","URINE BACTERIA")=""
+ S @G@(MAP,"CODE","5803-2","URINE PH")=""
+ S @G@(MAP,"CODE","5804-0","URINE PROTEIN")=""
+ S @G@(MAP,"CODE","5811-5","SPECIFIC GRAVITY")=""
+ ;S @G@(MAP,"CODE","59460-6","SKIP - NOT A LAB TEST")=""
+ ;S @G@(MAP,"CODE","59461-4","SKIP - NOT A LAB TEST")=""
+ S @G@(MAP,"CODE","6298-4","POTASSIUM")=""
+ S @G@(MAP,"CODE","6299-2","UREA NITROGEN")=""
+ S @G@(MAP,"CODE","6690-2","WBC")=""
+ S @G@(MAP,"CODE","6768-6","ALK PHOS")=""
+ S @G@(MAP,"CODE","718-7","HGB")=""
+ S @G@(MAP,"CODE","777-3","PLATELET COUNT")=""
+ S @G@(MAP,"CODE","785-6","MCH")=""
+ S @G@(MAP,"CODE","786-4","MCHC")=""
+ S @G@(MAP,"CODE","787-2","MCV")=""
+ S @G@(MAP,"CODE","789-8","RBC")=""
+ S @G@(MAP,"CODE","20570-8","HCT")=""
+ S @G@(MAP,"CODE","19123-9","MAGNESIUM")=""
+ S @G@(MAP,"CODE","788-0","RDW-CV")=""
+ S @G@(MAP,"CODE","33914-3","COMPUTED CREATININE CLEARANCE")=""
+ S @G@(MAP,"CODE","3173-2","PTT")=""
+ S @G@(MAP,"CODE","2276-4","FERRITIN")=""
+ S @G@(MAP,"CODE","2746-6","PH ")="" ; not a typo, it really has a space
+ ; "Leukocytes [#/volume] in Blood","26464-8",11.39 -> WBC (part of CBC)
+ S @G@(MAP,"CODE","26464-8","WBC")=""
+ ; "Erythrocytes [#/volume] in Blood","26453-1",5.6994 -> RBC (part of CBC)
+ S @G@(MAP,"CODE","26453-1","RBC")=""
+ ; "Hemoglobin","718-7",14.748 -> HGB (part of CBC)
+ ;S @G@(MAP,"CODE","718-7","HGB")="" ; duplicate
+ ; "Hematocrit","20570-8",43.417 -> HCT (part of CBC)
+ ;S @G@(MAP,"CODE","20570-8","HCT")="" ; duplicate
+ ; "MCV","30428-7",89.107 -> MCV (part of CBC)
+ S @G@(MAP,"CODE","30428-7","MCV")=""
+ ; "RBC Distribution Width","30385-9",13.191 -> RDW (part of CBC)
+ S @G@(MAP,"CODE","30385-9","RDW")=""
+ ; "Platelet Count","26515-7",183.25 -> PLATELET COUNT (part of CBC)
+ S @G@(MAP,"CODE","26515-7","PLATELET COUNT")=""
+ ; "Neutrophils/100 leukocytes in Blood by Automated count","770-8",31.284 -> NEUTROPHILS % (not part of panel)
+ S @G@(MAP,"CODE","770-8","NEUTROPHILS %")=""
+ ; "Lymphocytes/100 leukocytes in Blood by Automated count","736-9",6.5796 -> LYMPHS % (part)
+ S @G@(MAP,"CODE","736-9","LYMPHS %")=""
+ ; "Monocytes/100 leukocytes in Blood by Automated count","5905-5",10.47 -> MONOS (part)
+ S @G@(MAP,"CODE","5905-5","MONOS")=""
+ ; "Eosinophils/100 leukocytes in Blood by Automated count","713-8",4.1706 -> EOSINO (part)
+ S @G@(MAP,"CODE","713-8","EOSINO")=""
+ ; "Basophils/100 leukocytes in Blood by Automated count","706-2",3.5937 -> BASO (part)
+ S @G@(MAP,"CODE","706-2","BASO")=""
+ ; "Neutrophils [#/volume] in Blood by Automated count","751-8",3.2589 -> NEUTROPHILS ABSOLUTE (not)
+ S @G@(MAP,"CODE","751-8","NEUTROPHILS ABSOLUTE")=""
+ ; "Lymphocytes [#/volume] in Blood by Automated count","731-0",1.0566 -> LYMPH ABS. (not)
+ S @G@(MAP,"CODE","731-0","LYMPH ABS.")=""
+ ; "Monocytes [#/volume] in Blood by Automated count","742-7",1.153 -> MONO ABS. (not)
+ S @G@(MAP,"CODE","742-7","MONO ABS.")=""
+ ; "Eosinophils [#/volume] in Blood by Automated count","711-2",0.22372 -> EOSINO, ABSOLUTE (not)
+ S @G@(MAP,"CODE","711-2","EOSINO, ABSOLUTE")=""
+ ; "Basophils [#/volume] in Blood by Automated count","704-7",0.22279 -> BASOPHILS, ABSOLUTE (not)
+ S @G@(MAP,"CODE","704-7","BASOPHILS, ABSOLUTE")=""
+ ; "pH of Arterial blood","2744-1",6.9599 "PH " (WITH A SPACE)
+ S @G@(MAP,"CODE","2744-1","PH ")=""
+ ; "Carbon dioxide [Partial pressure] in Arterial blood","2019-8",36.523 (PCO2)
+ S @G@(MAP,"CODE","2019-8","PCO2")=""
+ ; "Oxygen [Partial pressure] in Arterial blood","2703-7",83.922 (PO2)
+ S @G@(MAP,"CODE","2703-7","PO2")=""
+ ; "Bicarbonate [Moles/volume] in Arterial blood","1960-4",26.323 (HCO3)
+ S @G@(MAP,"CODE","1960-4","HCO3")=""
+ ; "pH of Venous blood","2746-6",7.4284 "PH " (WITH A SPACE) --- duplicate
+ ; "Carbon dioxide [Partial pressure] in Venous blood","2021-4",47.903 (PCO2)
+ S @G@(MAP,"CODE","2021-4","PCO2")=""
+ ; "Oxygen [Partial pressure] in Venous blood","2705-2",46.124 (PO2)
+ S @G@(MAP,"CODE","2705-2","PO2")=""
+ ; "Bicarbonate [Moles/volume] in Venous blood","14627-4",22.593 (BICARBONATE (SBC)) (PROBABLY NOT AN EXACT MATCH)
+ S @G@(MAP,"CODE","14627-4","BICARBONATE (SBC)")=""
+ ; "Carbon dioxide, total [Moles/volume] in Venous blood","2027-1",1.3999 (CO2CT. (TCO2))
+ S @G@(MAP,"CODE","2027-1","CO2CT. (TCO2)")=""
+ ;
  ; gmr allergies snomed to vuid
  S MAP="gmr-allergies"
  S @G@(MAP,"CODE",419474003,4636980)=""
@@ -302,6 +444,7 @@ INITMAPS        ; initialize maps
  S @G@(MAP,"CODE",998671,4002473)=""
  S @G@(MAP,"CODE",998675,4002474)=""
  S @G@(MAP,"CODE",998679,4002475)=""
+ D INITMAPS^SYNFPAN(G)
  N ZI
  S ZI=""
  F  S ZI=$O(@G@(ZI)) Q:ZI=""  D  ;

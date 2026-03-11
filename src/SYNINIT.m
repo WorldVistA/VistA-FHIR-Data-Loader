@@ -1,8 +1,20 @@
 SYNINIT ;OSEHRA/SMH - Initilization Code for Synthetic Data Loader;May 23 2018
- ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019
+ ;;0.7;VISTA SYN DATA LOADER;;Mar 18, 2025
  ;
- ; (c) Sam Habiel 2018-2019
- ; Licensed under Apache 2.0.
+ ; Copyright (c) 2018-2019 Sam Habiel
+ ; Copyright (c) 2025 DocMe360 LLC
+ ;
+ ;Licensed under the Apache License, Version 2.0 (the "License");
+ ;you may not use this file except in compliance with the License.
+ ;You may obtain a copy of the License at
+ ;
+ ;    http://www.apache.org/licenses/LICENSE-2.0
+ ;
+ ;Unless required by applicable law or agreed to in writing, software
+ ;distributed under the License is distributed on an "AS IS" BASIS,
+ ;WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ;See the License for the specific language governing permissions and
+ ;limitations under the License.
  ;
 EN ; [Public; called by KIDS; do everything in this file]
  ;D LOADHAND
@@ -15,6 +27,7 @@ EN ; [Public; called by KIDS; do everything in this file]
  D MES^XPDUTL("Fixing IB ACTION TYPE file") D IBACTION
  D MES^XPDUTL("Setting up Outpatient Pharmacy "_$$PHRSS())
  D MES^XPDUTL("Disabling Allergy Bulletins") D ALBUL
+ D MES^XPDUTL("Disable Late ACRP Related Bulletins") D ACRPBUL
  QUIT
  ;
 PROV(rePopulate) ;[Public $$] Create Generic Provider for Synthetic Patients
@@ -44,18 +57,15 @@ PROV(rePopulate) ;[Public $$] Create Generic Provider for Synthetic Patients
  S C0XFDA(200.051,"?+10,?+1,",.01)="LRLAB"
  S C0XFDA(200.051,"?+11,?+1,",.01)="LRVERIFY"
  ;
- ; Access and Verify Codes so we can log in as the provider if we want to
- ; We must pre-hash them as that's not in the IT
+ ; Access Code to activate mailbox for provider
  S C0XFDA(200,"?+1,",2)=$$EN^XUSHSH("SYNPROV123") ; ac
- S C0XFDA(200,"?+1,",11)=$$EN^XUSHSH("SYNPROV123!!") ; vc
- S C0XFDA(200,"?+1,",7.2)=1 ; verify code never expires
  ;
  ; Electronic Signature
  ; Input transform hashes this guy
  S C0XFDA(200,"?+1,",20.4)="123456"
  ;
  ; Primary Menu
- S C0XFDA(200,"?+1,",201)="`"_$$FIND1^DIC(19,,"QX","XUCORE","B")
+ S C0XFDA(200,"?+1,",201)="`"_$$FIND1^DIC(19,,"QX","SYNMENU","B")
  ;
  ; Secondary Menu (CPRS, etc)
  S C0XFDA(200.03,"?+5,?+1,",.01)="`"_$$FIND1^DIC(19,,"QX","OR CPRS GUI CHART","B")
@@ -76,10 +86,6 @@ PROV(rePopulate) ;[Public $$] Create Generic Provider for Synthetic Patients
  N DIC S DIC(0)="" ; An XREF in File 200 requires this.
  D UPDATE^DIE("E",$NA(C0XFDA),$NA(C0XIEN),$NA(C0XERR)) ; Typical UPDATE
  I $D(DIERR) S $EC=",U1,"
- ;
- ; Fix verify code change date to the far future
- N FDA
- S FDA(200,C0XIEN(1)_",",11.2)=$$FMTH^XLFDT($$FMADD^XLFDT(DT,3000))
  ;
  ; Signature block. Do this as internal values to prevent name check in 20.2.
  S FDA(200,C0XIEN(1)_",",20.2)="SYNTHETIC PROVIDER, MD"
@@ -114,18 +120,16 @@ PHARM(rePopulate) ;[Public $$] Create Generic Provider for Synthetic Patients
  S C0XFDA(200.051,"?+3,?+1,",.01)="PSORPH"
  S C0XFDA(200.051,"?+4,?+1,",.01)="ORELSE"
  ;
- ; Access and Verify Codes so we can log in as the provider if we want to
+ ; Access Code to activate mailbox for provider
  ; We must pre-hash them as that's not in the IT
  S C0XFDA(200,"?+1,",2)=$$EN^XUSHSH("SYNPHARM123") ; ac
- S C0XFDA(200,"?+1,",11)=$$EN^XUSHSH("SYNPHARM123!!") ; vc
- S C0XFDA(200,"?+1,",7.2)=1 ; verify code never expires
  ;
  ; Electronic Signature
  ; Input transform hashes this guy
  S C0XFDA(200,"?+1,",20.4)="123456"
  ;
  ; Primary Menu
- S C0XFDA(200,"?+1,",201)="`"_$$FIND1^DIC(19,,"QX","XUCORE","B")
+ S C0XFDA(200,"?+1,",201)="`"_$$FIND1^DIC(19,,"QX","SYNMENU","B")
  ;
  ; Secondary Menu (CPRS, etc)
  S C0XFDA(200.03,"?+5,?+1,",.01)="`"_$$FIND1^DIC(19,,"QX","OR CPRS GUI CHART","B")
@@ -143,10 +147,6 @@ PHARM(rePopulate) ;[Public $$] Create Generic Provider for Synthetic Patients
  N DIC S DIC(0)="" ; An XREF in File 200 requires this.
  D UPDATE^DIE("E",$NA(C0XFDA),$NA(C0XIEN),$NA(C0XERR)) ; Typical UPDATE
  I $D(DIERR) S $EC=",U1,"
- ;
- ; Fix verify code change date to the far future
- N FDA
- S FDA(200,C0XIEN(1)_",",11.2)=$$FMTH^XLFDT($$FMADD^XLFDT(DT,3000))
  ;
  ; Signature block. Do this as internal values to prevent name check in 20.2.
  S FDA(200,C0XIEN(1)_",",20.2)="SYNTHETIC PHARMACIST, RPH"
@@ -273,6 +273,13 @@ ALBUL ; [Public] Disable Allergy Bulletin
  I $D(DIERR) S $EC=",U1,"
  QUIT
  ;
+ACRPBUL ; [Public] Disable Late ACRP Related Bulletins
+ N FDA,DIERR
+ S FDA(43,"1,",217)="@"
+ D FILE^DIE("","FDA")
+ I $D(DIERR) S $EC=",U1,"
+ QUIT
+ ;
 TEST D EN^%ut($T(+0),3) QUIT
  ;
 TESTPROV ; @TEST Test adding a provider
@@ -308,24 +315,6 @@ TESTHL ; @TEST Test adding a clinic
  N DA,DIK S DA=HL,DIK="^SC(" D ^DIK
  S HL=$$HL(1)
  D CHKTF^%ut(HL>0)
- QUIT
- ;
-TESTLH ; @Test Load Handlers
- D DELHAND
- D LOADHAND
- ;
- N IEN
- S IEN=$O(^%web(17.6001,"B","POST","addpatient","wsPostFHIR^SYNFHIR",""))
- D CHKTF^%ut(IEN)
- K IEN
- S IEN=$O(^%web(17.6001,"B","GET","showfhir","wsShow^SYNFHIR",""))
- D CHKTF^%ut(IEN)
- K IEN
- S IEN=$O(^%web(17.6001,"B","GET","vpr/{dfn}","wsVPR^SYNVPR",""))
- D CHKTF^%ut(IEN)
- K IEN
- S IEN=$O(^%web(17.6001,"B","GET","global/{root}","wsGLOBAL^SYNVPR",""))
- D CHKTF^%ut(IEN)
  QUIT
  ;
 TESTAMIE ; @TEST AMIE

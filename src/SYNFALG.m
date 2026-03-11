@@ -1,8 +1,21 @@
 SYNFALG ;ven/gpl - fhir loader utilities ;2019-06-21  3:40 PM
- ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 13
+ ;;0.7;VISTA SYN DATA LOADER;;Mar 18, 2025
  ;
- ; Authored by George P. Lilly 2017-2018
- ; (c) Sam Habiel 2018
+ ; Copyright (c) 2017-2018 George P. Lilly
+ ; Copyright (c) 2018 Sam Habiel
+ ;
+ ;Licensed under the Apache License, Version 2.0 (the "License");
+ ;you may not use this file except in compliance with the License.
+ ;You may obtain a copy of the License at
+ ;
+ ;    http://www.apache.org/licenses/LICENSE-2.0
+ ;
+ ;Unless required by applicable law or agreed to in writing, software
+ ;distributed under the License is distributed on an "AS IS" BASIS,
+ ;WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ;See the License for the specific language governing permissions and
+ ;limitations under the License.
+ ;
  ;
  q
  ;
@@ -29,15 +42,8 @@ wsIntakeAllergy(args,body,result,ien) ; web service entry (post)
  ;. s result("allergytatus","status")="alreadyLoaded"
  i $g(ien)'="" d  ; internal call
  . d getIntakeFhir^SYNFHIR("json",,"AllergyIntolerance",ien,1)
- e  d  ;
- . ;s args("load")=0
- . merge jtmp=BODY
- . do decode^SYNJSONE("jtmp","json")
- ;
- ;i '$d(json) d getRandomAllergy(.json)
  ;
  i '$d(json) q  ;
- m ^gpl("gjson")=json
  ;
  ; determine the patient
  ;
@@ -202,15 +208,7 @@ wsIntakeAllergy(args,body,result,ien) ; web service entry (post)
  set jrslt("result","status")="ok"
  set jrslt("result","loaded")=$g(eval("allergy","status","loaded"))
  set jrslt("result","errors")=$g(eval("allergy","status","errors"))
- i $g(ien)'="" d  ; called internally
- . ;m result=eval
- . m result("status")=jrslt("result")
- . ;m result("dfn")=dfn
- . ;m result("ien")=ien
- . ;b
- e  d  ;
- . d encode^SYNJSONE("jrslt","result")
- . set HTTPRSP("mime")="application/json"
+ m result("status")=jrslt("result")
  q
  ;
 USERNAME() ; extrinsic returns the name of the user
@@ -259,27 +257,6 @@ testone(reslt,doload) ; run the allergy import on one imported patient
  . k reslt
  . d wsIntakeAllergy(.filter,,.reslt,ien)
  . s done=1
- q
- ;
-getRandomAllergy(ary) ; make a web service call to get random allergies
- n srvr
- s srvr="http://postfhir.vistaplex.org:9080/"
- i srvr["postfhir.vistaplex.org" s srvr="http://138.197.70.229:9080/"
- i $g(^%WURL)["http://postfhir.vistaplex.org:9080" d  q  ;
- . s srvr="localhost:9080/"
- . n url
- . s url=srvr_"randomAllergy"
- . n ok,r1
- . s ok=$$%^%WC(.r1,"GET",url)
- . i '$d(r1) q  ;
- . d decode^SYNJSONE("r1","ary")
- n url
- s url=srvr_"randomAllergy"
- n ret,json,jtmp
- s ret=$$GETURL^XTHC10(url,,"jtmp")
- d assemble^SYNFPUL("jtmp","json")
- i '$d(json) q  ;
- d decode^SYNJSONE("json","ary")
  q
  ;
 ISGMR(CDE) ; extrinsic return the ien and allergy name in GMR ALLERGIES if any

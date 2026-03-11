@@ -1,7 +1,19 @@
 SYNFAPT ;ven/gpl - fhir loader utilities ;2018-08-17  3:25 PM
- ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 13
+ ;;0.7;VISTA SYN DATA LOADER;;Mar 18, 2025
  ;
- ; Authored by George P. Lilly 2017-2018
+ ; Copyright (c) 2017-2018 George P. Lilly
+ ;
+ ;Licensed under the Apache License, Version 2.0 (the "License");
+ ;you may not use this file except in compliance with the License.
+ ;You may obtain a copy of the License at
+ ;
+ ;    http://www.apache.org/licenses/LICENSE-2.0
+ ;
+ ;Unless required by applicable law or agreed to in writing, software
+ ;distributed under the License is distributed on an "AS IS" BASIS,
+ ;WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ;See the License for the specific language governing permissions and
+ ;limitations under the License.
  ;
  q
  ;
@@ -26,15 +38,7 @@ wsIntakeAppointment(args,body,result,ien)       ; web service entry (post)
  n jtmp,json,jrslt,eval
  i $g(ien)'="" d  ; internal call
  . d getIntakeFhir^SYNFHIR("json",,"Appointment",ien,1)
- e  d  ;
- . s args("load")=0
- . merge jtmp=BODY
- . do decode^SYNJSONE("jtmp","json")
- ;if '$d(json) d  ; if no appointment, get a random set of appointments
- ;. d getRandomApt(.json) ; get a random set of appointments
  i '$d(json) q  ;
- m ^gpl("gjson")=json
- ;b
  ;
  ; determine the patient
  ;
@@ -155,15 +159,10 @@ wsIntakeAppointment(args,body,result,ien)       ; web service entry (post)
  m jrslt("appointmentStatus")=eval("appointmentStatus")
  set jrslt("result","status")="ok"
  set jrslt("result","loaded")=$g(eval("status","loaded"))
- i $g(ien)'="" d  ; called internally
- . m result=eval
- . m result("status")=jrslt("result")
- . m result("dfn")=dfn
- . m result("ien")=ien
- . ;b
- e  d  ;
- . d encode^SYNJSONE("jrslt","result")
- . set HTTPRSP("mime")="application/json"
+ m result=eval
+ m result("status")=jrslt("result")
+ m result("dfn")=dfn
+ m result("ien")=ien
  q
  ;
 log(ary,txt)    ; adds a text line to @ary@("log")
@@ -208,26 +207,5 @@ testone(reslt,doload)   ; run the appointment import on imported patient
  . d wsIntakeAppointment(.filter,,.reslt,ien)
  . ;zwr reslt
  . s done=1
- q
- ;
-getRandomApt(ary)       ; make a web service call to get random appointments
- n srvr
- s srvr="http://postfhir.vistaplex.org:9080/"
- i srvr["postfhir.vistaplex.org" s srvr="http://138.197.70.229:9080/"
- i $g(^%WURL)["http://postfhir.vistaplex.org:9080" d  q  ;
- . s srvr="localhost:9080/"
- . n url
- . s url=srvr_"randomappointment"
- . n ok,r1
- . s ok=$$%^%WC(.r1,"GET",url)
- . i '$d(r1) q  ;
- . d decode^SYNJSONE("r1","ary")
- n url
- s url=srvr_"randomAllergy"
- n ret,json,jtmp
- s ret=$$GETURL^XTHC10(url,,"jtmp")
- d assemble^SYNFPUL("jtmp","json")
- i '$d(json) q  ;
- d decode^SYNJSONE("json","ary")
  q
  ;

@@ -1,7 +1,21 @@
 SYNFGRAPH       ;ven/gpl - fhir loader utilities ;2018-08-17  3:26 PM
- ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 13
+ ;;0.7;VISTA SYN DATA LOADER;;Mar 18, 2025
  ;
- ; Authored by George P. Lilly 2017-2018
+ ; Copyright (c) 2017-2018 George P. Lilly
+ ;
+ ;Licensed under the Apache License, Version 2.0 (the "License");
+ ;you may not use this file except in compliance with the License.
+ ;You may obtain a copy of the License at
+ ;
+ ;    http://www.apache.org/licenses/LICENSE-2.0
+ ;
+ ;Unless required by applicable law or agreed to in writing, software
+ ;distributed under the License is distributed on an "AS IS" BASIS,
+ ;WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ;See the License for the specific language governing permissions and
+ ;limitations under the License.
+ ;
+ ;
  ;
  q
  ;
@@ -82,45 +96,6 @@ getGraphMap(rtn,graph,ipred,iobj,opred,oobj) ; retrieve a section of the graph
  i $d(@rtn) q 1
  q "-1^No Match"
  ;
-getGraph(url,gname) ; get a graph from a web service
- ;
- q:'$d(gname)
- i $$rootOf^SYNWD(gname)'=-1 d  q  ;
- . w !,"error, graph exists: "_gname
- n root s root=$$setroot^SYNWD(gname)
- n %,json,grf
- s %=$$%^%WC(.json,"GET",url)
- w !,"result= ",%
- i '$d(json) d  q  ;
- . w !,"error, nothing returned"
- d decode^SYNJSONE("json","grf")
- m @root=grf
- n indx,rindx
- s indx=$o(@root@(0))
- s rindx=$na(@root@(indx))
- s @root@("index","root")=rindx
- d index(rindx)
- q
- ;
-wsGetGraph(RTN,FILTER) ; web service returns the requested graph FILTER("graph")="graph"
- ; this is the server side of getGraph above
- n graph s graph=$g(FILTER("graph"))
- i graph="" d  q  ;
- . s RTN="-1^please specify a graph"
- ;n root s root=$$rootOf^SYNWD(graph)
- n root s root=$$setroot^SYNWD(graph)
- i +root=-1 d  q  ;
- . s RTN="-1^graph not found"
- ;
- ;n json
- ;s json=$$setroot^SYNWD(graph_"-json")
- ;i +json'=-1 s RTN=json q  ;
- ;s json=$$setroot^SYNWD(graph_"-json")
- S RTN=$na(^TMP("SYNOUT",$J))
- K @RTN
- d encode^SYNJSONE(root,RTN)
- q
- ;
 loincMap() ; create the lonic-lab-map
  n root s root=$$setroot^SYNWD("loinc-lab-map")
  k @root
@@ -138,9 +113,9 @@ loincMap() ; create the lonic-lab-map
  d index(rindx)
  q
  ;
-covid(loinc) ; extrinsic returns the name of the lab test  in ^LAB(60, 
+covid(loinc) ; extrinsic returns the name of the lab test  in ^LAB(60,
  ; for the loinc code
- q -1  ; change the iens to match your covid tests before using this 
+ q -1  ; change the iens to match your covid tests before using this
  n rt,rien,LAB
  s LAB(5091)="COVID-19 (PHRL)"
  s LAB(5092)="COVID-19 CONFIRMATORY"
@@ -149,7 +124,7 @@ covid(loinc) ; extrinsic returns the name of the lab test  in ^LAB(60,
  ;s LAB("92130-4",5096)="RHINOVIRUS RNA RESP"
  s LAB("92131-2",5097)="RESPSYNVIRUS RNA"
  ;s LAB("92134-6",5098)="METAPNEUMOVIRUS RNA"
- s LAB("92134-6",5098)="HUMAN METAPNEURMOVIRUS RNA Ql" 
+ s LAB("92134-6",5098)="HUMAN METAPNEURMOVIRUS RNA Ql"
  ;s LAB("92138-7",5099)="PARAINFLUENZA VIRUS 3 RNA"
  s LAB("92138-7",5099)="PARAINFLUENZA VIRUS 3 RNA Ql"
  ;s LAB("92139-5",5100)="PARAINFLUENZA VIRUS 2 RNA"

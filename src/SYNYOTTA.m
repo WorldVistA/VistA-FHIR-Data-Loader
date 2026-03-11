@@ -1,6 +1,20 @@
 SYNYOTTA	;gpl - agile web server ; 2/27/17 4:33pm
  ;;1.0;norelease;;feb 27, 2017;build 2
  ;
+ ; Copyright (c) 2017-2018 George P. Lilly 
+ ;
+ ;Licensed under the Apache License, Version 2.0 (the "License");
+ ;you may not use this file except in compliance with the License.
+ ;You may obtain a copy of the License at
+ ;
+ ;    http://www.apache.org/licenses/LICENSE-2.0
+ ;
+ ;Unless required by applicable law or agreed to in writing, software
+ ;distributed under the License is distributed on an "AS IS" BASIS,
+ ;WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ;See the License for the specific language governing permissions and
+ ;limitations under the License.
+ ;
  ;
  q
  ;
@@ -242,7 +256,6 @@ addtag(tag,zien,zien2) ; add a tag to a graph
  q
  ;
 wssee(rtn,filter) ; web service for browsing files using the graph
- m ^gpl("filter")=filter
  n arg s arg=$g(filter("*"))
  i arg="" d toppage^%yottahtm(.rtn,.filter) q  ;
  ;i arg="@rewrite" d rewrite(.rtn) q  ;
@@ -286,7 +299,6 @@ wssee(rtn,filter) ; web service for browsing files using the graph
  n matches
  ;i arg["%20" s arg=$tr(arg,"%20"," ")
  d match("#"_arg,"matches")
- ;m ^gpl("matches")=matches
  ;i $d(matches) s rtn=$q(matches)
  i $$count("matches")>0 d  q  ; more than one match
  . d multout(.rtn,"matches")

@@ -1,7 +1,20 @@
 SYNFHIRU ;ven/gpl - fhir loader utilities ;2018-08-17  3:27 PM
- ;;0.3;VISTA SYNTHETIC DATA LOADER;;Jul 01, 2019;Build 13
+ ;;0.7;VISTA SYN DATA LOADER;;Mar 18, 2025
  ;
- ; Authored by George P. Lilly 2017-2018
+ ; Copyright (c) 2017-2018 George P. Lilly
+ ;
+ ;Licensed under the Apache License, Version 2.0 (the "License");
+ ;you may not use this file except in compliance with the License.
+ ;You may obtain a copy of the License at
+ ;
+ ;    http://www.apache.org/licenses/LICENSE-2.0
+ ;
+ ;Unless required by applicable law or agreed to in writing, software
+ ;distributed under the License is distributed on an "AS IS" BASIS,
+ ;WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ;See the License for the specific language governing permissions and
+ ;limitations under the License.
+ ;
  ;
  q
  ;
@@ -34,7 +47,7 @@ wsUpdatePatient(ARGS,BODY,RESULT)    ; recieve from updatepatient
  . s HTTPERR=400
  ;
  n gr1,zi,cnt,rien ; initial entries
- do decode^SYNJSONE("json","gr1")
+ do DECODE^XLFJSON("json","gr1")
  ;
  ; shift resource numbers to fit in graph
  ;
@@ -47,8 +60,6 @@ wsUpdatePatient(ARGS,BODY,RESULT)    ; recieve from updatepatient
  ;
  ;
  do indexFhir(ien,"gr")
- ;k ^gpl("gr")
- ;m ^gpl("gr")=gr ; for debugging
  ;
  ;
  if $get(ARGS("returngraph"))=1 do  ;
@@ -82,7 +93,7 @@ wsUpdatePatient(ARGS,BODY,RESULT)    ; recieve from updatepatient
  . do importCarePlan^SYNFCP(.return,ien,.ARGS)
  ;
  k SYNBUNDLE
- do encode^SYNJSONE("return","RESULT")
+ do ENCODE^XLFJSON("return","RESULT")
  set HTTPRSP("mime")="application/json"
  ;
  quit 1
