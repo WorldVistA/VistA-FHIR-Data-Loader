@@ -7,6 +7,9 @@ are supportable; but are not supported at this time.
 DO NOT USE THIS SOFTWARE ON PRODUCTION SYSTEMS. This software is only used to
 create patients on test VistA systems.
 
+For lab ingestion troubleshooting and accession-area remediation, see
+`docs/LAB_ACCESSION_REMEDIATION_WORKFLOW.md`.
+
 # Pre-installation Requirements
 The Installer DUZ must have the key XUMGR in order to be able to add users to
 the systems. You will be blocked from installing if you don't have that

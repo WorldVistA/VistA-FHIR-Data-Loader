@@ -22,7 +22,7 @@ importLabs(rtn,ien,args) ; entry point for loading labs for a patient
  ; calls the intake Labs web service directly
  ;
  n grtn
- n root s root=$$setroot^SYNWD("fhir-intake")
+ n root s root=$$setroot^%wd("fhir-intake")
  n % s %=$$wsIntakeLabs(.args,,.grtn,ien)
  ;i $d(grtn) d  ; something was returned
  ;. k @root@(ien,"load","labs")
@@ -42,7 +42,7 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  ; args include patientId
  ; ien is specified for internal calls, where the json is already in a graph
  n root,troot
- s root=$$setroot^SYNWD("fhir-intake")
+ s root=$$setroot^%wd("fhir-intake")
  ;
  n jtmp,json,jrslt,eval
  ;i $g(ien)'="" if $$loadStatus("labs","",ien)=1 d  q  ;
@@ -269,13 +269,21 @@ wsIntakeLabs(args,body,result,ien) ; web service entry (post)
  . . if $g(ien)'="" if $$loadStatus("labs",zi,ien)=1 do  quit  ;
  . . . d log(jlog,"Lab already loaded, skipping")
  . . d log(jlog,"Calling LABADD^SYNDHP63 to add lab")
- . . D LABADD^SYNDHP63(.RETSTA,DHPPAT,DHPLOC,DHPLAB,DHPOBS,DHPDTM,DHPLOINC,CSAMP)     ; labs update
- . . d log(jlog,"Return from LABADD^SYNDHP63 was: "_$g(RETSTA))
- . . ;i $g(DEBUG)=1 ZWRITE RETSTA
- . . if +$g(RETSTA)=1 do  ;
- . . . s @eval@("labs","status","loaded")=@eval@("labs","status","loaded")+1
+ . . ;new (DHPPAT,DHPSCT,DHPOBS,DHPUNT,DHPDTM,DHPPROV,DHPLOC,DHPLOINC,DHPLAB,DUZ,DT,U,jlog,ien,zi,eval)
+ . . ;LABADD(RETSTA,DHPPAT,DHPLOC,DHPTEST,DHPRSLT,DHPRSDT) ;Create lab test
+ . . D LABADD^SYNDHP63(.RETSTA,DHPPAT,DHPLOC,DHPLAB,DHPOBS,DHPDTM,DHPLOINC)     ; labs update
+ . . d log(jlog,"Return from LABADD^ZZDHP63 was: "_$g(RETSTA))
+ . . i $g(DEBUG)=1 ZWRITE RETSTA
+ . . n retmsg s retmsg=$g(RETSTA)
+ . . i +retmsg=1 d  q  ;
+ . . . s @eval@("labs","status","loaded")=$g(@eval@("labs","status","loaded"))+1
  . . . s @eval@("labs",zi,"status","loadstatus")="loaded"
- . . else  s @eval@("labs","status","errors")=@eval@("labs","status","errors")+1
+ . . i retmsg["Duplicate Lab Test entry for patient" d  q  ;
+ . . . s @eval@("labs","status","loaded")=$g(@eval@("labs","status","loaded"))+1
+ . . . s @eval@("labs",zi,"status","loadstatus")="loaded"
+ . . . s @eval@("labs",zi,"status","issue")="duplicate source observation"
+ . . . d log(jlog,"Duplicate lab treated as loaded")
+ . . s @eval@("labs","status","errors")=$g(@eval@("labs","status","errors"))+1
  ;
  if $get(args("debug"))=1 do  ;
  . m jrslt("source")=@json
@@ -302,7 +310,7 @@ log(ary,txt) ; adds a text line to @ary@("log")
  q
  ;
 loadStatus(typ,zx,zien) ; extrinsic return 1 if resource was loaded
- n root s root=$$setroot^SYNWD("fhir-intake")
+ n root s root=$$setroot^%wd("fhir-intake")
  n rt s rt=0
  i $g(zx)="" i $d(@root@(zien,"load",typ)) s rt=1 q rt
  i $get(@root@(zien,"load",typ,zx,"status","loadstatus"))="loaded" s rt=1
@@ -326,7 +334,7 @@ loinc2sct(loinc) ; extrinsic returns a Snomed code for a Loinc code
  q $o(SCTA(loinc,""))
  ;
 testall ; run the labs import on all imported patients
- new root s root=$$setroot^SYNWD("fhir-intake")
+ new root s root=$$setroot^%wd("fhir-intake")
  new indx s indx=$na(@root@("POS","DFN"))
  n dfn,ien,filter,reslt
  s dfn=0
@@ -339,7 +347,7 @@ testall ; run the labs import on all imported patients
  q
  ;
 labsum ; summary of lab tests for patient ien pien
- n root s root=$$setroot^SYNWD("fhir-intake")
+ n root s root=$$setroot^%wd("fhir-intake")
  n table
  n zzi s zzi=0
  f  s zzi=$o(@root@(zzi)) q:+zzi=0  d  ;
