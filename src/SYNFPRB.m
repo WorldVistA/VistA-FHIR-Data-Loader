@@ -189,6 +189,9 @@ wsIntakeConditions(args,body,result,ien)        ; web service entry (post)
  . ;
  . s DHPONS=hl7OnsetDateTime
  . s eval("conditions",zi,"parms","DHPONS")=DHPONS
+ . ; pass the abatement so VistA records the resolution date
+ . s DHPABT=$g(eval("conditions",zi,"vars","hl7AbatementDateTime"))
+ . s eval("conditions",zi,"parms","DHPABT")=DHPABT
  . ;
  . s DHPROV=$$MAP^SYNQLDM("OP","provider") ; map should return the NPI number
  . ;n DHPPROVIEN s DHPPROVIEN=$o(^VA(200,"B",IMMPROV,""))
