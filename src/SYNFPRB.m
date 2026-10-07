@@ -152,7 +152,11 @@ wsIntakeConditions(args,body,result,ien)        ; web service entry (post)
  . ;
  . ; determine clinical status (active vs inactive)
  . ;
- . n clinicalstatus set clinicalstatus=$get(json("entry",zi,"resource","clinicalStatus"))
+ . ; R4 clinicalStatus is a CodeableConcept (coding[0].code); keep the old plain-string form as a fallback
+ . n clinicalstatus set clinicalstatus=$get(json("entry",zi,"resource","clinicalStatus","coding",1,"code"))
+ . i clinicalstatus="" set clinicalstatus=$get(json("entry",zi,"resource","clinicalStatus"))
+ . set clinicalstatus=$$LOW^XLFSTR(clinicalstatus)
+ . d log(jlog,"clinicalStatus is: "_clinicalstatus)
  . i $get(abatementdate)'="" set clinicalstatus="inactive" ; VistA doesn't allow active problems with a resolution date
  . ;
  . ; determine the encounter visit ien
@@ -184,7 +188,7 @@ wsIntakeConditions(args,body,result,ien)        ; web service entry (post)
  . s DHPSCT=sctcode
  . s eval("conditions",zi,"parms","DHPSCT")=DHPSCT
  . ;
- . s DHPCLNST=$S(clinicalstatus="Active":"A",1:"I")
+ . s DHPCLNST=$S(clinicalstatus="active":"A",clinicalstatus="recurrence":"A",clinicalstatus="relapse":"A",1:"I")
  . s eval("conditions",zi,"parms","DHPCLNST")=DHPCLNST
  . ;
  . s DHPONS=hl7OnsetDateTime
@@ -214,7 +218,7 @@ wsIntakeConditions(args,body,result,ien)        ; web service entry (post)
  . . . d log(jlog,"Calling PROBUPD^SYNDHP61 to add condition")
  . . . n DHPSDES,DHPRID,DHPDTM S (DHPSDES,DHPRID)=""
  . . . s DHPDTM=DHPONS
- . . . D PROBUPD^SYNDHP61(.RETSTA,DHPPAT,DHPSCT,DHPSDES,DHPROV,DHPDTM,DHPRID) ; update problem list with Snomed code
+ . . . D PROBUPD^SYNDHP61(.RETSTA,DHPPAT,DHPSCT,DHPSDES,DHPROV,DHPDTM,DHPRID,DHPABT,DHPCLNST) ; update problem list with Snomed code
  . . i 'notmapped d  ; snomed code does map, use DATA2PCE to add problem to problem list
  . . . d log(jlog,"Calling PRBUPDT^SYNDHP62 to add snomed condition")
  . . . D PRBUPDT^SYNDHP62(.RETSTA,DHPPAT,DHPVST,DHPROV,DHPONS,DHPABT,DHPCLNST,DHPSCT)    ;Problem/Condition update

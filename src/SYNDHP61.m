@@ -110,7 +110,7 @@ SI2IMP(SCT,OBS) ; convert metric units to imperial
  ;
  ; -------- problem/condition update
  ;
-PROBUPD(RETSTA,DHPPAT,DHPSCT,DHPSDES,DHPROV,DHPDTM,DHPRID) ; problems update
+PROBUPD(RETSTA,DHPPAT,DHPSCT,DHPSDES,DHPROV,DHPDTM,DHPRID,DHPABT,DHPCLNST) ; problems update
  ;
  ; Alternate entry for creating problem/condition if snomed code does not map to icd code, so can't use DATA2PCE
  ;
@@ -122,6 +122,8 @@ PROBUPD(RETSTA,DHPPAT,DHPSCT,DHPSDES,DHPROV,DHPDTM,DHPRID) ; problems update
  ;  DHPDTM -   Observation Date/Time  (HL7)    (mandatory)
  ;  DHPRID -   DHP unique resource ID     (optional)
  ;               agency_facility
+ ;  DHPABT -   Abatement Date/Time (HL7)  (optional) - sets DATE RESOLVED; omit for active problems
+ ;  DHPCLNST - Clinical status A or I     (optional) - defaults to I when DHPABT is set, else A
  ;
  ; Output:
  ;  1 - success
@@ -162,11 +164,14 @@ PROBFDA ; build FDA array for Problems
  ;
  S DHPLOC=+DHPRID
  S FDA(FN,"+1,",.06)=DHPLOC ; location
- S FDA(FN,"+1,",1.07)=$$HL7TFM^XLFDT(DHPDTM) ;date resolved <<<<<<<<<<<<< not if still active
+ ; date resolved only for resolved problems (date portion, as PRBUPDT^SYNDHP62 does)
+ I $G(DHPABT)'="" S FDA(FN,"+1,",1.07)=$P($$HL7TFM^XLFDT(DHPABT),".",1)
  S FDA(FN,"+1,",.08)=$$NOW^XLFDT() ;date entered
  S FDA(FN,"+1,",.13)=$$HL7TFM^XLFDT(DHPDTM) ;date of onset
  S STATII=P_"A"_P_"I"_P
- S FDA(FN,"+1,",.12)=$S(STATII[(P_$G(DHPSTA)_P):DHPSTA,1:"A") ;status
+ ; status: DHPCLNST, else the legacy DHPSTA, else I if resolved, else A
+ N DHPST S DHPST=$G(DHPCLNST) I DHPST="" S DHPST=$G(DHPSTA)
+ S FDA(FN,"+1,",.12)=$S(STATII[(P_DHPST_P)&(DHPST'=""):DHPST,$G(DHPABT)'="":"I",1:"A") ;status
  S FDA(FN,"+1,",80001)=DHPSCT ; snomed ct concept code
  ;
  N LEX
